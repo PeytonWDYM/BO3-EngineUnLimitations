@@ -54,7 +54,8 @@
     "newEvidence": "The author's September 30 announcement confirms latest-game beta support. Its beta channel links both full Beta 2283794212 and BetaLite 2739657648.",
     "betaRefresh": "Steam records BetaLite's October 2 manifest as current. All 71 files in the refreshed private lab copy match the installed source hashes. The source is unchanged.",
     "nextCheck": "The installed beta gate matches the latest stock build. Verify the selected package and bootstrap identity. AAE can rewrite fs_game.",
-    "quietStartup": "Prior session seeding and inspected launch setting routes remain rejected. Separate WASAPI and DirectSound submission wrappers passed twelve owned memory-only native scenarios and fresh review. Game activation, complete output coverage, and quiet startup remain unvalidated. An internal DirectSound clear Unlock failure requires buffer recreation.",
+    "quietStartup": "Prior session seeding and inspected launch setting routes remain rejected. Submission wrappers and separate activation adapters each passed twelve owned memory-only native scenarios and fresh review. Factory interception, complete output coverage, stock-safe stopping, driver compatibility, and quiet game startup remain unvalidated. An internal DirectSound clear Unlock failure requires buffer recreation.",
+    "quietActivation": "Owned providers verify first protected service/buffer publication, shared and separate COM identities, callbacks, and recreation. Zero raw leaf publications occur in the protected run. The controlled abort is a fixture-only C++ exception. Concurrent or circular unfinished identity construction is not native-tested.",
     "startupMovieAudio": "The reviewed startup path constructs a stock SND alias and submits it through the sound queue when lookup succeeds. The existing lab MKV has video only. The complete alias-to-mixed-samples trace remains unresolved.",
     "betaWeaponAssets": "Private offline inspection inventories three weapon records in BetaLite core_mod. Their names, native layouts, runtime selection, and War Machine split settings remain unverified."
   },
@@ -90,7 +91,7 @@
     }
   ],
   "nextSteps": [
-    "Verify activation before the first audio submission and after recreation in an owned native process.",
+    "Compose the reviewed pre-entry loader and activation adapters in an owned native process. Define stock-safe stopping and verify coverage before first output and after recreation.",
     "Validate complete quiet lab startup without changing system audio or the normal profile.",
     "Verify the selected BetaLite package and bootstrap identity during mod loading.",
     "Capture the stock client with AAE on Origins.",

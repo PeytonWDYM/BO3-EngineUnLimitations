@@ -1,0 +1,69 @@
+Owned audio activation plumbing
+
+Boundary accepts a Provider and returns wrapped Windows SDK interfaces.
+Provider supplies factory calls. This task implements no real API interception or installation.
+The owned fixture uses memory providers and opens no audio device.
+
+Supported chains
+MMDeviceEnumerator creation returns an IMMDeviceEnumerator or its IUnknown identity.
+The enumerator wraps the eRender/eConsole default device.
+The device wraps Activate(IAudioClient).
+The audio client wraps render and session services before returning them.
+The render methods use the existing quiet IAudioRenderClient leaf.
+Session and endpoint notification calls forward the original callback pointer and HRESULT.
+Register calls stay Register calls, including repeated native-style teardown registration.
+The adapter does not change callback counts, thread dispatch, or callback ownership.
+
+DirectSound creation returns wrapped IDirectSound8 and its base identity.
+CreateSoundBuffer gets the base buffer privately, queries Buffer8, and prepares the existing quiet leaf.
+The adapter returns the base buffer only after preparation succeeds.
+Base and Buffer8 queries share one adapter identity.
+The existing quiet leaf still defines supported formats, capabilities, Lock/Unlock, and Restore behavior.
+The adapter does not change its internal-clear Unlock recovery limit.
+
+Identity and lifetime
+The registry has weak entries keyed by the provider's canonical IUnknown pointer.
+Each live adapter owns its runtime and provider references.
+The runtime does not own adapters, so its cache cannot form a strong reference cycle.
+AudioClient, render, and session share an adapter only when their provider identity matches.
+Each audio family probes its complete known IID set before publication.
+The set stays fixed throughout that adapter's lifetime.
+Separate service identities stay separate. Outstanding service references keep their adapter alive.
+Provider calls and quiet-leaf preparation occur outside the registry mutex.
+Reentrant or concurrent creation of the same unfinished identity returns E_PENDING.
+This bounded contract does not wait for that identity or claim general COM marshalling support.
+Repeated requests reuse a live prepared adapter rather than clearing its buffer again.
+
+CanUnload reports whether any adapter, registry reservation, or root factory call remains live.
+It does not unload a DLL or remove entrypoints.
+The owner must stop new factory calls before using this result for any future module unload.
+Provider-retained callbacks keep their original ownership rules.
+A callback that retains an adapter prevents CanUnload from succeeding.
+
+Unsupported and failure paths
+Unknown audio IIDs, endpoint collections, explicit GetDevice, and property stores are unsupported.
+Other default endpoint roles and capture devices are unsupported.
+Alternate IMMDevice activation interfaces are unsupported.
+Unknown QueryInterface calls never expose a raw audio alias.
+DuplicateSoundBuffer is unsupported because duplicates share storage.
+DirectSound buffer creation or preparation failure invokes Provider::Abort before returning to the consumer.
+The abort callback must stop the controlled consumer and must never return.
+This boundary protects the modeled native-style null-Release failure branch.
+The owned fixture models abort with a C++ test exception.
+That exception mechanism is fixture-only. It is not safe stock-game recovery or a Windows COM exception contract.
+A future stock integration must define and test its own stop mechanism.
+Underlying HRESULTs remain intact in returned failures or the controlled-abort reason.
+There is no raw audible fallback.
+
+Scope limits
+Non-MMDeviceEnumerator COM creation keeps provider behavior, including the tested non-audio decoder class.
+Other COM classes and other audio APIs do not fall under these two supported factory chains.
+The fixture cannot prove global audio API coverage, real driver compatibility, startup timing, or BO3 silence.
+The owner must cover all output routes before any real quiet-game launch.
+The adapter does not supply a loader, DLL hooks, injected code, or game changes.
+
+Native E2E commands from the repository root
+& source/tests/activation/Test-QuietActivation.ps1 -OutputDirectory <private-directory> -Baseline
+& source/tests/activation/Test-QuietActivation.ps1 -OutputDirectory <private-directory>
+The harness resolves existing directory links and rejects physical repository paths before compiler discovery or output creation.
+Reports record deterministic events, client/buffer generations, and raw leaf publication counts.

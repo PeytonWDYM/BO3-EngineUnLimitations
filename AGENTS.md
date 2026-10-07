@@ -109,12 +109,17 @@ The native baseline recorded twelve expected failures before implementation. All
 DirectSound requires raw aliases to be surrendered and supported stopped secondary buffers.
 An internal clear Unlock failure blocks playback and requires buffer recreation under the current contract.
 They do not implement game activation or prove complete quiet startup. No game audio patch is implemented.
-The next owned activation fixture must preserve session-control requests, callbacks, and audio-client recreation.
+Separate activation adapters now preserve session-control requests, callbacks, and recreation in an owned memory-provider fixture.
+Its twelve native scenarios passed fresh review, with zero raw leaf publications. It does not implement factory interception.
+Shared and separate COM identities are tested. Concurrent unfinished identity construction remains untested and returns E_PENDING.
+Its controlled abort uses a fixture-only C++ exception. Stock-safe stopping and real driver compatibility remain unimplemented.
 Stock buffer creation returns the base DirectSound interface. Query Buffer8 before using the existing quiet factory.
 One reviewed stock failure branch releases the buffer without a null check. Do not assume rejected activation allows safe stock recovery.
 The separate pre-entry loader fixture passed eight native cases and fresh review using a dummy factory.
 It records readiness before its imported consumer, TLS, and entrypoint. An earlier dependency call remains an explicit coverage failure.
 It retains its helper until process exit through the loader dependency. It does not prove stock readiness or integrate the audio adapters.
+The next quiet-start step must compose the loader and adapters, define stock-safe stopping, and verify first output coverage.
+Use PowerShell 7 for native harnesses that resolve directory junctions through the .NET file APIs.
 
 ## Validation and handoff
 

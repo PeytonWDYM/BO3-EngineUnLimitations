@@ -381,6 +381,26 @@ This establishes owned-fixture timing for one caller thread. It does not integra
 Private evidence/agent-patch-loader/preentry/final-green-2/results/result.json records the native cases.
 Private evidence/preentry-fresh-review/Review.txt records the fresh review.
 
+2026-10-07: reviewed owned activation checkpoint
+
+Separate MMDeviceEnumerator and DirectSound activation adapters now publish quiet render services and prepared secondary buffers.
+The owned memory-provider baseline recorded eleven expected failures and one HRESULT-only pass before implementation.
+The protected fixture passed twelve native scenarios with zero raw leaf publications. Replay JSON is byte-identical.
+Shared and separate COM identities, repeated requests, outstanding services, callbacks, two live client generations, and restored buffers are covered.
+DirectSound preparation failures preserve their reason and stop before the modeled native-style null-Release branch.
+That stop uses a fixture-only C++ exception. It is not stock-safe recovery or a Windows COM exception contract.
+The weak registry avoids ownership cycles and makes no provider calls under its mutex.
+An unfinished repeated identity returns E_PENDING. Concurrent or circular construction remains untested.
+Allocation failure evidence covers the first registry allocation, rather than every later allocation.
+A focused fresh review reproduced a directory-junction bypass in the output guard without compiling or creating output.
+The minimal physical-path fix now rejects that alias before compiler discovery. Private output remains allowed.
+The C++ sources and quiet dependencies stayed unchanged. The native suite was not repeated for the guard-only fix.
+The reviewer verified final source/dependency hashes, deterministic reports, the focused guard fix, and the documented limits.
+These adapters implement no actual factory interception, loader integration, hardware activation, or BO3 changes.
+Stock-safe stopping, output coverage, driver compatibility, and complete quiet startup still need validation.
+Private evidence/agent-silent-launch/activation/final-report.json records the native result and hashes.
+Private evidence/activation-fresh-review/review.txt records the final fresh review and resolved guard finding.
+
 Final deliverable and checkpoints:
 
 Peyton requests continued commits and pushes, a final real pull request, a fresh review, and a shareable patch-loader executable.
