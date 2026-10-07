@@ -61,7 +61,7 @@ Peyton clarified that BO3 remains open when this happens. Treat it as a match or
 Whether the internal server crashes remains unconfirmed. A live process can still preserve the relevant failure state.
 The initial reproduction uses stock BO3, AAE, Origins, and one or two players.
 
-Peyton supplied the first actual failure through his normal game. The external read-only recorder remains attached.
+Peyton supplied the first actual failure through his normal game. That process exited when he closed it at 23:45 UTC.
 Prioritize that failing-match capture over automated lab startup work. Do not launch or control another game during his session.
 The earlier game process exited at 15:47 UTC. Its sampler retained 1,070 provisional rows and 110 rejected reads.
 A second recorder attached another normal game at 21:34 UTC. That process exited at 21:41 UTC without a failure snapshot.
@@ -77,7 +77,7 @@ The saved failure contains the native AAE module from full Workshop package 2631
 Ctrl+Shift+F9 captured the actual failure at 22:21:20 UTC. The complete dump passed process and module identity checks.
 Peyton identifies the weapon as the upgraded War Machine, Dystopic Demolisher. Both players saw Connection Interrupted.
 The screenshot records Der Eisendrache, round 73, two players, and Fire Works on the weapon.
-Peyton has not explicitly confirmed the host role. The local server VM and entity pool are initialized in the dump.
+Peyton confirmed that this PC hosted the two-player match. The local server VM and entity pool are initialized in the dump.
 A second read-only snapshot completed at 22:36 UTC while the same game remained open.
 Both snapshots contain all 129,999 usable server script-variable slots occupied, with no free slots or reuse head.
 The client VM has 25,168 reusable slots in the first snapshot. The server retained first error "Invalid opcode".
@@ -101,7 +101,27 @@ The linker changes the call opcode and writes its parameter count from the impor
 The caller can end on grenade death before it cancels the separate player helper. This supports a cleanup-leak hypothesis.
 Controlled producer and lifetime evidence, the first-error order, and a validated fix remain pending.
 Private evidence/failure-20261007T222120Z/ retains exact-build code checks, reports, script frames and the screenshot.
-Offline entity and VM layouts are checked against the captured downgraded code. Live profiles remain disabled.
+Offline entity and VM layouts are checked against the captured downgraded code.
+A private server-only VM profile passed a frozen-failure crosscheck against all saved pool bytes and sixteen native code ranges.
+The client pool differs from the saved failure. Moving-match measurements remain provisional.
+The external overlay retained 154 accepted and 163 rejected server reads before process exit.
+It shows script-slot headroom, the deferred cleanup queue, call depth, first error, and sample freshness.
+The overlay uses no game render hook and does not consume game input. It passed five owned native E2E modes and fresh review.
+The current profile binds the exited process creation time. Rebind and verify the next process before sampling.
+The older VM profile and live entity profile remain disabled.
+The private full-AAE cleanup candidate changes five decoded bytes in one weapons script.
+Independent extraction preserves 162 script assets, with the other 161 identical.
+Captured native padding emulation, preparation guards, and fresh review passed. No gameplay or friend validation exists yet.
+A separate deployment manager stages verified private backups and supports atomic apply and removal with exact hash checks.
+Its private E2E restores the original asset and rejects repeated apply and damaged originals before apply and removal.
+Peyton explicitly approved the reversible normal full-AAE test deployment after closing BO3.
+At 23:55 UTC, only Workshop core_mod.ff changed to candidate ac4604a44d5caf093df917eb4a2a14c8979bfab0088209122125fe09304c53f8.
+The exact original remains in private evidence/failure-20261007T222120Z/normal-next-match-deployment/original.ff.
+All 91 profiles, 68 other full-AAE files, six game-root binaries, Steam manifest and app Cloud cache match the fresh baseline.
+The new recorder and a process-bound VM/overlay waiter are armed for Peyton's manual launch.
+The waiter must pass the sixteen native code hashes. A refusal requires inspection, not a bypass or guessed new addresses.
+This approval covers the one AAE test asset. It does not authorize unrelated normal-game or Workshop changes.
+Do not claim unlimited play or a finished stock engine patch from this candidate.
 Earlier entity history remains provisional. Cross-check a saved failure snapshot before interpreting game measurements.
 The 14:55 UTC F9 snapshot was a keybind test, not a reported hosting failure. Peyton requested deletion of that and old dumps.
 Automatic approval review blocked both bulk and individually named deletion. No dumps were deleted. Do not analyze those test or old dumps as the next reproduction.

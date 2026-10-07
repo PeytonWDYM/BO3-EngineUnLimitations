@@ -13,7 +13,18 @@ Both players saw the interruption with the upgraded War Machine, Dystopic Demoli
 The server VM has no reusable script-variable slots. The entity allocator still has room.
 The complete server VM pool and entity pool match across both snapshots. Server time does not advance.
 The server retains "Invalid opcode" as its first script error. The initiating error sequence remains unresolved.
-Offline layouts are checked against captured code. Keep both live sampling profiles disabled.
+Offline layouts are checked against captured code.
+A separate server-only VM profile passed a complete frozen-pool and sixteen-range native-code crosscheck.
+Moving-match measurements remain provisional. The older VM profile and entity profile remain disabled.
+Peyton confirmed this PC hosted the two-player failure. He closed BO3 at 23:45 UTC.
+The external monitor retained 154 accepted and 163 rejected reads before exit.
+A new Ctrl+Shift+F9 recorder is armed for the next manual launch.
+The cleanup candidate is prepared and reviewed. Peyton explicitly approved normal deployment.
+At 23:55 UTC, the manager replaced only full-AAE core_mod.ff with the verified candidate.
+All 91 profiles, 68 other full-AAE files, six game-root binaries, Steam manifest and app Cloud cache remain unchanged.
+The verified original and removal record remain private. Apply and removal passed private exact-hash E2E checks.
+The VM/overlay waiter binds the next full-AAE process and requires sixteen exact native code hashes before reads.
+If it refuses attachment, preserve the refusal and inspect the new process. Do not bypass a failed code check.
 The downgrade changes the reproduction setup. It is not a validated engine fix or co-op compatibility result.
 
 BO3 remains open during Peyton's reported failure. The match or hosting session stops responding.
@@ -71,9 +82,13 @@ It records process exits, but it cannot guarantee a full dump after the process 
 The separate read-only entity sampler is available under source/live/. Read source/live/README.txt for its commands.
 It requires a private profile verified against the exact executable. Its native E2E passed, but game sampling remains unvalidated.
 The separate read-only VM sampler is available under source/live/vm/. Read its README.txt for commands and limits.
-Its ten owned native E2E cases passed fresh review. The private game profile remains disabled.
+Its ten owned native E2E cases passed again. The prior general game profile remains disabled.
+The new current-process profile only validates the frozen server layout and must not attach a later process without verification.
 It measures numeric script-variable counts, deferred cleanup chains, current function depth, and bounded first-error text.
 It does not identify script functions, suspended thread owners, or grenade ownership.
+The external diagnostics window under source/live/overlay/ reads a private latest JSON file once per second.
+It retains accepted counters during rejected reads and marks stopped or stale measurements.
+Its five native E2E modes retain rendered PNGs. Fresh review passed after three fixes.
 Equal repeated reads reject observed changes. They do not produce an atomic game snapshot.
 Projectile creation and deletion, server frame time, and GSC script threads still need targeted instrumentation.
 OS memory and thread counts alone cannot prove an entity leak.

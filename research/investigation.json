@@ -1,5 +1,5 @@
 {
-  "status": "failure_snapshot_analysis",
+  "status": "approved_candidate_deployed_for_manual_test",
   "rootCause": "unconfirmed",
   "deliverable": "A reversible stock BO3 engine patch, a shareable Windows patch-loader executable, and a reviewed real pull request.",
   "reportedSymptoms": [
@@ -66,7 +66,7 @@
     "consistency": "Repeated equal reads reject observed changes. They do not make an atomic game snapshot.",
     "nativeAnalysis": "Capture, Ghidra import, unwind boundaries, cross-references, decompilation, and identity/output guards passed nine E2E checks.",
     "offlineScriptVariables": "Private exact-build menu inspection verified both reuse chains. The separate sampler's pure decoder agrees with that saved capture after identity and code-range checks. Usable capacities are 129999 server slots and 64999 client slots. This does not validate live sampling.",
-    "liveScriptVariables": "Separate read-only sampler passed ten owned native E2E cases and fresh review. The shared entity sampler still passes 22 cases. Game measurements remain unvalidated and the private game profile is disabled.",
+    "liveScriptVariables": "Ten owned native E2E cases pass. A private server-only profile matched all saved frozen-pool bytes and sixteen native code ranges in the actual host process. The client pool differs. Moving-match rows remain provisional. The bound process exited when Peyton closed BO3. Older profiles remain disabled.",
     "scriptCleanup": "Native entity deletion queues entity-owned waiters and stacks for cleanup. The actual failure retains 1883 player-owned zombify helpers. Exactly 1878 tracker objects have no returned listener. Loaded grenade-checker and utility code exposes a caller-cancellation path that can leave the separate player helper alive. Controlled allocation-lifetime evidence remains pending.",
     "entityLifetime": "The verified native reuse version repeats after 63 complete free/spawn cycles. Equal samples do not prove one lifetime. Strict correlation needs allocation/free events, world epochs, and loss detection. That recorder remains unimplemented.",
     "scriptCapacityDependencies": "Verified capacities affect allocation, reuse initialization, lifecycle scans, notification keys, and save-state serialization. Reviewed slot IDs are 32-bit and special keys retain 64 bits. No 17/18-bit ceiling is proven. The actual failure now has an exhausted server VM. Save/migration and co-op compatibility remain unresolved. No capacity change is implemented or validated.",
@@ -74,7 +74,31 @@
     "compatibility": "Current stock runtime uses 10-bit network entity IDs. Expanding normal IDs past 1023 conflicts with unpatched clients.",
     "loader": "Native cooperative-fixture foundation only. Game safe point and engine patch remain unimplemented.",
     "preentryLoader": "Separate owned dummy-factory fixture passed eight native cases and fresh review. Readiness precedes its imported consumer, TLS, and entrypoint. Earlier dependency calls remain an explicit coverage failure. Helper residency continues until process exit. No stock integration is validated.",
-    "quietStartupComposition": "The original composition passed nine native groups and fresh review. Its worker extension passed seven focused groups across thirteen child scenarios and fresh review. Exact owned entry/context matching preserves real suspended creation, ID, handle, priority, resume, and original setup. Worker initialization precedes dispatch without depending on the fixture entry marker. Cold calls stop before raw publication; joined cleanup precedes removal. These are memory-only single-caller contracts. Earlier dependencies, Windows factory interception, actual EXE chronology, and stock timing remain unvalidated."
+    "quietStartupComposition": "The original composition passed nine native groups and fresh review. Its worker extension passed seven focused groups across thirteen child scenarios and fresh review. Exact owned entry/context matching preserves real suspended creation, ID, handle, priority, resume, and original setup. Worker initialization precedes dispatch without depending on the fixture entry marker. Cold calls stop before raw publication; joined cleanup precedes removal. These are memory-only single-caller contracts. Earlier dependencies, Windows factory interception, actual EXE chronology, and stock timing remain unvalidated.",
+    "overlay": "External click-through diagnostics window passed five rendered native modes and twenty fresh-review items after three fixes. It shows last accepted server slot counts, cleanup queue, call depth, first error, sample age and accepted/rejected reads. No game memory or render hook is modified.",
+    "cleanupCandidate": {
+      "status": "private_candidate_only",
+      "mod": "full All-around Enhancement v3.9.5",
+      "decodedBytesChanged": 5,
+      "scriptsExtracted": 162,
+      "unchangedOtherScripts": 161,
+      "candidateSha256": "ac4604a44d5caf093df917eb4a2a14c8979bfab0088209122125fe09304c53f8",
+      "offlineFreshReview": "passed",
+      "normalDeployment": "Explicitly approved by Peyton and applied at 23:55 UTC. Only full-AAE core_mod.ff changed. Verified exact original retained privately.",
+      "gameplayValidated": false,
+      "friendsValidated": false,
+      "unlimitedPlayValidated": false,
+      "finalStockEnginePatch": false,
+      "deploymentVerification": {
+        "profileFilesPreserved": 91,
+        "otherAaeFilesPreserved": 68,
+        "rootBinariesPreserved": 6,
+        "steamAndCloudFilesPreserved": 2,
+        "gameLaunchedByAgent": false,
+        "reviewedDeploymentItems": 12,
+        "openReviewFindings": 0
+      }
+    }
   },
   "labStatus": {
     "manualCapture": "Ctrl+Shift+F9 captured the actual Connection Interrupted failure at 22:21:20 UTC on the authorized downgraded executable. The full dump passed integrity and exact process/module identity checks. Peyton confirms both players saw the interruption with the upgraded War Machine, Dystopic Demolisher. The screenshot records Der Eisendrache, round 73, and Fire Works. The dump contains full AAE Workshop package 2631943123. A second read-only snapshot completed at 22:36 UTC while the same game remained open. Both live profiles remain disabled. No engine patch or agent game launch occurred.",
@@ -187,8 +211,8 @@
     }
   ],
   "nextSteps": [
-    "Prepare a private candidate that keeps grenade-check helper ownership on the grenade while preserving outer player cancellation. Verify raw import metadata and the linker change before testing.",
-    "Verify the candidate asset and native padding instructions with repeatable offline evidence. Keep original game and Workshop files unchanged.",
+    "Verify the candidate loads in Peyton's next manual full-AAE match. The original is backed up and normal deployment has explicit approval.",
+    "Verify next-process native identities and candidate script loading. Rebind external monitoring and cross-check saved snapshots.",
     "Validate waiter growth and recovery during controlled original and candidate volleys. Record map, round, host role, player count, weapon upgrade history and exact identities.",
     "After Peyton's manual session, verify the reviewed contained DirectSound rule in a separately bounded silent physical run if still needed. Its memory checkpoint does not prove the genuine positive Windows provider path.",
     "Recover stock first-factory timing and remaining output coverage. The reviewed owned composition is not a Windows loader-lock detector or stock launch proof.",
@@ -206,5 +230,12 @@
     "Inspect available AAE weapon scripts and assets after locating the active mod files.",
     "Select targeted instrumentation from the captured errors and verified script paths.",
     "Verify a cause before changing gameplay or engine limits."
-  ]
+  ],
+  "manualSession": {
+    "hostRole": "host on this PC, confirmed by Peyton",
+    "gameClosedUtc": "2026-10-07T23:45:18Z",
+    "frozenMonitorAccepted": 154,
+    "frozenMonitorRejected": 163,
+    "nextRecorder": "armed for manual launch"
+  }
 }

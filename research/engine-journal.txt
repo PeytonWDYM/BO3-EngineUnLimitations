@@ -834,6 +834,46 @@ No candidate is installed, and no game test or validated fix exists yet.
 Private evidence/failure-20261007T222120Z/ retains the loaded code, native checks, graphs and reports.
 Raw assets and private addresses remain outside the public repository. The open game remains unchanged.
 
+October 7, 23:52 UTC, next-match candidate preparation:
+
+Peyton confirmed this PC hosted the two-player round-73 failure.
+He closed the game at 23:45 UTC. No recovery or game-memory mutation occurred.
+A live server-only crosscheck matched the full saved pool and all sixteen reviewed native code ranges.
+The client pool differed. The new profile binds only that exact process creation time.
+The server monitor retained 154 accepted and 163 rejected read pairs at one attempt per second.
+Repeated equal reads remain non-atomic. Moving-match rows still require snapshot crosschecks.
+The visible external overlay shows script slots, free slots, deferred cleanup, call depth, first error, and sample age.
+It uses no render hook or game write access. It does not consume mouse or keyboard input.
+Ten native sampler cases and five rendered overlay modes passed.
+Fresh review found rejected-first-sample labeling, temporary-file collision, and proof-path junction issues.
+All three fixes passed independent checks. Final review covered twenty items with no open findings.
+
+The full-AAE candidate removes the player argument from one grenade helper call.
+The remaining zombify helper uses the grenade owner. Outer player and grenade cancellation remain intact.
+Native GetZero and DecTop padding preserves code offsets and string relocations.
+The import record changes its parameter count from six to five.
+Independent ACTS extraction preserves all 162 script names. Only the weapons script changes.
+Exactly five decoded bytes differ. Candidate SHA-256 is ac4604a44d5caf093df917eb4a2a14c8979bfab0088209122125fe09304c53f8.
+The complete source asset remains unchanged. Native instruction emulation and offline preparation do not prove game execution.
+
+The separate deployment manager stages verified private originals and candidates.
+Its private E2E checks apply, repeated-apply refusal, damaged-backup refusal, removal and unchanged sibling/source hashes.
+Fresh review reproduced damaged-original admission before Apply and target junction redirection.
+Both defects have fixes and a corrected private E2E. Independent recheck passed all twelve reviewed items.
+The reviewer verified damaged-original and Stage/Apply/Remove junction refusal through the public CLI.
+The running-game guard remains source-reviewed. No agent game launch was used to test it.
+At the preparation checkpoint, the normal deployment had only a verified backup and manifest.
+A fresh baseline covers 91 profile files, 69 full-AAE files, and six game-root binaries.
+Peyton explicitly approved the reversible full-AAE test candidate after closing BO3.
+At 23:55 UTC, atomic replacement changed only the normal full-AAE core_mod.ff to the reviewed candidate hash.
+All 91 profile files, 68 other AAE files, six game-root binaries, Steam manifest and app Cloud cache match the baseline.
+The exact original remains privately backed up and verified. No normal executable or DLL changed.
+The recorder and a new-process VM/overlay waiter are armed for Peyton's manual launch.
+That waiter requires sixteen exact native code hashes before publishing samples. A refusal needs inspection.
+The next Ctrl+Shift+F9 recorder is armed. No agent game launch occurred.
+No candidate game load, controlled volley cleanup, friend compatibility, or unlimited-play result is verified.
+The candidate is an AAE experiment. The final stock engine-patch and shareable executable remain pending.
+
 Final deliverable and checkpoints:
 
 Peyton requests continued commits and pushes, a final real pull request, a fresh review, and a shareable patch-loader executable.
