@@ -55,13 +55,13 @@ try {
     } finally { Pop-Location }
     $tests = Join-Path $repo 'source/tests/startup'
     $flags = @('/nologo', '/std:c++17', '/EHsc', '/W4', '/WX', '/MT', '/Od', "/I$tests", "/I$DetoursRoot/include", "/I$output")
-    & $compiler @flags /LD (Join-Path $tests 'FactoryShim.cpp') "/Fe:$output/StartupFactories.dll" "/Fo:$output/FactoryShim.obj" /link "/DEF:$tests/FactoryShim.def" /INCREMENTAL:NO
+    & $compiler @flags /LD (Join-Path $tests 'FactoryShim.cpp') (Join-Path $tests 'WorkerConsumer.cpp') "/Fe:$output/StartupFactories.dll" "/Fo:$output/" /link "/DEF:$tests/FactoryShim.def" uuid.lib /INCREMENTAL:NO
     if ($LASTEXITCODE -ne 0) { throw 'The provider build failed.' }
     & $compiler @flags /LD (Join-Path $tests 'ImportedConsumer.cpp') "$output/StartupFactories.lib" "/Fe:$output/StartupConsumer.dll" "/Fo:$output/ImportedConsumer.obj" /link uuid.lib /INCREMENTAL:NO
     if ($LASTEXITCODE -ne 0) { throw 'The imported consumer build failed.' }
     & $compiler @flags (Join-Path $tests 'Target.cpp') "$output/StartupFactories.lib" "$output/StartupConsumer.lib" "/Fe:$output/StartupTarget.exe" "/Fo:$output/Target.obj" /link uuid.lib /INCREMENTAL:NO
     if ($LASTEXITCODE -ne 0) { throw 'The target build failed.' }
-    $helperSources = @('Helper.cpp', 'RuntimeOwner.cpp', 'Stop.cpp') | ForEach-Object { Join-Path $PSScriptRoot $_ }
+    $helperSources = @('Helper.cpp', 'RuntimeOwner.cpp', 'Stop.cpp', 'ThreadGate.cpp') | ForEach-Object { Join-Path $PSScriptRoot $_ }
     $helperSources += Join-Path $tests 'Consumers.cpp'
     $helperSources += @('ProviderRoots.cpp', 'ProviderAudio.cpp', 'ProviderDirectSound.cpp') | ForEach-Object { Join-Path $repo "source/tests/activation/$_" }
     $helperSources += @('RenderSink.cpp', 'SoundSink.cpp', 'Report.cpp') | ForEach-Object { Join-Path $repo "source/tests/quiet/$_" }

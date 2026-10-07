@@ -4,10 +4,10 @@ This fixture joins the reviewed pre-entry loader and activation adapters.
 It uses two owned factories with the Windows COM and DirectSound signatures.
 It does not intercept Windows factories or open a physical audio device.
 
-The helper installs both hooks in one Detours transaction during DLL initialization.
+The helper installs the factory hooks and the owned thread-create hook in one Detours transaction during DLL initialization.
 This step uses POD state and the shared native trace.
 It does not construct the activation runtime, initialize COM, load DLLs, wait, or start workers.
-The owned entrypoint then constructs the runtime outside DLL initialization.
+The owned entrypoint or the exact matched ordinary worker start constructs the runtime outside DLL initialization.
 The fixture records hook readiness and runtime readiness as separate events.
 
 Covered imported-DLL and startup-TLS calls reach the hook before runtime readiness.
@@ -31,7 +31,19 @@ The legacy soundPlays and silentSoundPlays counters count SoundState.outputs obs
 These counters do not count Play calls alone.
 Endpoint and session callbacks preserve their original identity, result, repetition, thread, and retained client reference.
 The fixture covers separate and shared COM identities.
-One worker can call the consumers after initialization. The target joins it before cleanup.
+One worker can call the consumers after entry initialization. The target joins it before cleanup.
+
+The worker-start extension matches the owned generic thread entry and the complete context parameter 14.
+It intercepts only the owned thread-create import. It does not intercept KERNEL32 CreateThread.
+The creator forwards attributes, stack size, suspended flags, parameter, and thread-ID output without gate allocations or waits.
+The native thread handle and ID remain unchanged. The caller still sets priority 15 and resumes the suspended thread.
+The worker initializes the runtime before the original generic entry performs its TLS-like setup and dispatch.
+The creator runs during imported-DLL initialization. Windows delays thread execution until DLL initialization completes.
+The target joins this worker before recording its fixture entry-readiness event.
+This event order does not prove that the actual EXE entry instruction has not run.
+Wrong entry or context preserves original unmatched behavior and does not initialize the runtime.
+A denied readiness request stops before original setup. Cold factories from unmatched workers still stop.
+There is one audio caller at a time. Its callbacks and retained services remain live until the joined cleanup.
 
 Live render, session, callback, and buffer references block removal.
 Their use continues after removal refusal and parent-interface release.
@@ -42,6 +54,7 @@ This contract does not support concurrent calls, concurrent hook removal, or arb
 
 Run with PowerShell 7:
   source/tests/startup/Test-Startup.ps1 -OutputDirectory PRIVATE_NEW_DIRECTORY -DetoursRoot PRIVATE_OFFICIAL_DETOURS -Python PRIVATE_PYTHON
+Add -WorkerStarts to run the focused worker-start E2E and its required existing-contract checks.
 
 Use the official Microsoft Detours commit e4bfd6b03e50de46b47abfbd1e46b384f0c5f833.
 The build verifies its origin, commit, and tracked source before copying and rebuilding it privately.

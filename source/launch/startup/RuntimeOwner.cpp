@@ -36,11 +36,11 @@ HRESULT WINAPI MemorySound(LPCGUID device, LPDIRECTSOUND8* output, LPUNKNOWN out
 activation_test::State& MemoryState() { return *owner->state; }
 activation::Boundary& OwnedBoundary() { return *owner->boundary; }
 
-// The owned entrypoint calls this after DLL initialization and TLS have finished.
-extern "C" BOOL WINAPI InitializeOwnedRuntime() {
+// Only the explicit entry initializer or matched ordinary worker start can call this.
+static BOOL InitializeAt(Phase requiredPhase) {
     try {
         auto* trace = StartupState();
-        CheckOwned(owner == nullptr && trace->phase == static_cast<LONG>(Phase::Entry));
+        CheckOwned(owner == nullptr && trace->phase == static_cast<LONG>(requiredPhase));
         CheckOwned(trace->scenario == Scenario::Baseline || trace->hooksReady == 1);
         auto value = std::make_unique<Owner>();
         value->state = std::make_shared<activation_test::State>();
@@ -65,6 +65,8 @@ extern "C" BOOL WINAPI InitializeOwnedRuntime() {
         return TRUE;
     } catch (...) { StopOwned(E_UNEXPECTED, Stage::Error); }
 }
+extern "C" BOOL WINAPI InitializeOwnedRuntime() { return InitializeAt(Phase::Entry); }
+BOOL InitializeWorkerRuntime() { return InitializeAt(Phase::Worker); }
 extern "C" DWORD WINAPI RunOwnedConsumers() {
     try { return ConsumeFamilies(); }
     catch (...) { StopOwned(E_UNEXPECTED, Stage::Error); }

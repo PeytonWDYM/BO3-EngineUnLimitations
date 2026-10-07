@@ -6,6 +6,7 @@ BOOL WINAPI DllMain(HINSTANCE, DWORD reason, LPVOID) {
         auto* state = StartupState();
         state->phase = static_cast<LONG>(Phase::ImportedDll);
         StartupEvent(Stage::ImportedProbe, Api::None, 0, 0, nullptr);
+        if (StartupWorkerScenario(state->scenario)) CreateStartupWorker();
         if (state->scenario == Scenario::ImportCom) {
             void* output = nullptr;
             OwnedCoCreateInstance(__uuidof(MMDeviceEnumerator), nullptr, CLSCTX_ALL, __uuidof(IMMDeviceEnumerator), &output);

@@ -494,6 +494,27 @@ No stock hook, game launch, audio device, or protection change occurred during t
 Private evidence/agent-engine-review/audio-worker-start/worker-start-review.txt and provenance-code-hashes-and-state.json preserve the native evidence.
 Primary scheduling reference: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-createthread
 
+2026-10-07: reviewed owned Sound Mix thread-start gate
+
+The existing startup composition now has a narrow gate for its owned CreateThread-shaped import.
+The new failure cases and native consumer preceded implementation. The retained red run passed three of seven groups.
+The protected run passed all seven focused groups across thirteen child scenarios. Five before/after binary hashes matched.
+The gate requires both the fixed owned generic entry and the full context value. It hooks no kernel32 factory and contains no stock addresses.
+The creator hook forwards attributes, stack, parameter, suspended flags, and ID output without allocation or waiting.
+The actual suspended thread retains its handle and ID; caller priority and single resume remain intact.
+Ordinary worker entry constructs the memory activation runtime before original owned TLS-like setup and factory dispatch.
+Wrong entry or context retains original results and does not construct the runtime. Readiness denial and cold factories stop before publication.
+The worker verifies callbacks, recreation, retained quiet output, and removal refusal. The caller joins before clean teardown and hook removal.
+Existing entry, worker, DLL/TLS cold-call, and uncovered-dependency behavior remain covered by focused cases.
+The target joins before its fixture entry marker. This proves no dependence on that marker, not actual EXE-entry ordering.
+Fresh review verified all fifty-seven current sources, five binaries, thirteen traces, exact imports, and pinned private dependency provenance.
+One post-run wrapper change adds Python -B; removing that argument reconstructs its native-run hash. Native code and artifacts stayed unchanged.
+The initially created Python cache was moved privately. No native rerun was needed for that output-only wrapper change.
+This is an owned single-caller and quiescent-removal contract. Windows factory interception, stock chronology, and global output coverage remain unresolved.
+No BO3 launch, physical stream, setting change, or engine patch occurred in this extension.
+Private evidence/agent-patch-loader/startup-worker/green/results/result.json records the native result.
+Private evidence/startup-worker-fresh-review/review.txt and evidence-verification.json bind the final checkpoint.
+
 Final deliverable and checkpoints:
 
 Peyton requests continued commits and pushes, a final real pull request, a fresh review, and a shareable patch-loader executable.

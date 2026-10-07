@@ -18,6 +18,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--bin", required=True, type=Path)
     parser.add_argument("--output", required=True, type=Path)
+    parser.add_argument("--worker-starts", action="store_true")
     args = parser.parse_args()
     output = args.output.resolve()
     if output == REPO or REPO in output.parents or output.exists():
@@ -177,15 +178,19 @@ def main():
                 assert any(item.name is None and item.ordinal == 11 for item in shim.imports)
         return outcomes
 
-    check("raw memory baseline", baseline)
-    check("covered imported DLL activation stops", lambda: early("import", "imported"))
-    check("covered startup TLS activation stops", lambda: early("tls", "tls"))
-    check("earlier dependency remains uncovered", dependency)
-    check("post-loader entry separate and shared identities", lambda: [success("entry"), success("shared")])
-    check("post-loader worker and callback recreation", worker)
-    check("denied readiness and unsupported DirectSound stop", failures)
-    check("live wrappers block removal and clean stop", lifetime)
-    check("fixed identity ordinal imports and physical output guards", guards)
+    if args.worker_starts:
+        from WorkerCases import register
+        register(check, run, success, early, dependency)
+    else:
+        check("raw memory baseline", baseline)
+        check("covered imported DLL activation stops", lambda: early("import", "imported"))
+        check("covered startup TLS activation stops", lambda: early("tls", "tls"))
+        check("earlier dependency remains uncovered", dependency)
+        check("post-loader entry separate and shared identities", lambda: [success("entry"), success("shared")])
+        check("post-loader worker and callback recreation", worker)
+        check("denied readiness and unsupported DirectSound stop", failures)
+        check("live wrappers block removal and clean stop", lifetime)
+        check("fixed identity ordinal imports and physical output guards", guards)
     after = {name: digest(args.bin / name) for name in BINARIES}
     dependencies = [*list((REPO / "source/launch/activation").glob("*")),
                     *list((REPO / "source/launch/quiet").glob("*")),

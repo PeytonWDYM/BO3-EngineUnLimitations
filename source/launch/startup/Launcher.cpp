@@ -21,7 +21,10 @@ static Scenario Parse(const wchar_t* name) {
         {L"import-com", Scenario::ImportCom}, {L"import-sound", Scenario::ImportSound},
         {L"tls-com", Scenario::TlsCom}, {L"tls-sound", Scenario::TlsSound},
         {L"dependency", Scenario::Dependency}, {L"denied", Scenario::Denied}, {L"live", Scenario::Live},
-        {L"unsupported-qi", Scenario::NoBuffer8}, {L"unsupported-clear", Scenario::ClearFailed}};
+        {L"unsupported-qi", Scenario::NoBuffer8}, {L"unsupported-clear", Scenario::ClearFailed},
+        {L"startup-matched", Scenario::StartupMatched}, {L"startup-wrong-entry", Scenario::StartupWrongEntry},
+        {L"startup-wrong-context", Scenario::StartupWrongContext}, {L"startup-denied", Scenario::StartupReadinessDenied},
+        {L"startup-cold-com", Scenario::StartupColdCom}, {L"startup-cold-sound", Scenario::StartupColdSound}};
     for (const auto& choice : choices) if (std::wstring(name) == choice.first) return choice.second;
     throw std::runtime_error("Use a fixed owned fixture scenario.");
 }
@@ -29,7 +32,9 @@ static const char* StageName(Stage stage) {
     constexpr const char* names[] = {"uncovered", "restore", "hooks-ready", "runtime-ready", "imported-probe", "tls-probe",
         "entry-probe", "worker-probe", "root-enter", "raw-factory", "root-return", "early-stop", "controlled-stop", "consumer-after",
         "render-publish", "buffer-publish", "render-output", "sound-output", "callback", "removal-denied", "references-released",
-        "runtime-destroyed", "hooks-removed", "helper-retained", "helper-detach", "native-failure", "error", "ordinal-match"};
+        "runtime-destroyed", "hooks-removed", "helper-retained", "helper-detach", "native-failure", "error", "ordinal-match",
+        "thread-create", "thread-returned", "suspended-checked", "thread-priority", "thread-resume", "gate-matched", "gate-unmatched",
+        "gate-enter", "readiness-denied", "native-setup", "native-dispatch", "native-exit", "worker-joined"};
     const auto index = static_cast<size_t>(stage);
     return index < std::size(names) ? names[index] : "invalid";
 }
@@ -102,6 +107,9 @@ int wmain(int argc, wchar_t** argv) {
         FIELD(errors); FIELD(uncovered); FIELD(constructors); FIELD(loaderConstructors); FIELD(providerCalls);
         FIELD(rawPublications); FIELD(renderPackets); FIELD(silentRenderPackets); FIELD(soundPlays); FIELD(silentSoundPlays);
         FIELD(generations); FIELD(callbacks); FIELD(callbackThread); FIELD(workerThread); FIELD(unsafeBranch); FIELD(aborted); FIELD(abortHresult);
+        FIELD(creatorThread); FIELD(returnedThread); FIELD(gateMatched); FIELD(gateUnmatched); FIELD(nativeSetups); FIELD(nativeContext);
+        FIELD(priorityResult); FIELD(resumeResult); FIELD(creationFlags); FIELD(attributesPresent); FIELD(stackSize);
+        FIELD(originalEntry); FIELD(originalParameter); FIELD(nativeEntry); FIELD(nativeParameter); FIELD(returnedHandle);
 #undef FIELD
         json << ",\"events\":[";
         const LONG count = std::clamp(static_cast<LONG>(view.value->count), 0L, static_cast<LONG>(kEventCapacity));

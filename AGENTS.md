@@ -131,6 +131,11 @@ Covered early DLL and TLS calls terminate the owned process before factory execu
 This stop skips ordinary cleanup and DLL detach. It is not stock integration or graceful game recovery.
 Joined worker calls, retained callbacks, recreation, and removal refusal are covered within a single-caller contract.
 The earlier dependency remains uncovered. Actual Windows interception and stock startup remain unvalidated.
+The narrow worker-start extension passed seven focused native groups across thirteen child scenarios and fresh review.
+It matches both the fixed owned generic entry and full context value, while preserving real suspended creation, ID, handle, priority, and resume.
+It constructs the memory runtime on ordinary worker entry before original owned setup and dispatch. Unmatched threads retain their behavior.
+The target joins before its fixture entry marker. That proves marker independence, not actual EXE-entry or stock chronology.
+Cold unmatched factory calls still stop. Joined callback and interface cleanup precedes runtime destruction and hook removal.
 The next quiet-start step must recover stock first-call timing and cover every output route before a game launch.
 The bounded stock coverage audit verifies known WASAPI and DirectSound routes but leaves earliest call order unresolved.
 Its TLS callback and ordinary entrypoint transfer into indirect flow. Static import absence does not exclude other output routes.

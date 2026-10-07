@@ -22,6 +22,22 @@ Use the reviewed activation adapters and existing memory providers. Never call p
    Repository-root, child, and junction-alias outputs must fail before compiler discovery or process creation.
    Confirm DirectSound-shaped imports use ordinal 11 and match the named alias at runtime.
 
+Owned worker-start extension failures, written before the gate implementation:
+10. Match both the fixed owned generic entry and context 14. Either mismatch must preserve original thread behavior.
+    Unmatched threads must not construct the activation runtime or change their parameter, exit result, or native setup.
+11. Preserve null attributes, stack size zero, CREATE_SUSPENDED, the real handle and returned thread ID.
+    Record the caller's priority 15 and ResumeThread result. No worker setup may occur before resume.
+12. Create the owned startup thread during imported-DLL initialization without waits or runtime construction there.
+    The ordinary thread-start gate must construct the runtime before original TLS-like setup and factory dispatch.
+    Do not require the target's entry-readiness milestone. Join the single worker before recording that milestone or teardown.
+13. A denied worker-readiness request must stop before runtime construction, original setup, provider calls, or raw publication.
+14. A cold factory from an unmatched context must still stop. Test each known output family.
+    The thread gate must not turn context 14 alone into a universal thread identity or warm arbitrary threads.
+15. Matched worker dispatch must preserve original context and native setup, callbacks, recreation, and first silent output.
+    Retained wrappers must reject removal, continue silent output, and release cleanly after the worker joins.
+16. Existing entry initialization and early DLL/TLS stop cases must retain their bounded contract.
+    The earlier dependency remains uncovered. Owned readiness order does not establish actual stock chronology or global coverage.
+
 The launcher accepts only fixed fixture identities and scenarios. Hash and output guards precede process creation.
 The build resolves directory junctions before dependency work, compiler discovery, or artifact creation.
 Retain source/dependency hashes, before/after binary hashes, commands, child exits, and bounded JSON event traces privately.

@@ -1,6 +1,7 @@
 param([Parameter(Mandatory)][string]$OutputDirectory,
       [Parameter(Mandatory)][string]$DetoursRoot,
-      [Parameter(Mandatory)][string]$Python)
+      [Parameter(Mandatory)][string]$Python,
+      [switch]$WorkerStarts)
 $ErrorActionPreference = 'Stop'
 # Resolve existing junctions before any compiler or output work.
 function PhysicalPath([string]$Path) {
@@ -22,5 +23,7 @@ if ($output.Equals($repo, [StringComparison]::OrdinalIgnoreCase) -or $output.Sta
 }
 if (Test-Path -LiteralPath $output) { throw 'Use a new evidence directory.' }
 & (Join-Path $repo 'source/launch/startup/Build-Startup.ps1') -DetoursRoot $DetoursRoot -OutputDirectory (Join-Path $output 'bin')
-& $Python (Join-Path $PSScriptRoot 'Verify-Startup.py') --bin (Join-Path $output 'bin') --output (Join-Path $output 'results')
+[string[]]$caseOptions = @()
+if ($WorkerStarts) { $caseOptions = @('--worker-starts') }
+& $Python -B (Join-Path $PSScriptRoot 'Verify-Startup.py') --bin (Join-Path $output 'bin') --output (Join-Path $output 'results') @caseOptions
 if ($LASTEXITCODE -ne 0) { throw 'The owned startup E2E failed. Read results/result.json.' }

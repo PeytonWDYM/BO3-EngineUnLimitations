@@ -5,6 +5,16 @@ static ComFactory comFactory;
 static SoundFactory soundFactory;
 extern "C" Shared* StartupState() { return state; }
 extern "C" void SetMemoryFactories(ComFactory com, SoundFactory sound) { comFactory = com; soundFactory = sound; }
+extern "C" __declspec(noinline) HANDLE WINAPI OwnedCreateThread(LPSECURITY_ATTRIBUTES attributes, SIZE_T stack,
+    LPTHREAD_START_ROUTINE entry, LPVOID parameter, DWORD flags, LPDWORD id) {
+    state->attributesPresent = attributes != nullptr;
+    state->stackSize = stack;
+    state->creationFlags = flags;
+    state->nativeEntry = reinterpret_cast<std::uintptr_t>(entry);
+    state->nativeParameter = reinterpret_cast<std::uintptr_t>(parameter);
+    StartupEvent(Stage::ThreadCreate, Api::None, 0, static_cast<LONG>(flags), nullptr);
+    return CreateThread(attributes, stack, entry, parameter, flags, id);
+}
 extern "C" void StartupEvent(Stage stage, Api api, DWORD generation, LONG value, const GUID* iid) {
     const LONG index = InterlockedIncrement(&state->count) - 1;
     if (index >= 0 && index < kEventCapacity) {

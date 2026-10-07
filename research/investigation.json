@@ -48,7 +48,7 @@
     "compatibility": "Current stock runtime uses 10-bit network entity IDs. Expanding normal IDs past 1023 conflicts with unpatched clients.",
     "loader": "Native cooperative-fixture foundation only. Game safe point and engine patch remain unimplemented.",
     "preentryLoader": "Separate owned dummy-factory fixture passed eight native cases and fresh review. Readiness precedes its imported consumer, TLS, and entrypoint. Earlier dependency calls remain an explicit coverage failure. Helper residency continues until process exit. No stock integration is validated.",
-    "quietStartupComposition": "The composed pre-entry and activation fixture passed nine native groups across thirteen child scenarios and fresh review. Hook readiness precedes covered DLL/TLS calls; runtime construction occurs at owned normal entry. Early calls stop before construction or raw publication. Memory output, callbacks, recreation, and reference-blocked removal are verified within its single-caller phase contract. Earlier dependencies, Windows factory interception, and stock timing remain unvalidated."
+    "quietStartupComposition": "The original composition passed nine native groups and fresh review. Its worker extension passed seven focused groups across thirteen child scenarios and fresh review. Exact owned entry/context matching preserves real suspended creation, ID, handle, priority, resume, and original setup. Worker initialization precedes dispatch without depending on the fixture entry marker. Cold calls stop before raw publication; joined cleanup precedes removal. These are memory-only single-caller contracts. Earlier dependencies, Windows factory interception, actual EXE chronology, and stock timing remain unvalidated."
   },
   "labStatus": {
     "client": "Latest stock executable. Normal installation unchanged.",
@@ -98,7 +98,7 @@
   ],
   "nextSteps": [
     "Recover stock first-factory timing and remaining output coverage. The reviewed owned composition is not a Windows loader-lock detector or stock launch proof.",
-    "Evaluate the verified Sound Mix entry/context match in the existing owned composition. Initialize before original thread dispatch without waiting for EXE entry; preserve suspended creation, ID, handle, priority, resume, and native setup.",
+    "Select the smallest fixed-lab Windows factory interception and stock first-call measurement from the reviewed worker gate. Control earlier dependency and independent DirectSound output before permitting BO3 startup; do not repeat the owned gate as stock evidence.",
     "Validate complete quiet lab startup without changing system audio or the normal profile.",
     "Verify the selected BetaLite package and bootstrap identity during mod loading.",
     "Capture the stock client with AAE on Origins.",

@@ -1,4 +1,5 @@
 #include "RuntimeOwner.h"
+#include "ThreadGate.h"
 #include <detours.h>
 
 ComFactory OriginalCom = OwnedCoCreateInstance;
@@ -40,6 +41,9 @@ bool ChangeHooks(bool attach) {
     if (result == NO_ERROR) result = attach
         ? DetourAttach(reinterpret_cast<PVOID*>(&OriginalSound), InterceptSound)
         : DetourDetach(reinterpret_cast<PVOID*>(&OriginalSound), InterceptSound);
+    if (result == NO_ERROR) result = attach
+        ? DetourAttach(reinterpret_cast<PVOID*>(&OriginalThread), InterceptOwnedThread)
+        : DetourDetach(reinterpret_cast<PVOID*>(&OriginalThread), InterceptOwnedThread);
     if (result != NO_ERROR) { DetourTransactionAbort(); return false; }
     return DetourTransactionCommit() == NO_ERROR;
 }
