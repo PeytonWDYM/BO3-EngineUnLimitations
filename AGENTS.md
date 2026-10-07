@@ -67,6 +67,13 @@ Do not identify all flagged entities as cosmetic temporary events or treat that 
 The stock packet writer and parser use 10-bit entity IDs, with 1023 as the terminator.
 Do not expand normal entities into the fake range. That change would conflict with unpatched stock clients.
 The verified missile type is 4. A numeric event type alone does not identify a War Machine effect.
+Native entity deletion queues cleanup of entity-owned script notification waiters and suspended stacks.
+Normal VM work drains that queue. A missing grenade_dud endon alone does not establish a leak.
+Some nested wait stacks can retain deferred work. Verify the same entity generation and advancing VM time before claiming failed cleanup.
+The stock script-variable pools have 129,999 usable server slots and 64,999 usable client slots.
+Threads share these pools. Function call depth does not count all suspended threads.
+Private offline menu inspection verifies pool reuse chains and headroom. Live VM measurements remain unimplemented.
+Capture the first script error and saved engine error alongside resource usage. Old or empty error buffers do not establish a cause.
 These findings do not establish the cause of Peyton's reported failure. No failing Zombies match has been captured yet.
 Read research/engine-journal.txt for the current evidence, tool checks, and lab status.
 
@@ -76,6 +83,9 @@ The BetaLite manifest matches Steam's latest record, dated October 2. Its separa
 An older downgrade guide appeared during a lab startup exit. It does not establish that a downgrade is required.
 Verify the actual selected beta package and bootstrap identity. AAE can rewrite fs_game after mod selection.
 CoreAudio channel seeding failed the eight-channel Realtek lab case. Do not use its stereo fixture passes as proof of a quiet game launch.
+The captured no-mod startup filter rejects the requested +set logo setting.
+The inspected loose-file +exec route also uses restricted dispatch and does not admit that setting.
+Do not bypass native command rules or treat guessed launch switches as proof of silence.
 
 ## Validation and handoff
 

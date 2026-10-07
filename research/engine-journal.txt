@@ -75,7 +75,10 @@ Compiled-script opcode review confirms a 20-second explosion-notification timeou
 The timeout does not delete the grenade or bound every watcher.
 A dud cancels the two coordinator completion producers. Native deletion queues later teardown of entity-owned script notifications.
 The teardown traverses suspended thread data before clearing variables and releasing references.
-Cancellation of every waiter class remains unverified. A missing endon alone does not establish a leaked waiter.
+Native review verifies generic notify-table traversal, waiter unlinking, stack unwinding, and reference release.
+Normal VM entry and time advance drain the deferred entity queue.
+Some nested wait/endon stacks can retain deferred work. Do not claim every buffer frees immediately.
+Same-generation grenade completion remains unobserved. A missing endon alone does not establish a leaked waiter.
 Two explosion-result fields are shared level fields. Overlapping grenades can overwrite them.
 That is a notification-correctness candidate. Live reachability and its relation to the reported failure remain unconfirmed.
 Do not multiply watcher counts by the native split count without verifying which children emit the player fire notification.
@@ -132,7 +135,10 @@ Removing the startup movie is also unverified. Its failure callback runs after a
 Native analysis does not establish that this movie failure prevents the separately banked startup sound.
 The actual stock logo control is ui_playLogoMovie. A false value skips that logo's enqueue operation.
 Its name matches the verified current-build hash algorithm and the native registration hash.
-Command-line acceptance and startup ordering remain unverified. Do not describe it as a proven quiet-launch switch yet.
+The captured no-mod +set filter rejects the requested logo setting before reading its name.
+The inspected loose-file exec route uses restricted dispatch. It does not admit set or the logo Dvar.
+Native mod initialization consumes fs_game, but an admitted early producer and exact startup order remain unverified.
+These routes do not establish quiet startup. No native command rule was changed or disabled.
 Peyton approved the Windows Security prompt himself.
 The installed beta is AAE BetaLite build 774, Workshop item 2739657648.
 Both the normal mod and this beta exited with code zero on the newer executable.
@@ -170,6 +176,52 @@ Capture before firing, during repeated volleys, after recovery, and immediately 
 Compare entity types, cleanup clocks, high-water growth, and reuse-list recovery.
 Preserve the exact server error when available. Other script or network failures remain possible.
 No engine patch has been applied. The reported root cause remains unconfirmed.
+
+2026-10-07: saved script-variable and error evidence
+
+Current stock initialization allocates 130,000 server script-variable slots and 65,000 client slots.
+Each slot uses 64 bytes. Slot zero anchors the reuse list and is not normally allocated.
+The usable capacities are 129,999 server slots and 64,999 client slots.
+Thread objects use the same allocation head as other script variables.
+An empty head raises "exceeded maximum number of child %s script variables" with the server or client name.
+The VM stores its first error-message pointer and marks its error state.
+The embedded function-call depth limit is a separate check. It does not count all suspended script threads.
+
+Private offline inspection verifies both complete reuse chains in the existing menu snapshot.
+The server has 107,191 reusable slots and 22,808 allocated slots.
+The client has 26,496 reusable slots and 38,503 allocated slots.
+Both chains are in range, contain no duplicate indices, and match all slots with the native free type.
+Both deferred entity heads and first-error pointers are zero. Both current function depths are zero.
+These are menu measurements. They do not describe a late Zombies match.
+No live VM sampler or grenade owner/generation decoder is implemented.
+
+A separate native queue holds 100 client notification jobs per local client.
+When it is full, the allocator warns and drops that notification. It does not raise the script-variable error.
+Normal processing returns completed jobs to the free list. The reviewed native server entity-notify wrappers bypass this queue.
+The menu capture has all 100 jobs free in its initialized queue.
+A second zeroed queue is consistent with an uninitialized local client. It does not show exhaustion.
+The separate "Too many threads" assertion belongs to Havok memory thread registration, not the GSC thread population.
+Neither path has been observed during the reported failure.
+Private evidence/agent-live-sampler/notify-jobs-review.txt records these classifications and repeatable queue inspection.
+
+The engine error handler retains formatted text in a 4,096-byte buffer with a separate stored error type and processing flag.
+The stored type can be normalized or retained from an older path. Message, type, and flag are not an atomic record.
+Bounded reads from the startup and menu captures find empty, terminated buffers and zero type/processing fields.
+Capture these fields immediately at the failure. A later buffer can be empty or contain an older error.
+Do not infer the cause from a stale buffer or treat an empty buffer as proof of server health.
+
+The startup recorder has no process.json because its identity collection failed.
+Its existing independent launch record matches the dump PID, start time, and module path.
+The launch record's executable hash matches the exact-build profile. The dump does not expose that file hash.
+The separate export manifest matches the captured PE/module tuple and all 1,630 range hashes.
+The private error inspector reuses that explicit alternate verifier. It does not synthesize a recorder identity file.
+The menu capture uses the existing strict process.json verifier.
+
+Private evidence/agent-live-sampler/native-vm-teardown.txt records the native teardown and allocator review.
+Private evidence/agent-live-sampler/native-vm-teardown/offline-vm-report.json records repeatable menu counts and code hashes.
+Private evidence/native-error-review/saved-errors.json records the bounded saved error reads and capture provenance.
+Private evidence/agent-engine-review/startup-filter-review.txt and alternate-startup-route-review.txt record rejected startup routes.
+Raw assembly, addresses, build profiles, extracted scripts, and dumps remain private.
 
 Final deliverable and checkpoints:
 

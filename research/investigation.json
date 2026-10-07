@@ -39,6 +39,9 @@
     "liveEntities": "Separate read-only sampler passed 22 native E2E checks. Game sampling remains unvalidated.",
     "consistency": "Repeated equal reads reject observed changes. They do not make an atomic game snapshot.",
     "nativeAnalysis": "Capture, Ghidra import, unwind boundaries, cross-references, decompilation, and identity/output guards passed nine E2E checks.",
+    "offlineScriptVariables": "Private exact-build menu inspection verified both reuse chains. Usable capacities are 129999 server slots and 64999 client slots. Live VM sampling is unimplemented.",
+    "scriptCleanup": "Native entity deletion queues notify and suspended-stack cleanup. Normal VM work drains the queue. Same-generation grenade completion has not been observed.",
+    "savedErrors": "Private bounded inspection found empty saved engine error buffers in the startup and menu captures. Neither is a failing Zombies capture.",
     "compatibility": "Current stock runtime uses 10-bit network entity IDs. Expanding normal IDs past 1023 conflicts with unpatched clients.",
     "loader": "Native cooperative-fixture foundation only. Game safe point and engine patch remain unimplemented."
   },
@@ -48,7 +51,7 @@
     "newEvidence": "The author's September 30 announcement confirms latest-game beta support. Its beta channel links both full Beta 2283794212 and BetaLite 2739657648.",
     "betaRefresh": "Steam records BetaLite's October 2 manifest as current. All 71 files in the refreshed private lab copy match the installed source hashes. The source is unchanged.",
     "nextCheck": "The installed beta gate matches the latest stock build. Verify the selected package and bootstrap identity. AAE can rewrite fs_game.",
-    "quietStartup": "Master zero and session mute alone did not keep startup silent. Channel seeding also failed the eight-channel Realtek case."
+    "quietStartup": "Master zero and session mute alone did not keep startup silent. Channel seeding failed the eight-channel Realtek case. Captured no-mod +set handling rejects the logo setting. The inspected loose-file +exec route also does not admit it."
   },
   "verifiedReferences": [
     {
@@ -82,12 +85,13 @@
     }
   ],
   "nextSteps": [
-    "Verify the current beta package against the author's latest-version announcement.",
     "Verify a quiet lab launch without changing system audio or the normal profile.",
+    "Verify the selected BetaLite package and bootstrap identity during mod loading.",
     "Capture the stock client with AAE on Origins.",
     "Record the actual player count and host role.",
     "Compare an idle baseline, controlled volleys, and recovery intervals.",
     "Mark Connection Interrupted immediately and preserve the error text.",
+    "Read the first script error, saved engine error, entity pool, and script-variable pools from the failure snapshot.",
     "Inspect available AAE weapon scripts and assets after locating the active mod files.",
     "Select targeted instrumentation from the captured errors and verified script paths.",
     "Verify a cause before changing gameplay or engine limits."
