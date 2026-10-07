@@ -45,7 +45,8 @@
     "entityLifetime": "The verified native reuse version repeats after 63 complete free/spawn cycles. Equal samples do not prove one lifetime. Strict correlation needs allocation/free events, world epochs, and loss detection. That recorder remains unimplemented.",
     "savedErrors": "Private bounded inspection found empty saved engine error buffers in the startup and menu captures. Neither is a failing Zombies capture.",
     "compatibility": "Current stock runtime uses 10-bit network entity IDs. Expanding normal IDs past 1023 conflicts with unpatched clients.",
-    "loader": "Native cooperative-fixture foundation only. Game safe point and engine patch remain unimplemented."
+    "loader": "Native cooperative-fixture foundation only. Game safe point and engine patch remain unimplemented.",
+    "preentryLoader": "Separate owned dummy-factory fixture passed eight native cases and fresh review. Readiness precedes its imported consumer, TLS, and entrypoint. Earlier dependency calls remain an explicit coverage failure. Helper residency continues until process exit. No stock or audio integration is validated."
   },
   "labStatus": {
     "client": "Latest stock executable. Normal installation unchanged.",

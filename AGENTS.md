@@ -112,6 +112,9 @@ They do not implement game activation or prove complete quiet startup. No game a
 The next owned activation fixture must preserve session-control requests, callbacks, and audio-client recreation.
 Stock buffer creation returns the base DirectSound interface. Query Buffer8 before using the existing quiet factory.
 One reviewed stock failure branch releases the buffer without a null check. Do not assume rejected activation allows safe stock recovery.
+The separate pre-entry loader fixture passed eight native cases and fresh review using a dummy factory.
+It records readiness before its imported consumer, TLS, and entrypoint. An earlier dependency call remains an explicit coverage failure.
+It retains its helper until process exit through the loader dependency. It does not prove stock readiness or integrate the audio adapters.
 
 ## Validation and handoff
 

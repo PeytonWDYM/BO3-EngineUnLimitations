@@ -364,6 +364,23 @@ Preparation corrected a UTF-8 BOM read and an unnecessary reserved-zero subtract
 This is saved-data decoder evidence. It does not validate live sampling, lifetime correlation, or a failing match.
 Private evidence/vm-offline-decoder-review/result.json records the comparison and limits.
 
+2026-10-07: reviewed owned pre-entry checkpoint
+
+A separate fixed-target loader fixture now records interception readiness before imported-consumer initialization, TLS, and entrypoint.
+It uses one dummy factory and shared memory. It opens no COM or audio device and launches no game.
+Eight native cases passed. The baseline is unprotected and a deliberately earlier dependency call remains a reported coverage failure.
+Denied readiness stops the owned startup before the consumer probes.
+Live owned references retain the helper and prevent removal. Clean removal restores the original dummy output.
+The inserted loader dependency retains the helper until process exit. Import restoration does not remove loader bookkeeping.
+The launcher accepts fixed scenarios only, locks hash-verified artifacts through exit, and rejects replacement before creating a process.
+Output guards reject repository paths and junctions before compilation or output creation.
+The build pins official Microsoft Detours v4.0.1, verifies its source, and retains its license and artifacts privately.
+A fresh reviewer verified all thirteen source hashes, five unchanged binary hashes, traces, ownership, and lifecycle scope.
+Creation-failure and timeout cleanup were inspected, rather than newly fault-injected.
+This establishes owned-fixture timing for one caller thread. It does not integrate the quiet activation adapters or prove stock readiness.
+Private evidence/agent-patch-loader/preentry/final-green-2/results/result.json records the native cases.
+Private evidence/preentry-fresh-review/Review.txt records the fresh review.
+
 Final deliverable and checkpoints:
 
 Peyton requests continued commits and pushes, a final real pull request, a fresh review, and a shareable patch-loader executable.
