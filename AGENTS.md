@@ -52,9 +52,12 @@ The initial reproduction uses stock BO3, AAE, Origins, and one or two players.
 
 Peyton will provide the next reproduction through his normal game. The external read-only recorder is armed and waiting for his next launch.
 Prioritize that failing-match capture over automated lab startup work. Do not launch or control another game during his session.
-The previous game process exited at 15:47 UTC. Its recorder and experimental entity sampler stopped with it.
-The sampler retained 1,070 provisional rows and 110 rejected reads. No actual failure or volley markers were recorded.
-A new recorder and a separately bound waiting entity sampler were armed at 17:24 UTC.
+The earlier game process exited at 15:47 UTC. Its sampler retained 1,070 provisional rows and 110 rejected reads.
+A second recorder attached another normal game at 21:34 UTC. That process exited at 21:41 UTC without a failure snapshot.
+The entity sampler restored to that session retained four provisional rows before exit. The available Windows event list is empty.
+The reason for the second exit remains unknown. Peyton has been asked whether he closed the game or saw a failure first.
+No actual failure or volley markers were recorded in either session.
+A new recorder and a separately bound waiting entity sampler were armed at 21:43 UTC.
 The sampler uses one read pair per second, one attempt, the recorded process creation time, and a private frozen profile copy.
 This is provisional history, not atomic sampling or validated game measurements. Cross-check a saved failure snapshot.
 The VM profile remains disabled.

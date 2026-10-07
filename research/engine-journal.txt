@@ -701,6 +701,25 @@ Private evidence/manual-session-20261007T1723Z/ retains its launcher identities,
 No game was launched or controlled. No VM profile, audio prototype, game file or normal setting changed.
 The next required evidence remains a manually marked, live Connection Interrupted failure snapshot.
 
+2026-10-07 21:43 UTC: second manual process ended without a failure snapshot
+
+The 17:24 UTC recorder and waiting entity sampler were no longer running. Their stop reason was not recorded.
+The active recorder started at 21:34 UTC and attached another normal stock BO3 process created at 21:26 UTC.
+Its executable identity matched the current stock build. Its native AAE module paths again identify Workshop item 2739657648.
+The inspected native mod disk hashes match the refreshed BetaLite lab copy. Mapped-byte equality and active map identity remain unverified.
+No entity reader was running. The existing read-only CLI was restored with the recorded game creation time and a frozen private profile.
+It retained four provisional initialized rows before the game exited at 21:41:51 UTC. The sampler then stopped on process_exit.
+Read pairs took 5.24 to 6.15 milliseconds. The accepted rows reached normalActive 559 and highWater 746 without a decoded allocator failure condition.
+Four non-atomic rows cannot identify the cause or rule out an unobserved failure. No actual map, volley history or failure snapshot was recorded.
+The recorder also stopped on that process exit. Its available Windows event list is empty, which does not establish why the game exited.
+Peyton has been asked whether he closed the game normally, saw Connection Interrupted first, or the application closed by itself.
+Private evidence/manual-session-20261007T2140Z/ retains the exact identities, initial rows and closed-session check.
+Its closure-check.json SHA-256 is 64066b961c95971bac58bc4ab475ec457dd2043153e1e152290a3e1268935ce3.
+The existing recorder and bound waiting entity sampler were rearmed at 21:43 UTC for the next manual launch.
+Private evidence/manual-session-20261007T2143Z/ retains their launcher identities, frozen inputs and waiting state.
+No game was launched, controlled, patched or reconfigured. No VM profile or audio prototype was enabled.
+The next required evidence remains the actual live failure snapshot and Peyton's clarification of the second process exit.
+
 Final deliverable and checkpoints:
 
 Peyton requests continued commits and pushes, a final real pull request, a fresh review, and a shareable patch-loader executable.
