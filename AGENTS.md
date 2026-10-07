@@ -119,6 +119,9 @@ The separate pre-entry loader fixture passed eight native cases and fresh review
 It records readiness before its imported consumer, TLS, and entrypoint. An earlier dependency call remains an explicit coverage failure.
 It retains its helper until process exit through the loader dependency. It does not prove stock readiness or integrate the audio adapters.
 The next quiet-start step must compose the loader and adapters, define stock-safe stopping, and verify first output coverage.
+The bounded stock coverage audit verifies known WASAPI and DirectSound routes but leaves earliest call order unresolved.
+Its TLS callback and ordinary entrypoint transfer into indirect flow. Static import absence does not exclude other output routes.
+Keep hook readiness distinct from activation-runtime readiness. Do not initialize COM or audio under the loader lock.
 Use PowerShell 7 for native harnesses that resolve directory junctions through the .NET file APIs.
 
 ## Validation and handoff

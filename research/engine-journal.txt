@@ -401,6 +401,20 @@ Stock-safe stopping, output coverage, driver compatibility, and complete quiet s
 Private evidence/agent-silent-launch/activation/final-report.json records the native result and hashes.
 Private evidence/activation-fresh-review/review.txt records the final fresh review and resolved guard finding.
 
+2026-10-07: quiet startup coverage boundary
+
+The bounded stock audit confirms the known WASAPI worker/retry route and the resolved DirectSound root import.
+The movie path remains a sound-queue producer. Its exclusive route to mixed samples is not fully recovered.
+The captured TLS callback and ordinary PE entrypoint transfer into indirect flow. Their earliest reachable output remains unresolved.
+The known audio globals are null in one fatal-startup capture and live in the menu capture. These snapshots do not establish first-call chronology.
+No static waveOut, XAudio, or PlaySound import was found. That does not exclude dynamic resolution or calls in other modules.
+The next owned composition must record separate hook-ready and activation-runtime-ready milestones.
+Early dependency calls remain a coverage failure. Later DLL/TLS activation must stop safely if its runtime is not ready.
+Successful post-loader calls must preserve callback behavior, protected first output, recreation, and non-audio COM forwarding.
+Do not initialize COM or audio or wait for another initializer under the loader lock.
+Stock first-call stacks, driver compatibility, and complete quiet startup remain unvalidated. No game launch occurred during this audit.
+Private evidence/agent-engine-review/startup-output-coverage/coverage-review.txt records the coverage matrix and limits.
+
 Final deliverable and checkpoints:
 
 Peyton requests continued commits and pushes, a final real pull request, a fresh review, and a shareable patch-loader executable.
