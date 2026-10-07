@@ -145,6 +145,13 @@ Windows defers that new thread's entry until DLL initialization completes. This 
 A future initializer must match both the verified generic entry and context, preserve native setup, and run before worker dispatch.
 Do not wait for an EXE-entry milestone from that gate. Independent DirectSound and earlier output timing remain unresolved.
 Keep hook readiness distinct from activation-runtime readiness. Do not initialize COM or audio under the loader lock.
+Pinned Detours inserts the helper before original application imports. Its own dependencies and TLS/CRT initialization still precede user DllMain.
+The existing fixture's earlier provider is a helper dependency. Do not generalize that result to unrelated later BO3 imports.
+The real SDK helper must avoid target, consumer, game, or mod dependencies and record actual resolved API host modules.
+Inspect its final imports and initialization code. A Windows dependency is platform scope, not proof of an early output producer.
+The refreshed beta PE inventory adds no proven output sink. Dynamic resolution remains a scoped gap.
+The next SDK probe must keep consumer payloads silent independently of hooks, including a full DirectSound ring clear before Play.
+Keep the physical SDK run held until source, guards, exact hashes, and the silence sequence have been inspected.
 The assessed per-application routing alternative provides neither a verified silent endpoint nor a first-output guarantee.
 Virtual endpoint names do not establish audio-discard behavior. Do not change system defaults or normal application routing for the lab.
 Use PowerShell 7 for native harnesses that resolve directory junctions through the .NET file APIs.

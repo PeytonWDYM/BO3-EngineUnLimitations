@@ -515,6 +515,25 @@ No BO3 launch, physical stream, setting change, or engine patch occurred in this
 Private evidence/agent-patch-loader/startup-worker/green/results/result.json records the native result.
 Private evidence/startup-worker-fresh-review/review.txt and evidence-verification.json bind the final checkpoint.
 
+2026-10-07: bounded real-helper first-import boundary
+
+Pinned Detours source prepends the helper descriptor before original application imports in suspended process memory.
+It resumes only when the caller did not request suspension. The fixed x64 contract rejects the cross-architecture helper fallback.
+Restore repairs mapped PE metadata. It does not unload the helper or undo initialization already executed.
+The old startup helper imports its owned provider, so that provider genuinely initializes earlier.
+This does not establish that unrelated later BO3 imports initialize before a Windows-only helper.
+The remaining early scope includes helper dependencies, TLS/CRT/static initialization, and platform loader activity.
+Final binary inventory matters: the existing helper has CRT startup and a TLS callback despite its POD source globals.
+Actual Windows dependencies include COM, MME, resampling, user32, and API sets. Capability and delay imports do not establish output.
+The refreshed BetaLite inventory contains three PE files. No additional native output sink was proven by this bounded review.
+Its XInput headset-device-GUID export obtains identifiers; it does not establish playback. Dynamic resolution remains unclassified.
+The next owned SDK measurement must retain hook readiness, actual API host addresses, named/ordinal DirectSound identity, and cold-call stops.
+Every consumer stays silent independently of hooks. DirectSound must clear its entire stopped ring successfully before first Play.
+Actual SDK recursion must preserve original trampolines and fail closed without a broad raw-object bypass.
+This is a scoped loader and file audit. No game, mapped mod DLL, device, hook, build, or normal installation change occurred.
+Private evidence/agent-engine-review/first-import-boundary/first-import-review.txt and its inventories retain the evidence.
+Primary insertion reference: https://github.com/microsoft/Detours/wiki/DetourCreateProcessWithDlls
+
 Final deliverable and checkpoints:
 
 Peyton requests continued commits and pushes, a final real pull request, a fresh review, and a shareable patch-loader executable.
