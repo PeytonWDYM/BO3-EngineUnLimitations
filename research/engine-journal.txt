@@ -312,6 +312,22 @@ This does not establish a protection mechanism or a disk patch location. No game
 Private evidence/mod-weapon-review/audio-disk-comparison.json records the bounded comparison and range hashes.
 The normal and lab stock executable hashes still match the recorded current build.
 
+2026-10-07: next quiet activation evidence
+
+The bounded native review identifies MMDeviceEnumerator creation and DirectSoundCreate8 as the two known root factory boundaries.
+Every new render service and secondary buffer needs its quiet wrapper before the caller receives it.
+The stock audio client also requests session control and registers notifications. Preserve those calls and callback ownership.
+Native retry recreates the client. A one-time wrapper replacement does not cover that path.
+DirectSound CreateSoundBuffer returns the base buffer interface. Query Buffer8 before using the existing quiet factory.
+Duplicate buffers share storage and remain outside the current wrapper contract.
+One reviewed stock creation failure branch releases its output without a null check.
+Its zero-initialized output and helper forwarding make a proposed null-output adapter failure unsafe on that path.
+No stock driver failure or crash was observed. Do not claim graceful recovery or return a raw audible object after unsupported activation.
+The next owned E2E must cover factory publication order, identities, session callbacks, recreation, and controlled unsupported activation.
+Use memory providers first. A separate loader fixture must prove setup before any TLS, imported-DLL, or entrypoint audio call.
+These plans do not establish stock loader compatibility or complete quiet startup.
+Private evidence/agent-engine-review/audio-activation-boundary/activation-review.txt records the method inventory, failure scope, and fixture contract.
+
 Final deliverable and checkpoints:
 
 Peyton requests continued commits and pushes, a final real pull request, a fresh review, and a shareable patch-loader executable.

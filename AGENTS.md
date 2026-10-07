@@ -103,6 +103,9 @@ The native baseline recorded twelve expected failures before implementation. All
 DirectSound requires raw aliases to be surrendered and supported stopped secondary buffers.
 An internal clear Unlock failure blocks playback and requires buffer recreation under the current contract.
 They do not implement game activation or prove complete quiet startup. No game audio patch is implemented.
+The next owned activation fixture must preserve session-control requests, callbacks, and audio-client recreation.
+Stock buffer creation returns the base DirectSound interface. Query Buffer8 before using the existing quiet factory.
+One reviewed stock failure branch releases the buffer without a null check. Do not assume rejected activation allows safe stock recovery.
 
 ## Validation and handoff
 
