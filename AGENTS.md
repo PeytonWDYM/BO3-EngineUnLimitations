@@ -124,6 +124,8 @@ The next quiet-start step must compose the loader and adapters, define stock-saf
 The bounded stock coverage audit verifies known WASAPI and DirectSound routes but leaves earliest call order unresolved.
 Its TLS callback and ordinary entrypoint transfer into indirect flow. Static import absence does not exclude other output routes.
 Keep hook readiness distinct from activation-runtime readiness. Do not initialize COM or audio under the loader lock.
+The assessed per-application routing alternative provides neither a verified silent endpoint nor a first-output guarantee.
+Virtual endpoint names do not establish audio-discard behavior. Do not change system defaults or normal application routing for the lab.
 Use PowerShell 7 for native harnesses that resolve directory junctions through the .NET file APIs.
 
 ## Validation and handoff

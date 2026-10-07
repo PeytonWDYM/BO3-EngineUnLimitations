@@ -426,6 +426,16 @@ Co-op save/migration transport and other consumers remain unresolved. A single l
 This is conditional compatibility research. No failing capture justifies a VM capacity change yet.
 Private evidence/agent-engine-review/vm-capacity-dependencies/capacity-review.txt records proven dependencies and remaining constraints.
 
+2026-10-07: read-only quiet routing alternative
+
+The installed render endpoint metadata identifies virtual candidates but no verified audio-discard endpoint.
+Names alone do not establish silence. No output device, routing, or volume setting changed during this assessment.
+The reviewed per-application routing implementation uses an internal Windows interface and repairs some mismatches after session creation.
+That does not establish first-output silence for stock BO3 or persisted-identity isolation from the normal same-name executable.
+NOPERSIST disables session volume and mute persistence. It does not itself disprove endpoint selection.
+The assessed shortcut therefore does not pass the current quiet-start gate. This is not a claim that all routing is impossible.
+Private evidence/quiet-routing-alternative/Assessment.md records primary sources, endpoint metadata, and remaining proof gaps.
+
 Final deliverable and checkpoints:
 
 Peyton requests continued commits and pushes, a final real pull request, a fresh review, and a shareable patch-loader executable.
