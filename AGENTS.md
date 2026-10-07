@@ -145,6 +145,11 @@ A single silent physical SDK run completed two WASAPI first packets and Starts, 
 The guard recorded E_PENDING and terminated before any DirectSound buffer clear or Play. Endpoint controls and defaults stayed unchanged.
 This forced stop does not verify callback release, CanUnload, or graceful cleanup. No owned process remained afterward.
 The next integration must address that exact original-provider request without a broad raw-object bypass.
+The bounded DSOUND audit proves that request enumerates render devices and default roles, reads names, and releases local interfaces.
+It uses the exact enumerator class and IID, CLSCTX_ALL, and null aggregation. Its reviewed function has no client activation.
+The existing public adapter cannot serve its enumeration, property-store, and non-console requests.
+Any contained forwarding must stay inside the actual saved OriginalSound call and verify the exact caller and live setup bytes.
+The historical trace records module metadata only. The current disk audit is not proof of the earlier mapped bytes.
 The rawPublications detector covers memory objects only. A physical zero does not establish no raw interface escape.
 The next quiet-start step must recover stock first-call timing and cover every output route before a game launch.
 The bounded stock coverage audit verifies known WASAPI and DirectSound routes but leaves earliest call order unresolved.

@@ -577,6 +577,23 @@ Private evidence/agent-patch-loader/sdk-intercept/accepted/results/result.json a
 Private evidence/sdk-interception-fresh-review/review.txt and evidence-verification.json record the independent review.
 Private evidence/sdk-interception-physical/20261007T133713Z-5d5641d3/run.json and trace.json retain the actual failed call.
 
+2026-10-07: bounded DirectSound internal-enumerator role
+
+The current Windows DSOUND file matches the physical trace's path and PE tuple. The trace did not capture its loaded bytes.
+The exact call setup proves null aggregation, CLSCTX_ALL, and the expected MMDeviceEnumerator class and interface.
+Its output local starts null, and the SDK caller checks the HRESULT before using it.
+The containing function enumerates active render endpoints, obtains all three default roles, and copies IDs and friendly names.
+Enumerator, collection, devices, and property stores remain local and are released. Callback records contain values and strings.
+No audio-client activation appears in this reviewed function. The full indirect initializer and callback chain remain unresolved.
+The public adapter rejects enumeration, property stores, and non-console roles. Wrapping this internal enumerator would conflict with the SDK role.
+The next owned extension may forward only this exact internal request through saved OriginalCom during the actual saved OriginalSound scope.
+It must verify the live call setup, exact pinned module and caller, arguments, depth, and thread. Active contained COM recursion remains rejected.
+Repeated identical calls do not imply a leak or an unsupported one-call constructor limit. Unrelated wrapped requests retain their ordinary rules.
+New memory rejection consumers precede implementation. They cannot substitute for the genuine positive Windows provider path.
+These static findings do not validate physical integration or a quiet game launch. Inspect the changed evidence before the next experiment.
+Private evidence/sdk-nested-audit/nested-review.txt, identity.json, and exact ranges retain the proof and its limits.
+Private evidence/agent-patch-loader/sdk-contained-plan/ records the reviewed design and failure contract.
+
 Final deliverable and checkpoints:
 
 Peyton requests continued commits and pushes, a final real pull request, a fresh review, and a shareable patch-loader executable.
