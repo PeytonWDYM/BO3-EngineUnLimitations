@@ -1,0 +1,35 @@
+# Build output and caches
+/build/
+/out/
+/dist/
+/bin/
+/obj/
+.cache/
+.vs/
+*.obj
+*.o
+*.exe
+*.dll
+*.lib
+*.a
+*.pdb
+*.ilk
+*.exp
+*.pch
+*.ipch
+*.idb
+
+# Logs and crash dumps
+*.log
+*.dmp
+*.mdmp
+
+# Local environment settings
+.env
+.env.*
+!.env.example
+
+# Operating system files
+.DS_Store
+Thumbs.db
+Desktop.ini
