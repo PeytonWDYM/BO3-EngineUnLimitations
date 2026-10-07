@@ -79,9 +79,31 @@ A different session GUID, exclusive-mode playback, or a channel reset can bypass
 New endpoints also require seeding and validation.
 External session callbacks and polling cannot provide a pre-render silence guarantee.
 
+Current stock backend evidence
+
+Stock directly initializes a shared-mode WASAPI render stream with EVENTCALLBACK and NOPERSIST.
+It uses the default render/eConsole endpoint, its mix format, a 25-millisecond buffer, and a null session GUID.
+NOPERSIST disables session volume and mute persistence across application restarts.
+This helper uses different stream flags. Its fixture does not reproduce the game's exact initialization behavior.
+That mismatch does not establish the cause of this helper's separate eight-channel persistence failure.
+An independent private fixture now reproduces the native flags on the current default stereo endpoint at the exact lab executable path.
+Its prior seed has master zero, mute enabled, and both channels zero.
+The native-flags restart begins with master one, mute disabled, and both channels one before any deliberate reset.
+Endpoint, session identifier, and complete format match. Its render event signals and all endpoint controls remain unchanged.
+The fixture submits only silent buffers and restores the verified stock executable in finally.
+This rejects prior session seeding for that native initialization. BO3 itself did not execute.
+The saved menu stream is stereo. It does not prove that future launches use stereo.
+Native retry can recreate the client. Initial silence does not cover later submitted audio.
+Stock also plays voice samples through a separate DirectSound buffer.
+Its reviewed volume clamp does not establish a mute. The VoiceChat startup gate and film audio routing remain unresolved.
+A DirectSound-only wrapper cannot cover the direct WASAPI path.
+WASAPI-only coverage also does not establish complete silence.
+No audio wrapper or game audio patch is implemented or verified.
+
 Sources
 
 https://learn.microsoft.com/en-us/windows/win32/api/audioclient/nn-audioclient-ichannelaudiovolume
 https://learn.microsoft.com/en-us/windows/win32/coreaudio/session-volume-controls
 https://learn.microsoft.com/en-us/windows/win32/coreaudio/audio-sessions
 https://learn.microsoft.com/en-us/windows/win32/api/audiopolicy/nf-audiopolicy-iaudiosessionnotification-onsessioncreated
+https://learn.microsoft.com/en-us/windows/win32/coreaudio/audclnt-streamflags-xxx-constants

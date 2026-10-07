@@ -64,6 +64,9 @@ The allocation includes separate reserved and fake ranges. Increasing one bound 
 One observed cleanup path checks a 300-millisecond clock delta before freeing flagged entities.
 The same flag also marks spent split missiles. Keep the flag, numeric type, and cleanup clock separate.
 Do not identify all flagged entities as cosmetic temporary events or treat that clock as projectile creation time.
+Initialization clears that clock. Event helpers and native free stamp it for different purposes.
+The splitter sets the flag without resetting the clock. A later collision event can refresh it.
+To claim parent retention, verify the same slot generation and continued per-entity frames, not only advancing server time.
 The stock packet writer and parser use 10-bit entity IDs, with 1023 as the terminator.
 Do not expand normal entities into the fake range. That change would conflict with unpatched stock clients.
 The verified missile type is 4. A numeric event type alone does not identify a War Machine effect.
@@ -86,6 +89,10 @@ CoreAudio channel seeding failed the eight-channel Realtek lab case. Do not use 
 The captured no-mod startup filter rejects the requested +set logo setting.
 The inspected loose-file +exec route also uses restricted dispatch and does not admit that setting.
 Do not bypass native command rules or treat guessed launch switches as proof of silence.
+Stock directly uses WASAPI with EVENTCALLBACK and NOPERSIST. The prior helper used different stream flags.
+An owned fixture with the exact native flags rejects prior zero seeding on the current default stereo endpoint before any deliberate volume reset.
+The saved stereo menu format does not establish the next launch's format. Native retry can recreate the audio client.
+DirectSound and video output coverage remain unresolved. No audio wrapper or game audio patch is implemented.
 
 ## Validation and handoff
 

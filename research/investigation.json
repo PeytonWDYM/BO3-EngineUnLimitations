@@ -51,7 +51,7 @@
     "newEvidence": "The author's September 30 announcement confirms latest-game beta support. Its beta channel links both full Beta 2283794212 and BetaLite 2739657648.",
     "betaRefresh": "Steam records BetaLite's October 2 manifest as current. All 71 files in the refreshed private lab copy match the installed source hashes. The source is unchanged.",
     "nextCheck": "The installed beta gate matches the latest stock build. Verify the selected package and bootstrap identity. AAE can rewrite fs_game.",
-    "quietStartup": "Master zero and session mute alone did not keep startup silent. Channel seeding failed the eight-channel Realtek case. Captured no-mod +set handling rejects the logo setting. The inspected loose-file +exec route also does not admit it."
+    "quietStartup": "Prior session seeding is rejected by an owned fixture using the exact native EVENTCALLBACK|NOPERSIST flags on the current default stereo endpoint. It initializes at full volume before any deliberate reset. Surround seeding and inspected launch setting routes also remain rejected. No game audio patch or complete quiet startup is validated."
   },
   "verifiedReferences": [
     {

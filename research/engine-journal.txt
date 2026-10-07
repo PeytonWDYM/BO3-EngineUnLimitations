@@ -70,6 +70,15 @@ It marks children so that they do not recursively split.
 It retains the parent during the child loop, then stops its velocity and marks it for cleanup.
 This establishes an allocation-pressure path. It does not establish the loaded War Machine split count or the reported failure cause.
 Loaded weapon settings and a marked firing capture still need verification.
+Entity initialization clears the cleanup clock. Event helpers stamp it, and native free stamps it for later slot reuse.
+The splitter sets the flag without resetting this clock. One verified collision path then adds an event on the same parent.
+That event refreshes the clock after the split. Other branches can skip that event.
+Normal entity frames include flagged parents and skip their missile simulation.
+With a fixed clock and continued frame servicing, the parent reaches death/free when the signed clock delta exceeds 300 milliseconds.
+This does not establish a lifetime from creation or from the flag write.
+Before claiming retention, verify the same slot generation, stable clock, flag, and continued per-entity frame processing.
+Advancing server or VM time alone does not prove that a particular entity received its normal frame.
+Private evidence/agent-live-sampler/cleanup-clock-review.txt records the pointer paths and twelve verified code-range hashes.
 AAE's scripts also create multiple watchers around grenade-launcher fire. Their creation does not prove they leak.
 Compiled-script opcode review confirms a 20-second explosion-notification timeout and a separate three-second dud deletion delay.
 The timeout does not delete the grenade or bound every watcher.
@@ -145,6 +154,34 @@ The captured no-mod +set filter rejects the requested logo setting before readin
 The inspected loose-file exec route uses restricted dispatch. It does not admit set or the logo Dvar.
 Native mod initialization consumes fs_game, but an admitted early producer and exact startup order remain unverified.
 These routes do not establish quiet startup. No native command rule was changed or disabled.
+The stock client directly creates a shared-mode WASAPI render stream on the default render/eConsole endpoint.
+It uses the endpoint mix format, a 25-millisecond buffer, a null session GUID, and EVENTCALLBACK with NOPERSIST.
+Microsoft defines NOPERSIST as disabling session volume and mute persistence across restarts.
+Reference: https://learn.microsoft.com/en-us/windows/win32/coreaudio/audclnt-streamflags-xxx-constants.
+The initial render buffer is silent. Later native rendering submits filled buffers without the silent flag.
+The saved menu stream has two channels at 48 kHz with float32 samples. This does not establish the current endpoint format.
+The existing helper used different stream flags. NOPERSIST does not explain that helper's separate surround failure by itself.
+An independent private fixture now uses the game's exact initialization flags on the current default render/eConsole endpoint.
+The endpoint is stereo at 48 kHz with float32 samples. Its identity, complete format, and session identifier match between seed and restart.
+The prior seed has master zero, mute enabled, and both channels zero.
+The restart begins with master one, mute disabled, and both channels one before any deliberate reset.
+The render event signals. All nine endpoint volume and mute controls remain unchanged.
+The fixture submits only silent buffers and restores the current stock executable with a verified hash.
+This rejects prior session seeding for the native initialization on that endpoint. It is not a BO3 launch.
+Private evidence/agent-silent-launch/native-flags-default/report.json records the single failed attempt and restoration evidence.
+Native retry can recreate the audio client. A quiet-start method must cover recreation and the first output buffer.
+The client also has a verified DirectSound buffer path for voice playback.
+It writes samples through Lock/Unlock, plays a looping buffer, and reads the winvoice_voice_level control.
+The reviewed attenuation clamp stops at -5000. Do not treat that setting as a proven mute.
+The VoiceChat configuration-to-output gate and its startup order remain unverified.
+The reviewed video COM object is an H264 decoder. Film audio routing remains unresolved.
+A DirectSound-only wrapper would miss the direct WASAPI path. No wrapper or game audio patch is implemented.
+Private evidence/agent-engine-review/windows-audio-backend-inventory.txt records the decoded COM calls and coverage boundaries.
+Private evidence/agent-engine-review/directsound-video-coverage.txt records the voice buffer and video decoder paths.
+The next distinct quiet-start step is an owned render-boundary fixture covering WASAPI and DirectSound.
+Define first-buffer, multichannel, interface-lifetime, recreation, timing, and teardown failures before implementation.
+Keep actual device output silent during fixture tests. A fixture pass would not establish complete game coverage.
+Do not repeat rejected session seeding or guessed startup switches.
 Peyton approved the Windows Security prompt himself.
 The installed beta is AAE BetaLite build 774, Workshop item 2739657648.
 Both the normal mod and this beta exited with code zero on the newer executable.

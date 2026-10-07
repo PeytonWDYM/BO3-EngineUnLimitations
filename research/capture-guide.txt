@@ -57,6 +57,8 @@ OS memory and thread counts alone cannot prove an entity leak.
 The beta's grenade scripts use a 20-second notification timeout and a separate three-second dud deletion delay.
 Those values do not bound all projectile lifetimes or establish a leak.
 Record advancing server time during recovery. A paused solo match does not test cleanup.
+For a suspected retained entity, compare the same slot generation, raw cleanup clock, flag, and per-entity frame guard.
+A later event can refresh the clock. Advancing server time alone does not prove that entity received its normal frame.
 Native deletion queues cleanup of entity-owned script notification waiters. Normal VM work drains this queue.
 To test failed cleanup, follow the same entity generation after delete and after the queue drains.
 The script-variable pools are separate from the entity pool. Threads share script-variable slots with other values.
