@@ -45,14 +45,10 @@ def require(success, operation: str) -> None:
         raise OSError(error, f"{operation} failed: {ctypes.FormatError(error).strip()}")
 
 
-class LiveProcess:
+class VerifiedProcess:
     def __init__(self, pid: int, profile: dict, expected_start_ticks: int | None = None):
         if ctypes.sizeof(ctypes.c_void_p) != 8:
             raise ValueError("Use 64-bit Python for the live sampler.")
-        layout = profile["layout"]
-        if not (0 < layout["stride"] <= 65536 and 0 < layout["capacity"] <= 65536
-                and layout["stride"] * layout["capacity"] <= 64 * 1024 * 1024):
-            raise ValueError("The pool size exceeds the sampler bounds.")
         self.handle = kernel.OpenProcess(ACCESS_MASK, False, pid)
         require(self.handle, "OpenProcess")
         self.pid = pid
@@ -96,9 +92,6 @@ class LiveProcess:
                 raise ValueError("The loaded module build differs from the profile.")
             if not self.alive():
                 raise ProcessLookupError("The process exited during identity verification.")
-            for name, code in GLOBAL_FORMATS.items():
-                if not 0 <= profile["globals"][name] <= self.module.size - struct.calcsize("<" + code):
-                    raise ValueError("A profile global is outside the selected module.")
         except BaseException:
             self.close()
             raise
@@ -138,16 +131,6 @@ class LiveProcess:
     def number(self, address: int, format_code: str) -> int:
         return struct.unpack("<" + format_code, self.read(address, struct.calcsize("<" + format_code)))[0]
 
-    def metadata(self, profile: dict) -> dict:
-        return {name: self.number(self.module.baseaddress + profile["globals"][name], code)
-                for name, code in GLOBAL_FORMATS.items()}
-
-    def pool_ranges(self, profile: dict) -> list[tuple[int, int]]:
-        metadata = self.metadata(profile)
-        return [(self.module.baseaddress + profile["globals"][name], struct.calcsize("<" + code))
-                for name, code in GLOBAL_FORMATS.items()] + [
-                    (metadata["pool"], profile["layout"]["stride"] * profile["layout"]["capacity"])]
-
     def alive(self) -> bool:
         code = wintypes.DWORD()
         require(kernel.GetExitCodeProcess(self.handle, ctypes.byref(code)), "GetExitCodeProcess")
@@ -161,3 +144,29 @@ class LiveProcess:
 
     def __exit__(self, *_):
         self.close()
+
+
+class LiveProcess(VerifiedProcess):
+    def __init__(self, pid: int, profile: dict, expected_start_ticks: int | None = None):
+        layout = profile["layout"]
+        if not (0 < layout["stride"] <= 65536 and 0 < layout["capacity"] <= 65536
+                and layout["stride"] * layout["capacity"] <= 64 * 1024 * 1024):
+            raise ValueError("The pool size exceeds the sampler bounds.")
+        super().__init__(pid, profile, expected_start_ticks)
+        try:
+            for name, code in GLOBAL_FORMATS.items():
+                if not 0 <= profile["globals"][name] <= self.module.size - struct.calcsize("<" + code):
+                    raise ValueError("A profile global is outside the selected module.")
+        except BaseException:
+            self.close()
+            raise
+
+    def metadata(self, profile: dict) -> dict:
+        return {name: self.number(self.module.baseaddress + profile["globals"][name], code)
+                for name, code in GLOBAL_FORMATS.items()}
+
+    def pool_ranges(self, profile: dict) -> list[tuple[int, int]]:
+        metadata = self.metadata(profile)
+        return [(self.module.baseaddress + profile["globals"][name], struct.calcsize("<" + code))
+                for name, code in GLOBAL_FORMATS.items()] + [
+                    (metadata["pool"], profile["layout"]["stride"] * profile["layout"]["capacity"])]

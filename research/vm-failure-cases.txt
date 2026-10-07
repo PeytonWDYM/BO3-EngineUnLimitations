@@ -1,0 +1,35 @@
+Script-variable sampler failure cases
+
+Define these cases before the sampler implementation. Use an owned native fixture process.
+Keep profiles, output, binaries, and memory hashes outside the repository.
+
+1. A healthy initialized pool has one reserved slot, a valid reuse chain, and a deferred entity chain.
+   Report capacity, usable capacity, free and allocated counts, numeric types, depth, and bounded first-error text.
+   The native fixture checksum and independently read memory hashes must remain unchanged after capture.
+2. A wrong executable hash, loaded build, or requested process start must reject attachment before output creation.
+   A disabled game profile must also reject attachment. Never enable a game profile through a CLI override.
+3. A null pool pointer must report an uninitialized instance without fabricated free or allocated counts.
+4. An unreadable pool or a pool that crosses inaccessible bytes must reject the sample.
+5. A cyclic, out-of-range, or free-type disagreement reuse chain must reject the sample.
+   Every free-type slot must occur exactly once in the bounded reuse chain.
+6. A cyclic, out-of-range, or wrong-type deferred entity chain must reject the sample.
+   Deferred entries must not overlap the reuse chain.
+7. An exhausted initialized pool must report zero free slots. After native recovery, report the restored free slots.
+8. An unreadable first-error pointer must preserve pool metrics and explicitly report unreadable text.
+   Read at most the configured bounded byte count. A full buffer without a terminator must report truncation.
+   A terminated message before an inaccessible page must remain readable. Compare original message bytes between reads.
+9. Native changes during repeated reads must reject unequal reads. Equal reads are a consistency check, not an atomic snapshot.
+10. A process exit during capture must end capture. Do not continue reading a recycled process identifier.
+
+Shared read-only API refactor cases
+
+VerifiedProcess must keep the existing executable, module, build, process-start, and handle cleanup checks.
+LiveProcess must keep its entity layout bounds, global bounds, signature, and read behavior.
+Run the existing native live-entity E2E after the refactor. Preserve query and VM_READ access mask 0x1010.
+
+Scope
+
+Numeric type counts do not identify all suspended script threads, functions, or grenade owners.
+Current function depth measures nested execution depth. It does not measure suspended threads.
+A first-error message can precede capture and does not establish the reported game failure cause.
+The fixture validates the reader. The game profile remains disabled until separate real-game validation.
