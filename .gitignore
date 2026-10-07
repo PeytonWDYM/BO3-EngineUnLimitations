@@ -33,3 +33,8 @@
 .DS_Store
 Thumbs.db
 Desktop.ini
+
+# Local diagnostic evidence and downloaded tools
+/research/captures/
+/research/local/
+/tools/

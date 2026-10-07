@@ -1,0 +1,13 @@
+Recorder failure cases, defined before implementation:
+
+1. The game has not started. The recorder must wait and persist its waiting event.
+2. A second recorder starts in the same output directory. It must fail without disturbing the first recorder.
+3. The target process stays alive after a Connection Interrupted marker. Capture a valid dump and continue saving samples.
+4. The user submits several markers. Preserve their timestamps, notes, and match context.
+5. The user stops recording. Flush the files and leave the target process alive.
+6. The target exits. Save the exit event and finish the session.
+7. ProcDump fails. Save the failure and continue recording.
+8. The game writes a console log and AAE settings. Preserve local copies without changing the originals.
+
+Run the E2E script against a disposable process, never the game.
+Save the test report, telemetry, events, tool output, and dump under research/captures/e2e/.

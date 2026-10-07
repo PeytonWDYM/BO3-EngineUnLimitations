@@ -1,0 +1,69 @@
+{
+  "status": "ready_for_reproduction",
+  "rootCause": "unconfirmed",
+  "reportedSymptoms": [
+    "Long AAE Zombies matches can show Connection Interrupted.",
+    "Repeated Pack-a-Punched War Machine fire is a reported trigger.",
+    "The failure may occur in solo and co-op, but occurs more often in co-op."
+  ],
+  "firstCapture": {
+    "client": "stock Steam Black Ops III",
+    "mod": "All-around Enhancement",
+    "map": "Origins",
+    "expectedPlayers": [1, 2],
+    "hostRole": "Record the actual role. Host on the capture PC for a co-op server capture."
+  },
+  "hypotheses": [
+    "Projectiles, power-ups, or other server entities exhaust a resource.",
+    "Temporary effects or network events exceed a limit during a volley.",
+    "Projectile cleanup or script tasks accumulate over repeated volleys.",
+    "An unrelated script error or network failure ends the match."
+  ],
+  "capture": {
+    "measured": ["process CPU", "private memory", "working set", "virtual memory", "handles", "OS threads", "window response", "process identity", "loaded modules", "manual match and firing markers", "available console logs", "AAE settings", "manual full memory snapshots", "available Windows crash events"],
+    "notYetMeasured": ["live server entity count", "projectile creation and deletion", "GSC VM allocations and script threads", "server frame time", "network snapshot usage"],
+    "limits": [
+      "Connection Interrupted alone does not identify the exhausted resource.",
+      "OS threads are not GSC script threads.",
+      "Window response is not internal server health.",
+      "A failure snapshot needs the manual marker while the process is alive.",
+      "A process exit is recorded automatically, but a full exit-time dump is not guaranteed.",
+      "No debugger, DLL injection, engine patch, or game configuration change is part of this first capture."
+    ]
+  },
+  "verifiedReferences": [
+    {
+      "url": "https://steamcommunity.com/workshop/filedetails/?id=2631943123",
+      "finding": "AAE lists BOIII, T7x, and BO3Enhanced among incompatible clients. Its map-loading crash warning does not establish this mid-match failure.",
+      "verification": "Workshop search result. Opening the page returned a region error."
+    },
+    {
+      "url": "https://github.com/Ezz-lol/boiii-free/blob/main/src/client/game/symbols/level.hpp",
+      "finding": "This source documents a 2048-entry entity allocation for its supported builds. It also describes a protected client entity pointer.",
+      "limit": "These addresses and layouts are not verified against the user's stock executable. Do not use them as live counters."
+    },
+    {
+      "url": "https://github.com/ate47/atian-cod-tools",
+      "documentation": "https://github.com/ate47/atian-cod-tools/wiki/Fast-Files---Dumper",
+      "finding": "ACTS supports BO3 rawfile and scriptparsetree extraction from fastfiles. Its GSC tools provide a route for script inspection.",
+      "setupStatus": "Research reference only. Release archive download succeeded, but extraction failed on locked executable files. No ACTS binary was run."
+    },
+    {
+      "url": "https://github.com/Scobalula/HydraX",
+      "finding": "HydraX exports BO3 weapon assets and scriptparsetree assets. It exports scripts but does not decompile them."
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/sysinternals/downloads/procdump",
+      "finding": "ProcDump provides full memory dumps with -ma and clone-based snapshots with -r. Exception triggers require a process exception, so they do not establish an internal server failure."
+    }
+  ],
+  "nextSteps": [
+    "Capture the stock client with AAE on Origins.",
+    "Record the actual player count and host role.",
+    "Compare an idle baseline, controlled volleys, and recovery intervals.",
+    "Mark Connection Interrupted immediately and preserve the error text.",
+    "Inspect available AAE weapon scripts and assets after locating the active mod files.",
+    "Select targeted instrumentation from the captured errors and verified script paths.",
+    "Verify a cause before changing gameplay or engine limits."
+  ]
+}

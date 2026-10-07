@@ -1,0 +1,52 @@
+First capture: stock BO3, AAE, Origins, one or two players.
+
+The recorder runs outside BO3. It samples once per second and flushes each row.
+Captures stay in research/captures/live/. Git ignores this folder.
+Keep all dumps, settings, and raw logs local.
+
+1. Launch stock BO3 through Steam.
+2. Load All-around Enhancement and start Origins.
+3. For co-op, host the match on this PC.
+4. Hold Ctrl+Shift+F6 briefly when the match starts.
+5. Hold Ctrl+Shift+F7 briefly before an upgraded War Machine volley.
+6. Hold Ctrl+Shift+F8 briefly after the last shot.
+7. Wait for projectiles and effects to clear before another marked volley.
+8. When Connection Interrupted appears, hold Ctrl+Shift+F9 briefly.
+9. Keep BO3 open while the snapshot completes. Record the round and exact error text.
+10. After the match, hold Ctrl+Shift+F10 briefly to stop recording.
+
+F9 writes a full memory snapshot. This can use several gigabytes of disk space.
+A snapshot can briefly pause BO3. Clone mode reduces this pause.
+Wait for the dump_completed event before repeating a failure snapshot.
+The recorder does not automatically recognize Connection Interrupted.
+
+To add match details from the repository terminal:
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\source\Send-Marker.ps1 -Action match-start -Map Origins -Mode Solo -PlayerCount 1 -HostRole Host
+
+For two players, use -Mode Coop -PlayerCount 2 -HostRole Host.
+Use -HostRole Client if someone else hosts. That capture cannot expose their server process.
+For a round or error note, use -Action note -Round 40 -Note "Exact message or observation".
+For an optional baseline snapshot, use -Action dump -Note "Idle before upgraded War Machine fire".
+
+To start another recorder after the first process exits or recording stops:
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\source\Start-Capture.ps1
+
+To install the Microsoft capture tool on another PC:
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\source\Install-Tools.ps1
+
+To repeat the E2E verification:
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\source\tests\Test-Recorder.ps1
+The test produces a report, telemetry, events, and a verified full memory dump.
+It uses a disposable target process and does not target BO3.
+
+Read metrics.csv for process data and events.jsonl for markers and dump results.
+Read process.json for the executable hash and loaded modules.
+Read game-files/ for available logs, AAE settings, and newly created game crash archives.
+Read windows-events.json for available process crash or window hang events.
+Read launcher-*.stderr.txt if the recorder does not start.
+
+The recorder waits for BlackOps3.exe and stops when that process exits.
+It records process exits, but it cannot guarantee a full dump after the process has exited.
+Entity counts, projectile cleanup, and GSC script threads still need targeted instrumentation.
+OS memory and thread counts alone cannot prove an entity leak.
+No root cause or fix is confirmed yet.
