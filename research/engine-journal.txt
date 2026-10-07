@@ -720,6 +720,35 @@ Private evidence/manual-session-20261007T2143Z/ retains their launcher identitie
 No game was launched, controlled, patched or reconfigured. No VM profile or audio prototype was enabled.
 The next required evidence remains the actual live failure snapshot and Peyton's clarification of the second process exit.
 
+2026-10-07 21:52 UTC: authorized full-AAE downgrade and recorder attachment
+
+Peyton reported that the runtime BetaLite weapon menu lacked both War Machine and inventory Death Machine.
+He explicitly requested the author's downgrade guide and deployment for full All-around Enhancement v3.9.5.
+The guide at https://steamcommunity.com/sharedfiles/filedetails/?id=3710608011 specifies:
+download_depot 311210 311211 7651791086710252932
+Steam's authenticated console completed that exact manifest at 21:45:07 UTC.
+The downloaded executable has 143,134,192 bytes and a December 13, 2025 PE timestamp.
+Its SHA-256 is 0B874DCC250848B7313EC13A0C76468DACC2009B5EFA2BFF4C587E169A9F77E0.
+The latest original has SHA-256 51CA63BBC660E0826943C60DA67606F6BCB4B3B519528B5E0548C68C9423A323.
+Both executable copies and all 91 current profile backups passed hash checks before deployment.
+Only the normal executable was replaced. The game was closed, and no agent game launch occurred.
+The post-deployment check preserved all profile hashes, other root program files and selected Workshop identities.
+The Steam app manifest and app-specific Cloud cache also matched their before values.
+Private lab/backups/normal-downgrade-20261007T214527Z/ retains inputs, results, backups and restore instructions.
+This is an authorized reproduction setup, not an engine patch or a validated compatibility result.
+
+Peyton also requested verification of Ctrl+Shift+F9 against the downgraded executable.
+The recorder uses external process sampling and ProcDump cloning. It does not inject a memory hook into BO3.
+The 21:43 UTC recorder remains armed with hotkeys enabled. Its latest-build entity waiter was stopped at 21:51 UTC.
+Both exact-build entity and VM profiles remain disabled for the downgraded executable.
+Peyton manually launched BO3. The recorder attached at 21:51 UTC and recorded the expected downgraded executable hash.
+Process telemetry works. Peyton confirmed successful startup after the downgrade.
+The live native T7Overcharged.ff path identifies full AAE Workshop package 2631943123.
+That path does not prove the active map or mapped-byte equality. Runtime weapon availability remains unverified.
+Peyton then requested the next snapshot only when the actual target event occurs.
+A new recorder note supersedes the earlier planned keybind-test label. No test snapshot is requested or saved.
+The recorder remains armed. No snapshot from this build has yet established readable memory, engine layouts or a failure cause.
+
 Final deliverable and checkpoints:
 
 Peyton requests continued commits and pushes, a final real pull request, a fresh review, and a shareable patch-loader executable.

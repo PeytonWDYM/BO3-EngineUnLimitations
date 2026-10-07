@@ -1,5 +1,16 @@
 First capture: stock BO3, AAE, Origins, one or two players.
 
+Current manual setup: Peyton requested the author's downgrade for full AAE v3.9.5 on October 7.
+The normal executable now comes from Steam depot 311211, manifest 7651791086710252932.
+Its SHA-256 is 0B874DCC250848B7313EC13A0C76468DACC2009B5EFA2BFF4C587E169A9F77E0.
+Verified private backups retain the latest executable and all 91 profiles present before deployment.
+The general recorder attached this build, and process telemetry works.
+Peyton confirmed a successful manual launch. The live native AAE path identifies full Workshop package 2631943123.
+He will press Ctrl+Shift+F9 only at the actual target event. No test snapshot is requested.
+The recorder remains armed. A completed snapshot from this executable has not yet been verified.
+Keep the latest-build entity and VM profiles disabled until the downgraded layouts are verified.
+The downgrade changes the reproduction setup. It is not a validated engine fix or co-op compatibility result.
+
 BO3 remains open during Peyton's reported failure. The match or hosting session stops responding.
 Capture that live state; do not wait for an application exit or assume the internal server crashed.
 

@@ -32,8 +32,19 @@ Design patch installation and removal so Peyton can return to the original worki
 
 The two tracked direct lab sessions triggered Steam Auto-Cloud scans of the normal players folder.
 Both scans skipped all fifteen matching files as unchanged. The lab is not a separate Cloud namespace.
-All eighty-four normal profile files still match the pre-lab baseline. Current cached hashes and sizes match.
+At the earlier lab checkpoint, all eighty-four normal profile files matched the pre-lab baseline.
+Peyton later played his normal game. Use the fresh deployment baseline for the authorized downgrade below.
 Keep before/after profile and app-specific Cloud checks for future lab tests. Do not change shared Cloud settings.
+
+On October 7, Peyton explicitly requested the author's downgrade for full AAE v3.9.5.
+Steam downloaded depot 311211, manifest 7651791086710252932, through its authenticated console.
+Only the normal BlackOps3.exe was replaced, after verified backups of both executables and all 91 current profile files.
+The installed SHA-256 is 0B874DCC250848B7313EC13A0C76468DACC2009B5EFA2BFF4C587E169A9F77E0.
+The original latest-build SHA-256 is 51CA63BBC660E0826943C60DA67606F6BCB4B3B519528B5E0548C68C9423A323.
+The deployment check found no profile, other root binary, selected Workshop identity, Steam manifest or app Cloud-cache changes.
+Private backups and the deployment result are in lab/backups/normal-downgrade-20261007T214527Z/.
+This authorized reproduction setup is not the project's engine fix or a verified multiplayer compatibility result.
+Keep experimental engine patches separate from this authorized executable downgrade.
 
 ## Agent-launched test sessions
 
@@ -58,9 +69,14 @@ The entity sampler restored to that session retained four provisional rows befor
 The reason for the second exit remains unknown. Peyton has been asked whether he closed the game or saw a failure first.
 No actual failure or volley markers were recorded in either session.
 A new recorder and a separately bound waiting entity sampler were armed at 21:43 UTC.
-The sampler uses one read pair per second, one attempt, the recorded process creation time, and a private frozen profile copy.
-This is provisional history, not atomic sampling or validated game measurements. Cross-check a saved failure snapshot.
-The VM profile remains disabled.
+The entity waiter was stopped before the downgraded game attached. Its exact-build profile belongs to the latest executable.
+Keep both entity and VM profiles disabled for the downgraded build until its layouts are verified.
+The general recorder attached Peyton's downgraded process at 21:51 UTC and verified its executable hash.
+Process sampling works. Peyton confirmed a successful manual launch after the downgrade.
+The live native AAE module path identifies full Workshop package 2631943123. Active map identity remains unverified.
+Peyton will press Ctrl+Shift+F9 at the actual target event. No test snapshot is requested.
+The recorder remains armed. A completed snapshot from this executable has not yet been verified.
+Earlier entity history remains provisional. Cross-check a saved failure snapshot before interpreting game measurements.
 The 14:55 UTC F9 snapshot was a keybind test, not a reported hosting failure. Peyton requested deletion of that and old dumps.
 Automatic approval review blocked both bulk and individually named deletion. No dumps were deleted. Do not analyze those test or old dumps as the next reproduction.
 The previous process module inventory contains T7Overcharged.ff and AAEFreeAim.dll from Workshop item 2739657648.
