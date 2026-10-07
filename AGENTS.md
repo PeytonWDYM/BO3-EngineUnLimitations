@@ -27,6 +27,13 @@ Read-only inspection and external capture are allowed.
 Keep experimental binaries and extracted assets inside the workspace or a clearly identified lab directory.
 Design patch installation and removal so Peyton can return to the original working game.
 
+## Agent-launched test sessions
+
+Launch every automated or repeated game test at zero volume.
+Use a bordered window at 1280 by 720 pixels.
+Apply these settings in the lab copy, without changing Peyton's normal game configuration.
+Mute the game rather than the system audio.
+
 ## Reported failure and current evidence
 
 Long AAE Zombies matches can display Connection Interrupted after repeated Pack-a-Punched War Machine volleys.
