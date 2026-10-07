@@ -475,6 +475,25 @@ This proves current-default owned driver compatibility. It does not prove stock 
 Private evidence/agent-silent-launch/audio-driver/physical-20261007T120543Z-5cf46dba/driver.json and run.json preserve the result and invocation.
 Private evidence/audio-driver-fresh-review/Review.txt and review-checks.json bind the final source and evidence.
 
+2026-10-07: verified stock Sound Mix creation and dispatch
+
+The WASAPI worker now has a verified native registration and CreateThread dispatch chain.
+Registration stores the callback, creates a generic entry suspended with its context, retains ID and handle, sets priority, and resumes it.
+The generic entry performs native thread setup before dispatching the stored Sound Mix worker.
+That worker performs endpoint-notification setup, then client-state, retry, and sample-submission work.
+The notification enumerator is a separate request from the later render-client creation.
+The menu dispatch record points to the worker, and its saved thread ID exists in the actual dump thread list.
+The independent fatal-startup capture has zero registration state. These snapshots do not reconstruct one run's first-call history.
+Eighteen reviewed code ranges match both strict captures. Original executable identity and existing startup provenance were rechecked.
+Microsoft documents that new threads created during startup do not begin execution until DLL initialization completes.
+The scoped inference is that this verified worker dispatch provides an outside-loader initializer candidate.
+It does not establish that ordinary EXE entry has run, every possible factory caller, or independent DirectSound ordering.
+The next owned measurement must match both entry and context, initialize before dispatch, and preserve native setup and creation semantics.
+It must not wait for EXE-entry readiness. Earlier factories still require controlled stopping; pre-interception calls remain uncovered.
+No stock hook, game launch, audio device, or protection change occurred during this bounded analysis.
+Private evidence/agent-engine-review/audio-worker-start/worker-start-review.txt and provenance-code-hashes-and-state.json preserve the native evidence.
+Primary scheduling reference: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-createthread
+
 Final deliverable and checkpoints:
 
 Peyton requests continued commits and pushes, a final real pull request, a fresh review, and a shareable patch-loader executable.

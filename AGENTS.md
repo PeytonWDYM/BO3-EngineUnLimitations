@@ -134,6 +134,11 @@ The earlier dependency remains uncovered. Actual Windows interception and stock 
 The next quiet-start step must recover stock first-call timing and cover every output route before a game launch.
 The bounded stock coverage audit verifies known WASAPI and DirectSound routes but leaves earliest call order unresolved.
 Its TLS callback and ordinary entrypoint transfer into indirect flow. Static import absence does not exclude other output routes.
+The verified Sound Mix worker is registered in a dispatch table and created suspended through CreateThread, then prioritized and resumed.
+Its generic thread entry performs native setup before dispatching the WASAPI worker. Both captures agree on the reviewed code ranges.
+Windows defers that new thread's entry until DLL initialization completes. This does not prove that ordinary EXE entry has run.
+A future initializer must match both the verified generic entry and context, preserve native setup, and run before worker dispatch.
+Do not wait for an EXE-entry milestone from that gate. Independent DirectSound and earlier output timing remain unresolved.
 Keep hook readiness distinct from activation-runtime readiness. Do not initialize COM or audio under the loader lock.
 The assessed per-application routing alternative provides neither a verified silent endpoint nor a first-output guarantee.
 Virtual endpoint names do not establish audio-discard behavior. Do not change system defaults or normal application routing for the lab.
