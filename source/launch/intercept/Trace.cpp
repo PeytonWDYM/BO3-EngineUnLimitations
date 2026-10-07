@@ -1,10 +1,12 @@
 #include "Internal.h"
+#include "ContainedSound.h"
 #include <intrin.h>
 
 namespace { Shared* shared; }
 thread_local LONG AudioDepth = 0;
 thread_local Api OuterApi = Api::None;
 thread_local std::uint64_t RootCaller = 0;
+thread_local CallArguments RootArguments{};
 extern "C" Shared* SdkTrace() { return shared; }
 bool MapTrace() {
     wchar_t text[32]{};
@@ -42,6 +44,12 @@ extern "C" void SdkRecord(Stage stage, Api api, DWORD generation, LONG value, co
     // Resolve only already-loaded caller metadata after readiness. Do not load a DLL or change its reference count.
     if (stage == Stage::RootEnter && shared->runtimeReady)
         RequireSdk(DescribeAddress(shared->events[index].caller, shared->events[index].callerModule));
+    const auto scope=CurrentSoundScope();
+    auto& event=shared->events[index];
+    event.context=RootArguments.context; event.aggregation=RootArguments.aggregation;
+    event.outputProvided=RootArguments.outputProvided; event.outputNull=RootArguments.outputNull;
+    event.failedAdmission=RootArguments.failed; event.scopeThread=scope.thread; event.scopeSerial=scope.serial;
+    event.containedActive=scope.active; event.admittedCount=scope.count;
 }
 void RequireSdk(bool condition, HRESULT code) { if (!condition) StopSdk(code, Stage::Error); }
 [[noreturn]] void StopSdk(HRESULT code, Stage stage) {

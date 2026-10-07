@@ -12,6 +12,8 @@ extern ThreadFactory OriginalThread;
 extern thread_local LONG AudioDepth;
 extern thread_local Api OuterApi;
 extern thread_local std::uint64_t RootCaller;
+struct CallArguments { DWORD context, aggregation, outputProvided, outputNull, failed; };
+extern thread_local CallArguments RootArguments;
 bool MapTrace();
 void CloseTrace();
 [[noreturn]] void StopSdk(HRESULT, Stage);

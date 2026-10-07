@@ -1,4 +1,5 @@
 #include "Internal.h"
+#include "ContainedSound.h"
 #include "../../tests/activation/Providers.h"
 #include <memory>
 
@@ -32,8 +33,17 @@ HRESULT Roots::CreateCom(REFCLSID clsid, LPUNKNOWN outer, DWORD context, REFIID 
 HRESULT Roots::CreateDirectSound(LPCGUID device, LPDIRECTSOUND8* output, LPUNKNOWN outer) {
     InterlockedIncrement(&SdkTrace()->providerCalls);
     SdkRecord(Stage::ProviderEnter, Api::Sound, 0, 0, nullptr, &IID_IDirectSound8);
-    if (SdkTrace()->mode == Mode::Memory) return owner->memory->CreateDirectSound(device, output, outer);
+    if (SdkTrace()->mode == Mode::Memory) {
+        if(ContainedScenario(SdkTrace()->scenario)) {
+            const auto consumer=GetModuleHandleW(L"SdkInterceptConsumer.dll");
+            const auto reject=reinterpret_cast<void (WINAPI*)()>(GetProcAddress(consumer,"SdkRejectNested"));
+            RequireSdk(reject!=nullptr);
+            reject();
+        }
+        return owner->memory->CreateDirectSound(device, output, outer);
+    }
     InterlockedIncrement(&SdkTrace()->physicalAudioCalls);
+    OriginalSoundScope scope;
     return OriginalSound(device, output, outer);
 }
 }
@@ -43,6 +53,7 @@ BOOL InitializeSdk(Phase phase) {
         RequireSdk(owner == nullptr && trace->hooksReady == 1 && trace->phase == static_cast<LONG>(phase));
         if (trace->scenario == Scenario::Denied) StopSdk(E_ACCESSDENIED, Stage::Error);
         DescribeSdk();
+        InitializeSoundIdentity();
         auto value = std::make_unique<Owner>();
         if (trace->mode == Mode::Memory) {
             value->memoryState = std::make_shared<activation_test::State>();

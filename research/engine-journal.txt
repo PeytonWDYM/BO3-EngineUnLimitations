@@ -623,6 +623,27 @@ Actual map, player count and host role remain to be recorded. The requested init
 Automated game launches and physical audio probes are held while Peyton plays. No game settings or binary were changed.
 Prioritize this capture and the exact saved errors over further quiet-helper work.
 
+2026-10-07: reviewed contained DirectSound source checkpoint; physical run held
+
+The narrow rule now brackets only the physical saved OriginalSound trampoline with thread-local authority.
+It requires the exact audited enumerator arguments, caller module/return address and current live call-setup bytes.
+The launcher pins and holds the actual System32 file. It retains no broad raw-object fallback or global thread gate.
+Active contained COM recursion is rejected. Repeated eligible calls after return have no invented quota.
+The initial memory red passed eight of eleven groups before implementation.
+Root and fresh review found that the interim hook read ordinary output storage before the SDK wrote it.
+The retained output-contract red passed ten of eleven groups before correction.
+The final hook records unchecked output storage. Only a fully qualified audited caller reads its known initially-null slot.
+Final memory evidence passes eleven groups across twenty-five native traces, plus three missing-companion refusals.
+All memory traces have zero original-provider authority and forwarding. They cannot prove genuine Windows admission.
+Fresh offline review bound seventy-eight sources, four unchanged binaries, nineteen COFF objects, exact imports and the private Windows identity.
+Root independently rehashed current sources, binaries, the native report and all twenty-five traces.
+No native replay was needed. The helper retains two POD imported-pointer initializers and one compiler TLS callback.
+Positive admission, active contained recursion and repeated positive calls remain source-only.
+No physical audio probe, game launch, normal setting change or engine patch occurred in this checkpoint.
+Physical testing stays held while Peyton prepares or plays his manual reproduction. The read-only recorder remains armed.
+Private evidence/agent-patch-loader/sdk-contained/ retains the frozen source/run envelope and prior reds.
+Private evidence/sdk-contained-fresh-review/ and evidence/sdk-contained-root-review/ retain independent checks.
+
 Final deliverable and checkpoints:
 
 Peyton requests continued commits and pushes, a final real pull request, a fresh review, and a shareable patch-loader executable.

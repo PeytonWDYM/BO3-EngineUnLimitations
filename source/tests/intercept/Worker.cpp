@@ -75,11 +75,13 @@ DWORD JoinWorker() {
     return result;
 }
 extern "C" __declspec(dllexport) void SdkConsumerTouch() {}
+void RunRejectionConsumer();
 extern "C" __declspec(dllexport) void WINAPI SdkConsumerRun() {
-    try { RunConsumers(); } catch (...) { ConsumerStop(E_UNEXPECTED); }
+    try { if(ContainedScenario(SdkTrace()->scenario)) RunRejectionConsumer(); else RunConsumers(); }
+    catch (...) { ConsumerStop(E_UNEXPECTED); }
 }
 extern "C" __declspec(dllexport) void WINAPI SdkConsumerRelease() {
-    try { ReleaseConsumers(); } catch (...) { ConsumerStop(E_UNEXPECTED); }
+    try { if(!ContainedScenario(SdkTrace()->scenario)) ReleaseConsumers(); } catch (...) { ConsumerStop(E_UNEXPECTED); }
 }
 BOOL WINAPI DllMain(HINSTANCE, DWORD reason, LPVOID) {
     if (reason != DLL_PROCESS_ATTACH) return TRUE;

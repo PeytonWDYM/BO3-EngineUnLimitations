@@ -12,14 +12,23 @@ constexpr DWORD kSdkStop = 0xe0520001;
 constexpr LONG kSdkEvents = 1024;
 enum class Mode : DWORD { Memory, PhysicalSilent };
 enum class Scenario : DWORD { Baseline, Entry, Worker, WrongEntry, WrongContext, Denied,
-    ImportCom, ImportSound, TlsCom, TlsSound, NoBuffer8, ClearFailed, Reentrant, MissingHandshake };
+    ImportCom, ImportSound, TlsCom, TlsSound, NoBuffer8, ClearFailed, Reentrant, MissingHandshake,
+    ContainedMemory, ContainedClass, ContainedIid, ContainedContext, ContainedAggregation,
+    ContainedOutput, ContainedNullOutput, ContainedCallback, ContainedThread, ContainedIdentity, ContainedLiveBytes };
 enum class Phase : LONG { Helper, Imported, Tls, Entry, Worker, Shutdown };
 enum class Api : DWORD { None, Com, Sound, Thread };
 enum class Stage : DWORD { Restore, HooksReady, Imported, Tls, Entry, ThreadCreate, ThreadReturned,
     Suspended, Priority, Resume, Match, Unmatched, Gate, RuntimeReady, Setup, Dispatch, Joined,
     FactoryRequested, RootEnter, ProviderEnter, RootReturn, ColdStop, UnsupportedStop, RecursiveStop,
     NonAudio, RenderPublish, BufferPublish, Format, FirstSilent, Start, FullClear, SplitClear, Play,
-    Callback, RemovalDenied, ReferencesReleased, RuntimeClosed, HooksRemoved, Retained, Detach, Error };
+    Callback, RemovalDenied, ReferencesReleased, RuntimeClosed, HooksRemoved, Retained, Detach, Error,
+    AdmissionChecked, ContainedEnter, ContainedReturn, SoundScopeEnter, SoundScopeExit, LiveIdentity,
+    OtherThreadWrapped, RejectionRequested };
+enum AdmissionFailure : DWORD {
+    WrongMode=1, MissingScope=2, WrongThread=4, WrongDepth=8, WrongOuter=16, ContainedActive=32,
+    WrongClass=64, WrongIid=128, WrongContext=256, Aggregation=512, MissingOutput=1024,
+    NonNullOutput=2048, WrongModule=4096, WrongCallsite=8192, WrongLiveBytes=16384, WrongWindowsIdentity=32768
+};
 struct ModuleIdentity {
     std::uint64_t base, rva;
     DWORD imageSize, timestamp;
@@ -33,6 +42,8 @@ struct Event {
     std::uint64_t caller;
     GUID clsid, iid;
     ModuleIdentity callerModule;
+    DWORD context, aggregation, outputProvided, outputNull, failedAdmission, scopeThread;
+    LONG scopeSerial, containedActive, admittedCount;
 };
 struct Shared {
     DWORD magic; Mode mode; Scenario scenario;
@@ -46,6 +57,7 @@ struct Shared {
     std::uint64_t stackSize, originalEntry, parameter, returnedHandle;
     std::uint64_t sdkCom, sdkSound, sdkThread;
     ModuleIdentity sdkModules[3];
+    volatile LONG soundScopes, containedCalls, originalComCalls, identityReady, otherThreadWrapped;
     Event events[kSdkEvents];
 };
 #ifdef SDK_HELPER_BUILD
@@ -73,3 +85,4 @@ CONSUMER_API void ConsumerCheck(bool condition, HRESULT code = E_UNEXPECTED);
 CONSUMER_API void ConsumerGood(HRESULT code);
 }
 inline bool WorkerScenario(Scenario value) { return value >= Scenario::Worker && value <= Scenario::Denied; }
+inline bool ContainedScenario(Scenario value) { return value >= Scenario::ContainedMemory; }

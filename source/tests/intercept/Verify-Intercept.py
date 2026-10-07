@@ -175,6 +175,42 @@ def main():
         assert any("CoCreateInstance" in names for names in sdk.values()) and any("CreateThread" in names for names in sdk.values())
         assert "dsound.dll" in sdk and ("DirectSoundCreate8" in sdk["dsound.dll"] or "ordinal:11" in sdk["dsound.dll"])
         return {"identityRefusals":result,"outputRefusals":refusals,"helperImports":imports,"consumerImports":sdk}
+    def rejected_containment():
+        result=[]
+        for name,extra in (("contained-memory",0),("contained-class",64),("contained-iid",128),
+                           ("contained-context",256),("contained-aggregation",512),("contained-output",0),
+                           ("contained-null-output",1024),("contained-callback",0)):
+            code,trace=run(name)
+            assert code != 0 and trace["targetExit"] == STOP and trace["abortHresult"] == -2147483638
+            assert trace["physicalAudioCalls"] == trace["rawPublications"] == trace["plays"] == 0
+            assert trace["soundScopes"] == trace["containedCalls"] == trace["originalComCalls"] == 0
+            checked=next(e for e in trace["events"] if e["stage"]=="admission-checked")
+            assert checked["depth"]==1 and checked["outer"]==2
+            assert checked["failedAdmission"] & (1|2|4096|8192) == 1|2|4096|8192
+            if extra: assert checked["failedAdmission"] & extra
+            assert checked["outputNull"]==2 and not checked["failedAdmission"] & 2048
+            if name=="contained-output":
+                assert any(e["stage"]=="rejection-requested" and e["api"]==1 and e["value"]==1 for e in trace["events"])
+            assert checked["scopeSerial"]==checked["scopeThread"]==checked["containedActive"]==0
+            result.append(trace)
+        return {"traces":result,"claim":"Actual SDK memory negatives fail several predicates. No genuine OriginalSound authority or isolated positive-scope branch was simulated."}
+    def other_thread():
+        code,trace=run("contained-thread")
+        assert code==trace["targetExit"]==0 and trace["otherThreadWrapped"]==1
+        assert trace["physicalAudioCalls"]==trace["rawPublications"]==trace["soundScopes"]==trace["containedCalls"]==0
+        stages=[e["stage"] for e in trace["events"]]
+        assert "other-thread-wrapped" in stages and "hooks-removed" in stages
+        return trace
+    def wrong_windows_identity():
+        result=[]
+        for name,bit in (("contained-identity",32768),("contained-live-bytes",16384)):
+            code,trace=run(name)
+            assert code != 0 and trace["targetExit"]==STOP
+            assert trace["physicalAudioCalls"]==trace["providerCalls"]==trace["constructors"]==trace["soundScopes"]==0
+            event=next(e for e in trace["events"] if e["stage"]=="live-identity")
+            assert event["failedAdmission"] & bit
+            result.append(trace)
+        return {"traces":result,"claim":"The fixed memory fixture changes expected identity fields only. The real Windows DLL stays untouched."}
     case("silent raw memory provider baseline through SDK hooks",baseline)
     case("actual SDK roots wrap entry recreation and callbacks",lambda:protected("entry"))
     case("actual SDK thread gate preserves suspended worker",worker)
@@ -183,6 +219,9 @@ def main():
     case("readiness and missing-hook handshake stop before provider",denied)
     case("unsupported and actual SDK recursive calls fail closed",unsupported)
     case("fixed identities and actual SDK import boundaries",guards)
+    case("memory provider and caller arguments cannot inherit containment",rejected_containment)
+    case("another native thread keeps ordinary wrapped SDK behavior",other_thread)
+    case("wrong expected Windows tuple and live bytes reject before provider",wrong_windows_identity)
     after={name:sha(args.bin/name) for name in FILES}
     paths=[*list((ROOT/"source/launch/intercept").glob("*")),*list((ROOT/"source/tests/intercept").glob("*")),ROOT/"research/sdk-interception-failure-cases.txt"]
     for folder in ("source/launch/activation","source/launch/quiet","source/tests/activation","source/tests/quiet","source/tests/audio-driver","source/launch/preentry"):

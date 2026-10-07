@@ -6,7 +6,13 @@ DllMain restores the Detours import edit, resolves the already-loaded DirectSoun
 
 The entry flow explicitly initializes the runtime outside DLL initialization. The worker flow matches the fixed owned consumer export and the complete pointer value 14. It preserves native arguments, handle, thread ID, CREATE_SUSPENDED, priority and ResumeThread. The gate initializes the runtime before the original TLS-like setup and worker dispatch. Joining before the fixture's entry marker does not establish execution before the actual EXE entrypoint. Unmatched SDK threads retain their original entry and arguments.
 
-Covered cold imported-DLL and EXE TLS calls enter the SDK hooks and terminate the owned process before provider publication. Nested recognized audio roots terminate with E_PENDING. There is no thread-local raw-factory bypass. Each root records class, IID, immediate caller, outer factory, depth and thread ID. DirectSound COM activation is unsupported. Non-audio CoCreateInstance calls forward through the original trampoline. Ordinary runtime initialization resolves the saved pre-attach SDK addresses to module path, base, RVA, image size and timestamp.
+Covered cold imported-DLL and EXE TLS calls enter the SDK hooks and terminate the owned process before provider publication. Unsupported nested audio roots terminate with E_PENDING. Each root records class, IID, immediate caller, outer factory, depth and thread ID. DirectSound COM activation is unsupported. Non-audio CoCreateInstance calls forward through the original trampoline. Ordinary runtime initialization resolves the saved pre-attach SDK addresses to module path, base, RVA, image size and timestamp.
+
+One internal enumerator call can use the saved COM trampoline during the physical saved DirectSound factory call. Admission requires the audited class, IID, context, null aggregation, thread, depth, return address, Windows module identity and live call-setup bytes. Only then does the helper check the audited initially-null output slot. Ordinary COM calls and rejected callers record output presence without reading its storage. The outputNull trace field uses 2 for unchecked storage.
+
+The private build header pins the audited System32 DirectSound file and call bytes. The launcher checks its disk hash before process creation. Runtime initialization checks the loaded module and live bytes before constructing providers. OriginalSound authority is thread-local and ends when the saved factory returns. An active contained COM call cannot admit recursion. Repeated exact matches after return remain eligible and counted. Ordinary requests on another thread keep the normal wrapping rules.
+
+Memory negatives cannot gain original-provider authority. They exercise actual intercepted SDK calls, argument rejection, callback rejection and ordinary wrapping on another owned thread. Fixed negative identity cases change expected data only. They never modify a Windows DLL. These cases can fail several predicates and do not prove genuine Windows admission. The originalComCalls counter counts contained forwarding only. The indirect SDK initializer chain remains unresolved.
 
 Consumers independently submit silence even if their objects are unwrapped. WASAPI uses the validated mix format, fills the full first packet and passes AUDCLNT_BUFFERFLAGS_SILENT before Start. DirectSound stops the buffer, validates its actual GetFormat and GetCaps, clears the entire actual ring from offset zero, checks both Lock regions and successful Unlock, then permits Play. Subsequent split writes and retained packets are also silent. No Restore follows a failed clear.
 
@@ -17,6 +23,8 @@ The owned entry or single worker releases callbacks, interfaces, event and hidde
 Build and replay
 
 Run source/tests/intercept/Test-Intercept.ps1 with -OutputDirectory set to a new private directory, -DetoursRoot set to the unchanged official Microsoft Detours commit e4bfd6b03e50de46b47abfbd1e46b384f0c5f833, and -Python set to a Python interpreter with pefile. Build and test guards resolve junctions and reject repository output before discovery or compilation. The native launcher checks all three fixed companion hashes before creating an output file or process. It has no arbitrary executable, PID or stock target mode.
+
+Supply -WindowsAuditDirectory with the reviewed private Windows identity evidence. This is a fixed owned fixture build input, with no runtime caller or target profile selector.
 
 Replay an existing build with: python -B source/tests/intercept/Verify-Intercept.py --bin PRIVATE_BIN --output NEW_PRIVATE_RESULTS. This verifier runs memory mode only. It preserves JSON traces, commands, source/dependency hashes and before/after binary hashes.
 

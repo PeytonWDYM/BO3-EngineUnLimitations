@@ -161,6 +161,11 @@ The existing public adapter cannot serve its enumeration, property-store, and no
 Any contained forwarding must stay inside the actual saved OriginalSound call and verify the exact caller and live setup bytes.
 The historical trace records module metadata only. The current disk audit is not proof of the earlier mapped bytes.
 The rawPublications detector covers memory objects only. A physical zero does not establish no raw interface escape.
+A separate contained-provider prototype now has eleven passing memory groups across twenty-five child traces and fresh review.
+Its authority surrounds only the physical saved DirectSound factory and verifies the audited caller, arguments and live setup bytes.
+Ordinary COM output storage remains unread. Only a fully qualified audited call checks its initially-null slot.
+Memory rejection cases cannot prove genuine Windows admission. Positive admission, active recursion and repeated calls remain source-only.
+Physical execution remains held while Peyton prepares or plays the manual reproduction.
 The next quiet-start step must recover stock first-call timing and cover every output route before a game launch.
 The reviewed first-factory cold-stop design records a recognized root and stops before its provider executes.
 That scoped capture does not establish a completed quiet launch, gameplay, or universal output coverage.

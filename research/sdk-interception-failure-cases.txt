@@ -62,3 +62,26 @@ No consumer calls Restore, volume setters, speaker setters, routing APIs, primar
 
 These cases validate only an owned SDK interception path.
 They do not establish stock first-call chronology, every output route, driver compatibility, quiet game startup, or stability.
+
+Contained OriginalSound extension: write native consumers before helper code
+
+11. Memory DirectSound-provider reentry must reach the actual SDK COM hook and stop before original COM forwarding.
+    Correct enumerator arguments do not grant memory providers, owned callback code or arbitrary callers raw admission.
+    Vary recognized class, IID, context, aggregation, absent output and initially non-null output in fixed owned consumers.
+    Retain actual arguments and all failed predicates. These negatives may fail more than one predicate.
+    Record output presence without reading its storage on ordinary COM calls or rejected containment callers.
+    Inspect initial output storage only after the exact audited OriginalSound scope and caller predicates pass.
+    The seeded-output memory case proves scope rejection. It does not exercise the trusted non-null-output check.
+12. Another owned thread has no original-provider authority. Its ordinary depth-zero memory root must remain wrapped and succeed.
+    Do not introduce a transient global gate that rejects valid wrapped requests while another thread executes its provider.
+13. Refuse a fixed wrong expected Windows tuple or expected live call byte before provider execution.
+    Compare the actual loaded System32 module and live call-setup bytes against the generated private audited identity.
+    Alter only the fixture's expected identity. Never modify, substitute or patch the Windows DLL.
+14. Raw admission is thread-local and surrounds only the physical saved OriginalSound trampoline.
+    Require outer Sound/depth one, exact class/IID/context 0x17/null aggregation and valid initially-null output.
+    Require pinned System32 DSOUND identity, exact immediate caller and matching live call-setup bytes.
+    Reject active contained OriginalCom recursion. Repeated exact matches after return remain eligible and counted.
+    Memory negatives do not prove genuine positive Windows nesting or an isolated positive-scope branch.
+15. Preserve ordinary wrapping, non-audio HRESULTs, outer Sound wrapping, independent silence, atomic callbacks and exit residency.
+    Bind final source/binary/dependency and import/TLS/CRT evidence after native memory tests pass.
+    Physical execution remains held for a separate fresh review and root decision.

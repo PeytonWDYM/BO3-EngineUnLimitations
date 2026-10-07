@@ -1,4 +1,5 @@
 #include "Internal.h"
+#include "ContainedSound.h"
 #include <detours.h>
 #include <intrin.h>
 
@@ -17,12 +18,20 @@ struct AudioCall {
     explicit AudioCall(Api api) { ++AudioDepth; OuterApi = api; }
     ~AudioCall() { --AudioDepth; OuterApi = old; }
 };
+struct Arguments {
+    CallArguments old=RootArguments;
+    Arguments(DWORD context,LPUNKNOWN outer,void** output) {
+        RootArguments={context,outer!=nullptr,output!=nullptr,2,0};
+    }
+    ~Arguments() { RootArguments=old; }
+};
 void Admit() {
     if (AudioDepth) StopSdk(E_PENDING, Stage::RecursiveStop);
     if (!SdkTrace()->runtimeReady) StopSdk(E_UNEXPECTED, Stage::ColdStop);
 }
 HRESULT WINAPI InterceptCom(REFCLSID clsid, LPUNKNOWN outer, DWORD context, REFIID iid, void** output) noexcept {
     Caller caller(_ReturnAddress());
+    Arguments arguments(context,outer,output);
     const bool mmdevice = clsid == __uuidof(MMDeviceEnumerator);
     const bool directSoundCom = clsid == CLSID_DirectSound || clsid == CLSID_DirectSound8;
     if (!mmdevice && !directSoundCom) {
@@ -32,6 +41,15 @@ HRESULT WINAPI InterceptCom(REFCLSID clsid, LPUNKNOWN outer, DWORD context, REFI
         return result;
     }
     SdkRecord(Stage::RootEnter, Api::Com, 0, 0, &clsid, &iid);
+    if(AudioDepth) {
+        try {
+            HRESULT result=S_OK;
+            if(ForwardContainedCom(clsid,outer,context,iid,output,result)) {
+                SdkRecord(Stage::RootReturn,Api::Com,0,result,&clsid,&iid);
+                return result;
+            }
+        } catch (...) { StopSdk(E_UNEXPECTED,Stage::UnsupportedStop); }
+    }
     Admit();
     if (directSoundCom) StopSdk(E_NOINTERFACE, Stage::UnsupportedStop);
     AudioCall audio(Api::Com);

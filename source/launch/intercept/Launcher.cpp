@@ -1,5 +1,6 @@
 #include "../preentry/Identity.h"
 #include "BuildIdentity.h"
+#include "SoundIdentity.h"
 #include "../../tests/intercept/Contract.h"
 #include "../../tests/audio-driver/DeviceSnapshot.h"
 #include <detours.h>
@@ -20,7 +21,13 @@ Scenario Parse(const wchar_t* text) {
         {L"worker",Scenario::Worker},{L"wrong-entry",Scenario::WrongEntry},{L"wrong-context",Scenario::WrongContext},
         {L"denied",Scenario::Denied},{L"import-com",Scenario::ImportCom},{L"import-sound",Scenario::ImportSound},
         {L"tls-com",Scenario::TlsCom},{L"tls-sound",Scenario::TlsSound},{L"no-buffer8",Scenario::NoBuffer8},
-        {L"clear-failed",Scenario::ClearFailed},{L"reentrant",Scenario::Reentrant},{L"missing-handshake",Scenario::MissingHandshake}};
+        {L"clear-failed",Scenario::ClearFailed},{L"reentrant",Scenario::Reentrant},{L"missing-handshake",Scenario::MissingHandshake},
+        {L"contained-memory",Scenario::ContainedMemory},{L"contained-class",Scenario::ContainedClass},
+        {L"contained-iid",Scenario::ContainedIid},{L"contained-context",Scenario::ContainedContext},
+        {L"contained-aggregation",Scenario::ContainedAggregation},{L"contained-output",Scenario::ContainedOutput},
+        {L"contained-null-output",Scenario::ContainedNullOutput},{L"contained-callback",Scenario::ContainedCallback},
+        {L"contained-thread",Scenario::ContainedThread},{L"contained-identity",Scenario::ContainedIdentity},
+        {L"contained-live-bytes",Scenario::ContainedLiveBytes}};
     for (const auto& choice : choices) if (std::wstring(text) == choice.first) return choice.second;
     throw std::runtime_error("Use a fixed owned SDK scenario.");
 }
@@ -29,7 +36,9 @@ const char* StageName(Stage stage) {
         "suspended","priority","resume","match","unmatched","gate","runtime-ready","setup","dispatch","joined",
         "factory-requested","root-enter","provider-enter","root-return","cold-stop","unsupported-stop","recursive-stop",
         "non-audio","render-publish","buffer-publish","format","first-silent","start","full-clear","split-clear","play",
-        "callback","removal-denied","references-released","runtime-closed","hooks-removed","retained","detach","error"};
+        "callback","removal-denied","references-released","runtime-closed","hooks-removed","retained","detach","error",
+        "admission-checked","contained-enter","contained-return","sound-scope-enter","sound-scope-exit","live-identity",
+        "other-thread-wrapped","rejection-requested"};
     const auto index = static_cast<size_t>(stage);
     return index < std::size(names) ? names[index] : "invalid";
 }
@@ -62,10 +71,11 @@ int wmain(int argc, wchar_t** argv) {
         Require(length && length < 32768, "Cannot find the fixed launcher directory.");
         const auto directory = std::filesystem::path(path).parent_path();
         struct Locks { std::vector<HANDLE> values; ~Locks() { for (auto file : values) CloseHandle(file); } } locks;
-        locks.values.reserve(3);
+        locks.values.reserve(4);
         VerifyFile(directory/L"SdkTarget.exe",kTargetHash,locks.values);
         VerifyFile(directory/L"SdkInterceptConsumer.dll",kConsumerHash,locks.values);
         VerifyFile(directory/L"SdkInterceptHelper.dll",kHelperHash,locks.values);
+        VerifyFile(kSoundPath,kSoundHash,locks.values);
         Handle file(CreateFileW(output.c_str(),GENERIC_WRITE,0,nullptr,CREATE_NEW,FILE_ATTRIBUTE_NORMAL,nullptr));
         Require(file.value != INVALID_HANDLE_VALUE,"Cannot create the private trace.");
         SECURITY_ATTRIBUTES attributes{sizeof(attributes),nullptr,TRUE};
@@ -114,6 +124,7 @@ int wmain(int argc, wchar_t** argv) {
         FIELD(aborted); FIELD(abortHresult); FIELD(fullClears); FIELD(plays); FIELD(silentReleases); FIELD(nonAudioCalls);
         FIELD(flags); FIELD(attributesPresent); FIELD(stackSize); FIELD(originalEntry); FIELD(parameter); FIELD(returnedHandle);
         FIELD(sdkCom); FIELD(sdkSound); FIELD(sdkThread);
+        FIELD(soundScopes); FIELD(containedCalls); FIELD(originalComCalls); FIELD(identityReady); FIELD(otherThreadWrapped);
 #undef FIELD
         out<<",\"sdkModules\":[";
         for(size_t index=0;index<3;++index) {
@@ -130,7 +141,12 @@ int wmain(int argc, wchar_t** argv) {
                 <<",\"hooksReady\":"<<event.hooksReady<<",\"runtimeReady\":"<<event.runtimeReady<<",\"depth\":"<<event.depth
                 <<",\"outer\":"<<static_cast<DWORD>(event.outer)<<",\"caller\":"<<event.caller<<",\"clsid\":";
             Guid(out,event.clsid); out<<",\"iid\":"; Guid(out,event.iid);
-            out<<",\"callerModule\":"; Module(out,event.callerModule); out<<'}';
+            out<<",\"callerModule\":"; Module(out,event.callerModule);
+            out<<",\"context\":"<<event.context<<",\"aggregation\":"<<event.aggregation
+                <<",\"outputProvided\":"<<event.outputProvided<<",\"outputNull\":"<<event.outputNull
+                <<",\"failedAdmission\":"<<event.failedAdmission<<",\"scopeThread\":"<<event.scopeThread
+                <<",\"scopeSerial\":"<<event.scopeSerial<<",\"containedActive\":"<<event.containedActive
+                <<",\"admittedCount\":"<<event.admittedCount<<'}';
         }
         out<<"]}\n"; const auto text=out.str(); DWORD written=0;
         Require(WriteFile(file.value,text.data(),static_cast<DWORD>(text.size()),&written,nullptr)!=FALSE&&written==text.size(),"Cannot write the private trace.");

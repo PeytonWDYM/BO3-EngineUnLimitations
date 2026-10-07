@@ -1,4 +1,5 @@
-param([Parameter(Mandatory)][string]$DetoursRoot, [Parameter(Mandatory)][string]$OutputDirectory)
+param([Parameter(Mandatory)][string]$DetoursRoot, [Parameter(Mandatory)][string]$OutputDirectory,
+      [string]$WindowsAuditDirectory)
 $ErrorActionPreference = 'Stop'
 function PhysicalPath([string]$Path) {
     $full = [IO.Path]::GetFullPath($Path)
@@ -24,6 +25,8 @@ foreach ($path in @($output, $DetoursRoot)) {
     }
 }
 if (Test-Path -LiteralPath $output) { throw 'Use a new build directory.' }
+. (Join-Path $PSScriptRoot 'SoundIdentity.ps1')
+$soundIdentity = Read-SoundIdentity $WindowsAuditDirectory
 $commit = 'e4bfd6b03e50de46b47abfbd1e46b384f0c5f833'
 if ((& git -C $DetoursRoot rev-parse HEAD) -ne $commit -or
     (& git -C $DetoursRoot remote get-url origin) -ne 'https://github.com/microsoft/Detours.git' -or
@@ -45,6 +48,9 @@ try {
     $env:PATH = "$compilerRoot/bin/Hostx64/x64;$env:PATH"
     $compiler = Join-Path $compilerRoot 'bin/Hostx64/x64/cl.exe'
     New-Item -ItemType Directory -Path $output | Out-Null
+    $soundIdentity.header | Set-Content -LiteralPath (Join-Path $output 'SoundIdentity.h') -Encoding ascii
+    $soundIdentity | Select-Object identitySha256,windowsSha256,callWindowSha256,auditDirectory |
+        ConvertTo-Json | Set-Content -LiteralPath (Join-Path $output 'sound-identity-provenance.json') -Encoding utf8
     $dependencyCopy = Join-Path $output 'dependency/Detours'
     New-Item -ItemType Directory -Path (Split-Path $dependencyCopy) | Out-Null
     Copy-Item -LiteralPath $DetoursRoot -Destination $dependencyCopy -Recurse
@@ -59,12 +65,12 @@ try {
     $memorySources += @('RenderSink.cpp','SoundSink.cpp') | ForEach-Object { Join-Path $repo "source/tests/quiet/$_" }
     $boundarySources = Get-ChildItem (Join-Path $repo 'source/launch/activation') -Filter *.cpp | ForEach-Object FullName
     $boundarySources += Get-ChildItem (Join-Path $repo 'source/launch/quiet') -Filter *.cpp | ForEach-Object FullName
-    $helperSources = @('Trace.cpp','Hooks.cpp','RuntimeOwner.cpp','ThreadGate.cpp','MemorySupport.cpp') | ForEach-Object { Join-Path $PSScriptRoot $_ }
+    $helperSources = @('Trace.cpp','Hooks.cpp','RuntimeOwner.cpp','ThreadGate.cpp','MemorySupport.cpp','ContainedSound.cpp') | ForEach-Object { Join-Path $PSScriptRoot $_ }
     & $compiler @flags /LD @helperSources @memorySources @boundarySources "$DetoursRoot/lib.X64/detours.lib" "/Fe:$output/SdkInterceptHelper.dll" "/Fo:$output/" /link "/DEF:$PSScriptRoot/Helper.def" ole32.lib dsound.lib uuid.lib dxguid.lib /INCREMENTAL:NO
     if ($LASTEXITCODE -ne 0) { throw 'The SDK helper build failed.' }
     $repositoryHeader = "#pragma once`ninline constexpr wchar_t RepositoryRoot[]=L`"$($repo.Replace('\','\\'))`";"
     $repositoryHeader | Set-Content (Join-Path $output 'Repository.h') -Encoding ascii
-    $consumerSources = @('Payloads.cpp','Worker.cpp','MemoryCallbacks.cpp') | ForEach-Object { Join-Path $tests $_ }
+    $consumerSources = @('Payloads.cpp','Worker.cpp','MemoryCallbacks.cpp','RejectionConsumers.cpp') | ForEach-Object { Join-Path $tests $_ }
     $formatSources = @('Format.cpp','Evidence.cpp','Callbacks.cpp') | ForEach-Object { Join-Path $repo "source/tests/audio-driver/$_" }
     & $compiler @flags /DSDK_CONSUMER_BUILD /LD @consumerSources @formatSources "$output/SdkInterceptHelper.lib" "/Fe:$output/SdkInterceptConsumer.dll" "/Fo:$output/" /link ole32.lib dsound.lib user32.lib uuid.lib dxguid.lib /INCREMENTAL:NO
     if ($LASTEXITCODE -ne 0) { throw 'The SDK consumer build failed.' }
