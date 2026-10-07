@@ -22,6 +22,12 @@ The same operation failed when the Realtek Speakers session exposed eight channe
 All eight channels returned to one. Master volume zero and mute true persisted.
 Direct PowerShell invocation and Start-Process both reproduced this failure.
 Individual channel setters also failed. An extra post-exit delay is not a verified fix.
+A separate stereo-format seed also failed the eight-channel probe at the exact private lab executable path.
+After master volume one and unmute, the probe retained zero on two channels. The other six channels stayed at one.
+The seed and probe session identifiers matched. Their grouping GUIDs differed on successful and failed endpoints alike.
+Those grouping differences alone do not explain the surround failure.
+The probe submitted only silent buffers. Endpoint volume and mute stayed unchanged, and the original lab executable was restored.
+Do not repeat stereo seeding as a complete quiet-start solution.
 
 Commands
 

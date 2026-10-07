@@ -128,6 +128,12 @@ Audio-session seeding alone does not meet the silent-launch requirement. A separ
 No game process is currently running. Further launches require a verified quiet-start mechanism.
 CoreAudio channel seeding passed stereo fixtures but failed the exact eight-channel Realtek lab case.
 Direct and hidden launches both reproduced that failure. Individual channel setters did not fix it.
+An independent stereo-format seed at the exact private lab executable path also failed.
+The eight-channel probe retained only two zero channels after master one and unmute. The other six stayed at one.
+Seed and probe session identifiers matched. Grouping GUIDs differed on both successful and failed endpoints.
+The fixture used only silent buffers. Endpoint volume and mute stayed unchanged.
+The lab executable was restored in finally and its current-stock SHA256 was verified again.
+Private evidence/agent-silent-launch/format-identity/report.json records the rejected method and restoration evidence.
 The diagnostic helper records this rejection. It is not a verified silent BO3 launcher.
 The audio E2E entry point now rejects repository output before compilation.
 Private evidence/audio-boundary-red.json and audio-boundary-green.json record the reproduced issue and its correction.
