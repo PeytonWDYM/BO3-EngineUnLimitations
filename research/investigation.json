@@ -39,9 +39,10 @@
     "liveEntities": "Separate read-only sampler passed 22 native E2E checks. Game sampling remains unvalidated.",
     "consistency": "Repeated equal reads reject observed changes. They do not make an atomic game snapshot.",
     "nativeAnalysis": "Capture, Ghidra import, unwind boundaries, cross-references, decompilation, and identity/output guards passed nine E2E checks.",
-    "offlineScriptVariables": "Private exact-build menu inspection verified both reuse chains. Usable capacities are 129999 server slots and 64999 client slots.",
+    "offlineScriptVariables": "Private exact-build menu inspection verified both reuse chains. The separate sampler's pure decoder agrees with that saved capture after identity and code-range checks. Usable capacities are 129999 server slots and 64999 client slots. This does not validate live sampling.",
     "liveScriptVariables": "Separate read-only sampler passed ten owned native E2E cases and fresh review. The shared entity sampler still passes 22 cases. Game measurements remain unvalidated and the private game profile is disabled.",
-    "scriptCleanup": "Native entity deletion queues notify and suspended-stack cleanup. Normal VM work drains the queue. Same-generation grenade completion has not been observed.",
+    "scriptCleanup": "Native entity deletion queues notify and suspended-stack cleanup. Normal VM work drains the queue. Completion for one known grenade allocation lifetime has not been observed.",
+    "entityLifetime": "The verified native reuse version repeats after 63 complete free/spawn cycles. Equal samples do not prove one lifetime. Strict correlation needs allocation/free events, world epochs, and loss detection. That recorder remains unimplemented.",
     "savedErrors": "Private bounded inspection found empty saved engine error buffers in the startup and menu captures. Neither is a failing Zombies capture.",
     "compatibility": "Current stock runtime uses 10-bit network entity IDs. Expanding normal IDs past 1023 conflicts with unpatched clients.",
     "loader": "Native cooperative-fixture foundation only. Game safe point and engine patch remain unimplemented."
@@ -96,6 +97,8 @@
     "Compare an idle baseline, controlled volleys, and recovery intervals.",
     "Mark Connection Interrupted immediately and preserve the error text.",
     "Read the first script error, saved engine error, entity pool, and script-variable pools from the failure snapshot.",
+    "Record the active split count, resolved child weapon, notification category, and owner. Correlate listener receipts before counting descendant scripts.",
+    "Capture allocation/free events with loss detection before making strict same-lifetime cleanup claims. A repeated native version is insufficient.",
     "Inspect available AAE weapon scripts and assets after locating the active mod files.",
     "Select targeted instrumentation from the captured errors and verified script paths.",
     "Verify a cause before changing gameplay or engine limits."

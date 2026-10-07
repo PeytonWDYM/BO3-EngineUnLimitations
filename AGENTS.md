@@ -66,16 +66,22 @@ The same flag also marks spent split missiles. Keep the flag, numeric type, and 
 Do not identify all flagged entities as cosmetic temporary events or treat that clock as projectile creation time.
 Initialization clears that clock. Event helpers and native free stamp it for different purposes.
 The splitter sets the flag without resetting the clock. A later collision event can refresh it.
-To claim parent retention, verify the same slot generation and continued per-entity frames, not only advancing server time.
+To claim parent retention, verify one allocation lifetime and continued per-entity frames, not only advancing server time.
+The native reuse version repeats after 63 complete reuse cycles. Equal external samples do not prove one lifetime.
+Strict cleanup correlation needs allocation/free events, world epochs, and loss detection. That recorder remains unimplemented.
 The stock packet writer and parser use 10-bit entity IDs, with 1023 as the terminator.
 Do not expand normal entities into the fake range. That change would conflict with unpatched stock clients.
 The verified missile type is 4. A numeric event type alone does not identify a War Machine effect.
+Native split children reach a shared grenade notification producer before their anti-resplit flag is set.
+The child weapon selects grenade_fire or grenade_launcher_fire. Its settings, owner, listener receipt, and actual count remain unverified.
+Do not infer seven script watcher sets from an assumed seven child entities.
 Native entity deletion queues cleanup of entity-owned script notification waiters and suspended stacks.
 Normal VM work drains that queue. A missing grenade_dud endon alone does not establish a leak.
-Some nested wait stacks can retain deferred work. Verify the same entity generation and advancing VM time before claiming failed cleanup.
+Some nested wait stacks can retain deferred work. Verify one entity allocation lifetime and advancing VM time before claiming failed cleanup.
 The stock script-variable pools have 129,999 usable server slots and 64,999 usable client slots.
 Threads share these pools. Function call depth does not count all suspended threads.
 Private offline menu inspection verifies pool reuse chains and headroom.
+The separate sampler's pure decoder agrees with that saved menu inspection. This does not validate live sampling.
 A separate read-only VM sampler now has owned native fixture evidence. Game measurements remain unvalidated.
 Its private game profile remains disabled. Numeric slot types do not identify script functions or grenade owners.
 Its ten native E2E cases passed fresh review. The shared process API still passes all 22 entity sampler cases.

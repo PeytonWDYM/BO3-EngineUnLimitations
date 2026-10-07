@@ -328,6 +328,42 @@ Use memory providers first. A separate loader fixture must prove setup before an
 These plans do not establish stock loader compatibility or complete quiet startup.
 Private evidence/agent-engine-review/audio-activation-boundary/activation-review.txt records the method inventory, failure scope, and fixture contract.
 
+2026-10-07: conditional split-child script notifications
+
+The exact native split-child path reaches the shared grenade producer's notification call.
+That call chooses grenade_launcher_fire when the resolved child's weapon discriminator is nonzero. Otherwise it chooses grenade_fire.
+The child anti-resplit flag is set after this call. It does not suppress the notification already sent.
+The recipient resolves through the parent's owner handle. Normal ownership propagation is verified, but a special branch prevents an unconditional player-owner claim.
+BetaLite consumes both notification categories. Its grenade_fire consumer also filters equipment and placeable mines.
+Actual child settings, active split count, owner, listener receipt, and completed helper creation still need runtime correlation.
+These findings support a conditional script-pressure hypothesis. They do not establish seven watcher sets, a leak, or the reported failure cause.
+Private evidence/agent-engine-review/launcher-notify-review/notification-review.txt records code, opcode hashes, and scope.
+
+The grenade checker also calls a stock utility with a quarter-second timeout and grenade/player events.
+That utility is absent from the extracted beta override package. Its owner and cancellation behavior remain unverified.
+Two offline generic extraction attempts returned success without script output. This does not prove that the inspected stock fastfiles lack scripts.
+No mapped game loader, native script-decryption tool, or game was executed.
+Private evidence/grenade-wait-review/findings.txt records this bounded extraction limit and input hashes.
+
+2026-10-07: allocation lifetime and saved VM decoder checks
+
+The reviewed entity free and normal spawn paths each advance a native reuse version modulo 63.
+Native queued-reference consumers compare it to reject stale work. It is useful metadata, not a monotonic allocation serial.
+An active token can repeat after 63 complete free/spawn cycles. At-cap allocation bypasses the usual reuse delay.
+No safe polling interval or wider monotonic native discriminator was established.
+Equal slot, version, flags, type, and clocks do not prove uninterrupted lifetime.
+Strict cleanup correlation needs allocation/free events, recorder serials, world epochs, and loss detection.
+That event recorder and its stock hook coverage remain unimplemented.
+Private evidence/agent-engine-review/entity-generation-review/generation-review.txt records the verified writes and consumers.
+
+The separate VM sampler's pure decoder was compared with the earlier independent saved-menu report.
+Both free chains, numeric types, free/allocated counts, deferred state, and current depth agree.
+Five wrong identity cases reject. Sixteen private native code-range hashes agree with captured bytes.
+The dump, input files, and decoder source hashes are retained. The private profile remains disabled and unchanged.
+Preparation corrected a UTF-8 BOM read and an unnecessary reserved-zero subtraction before producing the final comparison.
+This is saved-data decoder evidence. It does not validate live sampling, lifetime correlation, or a failing match.
+Private evidence/vm-offline-decoder-review/result.json records the comparison and limits.
+
 Final deliverable and checkpoints:
 
 Peyton requests continued commits and pushes, a final real pull request, a fresh review, and a shareable patch-loader executable.
