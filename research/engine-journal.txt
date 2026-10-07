@@ -174,8 +174,8 @@ The client also has a verified DirectSound buffer path for voice playback.
 It writes samples through Lock/Unlock, plays a looping buffer, and reads the winvoice_voice_level control.
 The reviewed attenuation clamp stops at -5000. Do not treat that setting as a proven mute.
 The VoiceChat configuration-to-output gate and its startup order remain unverified.
-The reviewed video COM object is an H264 decoder. Film audio routing remains unresolved.
-A DirectSound-only wrapper would miss the direct WASAPI path. No wrapper or game audio patch is implemented.
+The reviewed video COM object is an H264 decoder. This first review did not resolve film audio routing.
+A DirectSound-only wrapper would miss the direct WASAPI path. No game audio patch is implemented.
 Private evidence/agent-engine-review/windows-audio-backend-inventory.txt records the decoded COM calls and coverage boundaries.
 Private evidence/agent-engine-review/directsound-video-coverage.txt records the voice buffer and video decoder paths.
 The next distinct quiet-start step is an owned render-boundary fixture covering WASAPI and DirectSound.
@@ -236,7 +236,8 @@ The client has 26,496 reusable slots and 38,503 allocated slots.
 Both chains are in range, contain no duplicate indices, and match all slots with the native free type.
 Both deferred entity heads and first-error pointers are zero. Both current function depths are zero.
 These are menu measurements. They do not describe a late Zombies match.
-No live VM sampler or grenade owner/generation decoder is implemented.
+A separate read-only VM sampler now has owned native fixture evidence.
+Real game measurements and grenade owner/generation decoding remain unvalidated.
 
 A separate native queue holds 100 client notification jobs per local client.
 When it is full, the allocator warns and drops that notification. It does not raise the script-variable error.
@@ -265,6 +266,51 @@ Private evidence/agent-live-sampler/native-vm-teardown/offline-vm-report.json re
 Private evidence/native-error-review/saved-errors.json records the bounded saved error reads and capture provenance.
 Private evidence/agent-engine-review/startup-filter-review.txt and alternate-startup-route-review.txt record rejected startup routes.
 Raw assembly, addresses, build profiles, extracted scripts, and dumps remain private.
+
+2026-10-07: startup sound routing and private beta asset inventory
+
+The reviewed startup movie constructs the bik_BO3_Global_Logo_LogoSequence sound alias.
+Successful native movie open submits that alias through the stock SND playback queue when lookup succeeds.
+The actual lookup result during startup was not captured. The existing lab MKV contains one H264 video stream and no audio stream.
+The stock sound worker calls the verified WASAPI submitter.
+The complete queue-to-mixed-samples trace remains unresolved. Other movie variants and output APIs were not exhaustively reviewed.
+This narrows the quiet-start investigation. It does not prove that a wrapper covers all game output.
+Private evidence/agent-engine-review/movie-audio-routing/routing-review.txt records the producer, controls, asset hash, and scope.
+
+Private offline inspection inventories 2,204 BetaLite core_mod asset records, including three weapon records and 215 script records.
+The script count agrees with the earlier independent script extraction.
+The inspection uses the BO3-specific ACTS asset-list layout. It does not execute game code or mapped game loaders.
+Weapon names, native layouts, selected runtime weapons, and Pack-a-Punched War Machine split counts remain unverified.
+Private evidence/mod-weapon-review/asset-table.json records the inventory, input hash, source hashes, and rejected corrupt copies.
+No BO3 launch, normal installation change, Workshop edit, or engine patch occurred during these checks.
+
+2026-10-07: reviewed native tool checkpoints
+
+The separate VM sampler opens verified targets with query and VM_READ access only.
+It checks the complete reuse chain, deferred entity chain, capacities, numeric types, and bounded first-error text.
+Page-bounded text reads stop at a NUL before an inaccessible page. Consistency compares original message bytes.
+Ten native E2E cases passed. Healthy independent memory hashes and native checksums remained unchanged.
+The shared VerifiedProcess refactor preserves existing identity checks. All 22 existing entity E2E cases passed after that change.
+A fresh reviewer verified the source hashes, native fixture hash, evidence, bounds, and cleanup. No blocker remained.
+The private game VM profile remains disabled. These fixture results do not validate live game measurements.
+Private evidence/agent-live-sampler/vm-e2e/final-green/result.json records the final cases and source hashes.
+Private evidence/agent-patch-loader/vm-sampler-review/review.txt records the fresh review.
+
+The quiet audio prototype forces the WASAPI SILENT flag and keeps DirectSound output rings silent with separate write memory.
+The baseline produced twelve expected failures before implementation. The protected native fixture passed all twelve scenarios.
+It uses owned memory sinks. It opens no physical audio device and changes no audio volume.
+A fresh review verified COM identity, supported formats, split writes, first buffers, recreation, and reference cleanup.
+The reviewer reproduced an internal Clear Unlock failure. Playback remains blocked and this contract requires buffer recreation.
+Unknown COM interfaces, effects, raw aliases, duplicate buffers, and complete game activation remain outside the prototype contract.
+The test harness now rejects repository output before compilation. Focused checks verified rejection and no new output.
+Private evidence/agent-silent-launch/output-boundary/ records the baseline, protected result, output guard, and source hashes.
+Private evidence/audio-boundary-fresh-review/Review.txt records the fresh review and focused recovery reproduction.
+These results do not validate a quiet BO3 launch. No failing Zombies capture or engine fix exists yet.
+
+Read-only comparison also finds that three reviewed audio routines' initial captured bytes differ from their disk bytes.
+This does not establish a protection mechanism or a disk patch location. No game bytes were changed.
+Private evidence/mod-weapon-review/audio-disk-comparison.json records the bounded comparison and range hashes.
+The normal and lab stock executable hashes still match the recorded current build.
 
 Final deliverable and checkpoints:
 

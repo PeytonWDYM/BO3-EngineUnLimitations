@@ -51,6 +51,10 @@ The recorder waits for BlackOps3.exe and stops when that process exits.
 It records process exits, but it cannot guarantee a full dump after the process has exited.
 The separate read-only entity sampler is available under source/live/. Read source/live/README.txt for its commands.
 It requires a private profile verified against the exact executable. Its native E2E passed, but game sampling remains unvalidated.
+The separate read-only VM sampler is available under source/live/vm/. Read its README.txt for commands and limits.
+Its ten owned native E2E cases passed fresh review. The private game profile remains disabled.
+It measures numeric script-variable counts, deferred cleanup chains, current function depth, and bounded first-error text.
+It does not identify script functions, suspended thread owners, or grenade ownership.
 Equal repeated reads reject observed changes. They do not produce an atomic game snapshot.
 Projectile creation and deletion, server frame time, and GSC script threads still need targeted instrumentation.
 OS memory and thread counts alone cannot prove an entity leak.

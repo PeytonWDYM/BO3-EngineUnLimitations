@@ -75,7 +75,10 @@ Normal VM work drains that queue. A missing grenade_dud endon alone does not est
 Some nested wait stacks can retain deferred work. Verify the same entity generation and advancing VM time before claiming failed cleanup.
 The stock script-variable pools have 129,999 usable server slots and 64,999 usable client slots.
 Threads share these pools. Function call depth does not count all suspended threads.
-Private offline menu inspection verifies pool reuse chains and headroom. Live VM measurements remain unimplemented.
+Private offline menu inspection verifies pool reuse chains and headroom.
+A separate read-only VM sampler now has owned native fixture evidence. Game measurements remain unvalidated.
+Its private game profile remains disabled. Numeric slot types do not identify script functions or grenade owners.
+Its ten native E2E cases passed fresh review. The shared process API still passes all 22 entity sampler cases.
 Capture the first script error and saved engine error alongside resource usage. Old or empty error buffers do not establish a cause.
 These findings do not establish the cause of Peyton's reported failure. No failing Zombies match has been captured yet.
 Read research/engine-journal.txt for the current evidence, tool checks, and lab status.
@@ -92,7 +95,14 @@ Do not bypass native command rules or treat guessed launch switches as proof of 
 Stock directly uses WASAPI with EVENTCALLBACK and NOPERSIST. The prior helper used different stream flags.
 An owned fixture with the exact native flags rejects prior zero seeding on the current default stereo endpoint before any deliberate volume reset.
 The saved stereo menu format does not establish the next launch's format. Native retry can recreate the audio client.
-DirectSound and video output coverage remain unresolved. No audio wrapper or game audio patch is implemented.
+The reviewed startup movie constructs a stock SND alias. Its lab MKV contains video only.
+The native movie path submits that alias through the stock sound queue.
+The stock sound worker calls the verified WASAPI submitter. The complete alias-to-samples trace remains unresolved.
+Separate WASAPI and DirectSound wrappers now exist as owned-fixture prototypes.
+The native baseline recorded twelve expected failures before implementation. All twelve protected scenarios passed fresh review.
+DirectSound requires raw aliases to be surrendered and supported stopped secondary buffers.
+An internal clear Unlock failure blocks playback and requires buffer recreation under the current contract.
+They do not implement game activation or prove complete quiet startup. No game audio patch is implemented.
 
 ## Validation and handoff
 

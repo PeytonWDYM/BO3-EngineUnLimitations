@@ -24,7 +24,7 @@
   ],
   "capture": {
     "measured": ["process CPU", "private memory", "working set", "virtual memory", "handles", "OS threads", "window response", "process identity", "loaded modules", "manual match and firing markers", "available console logs", "AAE settings", "manual full memory snapshots", "available Windows crash events"],
-    "notYetMeasured": ["live server entity count", "projectile creation and deletion", "GSC VM allocations and script threads", "server frame time", "network snapshot usage"],
+    "notYetMeasured": ["validated live server entity count", "projectile creation and deletion", "validated live GSC VM allocations", "script thread functions and owners", "server frame time", "network snapshot usage"],
     "limits": [
       "Connection Interrupted alone does not identify the exhausted resource.",
       "OS threads are not GSC script threads.",
@@ -39,7 +39,8 @@
     "liveEntities": "Separate read-only sampler passed 22 native E2E checks. Game sampling remains unvalidated.",
     "consistency": "Repeated equal reads reject observed changes. They do not make an atomic game snapshot.",
     "nativeAnalysis": "Capture, Ghidra import, unwind boundaries, cross-references, decompilation, and identity/output guards passed nine E2E checks.",
-    "offlineScriptVariables": "Private exact-build menu inspection verified both reuse chains. Usable capacities are 129999 server slots and 64999 client slots. Live VM sampling is unimplemented.",
+    "offlineScriptVariables": "Private exact-build menu inspection verified both reuse chains. Usable capacities are 129999 server slots and 64999 client slots.",
+    "liveScriptVariables": "Separate read-only sampler passed ten owned native E2E cases and fresh review. The shared entity sampler still passes 22 cases. Game measurements remain unvalidated and the private game profile is disabled.",
     "scriptCleanup": "Native entity deletion queues notify and suspended-stack cleanup. Normal VM work drains the queue. Same-generation grenade completion has not been observed.",
     "savedErrors": "Private bounded inspection found empty saved engine error buffers in the startup and menu captures. Neither is a failing Zombies capture.",
     "compatibility": "Current stock runtime uses 10-bit network entity IDs. Expanding normal IDs past 1023 conflicts with unpatched clients.",
@@ -51,7 +52,9 @@
     "newEvidence": "The author's September 30 announcement confirms latest-game beta support. Its beta channel links both full Beta 2283794212 and BetaLite 2739657648.",
     "betaRefresh": "Steam records BetaLite's October 2 manifest as current. All 71 files in the refreshed private lab copy match the installed source hashes. The source is unchanged.",
     "nextCheck": "The installed beta gate matches the latest stock build. Verify the selected package and bootstrap identity. AAE can rewrite fs_game.",
-    "quietStartup": "Prior session seeding is rejected by an owned fixture using the exact native EVENTCALLBACK|NOPERSIST flags on the current default stereo endpoint. It initializes at full volume before any deliberate reset. Surround seeding and inspected launch setting routes also remain rejected. No game audio patch or complete quiet startup is validated."
+    "quietStartup": "Prior session seeding and inspected launch setting routes remain rejected. Separate WASAPI and DirectSound submission wrappers passed twelve owned memory-only native scenarios and fresh review. Game activation, complete output coverage, and quiet startup remain unvalidated. An internal DirectSound clear Unlock failure requires buffer recreation.",
+    "startupMovieAudio": "The reviewed startup path constructs a stock SND alias and submits it through the sound queue when lookup succeeds. The existing lab MKV has video only. The complete alias-to-mixed-samples trace remains unresolved.",
+    "betaWeaponAssets": "Private offline inspection inventories three weapon records in BetaLite core_mod. Their names, native layouts, runtime selection, and War Machine split settings remain unverified."
   },
   "verifiedReferences": [
     {
@@ -85,7 +88,8 @@
     }
   ],
   "nextSteps": [
-    "Verify a quiet lab launch without changing system audio or the normal profile.",
+    "Verify activation before the first audio submission and after recreation in an owned native process.",
+    "Validate complete quiet lab startup without changing system audio or the normal profile.",
     "Verify the selected BetaLite package and bootstrap identity during mod loading.",
     "Capture the stock client with AAE on Origins.",
     "Record the actual player count and host role.",
