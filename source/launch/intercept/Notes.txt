@@ -1,0 +1,25 @@
+Owned Windows SDK interception
+
+This fixture hooks the actual CoCreateInstance, DirectSoundCreate8 and CreateThread entrypoints in one Detours transaction. The helper imports Windows libraries only. Its owned consumer calls SDK roots directly. Memory mode substitutes the existing memory providers inside the hooks. It never forwards a recognized audio root to a physical device factory. A missing committed-hook handshake stops the consumer before it can reach a device factory.
+
+DllMain restores the Detours import edit, resolves the already-loaded DirectSound export, commits hooks and publishes readiness using POD state. It does not construct the Boundary, initialize COM, create audio objects, load consumer modules, wait or start workers. Earlier helper Windows dependencies execute before this readiness point and remain uncovered.
+
+The entry flow explicitly initializes the runtime outside DLL initialization. The worker flow matches the fixed owned consumer export and the complete pointer value 14. It preserves native arguments, handle, thread ID, CREATE_SUSPENDED, priority and ResumeThread. The gate initializes the runtime before the original TLS-like setup and worker dispatch. Joining before the fixture's entry marker does not establish execution before the actual EXE entrypoint. Unmatched SDK threads retain their original entry and arguments.
+
+Covered cold imported-DLL and EXE TLS calls enter the SDK hooks and terminate the owned process before provider publication. Nested recognized audio roots terminate with E_PENDING. There is no thread-local raw-factory bypass. Each root records class, IID, immediate caller, outer factory, depth and thread ID. DirectSound COM activation is unsupported. Non-audio CoCreateInstance calls forward through the original trampoline. Ordinary runtime initialization resolves the saved pre-attach SDK addresses to module path, base, RVA, image size and timestamp.
+
+Consumers independently submit silence even if their objects are unwrapped. WASAPI uses the validated mix format, fills the full first packet and passes AUDCLNT_BUFFERFLAGS_SILENT before Start. DirectSound stops the buffer, validates its actual GetFormat and GetCaps, clears the entire actual ring from offset zero, checks both Lock regions and successful Unlock, then permits Play. Subsequent split writes and retained packets are also silent. No Restore follows a failed clear.
+
+Successful memory cases create two root/client chains, recreate clients during three explicitly fired memory callbacks, and create two DirectSound buffers. They retain services after releasing parent interfaces and deny removal while wrappers remain live. Repeated service queries preserve identity. Sound observation counters include both Play and Unlock observations; they are not Play-call counts. Memory callbacks may create clients on the single owned caller. Physical callbacks use the existing atomic-only handlers and retain no audio client.
+
+The owned entry or single worker releases callbacks, interfaces, event and hidden window on the creating thread before CoUninitialize. The main thread joins the worker before runtime and hook removal. Memory teardown requires this quiescent fixture contract. Physical mode retains helper, hooks, runtime and trace mapping until OS process cleanup. It does not attempt concurrent hook removal or claim SDK background-thread quiescence. Later recognized audio requests after runtime shutdown stop before publication.
+
+Build and replay
+
+Run source/tests/intercept/Test-Intercept.ps1 with -OutputDirectory set to a new private directory, -DetoursRoot set to the unchanged official Microsoft Detours commit e4bfd6b03e50de46b47abfbd1e46b384f0c5f833, and -Python set to a Python interpreter with pefile. Build and test guards resolve junctions and reject repository output before discovery or compilation. The native launcher checks all three fixed companion hashes before creating an output file or process. It has no arbitrary executable, PID or stock target mode.
+
+Replay an existing build with: python -B source/tests/intercept/Verify-Intercept.py --bin PRIVATE_BIN --output NEW_PRIVATE_RESULTS. This verifier runs memory mode only. It preserves JSON traces, commands, source/dependency hashes and before/after binary hashes.
+
+Physical-silent is a separate explicit launcher mode accepting only the fixed entry or worker scenario. Physical execution is held for review of memory evidence, source and binary hashes, silent consumer paths and helper import/TLS/CRT inventory. The unhooked parent can take getter-only endpoint snapshots before and after the owned child. It does not create a render stream or modify endpoint settings. The hooked child has no raw snapshot bypass.
+
+This is an owned SDK-boundary fixture. It does not prove BO3 chronology, global startup output coverage, device compatibility, quiet game launch, gameplay stability or an engine fix.

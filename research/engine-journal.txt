@@ -550,6 +550,33 @@ Current package identity matches the refreshed manifest. Six inspected script bl
 No game, mod DLL, device, configuration, or installation change occurred in this read-only review.
 Private evidence/agent-engine-review/war-machine-test-route/route-review.txt and provenance.json retain exact snippets and input hashes.
 
+2026-10-07: reviewed actual Windows SDK interception and first physical failure
+
+The new owned helper hooks actual CoCreateInstance, DirectSoundCreate8, and CreateThread in one transaction.
+Eight memory groups passed across fourteen child traces. Three missing companions refused before output or child creation.
+The baseline still hooks SDK roots and uses memory providers. No unhooked physical baseline ran.
+Fresh review bound seventy-four current sources, four unchanged binaries, exact SDK exports, and eighteen helper COFF objects.
+The helper imports Windows libraries only, with no target or consumer dependency.
+Only two POD imported-pointer assignments remain in its user CRT entries. One compiler TLS callback remains.
+An unused memory report pulled in locale initializers; retained evidence identified them and the final build removed that dependency.
+Cold imported-DLL and TLS calls stop before provider work. Real worker creation preserves suspension, ID, handle, priority, and resume.
+Nested recognized roots stop before a second provider. Non-audio COM retains original trampoline forwarding.
+Consumers fill WASAPI packets with silence and SILENT. DirectSound independently clears its complete stopped ring before Play.
+Physical callbacks only update atomics. The helper, hooks, runtime, and trace mapping stay resident until process cleanup.
+Root independently bound the accepted hashes and inspected the concrete silence sequence before one physical worker run.
+That run lasted about 0.156 seconds. The owned target stopped with E_PENDING and the defined termination code.
+Two WASAPI first silent packets and Starts succeeded. During original DirectSoundCreate8, DSOUND requested an enumerator at depth one.
+The request uses MMDeviceEnumerator and IMMDeviceEnumerator. The existing guard rejects this actual SDK-internal nesting.
+No DirectSound ring clear or Play occurred. Parent default routes and endpoint controls matched exactly before and after.
+All four binary hashes stayed unchanged. No SDK target, launcher, or BO3 process remained after the run.
+Callback live count was two at the forced stop. This does not prove graceful cleanup, callback release, or CanUnload.
+The rawPublications detector measures memory providers only; its physical zero does not prove interface containment.
+The next step must classify this precise original-provider call. Do not add a broad thread-local raw bypass.
+No BO3 launch, game fix, normal installation change, or nonzero physical baseline occurred.
+Private evidence/agent-patch-loader/sdk-intercept/accepted/results/result.json and inventory-and-identity.json bind the accepted build.
+Private evidence/sdk-interception-fresh-review/review.txt and evidence-verification.json record the independent review.
+Private evidence/sdk-interception-physical/20261007T133713Z-5d5641d3/run.json and trace.json retain the actual failed call.
+
 Final deliverable and checkpoints:
 
 Peyton requests continued commits and pushes, a final real pull request, a fresh review, and a shareable patch-loader executable.

@@ -132,12 +132,20 @@ It records hook readiness separately from runtime construction outside loader in
 Covered early DLL and TLS calls terminate the owned process before factory execution or raw publication.
 This stop skips ordinary cleanup and DLL detach. It is not stock integration or graceful game recovery.
 Joined worker calls, retained callbacks, recreation, and removal refusal are covered within a single-caller contract.
-The earlier dependency remains uncovered. Actual Windows interception and stock startup remain unvalidated.
+The earlier dependency remains uncovered. These owned-factory cases do not validate Windows interception or stock startup.
 The narrow worker-start extension passed seven focused native groups across thirteen child scenarios and fresh review.
 It matches both the fixed owned generic entry and full context value, while preserving real suspended creation, ID, handle, priority, and resume.
 It constructs the memory runtime on ordinary worker entry before original owned setup and dispatch. Unmatched threads retain their behavior.
 The target joins before its fixture entry marker. That proves marker independence, not actual EXE-entry or stock chronology.
 Cold unmatched factory calls still stop. Joined callback and interface cleanup precedes runtime destruction and hook removal.
+The separate SDK fixture now hooks actual CoCreateInstance, DirectSoundCreate8, and CreateThread in one transaction.
+Eight memory groups across fourteen child traces passed fresh review, with fixed companion and private-output guards.
+Its helper imports Windows libraries only. Accepted initialization includes two POD assignments and one compiler TLS callback.
+A single silent physical SDK run completed two WASAPI first packets and Starts, then stopped on a nested DirectSound enumerator request.
+The guard recorded E_PENDING and terminated before any DirectSound buffer clear or Play. Endpoint controls and defaults stayed unchanged.
+This forced stop does not verify callback release, CanUnload, or graceful cleanup. No owned process remained afterward.
+The next integration must address that exact original-provider request without a broad raw-object bypass.
+The rawPublications detector covers memory objects only. A physical zero does not establish no raw interface escape.
 The next quiet-start step must recover stock first-call timing and cover every output route before a game launch.
 The bounded stock coverage audit verifies known WASAPI and DirectSound routes but leaves earliest call order unresolved.
 Its TLS callback and ordinary entrypoint transfer into indirect flow. Static import absence does not exclude other output routes.
