@@ -120,7 +120,13 @@ One reviewed stock failure branch releases the buffer without a null check. Do n
 The separate pre-entry loader fixture passed eight native cases and fresh review using a dummy factory.
 It records readiness before its imported consumer, TLS, and entrypoint. An earlier dependency call remains an explicit coverage failure.
 It retains its helper until process exit through the loader dependency. It does not prove stock readiness or integrate the audio adapters.
-The next quiet-start step must compose the loader and adapters, define stock-safe stopping, and verify first output coverage.
+The composed startup fixture passed nine native groups and fresh review, using owned factories and memory sinks.
+It records hook readiness separately from runtime construction outside loader initialization.
+Covered early DLL and TLS calls terminate the owned process before factory execution or raw publication.
+This stop skips ordinary cleanup and DLL detach. It is not stock integration or graceful game recovery.
+Joined worker calls, retained callbacks, recreation, and removal refusal are covered within a single-caller contract.
+The earlier dependency remains uncovered. Actual Windows interception and stock startup remain unvalidated.
+The next quiet-start step must recover stock first-call timing and cover every output route before a game launch.
 The bounded stock coverage audit verifies known WASAPI and DirectSound routes but leaves earliest call order unresolved.
 Its TLS callback and ordinary entrypoint transfer into indirect flow. Static import absence does not exclude other output routes.
 Keep hook readiness distinct from activation-runtime readiness. Do not initialize COM or audio under the loader lock.

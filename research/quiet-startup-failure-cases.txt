@@ -1,0 +1,30 @@
+Owned quiet startup composition failure cases
+
+Write consumers and these cases before the composition implementation.
+Use the reviewed activation adapters and existing memory providers. Never call physical audio factories.
+
+1. The raw post-loader baseline must publish raw render and buffer interfaces and record non-silent memory output.
+2. Both root attempts from imported-DLL initialization must see committed hooks but no runtime readiness.
+   Stop the owned process without C++ exception unwinding, provider construction, raw publication, or later consumer execution.
+3. Both root attempts from startup TLS must stop under the same policy before ordinary entrypoint execution.
+4. A helper dependency can call a raw factory before helper attach. Record this as uncovered and fail coverage.
+   The shim must not create any object or physical device during this deliberate earlier call.
+5. Successful entry calls must follow both readiness milestones. Exercise both output families, repeated roots/services,
+   two live clients, callbacks, recreated buffers, and first quiet output. Test separate and shared service identities.
+6. A worker created after explicit outside-loader initialization must activate and recreate both families with memory sinks.
+   Preserve callback identity and its actual dispatch thread. Join the worker outside loader initialization.
+7. Denied readiness must stop startup. Buffer8 query and initial clear failure must stop before native-style null cleanup.
+   Record the original failure HRESULT. Do not throw the existing fixture abort exception across COM or loader frames.
+8. Live wrappers and retained callbacks must block removal. They must still produce quiet output after removal refusal.
+   Release callbacks and all interfaces before checking CanUnload, destroying runtime state, and detaching hooks.
+   Keep helper residency through the static dependency until process exit. Do not force mid-process unload.
+9. Missing or changed target/helper files must fail their fixed hash checks before child creation.
+   Repository-root, child, and junction-alias outputs must fail before compiler discovery or process creation.
+   Confirm DirectSound-shaped imports use ordinal 11 and match the named alias at runtime.
+
+The launcher accepts only fixed fixture identities and scenarios. Hash and output guards precede process creation.
+The build resolves directory junctions before dependency work, compiler discovery, or artifact creation.
+Retain source/dependency hashes, before/after binary hashes, commands, child exits, and bounded JSON event traces privately.
+The two milestones are different. Hook readiness is not successful activation-runtime readiness.
+The fixture supplies its own phase contract. It is not a Windows loader-lock detector.
+Do not claim actual Windows factory interception, hardware compatibility, quiet stock startup, or an engine stability fix.

@@ -436,6 +436,25 @@ NOPERSIST disables session volume and mute persistence. It does not itself dispr
 The assessed shortcut therefore does not pass the current quiet-start gate. This is not a claim that all routing is impossible.
 Private evidence/quiet-routing-alternative/Assessment.md records primary sources, endpoint metadata, and remaining proof gaps.
 
+2026-10-07: reviewed owned startup composition
+
+The pre-entry loader and activation boundary now compose through two owned Windows-shaped factories and memory sinks.
+Nine native groups passed across thirteen child scenarios. Five binary hashes stayed unchanged.
+The helper commits both hooks during attach using POD state. Normal owned entry constructs the activation runtime later.
+Hook-ready and runtime-ready are separate milestones. The fixture phase contract does not detect the Windows loader lock.
+Four covered imported-DLL and TLS calls terminate before owner construction, provider execution, raw publication, or later consumer code.
+The stop uses owned-process termination, rather than exception unwinding through loader or COM frames.
+It deliberately skips ordinary cleanup and DLL detach. The parent retains the trace.
+An earlier dependency call remains uncovered and prevents later runtime initialization.
+Allowed entry and joined-worker calls verify quiet memory output, identities, callback ownership, recreation, and removal refusal.
+Enumerators and devices repeat identities; clients and secondary buffers are recreated.
+Legacy soundPlays counters include output observations from Play and Unlock. They do not count Play calls alone.
+Fresh review found no blocker within the single-caller and quiescent-removal contract.
+Two wording corrections and two removed EOF blank lines were bound to amended hashes. Behavior, five binaries, and the native report stayed unchanged.
+Actual Windows interception, earlier dependency coverage, real factory recursion, stock timing, and complete game output coverage remain unvalidated.
+Private evidence/agent-patch-loader/startup/final/results/result.json records the native cases.
+Private evidence/startup-fresh-review/review.txt and evidence-verification.json record the final review and provenance checks.
+
 Final deliverable and checkpoints:
 
 Peyton requests continued commits and pushes, a final real pull request, a fresh review, and a shareable patch-loader executable.
