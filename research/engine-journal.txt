@@ -793,6 +793,47 @@ Its extracted script files are in the private lab. No mod cleanup action was nee
 No game was launched, controlled, injected or patched during this analysis. Live sampling profiles remain disabled.
 The next work is exact script-frame matching, allocation ownership and the captured native error-recovery path.
 
+2026-10-07 23:20 UTC: retained grenade-helper cleanup path
+
+Private offline inspection matched 3,803 saved stack headers against bounded loaded script views and export tables.
+There are 2,079 util::waittill_string helpers. A numeric thread type alone did not identify their function.
+Captured native accessors verify the thread self, notify hash, entity reference, string value, and child links.
+Exactly 1,883 helpers wait for zombify. Native player entity references zero and one own 1,768 and 115 respectively.
+Each helper retains a separate tracker object. Exactly 1,878 trackers have only a die listener and no returned listener.
+Five trackers retain a returned listener. Six live thread records have tracker self references.
+The helper locals and tracker graphs occupy 18,866 distinct pool slots.
+Another 3,766 notify threads refer to these helpers. These counts are not predicted reclamation totals.
+An early probe mislabeled entity reference fields and grouped the two players together.
+The captured entity-reference accessor corrected that interpretation before these findings were recorded here.
+Object IDs and native thread self use 32 bits. Unused upper value bits can contain stale data.
+
+The exact loaded util::waittill_any_ex creates separate helpers and a tracker timeout.
+Its caller waits for returned, then sends die to cancel the helpers.
+The exact loaded waittill_string waits on its self entity and has tracker die and self death cancellation.
+The full AAE grenade checker ends on grenade death and player zombify.
+It also passes player and zombify into the utility, creating a separate player-owned helper.
+If grenade death ends the caller first, it cannot send tracker die to that separate helper.
+This is a supported cleanup-leak path, not yet controlled proof that every retained helper came from this checker.
+The shared helper code is a captured loaded asset. Community source was only an initial reference.
+Two captured script views have the same weapons path. The exact full-AAE header selects one view.
+Its grenade call resolves to the captured shared utility. Linking changes the raw method opcode and installs the import parameter count.
+Do not patch a guessed raw call-count byte. The candidate must preserve string relocations and import semantics.
+
+The captured AAE native error hook filters the eight-byte substring VCRedist.
+Other formatted messages call the saved original native trampoline.
+This filter does not explain the captured child-variable pool error or establish the first-error sequence.
+
+The installed full-AAE fastfile is unencrypted PC zlib format version 0x251.
+Its SHA-256 is 30532f605e8b3c9914dcd1169b23f9d46cd83949fdfe5b5e0fbe2ddf361d1d88.
+Its extracted weapons script occurs exactly once in the decoded asset data.
+The candidate design removes the player argument from this helper call and preserves the outer player cancellation.
+A bounded bytecode padding pair can preserve all code offsets and string relocation records.
+The captured native GetZero and DecTop instructions provide a matching temporary integer push and release.
+The unique utility import record owns this one six-parameter call.
+No candidate is installed, and no game test or validated fix exists yet.
+Private evidence/failure-20261007T222120Z/ retains the loaded code, native checks, graphs and reports.
+Raw assets and private addresses remain outside the public repository. The open game remains unchanged.
+
 Final deliverable and checkpoints:
 
 Peyton requests continued commits and pushes, a final real pull request, a fresh review, and a shareable patch-loader executable.

@@ -14,7 +14,10 @@
     "betaWorkshopItem": "2739657648",
     "installedBeta": "BetaLite build 774",
     "map": "Der Eisendrache",
-    "expectedPlayers": [1, 2],
+    "expectedPlayers": [
+      1,
+      2
+    ],
     "hostRole": "Record the actual role. Host on the capture PC for a co-op server capture."
   },
   "hypotheses": [
@@ -24,8 +27,30 @@
     "An unrelated script error or network failure ends the match."
   ],
   "capture": {
-    "measured": ["process CPU", "private memory", "working set", "virtual memory", "handles", "OS threads", "window response", "process identity", "loaded modules", "manual match and firing markers", "available console logs", "AAE settings", "manual full memory snapshots", "available Windows crash events"],
-    "notYetMeasured": ["validated live server entity count", "projectile creation and deletion", "validated live GSC VM allocations", "script thread functions and owners", "server frame time", "network snapshot usage"],
+    "measured": [
+      "process CPU",
+      "private memory",
+      "working set",
+      "virtual memory",
+      "handles",
+      "OS threads",
+      "window response",
+      "process identity",
+      "loaded modules",
+      "manual match and firing markers",
+      "available console logs",
+      "AAE settings",
+      "manual full memory snapshots",
+      "available Windows crash events"
+    ],
+    "notYetMeasured": [
+      "validated live server entity count",
+      "projectile creation and deletion",
+      "validated live GSC VM allocations",
+      "script thread functions and owners",
+      "server frame time",
+      "network snapshot usage"
+    ],
     "limits": [
       "Connection Interrupted alone does not identify the exhausted resource.",
       "OS threads are not GSC script threads.",
@@ -42,7 +67,7 @@
     "nativeAnalysis": "Capture, Ghidra import, unwind boundaries, cross-references, decompilation, and identity/output guards passed nine E2E checks.",
     "offlineScriptVariables": "Private exact-build menu inspection verified both reuse chains. The separate sampler's pure decoder agrees with that saved capture after identity and code-range checks. Usable capacities are 129999 server slots and 64999 client slots. This does not validate live sampling.",
     "liveScriptVariables": "Separate read-only sampler passed ten owned native E2E cases and fresh review. The shared entity sampler still passes 22 cases. Game measurements remain unvalidated and the private game profile is disabled.",
-    "scriptCleanup": "Native entity deletion queues notify and suspended-stack cleanup. Normal VM work drains the queue. Completion for one known grenade allocation lifetime has not been observed.",
+    "scriptCleanup": "Native entity deletion queues entity-owned waiters and stacks for cleanup. The actual failure retains 1883 player-owned zombify helpers. Exactly 1878 tracker objects have no returned listener. Loaded grenade-checker and utility code exposes a caller-cancellation path that can leave the separate player helper alive. Controlled allocation-lifetime evidence remains pending.",
     "entityLifetime": "The verified native reuse version repeats after 63 complete free/spawn cycles. Equal samples do not prove one lifetime. Strict correlation needs allocation/free events, world epochs, and loss detection. That recorder remains unimplemented.",
     "scriptCapacityDependencies": "Verified capacities affect allocation, reuse initialization, lifecycle scans, notification keys, and save-state serialization. Reviewed slot IDs are 32-bit and special keys retain 64 bits. No 17/18-bit ceiling is proven. The actual failure now has an exhausted server VM. Save/migration and co-op compatibility remain unresolved. No capacity change is implemented or validated.",
     "savedErrors": "Private bounded inspection found empty saved engine error buffers in the startup and menu captures. Neither is a failing Zombies capture.",
@@ -71,11 +96,28 @@
       "entityUnallocatedNormal": 127,
       "entityAllocatorFailureCondition": false,
       "followUp": "Complete server VM and entity pool hashes match. Server time remains unchanged. The native VM error flag changes.",
-      "nativeErrorHandler": "Captured entry detours through a private trampoline into T7Overcharged.ff. Native saved error buffer, type and processing flag are empty or zero. The detour behavior remains unverified.",
+      "nativeErrorHandler": "The captured hook suppresses formatted messages containing VCRedist. Other messages call the saved native trampoline. The filter does not explain the captured script-pool error.",
       "privateEvidence": "lab/evidence/failure-20261007T222120Z/",
       "failureDumpSha256": "ACF01B87FA74FE864938ABF11BFFA90E7C1EB5DFF0E7EF75E6757452881504DC",
       "followUpDumpSha256": "00F48D23DCC12396032014D9A9190E2F0419FA46C953FFFCB77D1B53828298E8",
-      "scope": "Frozen host-world state and server VM exhaustion are measured. The initiating script, ownership, lifetime behavior and first-error order remain unresolved. No fix is validated."
+      "scope": "Frozen host-world state and server VM exhaustion are measured. Loaded code and 1878 retained trackers support escaped grenade-helper cleanup. Controlled producer and lifetime history and the first-error order remain unresolved. No fix is validated.",
+      "suspendedWaiters": {
+        "helper": "util::waittill_string",
+        "total": 2079,
+        "zombify": 1883,
+        "byNativeEntityReference": {
+          "0": 1768,
+          "1": 115
+        },
+        "uniqueTrackers": 1883,
+        "trackersWithOnlyDieListener": 1878,
+        "trackersWithReturnedListener": 5,
+        "threadsWithTrackerSelf": 6,
+        "directDistinctPoolSlots": 18866,
+        "notifyThreadsWithWaiterSelf": 3766,
+        "verification": "Captured native self, notify, entity-reference, child-link and string accessors. Exact loaded export and utility code matches. The full AAE raw header matches its loaded script view and its resolved call reaches that utility.",
+        "scope": "Saved footprint and a supported cleanup-leak hypothesis. This does not prove all waiters originate in the grenade checker or predict a reclamation total."
+      }
     },
     "closedEntitySession": "The earlier accepted provisional rows reached normalActive 294 and highWater 500. Rejections include 65 metadata changes, 40 data or metadata changes, and five invalid pool pointer or high-water observations. The second session retained four accepted rows, reaching normalActive 559 and highWater 746. None decoded the normal allocator failure condition. These rows do not rule out exhaustion between observations, validate game sampling, or explain an unreported failure. The second process exit reason remains unknown.",
     "captureCleanup": "Peyton requested deletion of the keybind snapshot and old dumps. Automatic approval review blocked the bulk deletion and the individually named test-file deletion without a detailed reason. No dumps were deleted. Do not substitute these requested-for-deletion captures for the actual failure reproduction.",
@@ -145,9 +187,9 @@
     }
   ],
   "nextSteps": [
-    "Match the actual failure's script frames to exact loaded assets and verified exports.",
-    "Trace the full server VM pool's owners, retained stacks and first-error sequence. Do not equate a numeric thread type with a grenade function.",
-    "Inspect the captured AAE native error detour and stopped VM recovery path before selecting an engine fix.",
+    "Prepare a private candidate that keeps grenade-check helper ownership on the grenade while preserving outer player cancellation. Verify raw import metadata and the linker change before testing.",
+    "Verify the candidate asset and native padding instructions with repeatable offline evidence. Keep original game and Workshop files unchanged.",
+    "Validate waiter growth and recovery during controlled original and candidate volleys. Record map, round, host role, player count, weapon upgrade history and exact identities.",
     "After Peyton's manual session, verify the reviewed contained DirectSound rule in a separately bounded silent physical run if still needed. Its memory checkpoint does not prove the genuine positive Windows provider path.",
     "Recover stock first-factory timing and remaining output coverage. The reviewed owned composition is not a Windows loader-lock detector or stock launch proof.",
     "Select the smallest fixed-lab Windows factory interception and stock first-call measurement from the reviewed worker gate. Control earlier dependency and independent DirectSound output before permitting BO3 startup; do not repeat the owned gate as stock evidence.",

@@ -85,7 +85,21 @@ A separate formatted buffer contains "exceeded maximum number of child server sc
 The entity pool has 148 reusable normal slots and 127 unallocated normal slots. Its allocator failure condition is false.
 Server time, the complete entity pool, and the complete server VM pool match across both snapshots.
 This establishes frozen host-world state and server VM exhaustion. It does not establish the initiating script or error order.
-AAE detours the native engine error-handler entry. Its native saved buffer is empty. Inspect the captured detour before inferring its behavior.
+AAE detours the native engine error-handler entry. Its captured hook filters only messages with the eight-byte string VCRedist.
+Other messages reach the saved native trampoline. This filter does not explain the captured script-pool error.
+Saved stack code positions identify 2,079 suspended util::waittill_string helpers through the loaded export table.
+The native notify setter, self accessor, entity-reference accessor, child links and string accessor verify their message and ownership fields.
+Of these helpers, 1,883 wait for zombify. Player entity references zero and one own 1,768 and 115 helpers respectively.
+Each helper holds a distinct tracker. Exactly 1,878 trackers have only die listeners and no returned listener.
+Five trackers still have returned listeners. Six live thread records use tracker self references.
+The helper locals and tracker graphs occupy 18,866 distinct pool slots. A further 3,766 notify threads refer to these helper threads.
+These counts are saved footprints, not a prediction of reclaimable slots or a complete pool attribution.
+Exact loaded util::waittill_any_ex code requires the caller to send die after returned to cancel its separate helper threads.
+The full AAE grenade checker has outer death and player zombify cancellation, and also creates a player-owned zombify helper.
+Its loaded call resolves to that exact shared helper. Raw asset and loaded script headers match.
+The linker changes the call opcode and writes its parameter count from the import record. Preserve this distinction in a candidate.
+The caller can end on grenade death before it cancels the separate player helper. This supports a cleanup-leak hypothesis.
+Controlled producer and lifetime evidence, the first-error order, and a validated fix remain pending.
 Private evidence/failure-20261007T222120Z/ retains exact-build code checks, reports, script frames and the screenshot.
 Offline entity and VM layouts are checked against the captured downgraded code. Live profiles remain disabled.
 Earlier entity history remains provisional. Cross-check a saved failure snapshot before interpreting game measurements.
@@ -106,7 +120,8 @@ It separates normal, reserved, sentinel, and fake slots. It checks reuse lists, 
 The separate live sampler collects provisional entity rows through read-only process access and an exact private build profile.
 Its native fixture E2E passed. The manual session now contains initialized game rows and retained consistency rejections. Game measurements remain unvalidated.
 It rejects observed changes between repeated reads. It does not produce an atomic game snapshot.
-The recorder does not yet measure projectile creation and deletion or GSC script threads.
+The recorder does not yet trace projectile or GSC thread creation and deletion.
+Private offline stack inspection now matches specific helper exports and verifies saved ownership through captured native accessors.
 Do not label numeric entity types as projectiles without verification or infer an entity leak from process memory alone.
 
 Current stock runtime analysis confirms a 2,048-slot allocation and a 1,022-slot normal allocator limit.
