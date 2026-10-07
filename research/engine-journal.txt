@@ -594,6 +594,35 @@ These static findings do not validate physical integration or a quiet game launc
 Private evidence/sdk-nested-audit/nested-review.txt, identity.json, and exact ranges retain the proof and its limits.
 Private evidence/agent-patch-loader/sdk-contained-plan/ records the reviewed design and failure contract.
 
+2026-10-07: observed lab Auto-Cloud boundary and stock cold-stop design
+
+Two prior direct lab sessions were tracked by Steam at the exact lab executable path.
+Their recorded exits correlate with app-specific Auto-Cloud exit scans of the normal players/*.cgp root.
+Both scans found fifteen files and skipped every file as unmodified. Persist-intent lines were not completed uploads.
+Steam updated shared cache metadata. These sessions did not establish a separate lab Cloud namespace.
+Current cached hashes, sizes and local timestamps match all fifteen normal files. Latest app logs indicate no pending transfer.
+All eighty-four normal profile files match the pre-lab baseline, with no additions, removals or content changes.
+The lab profiles have separate file identities. No shared Cloud setting or normal profile was changed by this review.
+Steam documents developer-defined Auto-Cloud roots and a shared per-game toggle, not an isolated per-launch namespace.
+The reviewed cold-stop design uses the fixed latest lab executable and terminates before a recognized audio provider executes.
+It can measure the first known factory, caller and thread. It cannot establish a completed quiet launch or all output routes.
+The expected first worker request may be notification-enumerator setup, before rendering-client creation.
+Before/after normal profile and app-specific Cloud checks remain required for future lab experiments.
+No stock cold-stop run, game launch, physical stream or engine patch occurred in this review.
+Private evidence/stock-cold-stop-design/ and evidence/stock-cloud-boundary/ retain exact inputs and filtered log evidence.
+Primary Cloud reference: https://partner.steamgames.com/doc/features/cloud
+
+2026-10-07 14:16 UTC: manual failing-match capture armed
+
+Peyton clarified that BO3 stays open during Connection Interrupted. The hosting or match failure is not a confirmed application crash.
+He will manually play normal stock Steam BO3 with AAE. This can provide the needed failure state without an automated lab launch.
+The existing external recorder started and its actual process identity, ready state and waiting event were verified.
+Its hotkeys are enabled. Connection Interrupted requests a clone-based full snapshot while the process remains alive.
+About 240 GiB of disk space was available. Capture output is private and ignored by Git.
+Actual map, player count and host role remain to be recorded. The requested initial map is Origins.
+Automated game launches and physical audio probes are held while Peyton plays. No game settings or binary were changed.
+Prioritize this capture and the exact saved errors over further quiet-helper work.
+
 Final deliverable and checkpoints:
 
 Peyton requests continued commits and pushes, a final real pull request, a fresh review, and a shareable patch-loader executable.

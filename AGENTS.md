@@ -30,6 +30,11 @@ Read-only inspection and external capture are allowed.
 Keep experimental binaries and extracted assets inside the workspace or a clearly identified lab directory.
 Design patch installation and removal so Peyton can return to the original working game.
 
+The two tracked direct lab sessions triggered Steam Auto-Cloud scans of the normal players folder.
+Both scans skipped all fifteen matching files as unchanged. The lab is not a separate Cloud namespace.
+All eighty-four normal profile files still match the pre-lab baseline. Current cached hashes and sizes match.
+Keep before/after profile and app-specific Cloud checks for future lab tests. Do not change shared Cloud settings.
+
 ## Agent-launched test sessions
 
 Launch every automated or repeated game test at zero volume.
@@ -41,7 +46,12 @@ Mute the game rather than the system audio.
 
 Long AAE Zombies matches can display Connection Interrupted after repeated Pack-a-Punched War Machine volleys.
 Peyton reports this in solo and co-op, with failures more common in co-op.
+Peyton clarified that BO3 remains open when this happens. Treat it as a match or hosting failure, not a confirmed application crash.
+Whether the internal server crashes remains unconfirmed. A live process can still preserve the relevant failure state.
 The initial reproduction uses stock BO3, AAE, Origins, and one or two players.
+
+Peyton will manually play to provide the next reproduction. The external read-only recorder is armed.
+Prioritize that failing-match capture over automated lab startup work. Do not launch or control another game during his session.
 
 The root cause remains unconfirmed. An engine limit is a hypothesis, not an established diagnosis.
 Targeted decompilation and reverse engineering of the host state, resource allocation, cleanup, and failure paths are in scope.
@@ -152,6 +162,8 @@ Any contained forwarding must stay inside the actual saved OriginalSound call an
 The historical trace records module metadata only. The current disk audit is not proof of the earlier mapped bytes.
 The rawPublications detector covers memory objects only. A physical zero does not establish no raw interface escape.
 The next quiet-start step must recover stock first-call timing and cover every output route before a game launch.
+The reviewed first-factory cold-stop design records a recognized root and stops before its provider executes.
+That scoped capture does not establish a completed quiet launch, gameplay, or universal output coverage.
 The bounded stock coverage audit verifies known WASAPI and DirectSound routes but leaves earliest call order unresolved.
 Its TLS callback and ordinary entrypoint transfer into indirect flow. Static import absence does not exclude other output routes.
 The verified Sound Mix worker is registered in a dispatch table and created suspended through CreateThread, then prioritized and resumed.

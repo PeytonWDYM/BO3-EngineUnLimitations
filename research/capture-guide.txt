@@ -1,5 +1,8 @@
 First capture: stock BO3, AAE, Origins, one or two players.
 
+BO3 remains open during Peyton's reported failure. The match or hosting session stops responding.
+Capture that live state; do not wait for an application exit or assume the internal server crashed.
+
 The recorder runs outside BO3. It samples once per second and flushes each row.
 Captures stay in research/captures/live/. Git ignores this folder.
 Keep all dumps, settings, and raw logs local.

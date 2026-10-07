@@ -1,9 +1,10 @@
 {
-  "status": "lab_compatibility_investigation",
+  "status": "manual_capture_armed",
   "rootCause": "unconfirmed",
   "deliverable": "A reversible stock BO3 engine patch, a shareable Windows patch-loader executable, and a reviewed real pull request.",
   "reportedSymptoms": [
     "Long AAE Zombies matches can show Connection Interrupted.",
+    "BO3 remains open while the match or hosting session stops responding; an internal server crash is not yet confirmed.",
     "Repeated Pack-a-Punched War Machine fire is a reported trigger.",
     "The failure may occur in solo and co-op, but occurs more often in co-op."
   ],
@@ -51,6 +52,9 @@
     "quietStartupComposition": "The original composition passed nine native groups and fresh review. Its worker extension passed seven focused groups across thirteen child scenarios and fresh review. Exact owned entry/context matching preserves real suspended creation, ID, handle, priority, resume, and original setup. Worker initialization precedes dispatch without depending on the fixture entry marker. Cold calls stop before raw publication; joined cleanup precedes removal. These are memory-only single-caller contracts. Earlier dependencies, Windows factory interception, actual EXE chronology, and stock timing remain unvalidated."
   },
   "labStatus": {
+    "manualCapture": "Peyton will manually play stock Steam BO3 with AAE. The existing external read-only recorder is armed and waiting for the game. Prioritize the failure snapshot while BO3 remains open. Automated game launches and physical audio probes are held during the user session.",
+    "steamCloudBoundary": "Two tracked direct lab sessions triggered exit scans of the normal-install players/*.cgp root. Both skipped all fifteen files as unchanged. All current cached SHA-1 values, sizes and local timestamps match; the latest app-specific logs indicate no pending transfer. All eighty-four normal profiles still match the original baseline. This is observed normal-root behavior, not a separate lab Cloud namespace or a guarantee about future synchronization. Shared Cloud settings remain unchanged.",
+    "stockColdStopDesign": "A reviewed fixed-lab design stops before forwarding the first recognized audio factory and records actual caller/thread timing. Its profile files are separate and its stock executable matches the original. No stock cold-stop run exists yet. This scoped capture would not prove a completed quiet launch or exhaustive output coverage.",
     "client": "Latest stock executable. Normal installation unchanged.",
     "betaStartup": "Installed BetaLite exited with code zero and opened a September 17 downgrade guide.",
     "newEvidence": "The author's September 30 announcement confirms latest-game beta support. Its beta channel links both full Beta 2283794212 and BetaLite 2739657648.",
@@ -101,6 +105,7 @@
     }
   ],
   "nextSteps": [
+    "Capture Peyton's manually played AAE match first. Record actual mod, map, player count and host role. Mark Connection Interrupted while BO3 remains open and preserve a full failure snapshot.",
     "Resolve the measured DirectSound-internal enumerator request with exact original-provider scope and argument/module identity. Keep unrelated nesting rejected; re-review before another silent physical run.",
     "Recover stock first-factory timing and remaining output coverage. The reviewed owned composition is not a Windows loader-lock detector or stock launch proof.",
     "Select the smallest fixed-lab Windows factory interception and stock first-call measurement from the reviewed worker gate. Control earlier dependency and independent DirectSound output before permitting BO3 startup; do not repeat the owned gate as stock evidence.",
