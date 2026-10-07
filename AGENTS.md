@@ -96,6 +96,8 @@ The author's September 30 announcement confirms current-game support and links b
 The BetaLite manifest matches Steam's latest record, dated October 2. Its separate lab copy has verified file hashes.
 An older downgrade guide appeared during a lab startup exit. It does not establish that a downgrade is required.
 Verify the actual selected beta package and bootstrap identity. AAE can rewrite fs_game after mod selection.
+Verified BetaLite server and client paths skip an extra-weapon table. Verify the live War Machine entry before volley tests.
+Built-in direct grants are diagnostic setup, not proof of physical Pack-a-Punch event or upgrade-history equivalence.
 CoreAudio channel seeding failed the eight-channel Realtek lab case. Do not use its stereo fixture passes as proof of a quiet game launch.
 The captured no-mod startup filter rejects the requested +set logo setting.
 The inspected loose-file +exec route also uses restricted dispatch and does not admit that setting.

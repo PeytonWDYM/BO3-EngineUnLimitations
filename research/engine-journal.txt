@@ -534,6 +534,22 @@ This is a scoped loader and file audit. No game, mapped mod DLL, device, hook, b
 Private evidence/agent-engine-review/first-import-boundary/first-import-review.txt and its inventories retain the evidence.
 Primary insertion reference: https://github.com/microsoft/Detours/wiki/DetourCreateProcessWithDlls
 
+2026-10-07: verified built-in beta acquisition route and Lite qualification
+
+The existing frontend AAE overlay sets elmg_cheats to 1 for ordinary On and 0 for Off.
+The host can open its built-in menu with stance and reload after spawn.
+Weapons -> Upgraded Weapons enumerates the live upgraded weapon array and displays internal names.
+There is no War Machine exclusion in this reviewed loop. The live entry remains unvalidated.
+Both server and client paths skip elmg_weapons.csv when aae_lite is 1, including the reviewed Origins branch.
+War Machine strings therefore do not establish availability in this BetaLite configuration.
+Do not force the Lite flag or missing assets. Verify the selected build774 package and actual runtime entry first.
+The direct grant calls weapon_give. It does not establish physical Pack-a-Punch events or upgrade-level history.
+Mode 2 changes score and disables AI spawns. Ordinary mode 1 avoids those assignments but adds menu routines.
+No split-count multiplier was verified. The reviewed fractional PAP table belongs to damage logic.
+Current package identity matches the refreshed manifest. Six inspected script blobs occur in the private decompressed input.
+No game, mod DLL, device, configuration, or installation change occurred in this read-only review.
+Private evidence/agent-engine-review/war-machine-test-route/route-review.txt and provenance.json retain exact snippets and input hashes.
+
 Final deliverable and checkpoints:
 
 Peyton requests continued commits and pushes, a final real pull request, a fresh review, and a shareable patch-loader executable.

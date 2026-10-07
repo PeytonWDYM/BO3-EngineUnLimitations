@@ -64,7 +64,8 @@
     "firstImportBoundary": "Pinned Detours prepends the helper before original application imports. Its dependency closure and TLS/CRT initialization precede user DllMain. The old fixture's provider belongs to that early closure; unrelated later BO3 imports do not follow from its failure. The proposed real SDK helper excludes game/mod/consumer dependencies. Final binary imports, API host resolution, and early-call rejection still need owned SDK measurement. The refreshed beta PE inventory establishes no additional output sink; dynamic resolution remains unclassified.",
     "quietRoutingAlternative": "Read-only assessment found no installed endpoint with verified audio-discard behavior. The reviewed internal per-application routing API does not establish first-output silence or isolation from the normal same-name executable. No routing or settings changed. NOPERSIST alone does not disprove endpoint routing.",
     "startupMovieAudio": "The reviewed startup path constructs a stock SND alias and submits it through the sound queue when lookup succeeds. The existing lab MKV has video only. The complete alias-to-mixed-samples trace remains unresolved.",
-    "betaWeaponAssets": "Private offline inspection inventories three weapon records in BetaLite core_mod. Their names, native layouts, runtime selection, and War Machine split settings remain unverified."
+    "betaWeaponAssets": "Private offline inspection inventories three weapon records in BetaLite core_mod. Their names, native layouts, runtime selection, and War Machine split settings remain unverified.",
+    "betaWeaponAcquisition": "The built-in host menu enumerates runtime upgraded weapons without a War Machine exclusion. Ordinary frontend On sets elmg_cheats to 1; mode 2 changes AI and score. Verified server and client Lite paths skip elmg_weapons.csv, so the live launcher_warmachinemp_upgraded entry remains conditional. Direct grants do not establish physical Pack-a-Punch events or PAP-level history. No split-count multiplier is verified."
   },
   "verifiedReferences": [
     {
@@ -102,6 +103,7 @@
     "Select the smallest fixed-lab Windows factory interception and stock first-call measurement from the reviewed worker gate. Control earlier dependency and independent DirectSound output before permitting BO3 startup; do not repeat the owned gate as stock evidence.",
     "Validate complete quiet lab startup without changing system audio or the normal profile.",
     "Verify the selected BetaLite package and bootstrap identity during mod loading.",
+    "Verify the live War Machine entry in BetaLite. Keep built-in direct-grant diagnostics separate from physical Pack-a-Punch reproduction and record actual grenade count and upgrade history.",
     "Capture the stock client with AAE on Origins.",
     "Record the actual player count and host role.",
     "Compare an idle baseline, controlled volleys, and recovery intervals.",

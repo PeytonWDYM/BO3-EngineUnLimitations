@@ -68,3 +68,18 @@ To test failed cleanup, follow the same entity generation after delete and after
 The script-variable pools are separate from the entity pool. Threads share script-variable slots with other values.
 Function call depth and OS thread counts do not count all suspended script threads.
 No root cause or fix is confirmed yet.
+
+Optional BetaLite diagnostic acquisition route:
+Verify the selected Mods entry is All-around Enhancement BetaLite build774, PublisherID 2739657648.
+Record the loaded package and observed in-game version text. A menu title alone does not prove map identity.
+The supported frontend AAE setting OpenAAEAF selects ordinary On by setting elmg_cheats to 1.
+After spawning as host, stance + reload opens the built-in menu. Use the player's actual bindings.
+Weapons -> Upgraded Weapons lists runtime entries, including internal names.
+Check for launcher_warmachinemp_upgraded before planning a volley test. Its presence remains unvalidated.
+Verified server and client Lite paths skip elmg_weapons.csv. Strings alone do not establish weapon availability.
+Do not force the Lite flag or missing assets. Record any change of reproduction package explicitly.
+Direct grants support a separate short diagnostic test. They do not establish physical Pack-a-Punch event equivalence.
+For the reported match reproduction, obtain the base weapon and use the physical Pack-a-Punch machine.
+Record PAP history and actual grenade count. No split-count multiplier has been verified.
+Do not use elmg_cheats mode 2: it changes score and disables AI spawns.
+Ordinary mode 1 also adds menu routines, so record it when used. Its restart persistence remains unverified.
