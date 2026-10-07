@@ -132,7 +132,11 @@ No engine patch has been applied. The reported root cause remains unconfirmed.
 Final deliverable and checkpoints:
 
 Peyton requests continued commits and pushes, a final real pull request, a fresh review, and a shareable patch-loader executable.
-The native loader foundation passes its own fixture tests. It does not support stock BO3 yet.
-A fresh review found safe-point retry and removal-conflict issues. Focused fixes and E2E checks are in progress.
+The native loader foundation passes 30 owned-fixture E2E cases. It does not support stock BO3 yet.
+A fresh review found safe-point retry and removal-conflict issues. Focused E2E cases reproduced and verified both fixes.
+Generation checks now reject stale resume signals. A session mutex permits one writer per target.
+Removal conflicts keep the fixture parked. The protection ledger allocates before page changes.
+The fresh reviewer verified the fixes and current artifact hashes.
+Private workspace lab/evidence/agent-patch-loader/review-green/result.json records the current native result.
 Do not treat a native fixture result as evidence of game stability or compatibility with friends.
 Release requires a verified cause, a safe game integration point, repeated failure tests, and successful patch removal.
