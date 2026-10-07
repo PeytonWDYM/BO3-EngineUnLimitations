@@ -1,6 +1,7 @@
 {
-  "status": "ready_for_reproduction",
+  "status": "lab_compatibility_investigation",
   "rootCause": "unconfirmed",
+  "deliverable": "A reversible stock BO3 engine patch, a shareable Windows patch-loader executable, and a reviewed real pull request.",
   "reportedSymptoms": [
     "Long AAE Zombies matches can show Connection Interrupted.",
     "Repeated Pack-a-Punched War Machine fire is a reported trigger.",
@@ -9,6 +10,8 @@
   "firstCapture": {
     "client": "stock Steam Black Ops III",
     "mod": "All-around Enhancement",
+    "betaWorkshopItem": "2739657648",
+    "installedBeta": "BetaLite build 774",
     "map": "Origins",
     "expectedPlayers": [1, 2],
     "hostRole": "Record the actual role. Host on the capture PC for a co-op server capture."
@@ -30,6 +33,21 @@
       "A process exit is recorded automatically, but a full exit-time dump is not guaranteed.",
       "No debugger, DLL injection, engine patch, or game configuration change is part of this first capture."
     ]
+  },
+  "diagnostics": {
+    "offlineEntities": "Exact-build snapshot reader passed real native pool-state E2E checks.",
+    "liveEntities": "Separate read-only sampler passed 21 native E2E checks. Game sampling remains unvalidated.",
+    "consistency": "Repeated equal reads reject observed changes. They do not make an atomic game snapshot.",
+    "nativeAnalysis": "Capture, Ghidra import, unwind boundaries, cross-references, decompilation, and identity/output guards passed nine E2E checks.",
+    "compatibility": "Current stock runtime uses 10-bit network entity IDs. Expanding normal IDs past 1023 conflicts with unpatched clients.",
+    "loader": "Native cooperative-fixture foundation only. Game safe point and engine patch remain unimplemented."
+  },
+  "labStatus": {
+    "client": "Latest stock executable. Normal installation unchanged.",
+    "betaStartup": "Installed BetaLite exited with code zero and opened a September 17 downgrade guide.",
+    "newEvidence": "Peyton supplied the author's September 30 announcement that the beta supports the latest game.",
+    "nextCheck": "Verify the announcement's beta link and installed package before another compatibility test.",
+    "quietStartup": "Master zero and session mute alone did not keep startup silent. Session channel persistence is under native fixture validation."
   },
   "verifiedReferences": [
     {
@@ -58,6 +76,8 @@
     }
   ],
   "nextSteps": [
+    "Verify the current beta package against the author's latest-version announcement.",
+    "Verify a quiet lab launch without changing system audio or the normal profile.",
     "Capture the stock client with AAE on Origins.",
     "Record the actual player count and host role.",
     "Compare an idle baseline, controlled volleys, and recovery intervals.",

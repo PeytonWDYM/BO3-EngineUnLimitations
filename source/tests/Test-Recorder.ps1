@@ -52,6 +52,12 @@ try {
     Wait-For { @(Read-Events $run.Session | Where-Object type -eq 'waiting_for_process').Count -eq 1 } 'waiting event'
     $checks.Add('Waits for the target and flushes its waiting event.')
 
+    $powerShell7 = (Get-Command pwsh -ErrorAction Stop).Source
+    & $powerShell7 -NoProfile -File $markerScript -OutputRoot $run.Root -Action note -Note 'PowerShell 7 marker'
+    if ($LASTEXITCODE -ne 0) { throw 'PowerShell 7 rejected a valid recorder identity.' }
+    Wait-For { @(Read-Events $run.Session | Where-Object { $_.type -eq 'note' -and $_.data.note -eq 'PowerShell 7 marker' }).Count -eq 1 } 'PowerShell 7 marker'
+    $checks.Add('Accepts markers from PowerShell 7 with decoded JSON timestamps.')
+
     $duplicate = Start-Process -FilePath $shell -ArgumentList ('-NoProfile -ExecutionPolicy Bypass -File "{0}" -ProcessName "{1}" -OutputRoot "{2}" -NoHotkeys' -f $monitorScript, $fixtureName, $run.Root) -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $artifact 'duplicate.stdout.txt') -RedirectStandardError (Join-Path $artifact 'duplicate.stderr.txt')
     [void]$duplicate.Handle
     $owned.Add($duplicate)

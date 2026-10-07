@@ -14,7 +14,14 @@ $script = Join-Path $PSScriptRoot 'Monitor.ps1'
 $arguments = '-NoProfile -ExecutionPolicy Bypass -File "{0}" -OutputRoot "{1}"' -f $script, $OutputRoot
 if ($GameDirectory) { $arguments += ' -GameDirectory "{0}"' -f $GameDirectory }
 $id = [Guid]::NewGuid().ToString('N').Substring(0,8)
-$child = Start-Process -FilePath $shell -ArgumentList $arguments -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $OutputRoot ("launcher-$id.stdout.txt")) -RedirectStandardError (Join-Path $OutputRoot ("launcher-$id.stderr.txt"))
+# Windows PowerShell must not inherit PowerShell 7's core modules.
+$previousModulePath = $env:PSModulePath
+try {
+    $env:PSModulePath = Join-Path $env:SystemRoot 'System32/WindowsPowerShell/v1.0/Modules'
+    $child = Start-Process -FilePath $shell -ArgumentList $arguments -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $OutputRoot ("launcher-$id.stdout.txt")) -RedirectStandardError (Join-Path $OutputRoot ("launcher-$id.stderr.txt"))
+} finally {
+    $env:PSModulePath = $previousModulePath
+}
 [void]$child.Handle
 $deadline = [DateTime]::UtcNow.AddSeconds(15)
 while ([DateTime]::UtcNow -lt $deadline) {

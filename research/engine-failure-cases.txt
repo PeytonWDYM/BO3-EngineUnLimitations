@@ -1,0 +1,62 @@
+Define these failure cases before diagnostic implementation:
+
+1. The executable differs from the inspected build. Reject an incompatible profile before reading engine addresses.
+2. A reference address points at different code. Confirm actual code and dependencies before treating it as a game symbol.
+3. The process has exited, its memory is unavailable, or an entity pointer is transient. Record the failure without a fabricated count.
+4. A sample contains invalid pool metadata. Reject the sample without reading beyond the verified allocation.
+5. The game remains open after its server fails. Preserve diagnostics and the exact available error without relying on process exit.
+6. A diagnostic operation stalls the game. Keep disk writes and expensive analysis outside the game thread.
+7. A larger pool changes network or entity ID behavior. Treat incompatibility with unpatched friends as a failed patch.
+8. A launch changes normal settings or plays audio. Use an isolated profile, zero volume, and a bordered 1280x720 window.
+9. Removing the prototype changes the original installation. Verify hashes and preserve the stock configuration.
+
+Use repeatable E2E captures for implementation verification. Keep game-derived artifacts outside the public repository.
+
+Static-analysis workflow failures:
+10. On-disk code is packed or unreadable. Do not name random bytes as an engine function.
+11. An old dump comes from a different build or modified client. Keep its findings separate from current stock evidence.
+12. A dump omits code or data pages. Report missing ranges instead of filling them with invented bytes.
+13. Ghidra fails or times out. Preserve its log and report the incomplete analysis.
+14. An export contains game-derived code. Write it only to the private lab, outside Git.
+15. The analysis tool identifies the wrong fixture function or error string. Verify the workflow with a compiled native fixture.
+
+Offline dump export failures:
+16. The selected module is absent or ambiguous. Reject the selection.
+17. The dump has no memory stream, truncated bytes, or overlapping module ranges. Reject invalid input.
+18. PE headers are absent. Export only captured ranges and mark section coverage as unavailable.
+19. The output directory is inside the public repository or already exists. Reject the destination before writing.
+20. A full dump contains both memory-list formats. Use the full-memory stream when present.
+21. ASLR changes module addresses. Preserve the capture address and module-relative offset for every range.
+
+Silent lab launch failures:
+22. The lab shares mutable files with the installed game. Copy files and use an independent players directory.
+23. The stock executable redirects its launch to the Steam installation. Verify the actual process path and stop an unexpected launch.
+24. The application audio session does not retain zero volume. Verify persistence with a silent seed before the game launch.
+25. The game creates an unmuted audio session. Mute that session and reject the launch verification.
+26. The game window differs from a bordered 1280x720 client area. Record its actual dimensions and reject verification.
+27. Steam or the game changes the normal profile during launch. Compare profile hashes against the saved baseline.
+28. PowerShell 7 decodes JSON timestamps as DateTime values. Compare recorder identity as UTC time rather than formatted text.
+29. PowerShell 7 passes incompatible core module paths to Windows PowerShell. Start the recorder with its own core module directory.
+30. Windows Security holds foreground focus. Leave that prompt for Peyton and continue offline analysis.
+31. Ghidra reports a script error but exits successfully. Check its script log before accepting an export.
+32. Disassembly omits a data reference. Verify string references against a captured native fixture before tracing the game.
+
+Entity snapshot failures, defined before implementation:
+33. The capture identity, dump process, or executable hash differs from the profile. Reject the sample before reading the pool.
+34. The module timestamp, image size, or ASLR base differs from the capture identity. Reject the sample.
+35. The pool pointer is null before world initialization. Report uninitialized without entity counts.
+36. A pool range or metadata page is absent. Reject the sample without filling missing bytes.
+37. The high-water mark exceeds the normal limit or is below the reserved range. Reject initialized metadata.
+38. An in-use flag has an invalid value. Reject the sample.
+39. A reuse list has a cycle, an unaligned pointer, a reserved slot, or an active slot. Reject the sample.
+40. The reuse-list tail differs from the final entry. Reject inconsistent metadata.
+41. An entity type lacks a verified name. Report its numeric type without labeling it a projectile.
+42. A snapshot contains freed entities and unused slots. Count each range separately and verify recovery with a native fixture.
+43. Reserved sentinel slots are active. Keep them separate from the normal allocator range and the fake entity range.
+44. A function has chained unwind entries. Resolve its primary entry and keep all captured chunks in its Ghidra body.
+45. Unwind metadata is missing, invalid, cyclic, or from a different executable. Reject the boundary export.
+46. Ghidra follows undefined calls beyond the selected function. Use verified unwind ranges to restrict its function body.
+47. A temporary event exceeds the observed cleanup delay. Report its age without assuming the server ran its cleanup frame.
+48. A Ghidra boundary manifest belongs to another executable at the same image base. Reject its hash before changing function bodies.
+49. A Ghidra survey destination resolves inside the repository. Reject the path before exporting strings or decompilation.
+50. A Ghidra survey destination already exists. Reject it without changing previous evidence.

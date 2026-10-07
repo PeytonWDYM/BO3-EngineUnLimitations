@@ -1,0 +1,138 @@
+Engine investigation started.
+
+Scope: identify the stock BO3 hosting failure path and prepare a targeted diagnostic prototype.
+Constraints: preserve the working installation, mod support, and compatibility with friends using stock clients.
+Test launches: zero volume, bordered window, 1280x720, isolated lab configuration.
+
+Current working hypothesis: resource exhaustion or cleanup failure after repeated upgraded War Machine volleys in AAE.
+This remains a hypothesis. Connection Interrupted alone does not identify the failing resource.
+
+Universal Modder has no BO3 field note in the local knowledge base.
+The installed executable is native x64. The generic scanner's Java classification came from an unrelated JAR.
+Ghidra 11.3.2 and JDK 21 are already installed. Use the existing tools for targeted static analysis first.
+Keep executable copies, Ghidra databases, decompilation, and extracted assets in a private lab outside this repository.
+
+2026-10-07: current stock runtime analysis
+
+The inspected executable SHA256 is 51CA63BBC660E0826943C60DA67606F6BCB4B3B519528B5E0548C68C9423A323.
+Its image size is 494255104 bytes. The lab launches the same executable and the original Steam DLL.
+The private lab is C:\Users\plamb\.codex\labs\bo3-engine.
+It contains a full file copy, an independent players directory, and a backup of the normal players directory.
+The baseline contains 84 original profile files. Their hashes matched after the lab launches.
+The original installation has not received a binary patch or a settings change.
+
+On-disk code was unreadable. A PSS snapshot from the normal stock process contains readable runtime code.
+Old modified-client snapshots remain separate from this stock evidence.
+Ghidra imports only captured ranges at their actual ASLR addresses. Missing pages are not replaced with zeroes.
+The allocation error string now has a verified reference from the selected normal allocator.
+The x64 runtime function table is captured and valid. Chained entries identify multiple chunks of one function.
+Windows describes these structures at https://learn.microsoft.com/en-us/cpp/build/exception-handling-x64?view=msvc-170.
+Ghidra can follow undefined calls beyond a selected function. Decompiler output still requires instruction checks.
+The temporary-event cleanup finding below also has direct instruction evidence.
+Retail addresses, profiles, raw assembly, and decompilation stay outside the public repository.
+
+Confirmed allocation behavior:
+
+The engine allocates 2048 entity slots, each 1272 bytes.
+The normal allocator stops at a high-water mark of 1022.
+Initialization reserves the first 184 normal slots.
+Separate fake entity slots start at index 1024. Sentinel slots sit between the normal and fake ranges.
+When the high-water mark reaches 1022 and the reuse list is empty, the allocator calls the engine error handler.
+It passes error code 2 and the text "G_Spawn: no free entities".
+The error handler selects err_drop for error code 2.
+This is a verified failure path. It has not been observed during Peyton's reported failure.
+
+The allocator normally waits at least 500 milliseconds before reusing the head of its free list.
+It bypasses that wait when the normal range reaches its limit.
+The free routine clears a slot and records its free time.
+Reserved indices below 184 do not enter the normal reuse list.
+These dependencies make a single changed allocation bound an incomplete patch.
+The captured stock packet writer and parser use 10-bit entity IDs, with 1023 as their terminator.
+Expanding normal entities into slots 1024 and above would conflict with unpatched stock clients.
+
+Confirmed temporary-event behavior:
+
+The temporary-event allocator calls the normal allocator.
+It stores the current server time, a temporary-event flag, and an event-derived numeric entity type.
+One entity-update path checks whether the event age exceeds 300 milliseconds.
+When the temporary-event flag is set, that path eventually transfers control to the free routine.
+Some event types also have separate counters and allocation limits.
+Their meanings and relation to War Machine grenades remain unverified.
+An old event in a snapshot does not prove a leak. The server may have paused before its cleanup frame.
+
+Snapshot diagnostics:
+
+The reader verifies the captured executable hash, module size, timestamp, ASLR base, process ID, and process start time.
+It reads only captured metadata and pool bytes.
+It rejects invalid in-use flags, missing memory, out-of-range pointers, active reuse-list entries, cycles, and inconsistent tails.
+It reports an uninitialized pool without invented counts.
+It separates reserved, allocatable, sentinel, and fake slots.
+It reports numeric type counts, temporary-event ages, and normal reuse-list state.
+A separate external sampler now uses read-only process access and the same pool checks.
+Its native E2E passed 21 checks, including moving-state rejection and unchanged target bytes.
+Equal metadata and two equal pool reads reject observed changes. They do not produce an atomic game snapshot.
+Game sampling has not yet been validated.
+Captured stock code identifies numeric type 4 as a missile. War Machine-specific effects remain unverified.
+
+The stock title/menu snapshot contains an initialized background world.
+Its normal high-water mark is 351 of 1022, with 174 active normal entities.
+Seven active entities use the reserved range. The other 167 use the allocatable normal range.
+It has nine active fake entities and one active sentinel entity.
+It has no flagged temporary events or normal reuse-list entries in this snapshot.
+This is a menu baseline, not an Origins Zombies reproduction.
+
+Verification artifacts, all private except ignored recorder fixtures:
+
+research/captures/e2e/92c92c69041545639487ed6fc8950b10/report.json: recorder E2E, nine checks passed.
+The recorder fixes PowerShell 7 timestamp decoding and Windows PowerShell module-path inheritance.
+Private evidence/dump-export-verified/report.json: dump export E2E, six checks passed.
+Private evidence/native-dump-ghidra-e2e-5/report.json: native capture, runtime import, unwind boundaries, repeatable strings, cross-reference, and decompilation passed.
+Private evidence/native-dump-ghidra-e2e-6/report.json: nine checks also verify wrong-build rejection and safe survey destinations.
+Private evidence/entity-snapshot-e2e-3/report.json: real native healthy, exhausted, recovered, uninitialized, corrupt, missing-memory, and wrong-build states passed.
+Private evidence/agent-live-sampler/e2e-3/results/report.json: read-only native sampling passed 21 checks.
+Private evidence/stock-runtime-ghidra-xrefs/survey.json: current stock allocator string reference and selected function exports.
+Private evidence/event-cleanup-assembly.txt: captured instruction evidence for the 300-millisecond event cleanup path.
+Private evidence/stock-menu-entity-report.json: stock background-world entity counts.
+
+Lab launch status:
+
+The verified client area is 1280 by 720 pixels in a bordered window.
+The lab master-volume setting was saved at 0.00. BO3 still reset one startup audio session to full volume.
+Audio-session seeding alone does not meet the silent-launch requirement. A separate audio investigation is in progress.
+No game process is currently running. Further launches require a verified quiet-start mechanism.
+Peyton approved the Windows Security prompt himself.
+The installed beta is AAE BetaLite build 774, Workshop item 2739657648.
+Both the normal mod and this beta exited with code zero on the newer executable.
+The beta opened the author's Steam guide: https://steamcommunity.com/sharedfiles/filedetails/?id=3710608011.
+The guide requests an older stock executable. This startup exit is separate from the reported mid-match failure.
+Steam already contains a previously downloaded older executable. No game download was needed.
+Its SHA256 is 66B95EB4667BD5B3B3D230E7BED1D29CCD261D48CA2699F01216C863BE24FF44.
+Its PE timestamp is 1677286972, and its image size is 531329024 bytes.
+The lab briefly used that cached file without launching it. It now uses the latest stock executable again.
+Peyton supplied the author's September 30 announcement that the beta supports the latest BO3 version.
+This announcement postdates the September 17 downgrade guide. Package and update verification take priority over a downgrade.
+The installed BetaLite manifest matches Steam's locally recorded latest manifest, dated October 2.
+The full beta link remains to be verified. It may select a different Workshop item.
+Any older-build experiment would require fresh capture and profile verification.
+The beta's assets also have an independent copy under the lab's local mods directory.
+The normal installation, Workshop content, and players baseline remain unchanged.
+
+Reproduction target:
+
+The user reports sustained fire late in a long AAE Zombies match.
+The Pack-a-Punched War Machine produces multiple grenades per shot, and the user fires repeated volleys.
+Test both peak usage during a volley and accumulation between volleys over time.
+Do not treat a fresh-match, short firing test as sufficient validation.
+Use Origins with one or two players first. Record the actual host role.
+Capture before firing, during repeated volleys, after recovery, and immediately at Connection Interrupted.
+Compare entity types, temporary-event age, high-water growth, and reuse-list recovery.
+Preserve the exact server error when available. Other script or network failures remain possible.
+No engine patch has been applied. The reported root cause remains unconfirmed.
+
+Final deliverable and checkpoints:
+
+Peyton requests continued commits and pushes, a final real pull request, a fresh review, and a shareable patch-loader executable.
+The native loader foundation passes its own fixture tests. It does not support stock BO3 yet.
+A fresh review found safe-point retry and removal-conflict issues. Focused fixes and E2E checks are in progress.
+Do not treat a native fixture result as evidence of game stability or compatibility with friends.
+Release requires a verified cause, a safe game integration point, repeated failure tests, and successful patch removal.

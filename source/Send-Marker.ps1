@@ -15,7 +15,7 @@ $ErrorActionPreference = 'Stop'
 if (-not $OutputRoot) { $OutputRoot = Join-Path (Split-Path $PSScriptRoot -Parent) 'research/captures/live' }
 $state = Get-Content -LiteralPath (Join-Path $OutputRoot 'active.json') -Raw | ConvertFrom-Json
 $recorder = Get-Process -Id $state.recorderPid -ErrorAction Stop
-if ($recorder.StartTime.ToUniversalTime().ToString('o') -ne $state.recorderStartedUtc) { throw 'The recorder is no longer active.' }
+if ($recorder.StartTime.ToUniversalTime() -ne ([DateTime]$state.recorderStartedUtc).ToUniversalTime()) { throw 'The recorder is no longer active.' }
 $requestDirectory = Join-Path $state.sessionDirectory 'requests'
 $temporary = Join-Path $requestDirectory ([Guid]::NewGuid().ToString('N') + '.tmp')
 [ordered]@{

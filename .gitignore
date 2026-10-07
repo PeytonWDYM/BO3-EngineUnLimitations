@@ -18,6 +18,10 @@
 *.pch
 *.ipch
 *.idb
+*.class
+__pycache__/
+*.py[cod]
+.venv/
 
 # Logs and crash dumps
 *.log
@@ -38,3 +42,4 @@ Desktop.ini
 /research/captures/
 /research/local/
 /tools/
+/lab/
