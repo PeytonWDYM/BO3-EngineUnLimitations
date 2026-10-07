@@ -659,6 +659,30 @@ The waiting script's real process identity and waiting state were verified; its 
 No game has attached yet. No VM profile was enabled, source changed, or game launched by this step.
 Private evidence/manual-session-20261007T141630Z/ retains the pre-script failure plan, frozen inputs and pending history.
 
+2026-10-07 15:27 UTC: current manual session and provisional game entity history
+
+The earlier recorder and waiting entity sampler stopped at Peyton's request before he launched his normal game.
+The recorder restarted at 14:52 UTC and attached stock BO3 with its exact process creation time and executable identity.
+The 14:55 UTC F9 snapshot completed and passed the recorder's structural check. Peyton reported a brief frame hitch.
+That was a keybind test, not a reported match failure. No actual failure snapshot exists yet.
+Peyton requested deletion of the test and old dumps. Automatic approval review blocked both bulk and individual deletion.
+No dumps were deleted. Do not interpret those requested-for-deletion captures as the next reproduction.
+The recorded loaded native modules include T7Overcharged.ff and AAEFreeAim.dll under Workshop item 2739657648.
+Their current disk hashes match the refreshed BetaLite lab copy. This does not compare mapped bytes or establish active map/script identity.
+A new instance of the existing read-only entity CLI attached at 15:27 UTC, bound to the recorder's exact game creation time.
+Its first launch preparation rejected a date conversion that lost fractional precision. No sampler or evidence directory was created by that rejected attempt.
+Direct DateTime conversion preserved the recorded FILETIME and matched the live process before the successful attachment.
+The sampler uses a frozen private profile, one hertz, one attempt and a six-hour bound. It stops when the recorded process exits.
+The initial 34 attempts retained 29 initialized pool rows and five explicit consistency rejections.
+Read pairs took 1.63 to 8.17 milliseconds in that initial window. Equal reads remain non-atomic and do not prove one allocation lifetime.
+The game profile's disk hash, loaded PE metadata and process creation-time checks passed. Full mapped-code identity is not checked.
+These are provisional game measurements. Cross-check the saved failing pool and clock before interpreting resource exhaustion or cleanup.
+The actual map, player count, host role, War Machine availability and volley history remain unrecorded. No cause or fix is established.
+Private evidence/manual-session-20261007T1521Z/ retains the session identities, native module hashes, frozen profile and ongoing rows.
+Its initial-check.json SHA-256 is 76b8f9065e37230b89f5145a829ca6fd5ffa68bac7d2df1776a81744945e62d8.
+The VM profile remains disabled. No game was launched, controlled, injected, patched or reconfigured in this checkpoint.
+Audio prototypes remain parked while Peyton supplies the actual failure. No additional fixture tests were run.
+
 Final deliverable and checkpoints:
 
 Peyton requests continued commits and pushes, a final real pull request, a fresh review, and a shareable patch-loader executable.

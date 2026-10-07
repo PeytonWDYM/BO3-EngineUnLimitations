@@ -50,12 +50,16 @@ Peyton clarified that BO3 remains open when this happens. Treat it as a match or
 Whether the internal server crashes remains unconfirmed. A live process can still preserve the relevant failure state.
 The initial reproduction uses stock BO3, AAE, Origins, and one or two players.
 
-Peyton will manually play to provide the next reproduction. The external read-only recorder is armed.
+Peyton is providing the next reproduction through his normal game. The external read-only recorder is attached.
 Prioritize that failing-match capture over automated lab startup work. Do not launch or control another game during his session.
-A separate experimental entity sampler is armed for that recorder session at one read pair per second and one attempt.
-It waits for the recorded process identity and binds its exact creation time with a private frozen profile copy.
-Rejected reads remain visible. This is provisional history, not atomic sampling or live game validation; cross-check a saved failure snapshot.
+The earlier waiting sampler stopped before this session. A new experimental entity sampler attached at 15:27 UTC.
+It uses one read pair per second, one attempt, the recorded process creation time, and a private frozen profile copy.
+Its initial check retained 29 initialized pool rows and five rejected reads. This is provisional history, not atomic sampling or validated game measurements; cross-check a saved failure snapshot.
 The VM profile remains disabled.
+The 14:55 UTC F9 snapshot was a keybind test, not a reported hosting failure. Peyton requested deletion of that and old dumps.
+Automatic approval review blocked both bulk and individually named deletion. No dumps were deleted. Do not analyze those test or old dumps as the next reproduction.
+The process module inventory contains T7Overcharged.ff and AAEFreeAim.dll from Workshop item 2739657648.
+Both disk files match the refreshed BetaLite lab copy. This verifies native package paths, not mapped bytes, active map identity, or War Machine availability.
 
 The root cause remains unconfirmed. An engine limit is a hypothesis, not an established diagnosis.
 Targeted decompilation and reverse engineering of the host state, resource allocation, cleanup, and failure paths are in scope.
@@ -66,8 +70,8 @@ Verify reference addresses and layouts against the exact stock executable before
 The current recorder captures process statistics, manual markers, available logs, and manually requested memory dumps.
 The offline snapshot reader measures entity pool usage with a private profile verified against the exact executable.
 It separates normal, reserved, sentinel, and fake slots. It checks reuse lists, cleanup flags, and cleanup clocks.
-The separate live sampler can measure entity counts through read-only process access and an exact private build profile.
-Its native fixture E2E passed. Game measurements remain unvalidated.
+The separate live sampler collects provisional entity rows through read-only process access and an exact private build profile.
+Its native fixture E2E passed. The manual session now contains initialized game rows and retained consistency rejections. Game measurements remain unvalidated.
 It rejects observed changes between repeated reads. It does not produce an atomic game snapshot.
 The recorder does not yet measure projectile creation and deletion or GSC script threads.
 Do not label numeric entity types as projectiles without verification or infer an entity leak from process memory alone.
