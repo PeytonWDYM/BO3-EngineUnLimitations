@@ -114,7 +114,12 @@ They do not implement game activation or prove complete quiet startup. No game a
 Separate activation adapters now preserve session-control requests, callbacks, and recreation in an owned memory-provider fixture.
 Its twelve native scenarios passed fresh review, with zero raw leaf publications. It does not implement factory interception.
 Shared and separate COM identities are tested. Concurrent unfinished identity construction remains untested and returns E_PENDING.
-Its controlled abort uses a fixture-only C++ exception. Stock-safe stopping and real driver compatibility remain unimplemented.
+Its controlled abort uses a fixture-only C++ exception. Stock integration remains unimplemented.
+A separate owned driver probe passed twelve memory guards, four privacy guards, one silent physical run, and fresh review.
+The current default WASAPI and DirectSound routes each completed two generations, with callbacks released and CanUnload true.
+All three default render routes and endpoint controls matched before and after. No audio settings changed.
+The physical test used silent payloads only. It does not prove nonzero hardware suppression or device-change callback delivery.
+It also does not prove factory interception, complete output coverage, or quiet BO3 startup.
 Stock buffer creation returns the base DirectSound interface. Query Buffer8 before using the existing quiet factory.
 One reviewed stock failure branch releases the buffer without a null check. Do not assume rejected activation allows safe stock recovery.
 The separate pre-entry loader fixture passed eight native cases and fresh review using a dummy factory.

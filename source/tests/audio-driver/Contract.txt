@@ -1,0 +1,47 @@
+Owned silent driver compatibility probe
+
+The build harness runs twelve memory-provider guards. It builds a separate physical executable without running it.
+The physical executable requires --physical-silent and a new evidence path outside the repository.
+Root must inspect the call sequence and guard evidence before the first physical run.
+
+The normal entry initializes COM as STA. It does not run under loader lock.
+The provider forwards CoCreateInstance and DirectSoundCreate8 through the existing activation Boundary.
+The Boundary must prepare quiet leaves before it returns an output object.
+The consumer has no raw output fallback.
+
+WASAPI uses the current default render eConsole endpoint and its reported mix format.
+It uses shared mode, EVENTCALLBACK | NOPERSIST, a 25 ms requested buffer, and a null session GUID.
+It sets a real event handle immediately after Initialize.
+It registers one endpoint callback and one session callback.
+It fills the first render buffer with format-correct silence, releases it with SILENT, then starts.
+It waits at most 50 ms and stops. It unregisters callbacks and releases all owned interfaces.
+It repeats the complete chain once to check recreation.
+
+DirectSound uses the default playback device. This route can differ from WASAPI eConsole.
+It creates a hidden owned window and supplies that valid HWND with DSSCL_PRIORITY.
+It creates one stopped PCM16 stereo 48 kHz secondary buffer with flags 0x80e8.
+The Boundary clears the whole buffer before publishing the base interface.
+The consumer queries Buffer8, fills both split regions with silence, and unlocks before Play.
+It plays for 25 ms, stops, releases the buffer and device, and destroys the owned window.
+It repeats the complete chain once to check recreation.
+
+Admitted formats are PCM8, PCM16, and IEEE float32 with valid alignment and rate fields.
+WAVE_FORMAT_EXTENSIBLE requires the matching PCM or IEEE float subtype and full valid bits.
+PCM8 silence uses 0x80. Signed PCM and IEEE float silence use 0x00.
+The physical DirectSound test uses PCM16. WASAPI uses the actual mix format or rejects it before playback.
+Format overrides exist only in the owned memory caller. The physical executable exposes no format or payload override.
+
+Before and after the streams, the probe reads current render defaults and endpoint volume controls.
+It reads all three render roles, master volume, mute, each channel volume, and the default DirectSound GUID.
+It has no volume, default-device, speaker-configuration, primary-buffer, or game-setting setters.
+Changed snapshot values fail the result. A change does not identify which process caused it.
+
+Each failure stops that chain before its next playback operation. It never returns a raw fallback.
+Stop and unregister failures fail cleanup. The result does not conceal them.
+The provider's abort exception stays on the owned outbound C++ call stack.
+Callbacks do not throw. This exception is not a stock-game abort mechanism.
+
+The probe checks driver compatibility for its own streams on current default routes.
+It does not install hooks, intercept factories, inject DLLs, launch BO3, or change any audio controls.
+It does not prove game silence, every audio route, startup timing, or an engine fix.
+Output path checks resolve existing junctions. They assume directories do not change during the run.

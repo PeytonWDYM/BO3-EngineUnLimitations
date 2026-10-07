@@ -455,6 +455,26 @@ Actual Windows interception, earlier dependency coverage, real factory recursion
 Private evidence/agent-patch-loader/startup/final/results/result.json records the native cases.
 Private evidence/startup-fresh-review/review.txt and evidence-verification.json record the final review and provenance checks.
 
+2026-10-07: reviewed current-default silent driver probe
+
+A separate owned caller now exercises the existing activation adapters against the actual Windows audio factories.
+Twenty failure cases were written first. Twelve memory guards and four pre-compilation privacy rejections passed.
+The physical executable requires an explicit silent mode and a new private output path. Its build does not run it.
+Root inspected the call sequence, zero-output guards, and exact source, dependency, report, and executable hashes before one physical run.
+That run exited zero in about 0.292 seconds within its external twenty-second deadline. It had no retry or nonzero baseline.
+WASAPI completed two generations with the current default mix format: extensible float32, stereo, 48 kHz.
+Each first packet contained format-correct silence and used SILENT before Start. Stop and callback unregistration succeeded.
+DirectSound completed two generations with prepared stopped secondary buffers, split silent writes, brief looping Play, and Stop.
+The report records the requested DirectSound format. The quiet factory validates actual GetFormat without separately serializing it.
+Callback live counts reached zero. Owned events, interfaces, and hidden windows were released. CanUnload returned true.
+Read-only snapshots of all three default render roles, endpoint master/mute/channel values, and DirectSound default GUID matched exactly.
+No volume, device, routing, primary-format, game-setting, or normal-install change occurred. BO3 was not launched.
+Fresh review verified forty-two artifact bindings and found no blocker within this owned probe scope.
+Only one WASAPI packet per generation was submitted. Sustained servicing, device-change callback delivery, and nonzero hardware suppression remain unvalidated.
+This proves current-default owned driver compatibility. It does not prove stock interception, first-output coverage, quiet BO3, or an engine fix.
+Private evidence/agent-silent-launch/audio-driver/physical-20261007T120543Z-5cf46dba/driver.json and run.json preserve the result and invocation.
+Private evidence/audio-driver-fresh-review/Review.txt and review-checks.json bind the final source and evidence.
+
 Final deliverable and checkpoints:
 
 Peyton requests continued commits and pushes, a final real pull request, a fresh review, and a shareable patch-loader executable.
