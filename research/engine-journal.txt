@@ -59,6 +59,18 @@ When the temporary-event flag is set, that path eventually transfers control to 
 Some event types also have separate counters and allocation limits.
 Their meanings and relation to War Machine grenades remain unverified.
 An old event in a snapshot does not prove a leak. The server may have paused before its cleanup frame.
+Further analysis shows that a spent split missile can use the same cleanup flag.
+Keep flagged counts, numeric types, and elapsed cleanup-clock values separate.
+That flag does not identify only cosmetic events. The elapsed value is not proven projectile creation age.
+
+Confirmed projectile-split behavior:
+
+The native splitter allocates each child through the normal entity allocator.
+It marks children so that they do not recursively split.
+It retains the parent during the child loop, then stops its velocity and marks it for cleanup.
+This establishes an allocation-pressure path. It does not establish the loaded War Machine split count or the reported failure cause.
+Loaded weapon settings and a marked firing capture still need verification.
+AAE's scripts also create multiple watchers around grenade-launcher fire. Their creation does not prove they leak.
 
 Snapshot diagnostics:
 
@@ -67,9 +79,9 @@ It reads only captured metadata and pool bytes.
 It rejects invalid in-use flags, missing memory, out-of-range pointers, active reuse-list entries, cycles, and inconsistent tails.
 It reports an uninitialized pool without invented counts.
 It separates reserved, allocatable, sentinel, and fake slots.
-It reports numeric type counts, temporary-event ages, and normal reuse-list state.
+It reports numeric type counts, cleanup flags, cleanup clocks, and normal reuse-list state.
 A separate external sampler now uses read-only process access and the same pool checks.
-Its native E2E passed 21 checks, including moving-state rejection and unchanged target bytes.
+Its native E2E passed 22 checks, including mixed cleanup types, moving-state rejection, and unchanged target bytes.
 Equal metadata and two equal pool reads reject observed changes. They do not produce an atomic game snapshot.
 Game sampling has not yet been validated.
 Captured stock code identifies numeric type 4 as a missile. War Machine-specific effects remain unverified.
@@ -78,7 +90,7 @@ The stock title/menu snapshot contains an initialized background world.
 Its normal high-water mark is 351 of 1022, with 174 active normal entities.
 Seven active entities use the reserved range. The other 167 use the allocatable normal range.
 It has nine active fake entities and one active sentinel entity.
-It has no flagged temporary events or normal reuse-list entries in this snapshot.
+It has no cleanup-flagged entities or normal reuse-list entries in this snapshot.
 This is a menu baseline, not an Origins Zombies reproduction.
 
 Verification artifacts, all private except ignored recorder fixtures:
@@ -90,6 +102,8 @@ Private evidence/native-dump-ghidra-e2e-5/report.json: native capture, runtime i
 Private evidence/native-dump-ghidra-e2e-6/report.json: nine checks also verify wrong-build rejection and safe survey destinations.
 Private evidence/entity-snapshot-e2e-3/report.json: real native healthy, exhausted, recovered, uninitialized, corrupt, missing-memory, and wrong-build states passed.
 Private evidence/agent-live-sampler/e2e-3/results/report.json: read-only native sampling passed 21 checks.
+Private evidence/agent-live-sampler/cleanup-semantics-snapshot-green/report.json: native snapshots passed ten checks with mixed cleanup types.
+Private evidence/agent-live-sampler/cleanup-semantics-live-green/results/report.json: live native sampling passed 22 checks with mixed cleanup types.
 Private evidence/stock-runtime-ghidra-xrefs/survey.json: current stock allocator string reference and selected function exports.
 Private evidence/event-cleanup-assembly.txt: captured instruction evidence for the 300-millisecond event cleanup path.
 Private evidence/stock-menu-entity-report.json: stock background-world entity counts.
@@ -100,6 +114,13 @@ The verified client area is 1280 by 720 pixels in a bordered window.
 The lab master-volume setting was saved at 0.00. BO3 still reset one startup audio session to full volume.
 Audio-session seeding alone does not meet the silent-launch requirement. A separate audio investigation is in progress.
 No game process is currently running. Further launches require a verified quiet-start mechanism.
+CoreAudio channel seeding passed stereo fixtures but failed the exact eight-channel Realtek lab case.
+Direct and hidden launches both reproduced that failure. Individual channel setters did not fix it.
+The diagnostic helper records this rejection. It is not a verified silent BO3 launcher.
+The audio E2E entry point now rejects repository output before compilation.
+Private evidence/audio-boundary-red.json and audio-boundary-green.json record the reproduced issue and its correction.
+Removing the startup movie is also unverified. Its failure callback runs after a playback request already exists.
+Native analysis does not establish that this movie failure prevents the separately banked startup sound.
 Peyton approved the Windows Security prompt himself.
 The installed beta is AAE BetaLite build 774, Workshop item 2739657648.
 Both the normal mod and this beta exited with code zero on the newer executable.
@@ -112,7 +133,16 @@ The lab briefly used that cached file without launching it. It now uses the late
 Peyton supplied the author's September 30 announcement that the beta supports the latest BO3 version.
 This announcement postdates the September 17 downgrade guide. Package and update verification take priority over a downgrade.
 The installed BetaLite manifest matches Steam's locally recorded latest manifest, dated October 2.
-The full beta link remains to be verified. It may select a different Workshop item.
+The author's beta channel links full Beta 2283794212 and BetaLite 2739657648.
+The September 30 announcement links that channel without restricting support to one variant.
+The public full-beta Workshop page also records an October 2 update.
+The private BetaLite copy was refreshed from the installed files. All 71 files match their source SHA256 hashes.
+Its verified size is 1,413,681,260 bytes. The installed source files remain unchanged.
+Private evidence/beta-lab-refresh.json records this check. No game downgrade or Workshop file replacement occurred.
+Private bootstrap analysis confirms that BetaLite's build-string and changelist check match the latest stock executable.
+Its date helper also recognizes that executable's exact PE timestamp.
+AAE rewrites fs_game after selection. That value alone does not confirm which Workshop mod actually loaded.
+The next mod test must verify the selected package and bootstrap identity. A downgrade is not indicated by this check.
 Any older-build experiment would require fresh capture and profile verification.
 The beta's assets also have an independent copy under the lab's local mods directory.
 The normal installation, Workshop content, and players baseline remain unchanged.
@@ -125,7 +155,7 @@ Test both peak usage during a volley and accumulation between volleys over time.
 Do not treat a fresh-match, short firing test as sufficient validation.
 Use Origins with one or two players first. Record the actual host role.
 Capture before firing, during repeated volleys, after recovery, and immediately at Connection Interrupted.
-Compare entity types, temporary-event age, high-water growth, and reuse-list recovery.
+Compare entity types, cleanup clocks, high-water growth, and reuse-list recovery.
 Preserve the exact server error when available. Other script or network failures remain possible.
 No engine patch has been applied. The reported root cause remains unconfirmed.
 

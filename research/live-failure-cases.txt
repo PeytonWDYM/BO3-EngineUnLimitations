@@ -5,7 +5,7 @@ The sampler must open its target with query and read permissions only.
 It must not inject code, attach a debugger, suspend threads, or write target memory.
 
 1. Healthy state: report 10 normal, four reserved, six allocatable, one sentinel, and one fake active slot.
-2. Temporary events: report six flagged events with ages above the configured cleanup delay.
+2. Cleanup flags: report six flagged slots with clock ages above the configured cleanup delay.
 3. Exhausted state: report 24 normal active slots, zero free entries, and the allocator failure condition.
 4. Recovered state: report four normal active slots and 20 reusable entries. Clear the failure condition.
 5. Null pool: report an uninitialized state without active counts.
@@ -19,8 +19,18 @@ It must not inject code, attach a debugger, suspend threads, or write target mem
 13. Observed metadata or pool changes between reads: reject and retry with a bounded attempt count.
 14. Repeated valid samples: keep coherent counts, monotonic sequence numbers, and high-water maxima.
 15. Byte comparison before and after sampling: confirm the fixture state remains unchanged.
+16. Mixed cleanup flags: keep numeric types 4 and 102 separate in the flagged type counts.
+    Use two flagged type-4 slots with clock ages of 50 milliseconds.
+    Use two flagged type-102 slots with clock ages of 500 milliseconds.
+    Add two unflagged type-4 slots. They must not enter the flagged counts or age metrics.
+    Expect four flagged slots, two past the 300-millisecond delay, and an oldest clock age of 500 milliseconds.
+    Check both the saved native snapshot and repeated live samples.
+    Do not expose temporary-event metrics or call this field a projectile creation time.
 
 Two equal pool reads and stable metadata can reject observed changes.
 They cannot prove that the game made no intermediate changes or create an atomic snapshot.
 Unstable samples must remain visible as rejected rows. Never substitute zero entity counts.
-Numeric entity types have no verified gameplay labels.
+The report keeps numeric entity types separate without adding gameplay labels.
+The cleanup flag also applies to some spent missiles. It does not identify a cosmetic event.
+Clock age means elapsed time from the field that the cleanup path compares with the server clock.
+It does not prove when a projectile was created or when its cleanup flag was set.

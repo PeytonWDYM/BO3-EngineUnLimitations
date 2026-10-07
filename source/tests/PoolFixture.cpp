@@ -6,7 +6,7 @@ extern "C" __declspec(dllimport) void __stdcall Sleep(unsigned long milliseconds
 
 struct Entity {
     uint8_t inUse;
-    uint8_t temporary;
+    uint8_t cleanupFlag;
     uint16_t type;
     int32_t freeTime;
     Entity *next;
@@ -32,6 +32,7 @@ extern "C" {
     __declspec(dllexport) State InvalidPointer{};
     __declspec(dllexport) State Uninitialized{};
     __declspec(dllexport) State MissingMemory{};
+    __declspec(dllexport) State MixedCleanupClock{};
 }
 
 void initialize(State &state, Entity *pool, uint32_t highWater) {
@@ -39,12 +40,12 @@ void initialize(State &state, Entity *pool, uint32_t highWater) {
     for (uint32_t i = 0; i < highWater; ++i) {
         pool[i].inUse = 1;
         pool[i].type = i < 4 ? 1 : 25;
-        pool[i].temporary = i >= 4 ? 1 : 0;
+        pool[i].cleanupFlag = i >= 4 ? 1 : 0;
     }
 }
 
 int main() {
-    static Entity pools[6][32]{};
+    static Entity pools[7][32]{};
     initialize(Healthy, pools[0], 10);
     pools[0][24].inUse = 1;
     pools[0][26].inUse = 1;
@@ -64,5 +65,12 @@ int main() {
     initialize(InvalidPointer, pools[5], 10);
     InvalidPointer.head = InvalidPointer.tail = &pools[5][4];
     MissingMemory = {reinterpret_cast<Entity *>(0x123450000), 10, 1000, nullptr, nullptr};
+    initialize(MixedCleanupClock, pools[6], 10);
+    // One cleanup flag spans distinct numeric types. The clock is not a creation time.
+    for (int i = 4; i < 10; ++i) {
+        pools[6][i].type = i >= 6 && i < 8 ? 102 : 4;
+        pools[6][i].cleanupFlag = i < 8 ? 1 : 0;
+        pools[6][i].freeTime = i < 6 ? 950 : i < 8 ? 500 : 0;
+    }
     Sleep(90000);
 }

@@ -29,7 +29,11 @@ def main() -> None:
     identity_path.write_text(json.dumps(identity), encoding="utf-8")
     checks = []
     scenarios = {
-        "Healthy": {"status": "initialized", "normalActive": 10, "temporaryActive": 6, "temporaryPastCleanupDelay": 6, "freeListCount": 0, "sentinelActive": 1, "fakeActive": 1},
+        "Healthy": {"status": "initialized", "normalActive": 10, "cleanupFlaggedActive": 6, "cleanupFlaggedPastDelay": 6, "freeListCount": 0, "sentinelActive": 1, "fakeActive": 1},
+        "MixedCleanupClock": {"status": "initialized", "normalActive": 10, "cleanupFlaggedActive": 4,
+                              "cleanupFlaggedPastDelay": 2, "cleanupFlaggedOldestClockAgeMs": 500,
+                              "cleanupFlaggedNumericTypes": {"4": 2, "102": 2},
+                              "numericTypes": {"1": 4, "4": 4, "102": 2}},
         "Exhausted": {"status": "initialized", "normalActive": 24, "failureCondition": True},
         "Recovered": {"status": "initialized", "normalActive": 4, "freeListCount": 20, "failureCondition": False, "headReusable": True},
         "Uninitialized": {"status": "uninitialized"},
@@ -60,6 +64,7 @@ def main() -> None:
             report = json.loads(report_path.read_text())
             for key, value in expected.items():
                 assert report[key] == value, (name, key, report)
+            assert not any(key.startswith("temporary") for key in report), report
             if name == "Uninitialized":
                 assert "normalActive" not in report
         else:

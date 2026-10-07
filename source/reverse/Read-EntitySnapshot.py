@@ -31,11 +31,12 @@ def inspect_pool(memory: DumpMemory, module, profile: dict) -> dict:
         return report
     if not reserved <= values["highWater"] <= limit or values["pool"] % 8 != 0:
         raise ValueError("Invalid pool pointer or high-water mark.")
-    fields = {"inUse": (layout["inUseOffset"], "B"), "temporary": (layout["temporaryOffset"], layout["temporaryFormat"]),
+    # Keep legacy profile keys. This flag also marks some spent missiles.
+    fields = {"inUse": (layout["inUseOffset"], "B"), "cleanupFlag": (layout["temporaryOffset"], layout["temporaryFormat"]),
               "type": (layout["typeOffset"], "H"), "freeTime": (layout["freeTimeOffset"], "i"),
               "next": (layout["freeNextOffset"], "Q")}
     if layout["temporaryFormat"] not in ("B", "I"):
-        raise ValueError("The temporary flag format must be B or I.")
+        raise ValueError("The cleanup flag format must be B or I.")
     for offset, format_code in fields.values():
         if not 0 <= offset <= stride - struct.calcsize("<" + format_code):
             raise ValueError("A profile entity field is outside its slot.")
@@ -66,8 +67,10 @@ def inspect_pool(memory: DumpMemory, module, profile: dict) -> dict:
     if values["tail"] != tail:
         raise ValueError("The reuse-list tail differs from its final entry.")
     active = [item for item in entities[:high_water] if item["inUse"]]
-    temporary_ages = [(values["time"] - item["freeTime"] + 2**31) % 2**32 - 2**31
-                      for item in active if item["temporary"] == 1]
+    cleanup_flagged = [item for item in active if item["cleanupFlag"] == 1]
+    # The cleanup path compares this field with the clock. Its origin varies by type.
+    cleanup_clock_ages = [(values["time"] - item["freeTime"] + 2**31) % 2**32 - 2**31
+                          for item in cleanup_flagged]
     head_age = None
     if free_indices:
         head_age = (values["time"] - entities[free_indices[0]]["freeTime"] + 2**31) % 2**32 - 2**31
@@ -78,9 +81,10 @@ def inspect_pool(memory: DumpMemory, module, profile: dict) -> dict:
         "allocatableActive": sum(item["inUse"] for item in entities[reserved:high_water]),
         "fakeActive": sum(item["inUse"] for item in entities[fake_start:]),
         "sentinelActive": sum(item["inUse"] for item in entities[limit:fake_start]),
-        "temporaryActive": sum(item["temporary"] == 1 for item in active),
-        "temporaryPastCleanupDelay": sum(age > layout["temporaryCleanupDelayMs"] for age in temporary_ages),
-        "temporaryOldestAgeMs": max(temporary_ages) if temporary_ages else None,
+        "cleanupFlaggedActive": len(cleanup_flagged),
+        "cleanupFlaggedPastDelay": sum(age > layout["temporaryCleanupDelayMs"] for age in cleanup_clock_ages),
+        "cleanupFlaggedOldestClockAgeMs": max(cleanup_clock_ages) if cleanup_clock_ages else None,
+        "cleanupFlaggedNumericTypes": dict(Counter(item["type"] for item in cleanup_flagged)),
         "numericTypes": dict(Counter(item["type"] for item in active)),
         "freeListCount": len(free_indices), "freeIndices": free_indices,
         "unallocatedNormal": limit - high_water, "headAgeMs": head_age,

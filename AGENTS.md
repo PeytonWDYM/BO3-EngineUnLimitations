@@ -51,7 +51,7 @@ Verify reference addresses and layouts against the exact stock executable before
 
 The current recorder captures process statistics, manual markers, available logs, and manually requested memory dumps.
 The offline snapshot reader measures entity pool usage with a private profile verified against the exact executable.
-It separates normal, reserved, sentinel, and fake slots. It checks reuse lists and temporary-event ages.
+It separates normal, reserved, sentinel, and fake slots. It checks reuse lists, cleanup flags, and cleanup clocks.
 The separate live sampler can measure entity counts through read-only process access and an exact private build profile.
 Its native fixture E2E passed. Game measurements remain unvalidated.
 It rejects observed changes between repeated reads. It does not produce an atomic game snapshot.
@@ -61,12 +61,21 @@ Do not label numeric entity types as projectiles without verification or infer a
 Current stock runtime analysis confirms a 2,048-slot allocation and a 1,022-slot normal allocator limit.
 The normal allocator raises ERR_DROP with "G_Spawn: no free entities" when its range is full and its reuse list is empty.
 The allocation includes separate reserved and fake ranges. Increasing one bound alone is not a verified fix.
-The observed temporary-event cleanup path frees flagged events after their age exceeds 300 milliseconds.
+One observed cleanup path checks a 300-millisecond clock delta before freeing flagged entities.
+The same flag also marks spent split missiles. Keep the flag, numeric type, and cleanup clock separate.
+Do not identify all flagged entities as cosmetic temporary events or treat that clock as projectile creation time.
 The stock packet writer and parser use 10-bit entity IDs, with 1023 as the terminator.
 Do not expand normal entities into the fake range. That change would conflict with unpatched stock clients.
 The verified missile type is 4. A numeric event type alone does not identify a War Machine effect.
 These findings do not establish the cause of Peyton's reported failure. No failing Zombies match has been captured yet.
 Read research/engine-journal.txt for the current evidence, tool checks, and lab status.
+
+The installed BetaLite build 774 version gate matches the latest stock build string and changelist.
+The author's September 30 announcement confirms current-game support and links both beta variants.
+The BetaLite manifest matches Steam's latest record, dated October 2. Its separate lab copy has verified file hashes.
+An older downgrade guide appeared during a lab startup exit. It does not establish that a downgrade is required.
+Verify the actual selected beta package and bootstrap identity. AAE can rewrite fs_game after mod selection.
+CoreAudio channel seeding failed the eight-channel Realtek lab case. Do not use its stereo fixture passes as proof of a quiet game launch.
 
 ## Validation and handoff
 

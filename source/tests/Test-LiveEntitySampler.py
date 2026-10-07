@@ -29,7 +29,10 @@ def main() -> None:
         time.sleep(0.3)
         scenarios = {
             "Healthy": {"normalActive": 10, "reservedActive": 4, "allocatableActive": 6,
-                        "sentinelActive": 1, "fakeActive": 1, "temporaryPastCleanupDelay": 6},
+                        "sentinelActive": 1, "fakeActive": 1, "cleanupFlaggedPastDelay": 6},
+            "MixedCleanupClock": {"normalActive": 10, "cleanupFlaggedActive": 4, "cleanupFlaggedPastDelay": 2,
+                                  "cleanupFlaggedOldestClockAgeMs": 500, "cleanupFlaggedNumericTypes": {"4": 2, "102": 2},
+                                  "numericTypes": {"1": 4, "4": 4, "102": 2}},
             "Exhausted": {"normalActive": 24, "freeListCount": 0, "failureCondition": True},
             "Recovered": {"normalActive": 4, "freeListCount": 20, "headReusable": True, "failureCondition": False},
             "Uninitialized": {"status": "uninitialized"},
@@ -51,6 +54,7 @@ def main() -> None:
                 for sample in samples:
                     for key, value in expected.items():
                         assert sample["pool"][key] == value, (name, key, sample)
+                    assert not any(key.startswith("temporary") for key in sample["pool"]), sample
                 if name == "Healthy":
                     assert samples[-1]["maxNormalActive"] == 10
                     assert samples[-1]["pool"]["numericTypes"] == {"1": 4, "25": 6}

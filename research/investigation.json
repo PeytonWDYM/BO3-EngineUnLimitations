@@ -36,7 +36,7 @@
   },
   "diagnostics": {
     "offlineEntities": "Exact-build snapshot reader passed real native pool-state E2E checks.",
-    "liveEntities": "Separate read-only sampler passed 21 native E2E checks. Game sampling remains unvalidated.",
+    "liveEntities": "Separate read-only sampler passed 22 native E2E checks. Game sampling remains unvalidated.",
     "consistency": "Repeated equal reads reject observed changes. They do not make an atomic game snapshot.",
     "nativeAnalysis": "Capture, Ghidra import, unwind boundaries, cross-references, decompilation, and identity/output guards passed nine E2E checks.",
     "compatibility": "Current stock runtime uses 10-bit network entity IDs. Expanding normal IDs past 1023 conflicts with unpatched clients.",
@@ -45,11 +45,17 @@
   "labStatus": {
     "client": "Latest stock executable. Normal installation unchanged.",
     "betaStartup": "Installed BetaLite exited with code zero and opened a September 17 downgrade guide.",
-    "newEvidence": "Peyton supplied the author's September 30 announcement that the beta supports the latest game.",
-    "nextCheck": "Verify the announcement's beta link and installed package before another compatibility test.",
-    "quietStartup": "Master zero and session mute alone did not keep startup silent. Session channel persistence is under native fixture validation."
+    "newEvidence": "The author's September 30 announcement confirms latest-game beta support. Its beta channel links both full Beta 2283794212 and BetaLite 2739657648.",
+    "betaRefresh": "Steam records BetaLite's October 2 manifest as current. All 71 files in the refreshed private lab copy match the installed source hashes. The source is unchanged.",
+    "nextCheck": "The installed beta gate matches the latest stock build. Verify the selected package and bootstrap identity. AAE can rewrite fs_game.",
+    "quietStartup": "Master zero and session mute alone did not keep startup silent. Channel seeding also failed the eight-channel Realtek case."
   },
   "verifiedReferences": [
+    {
+      "url": "https://discord.com/channels/975438698491572324/975438698491572327/1555059873555943527",
+      "finding": "The author's September 30 announcement states that the beta supports the latest BO3. The linked beta channel lists full Beta 2283794212 and BetaLite 2739657648.",
+      "verification": "Read-only inspection of the author's announcement and beta channel in the user's existing Discord membership."
+    },
     {
       "url": "https://steamcommunity.com/workshop/filedetails/?id=2631943123",
       "finding": "AAE lists BOIII, T7x, and BO3Enhanced among incompatible clients. Its map-loading crash warning does not establish this mid-match failure.",
@@ -64,7 +70,7 @@
       "url": "https://github.com/ate47/atian-cod-tools",
       "documentation": "https://github.com/ate47/atian-cod-tools/wiki/Fast-Files---Dumper",
       "finding": "ACTS supports BO3 rawfile and scriptparsetree extraction from fastfiles. Its GSC tools provide a route for script inspection.",
-      "setupStatus": "Research reference only. Release archive download succeeded, but extraction failed on locked executable files. No ACTS binary was run."
+      "setupStatus": "Offline extraction and private decompilation succeeded for 215 BetaLite scripts. Extracted assets stay outside the public repository."
     },
     {
       "url": "https://github.com/Scobalula/HydraX",

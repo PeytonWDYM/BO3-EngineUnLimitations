@@ -26,17 +26,25 @@ Use a lower rate if capture overhead affects the game.
 Each JSONL row has a UTC time and an event name:
 
 attached records the process, executable, profile, rate, and access mask.
-sample records checked pool counts, reuse-list state, temporary-event ages, and numeric types.
+sample records checked pool counts, reuse-list state, cleanup flags, clock ages, and numeric types.
 rejected records failed validation or observed changes. It does not report zero counts.
 process_exit records target exit.
 stopped records accepted and rejected totals and observed maxima.
 
 Normal active counts include reserved slots. Allocatable counts exclude reserved slots.
 Sentinel and fake counts remain separate.
-Temporary-event age uses the signed wraparound calculation from the snapshot reader.
+cleanupFlaggedActive counts active normal slots with the cleanup flag set to one.
+cleanupFlaggedNumericTypes keeps the numeric types of those slots separate.
+cleanupFlaggedPastDelay counts flagged slots whose clock age exceeds the profile delay.
+cleanupFlaggedOldestClockAgeMs reports the oldest clock age among those flagged slots.
+Clock age uses the signed wraparound calculation from the snapshot reader.
+It measures elapsed time from the field that the cleanup path compares with the server clock.
+It does not prove when a projectile was created or when its cleanup flag was set.
+The flag also applies to some spent missiles. It does not identify a cosmetic event.
+The private profile retains legacy temporaryOffset, temporaryFormat, and temporaryCleanupDelayMs keys.
 The failureCondition field describes the verified normal allocator condition.
 It does not identify the cause of Connection Interrupted.
-Numeric types have no verified gameplay labels.
+The report keeps numeric types separate without adding gameplay labels.
 
 Stable metadata and equal pool reads reject observed changes.
 They do not create an atomic game snapshot or detect every intermediate change.

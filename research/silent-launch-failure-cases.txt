@@ -1,0 +1,65 @@
+Silent lab-launch failure cases
+
+Write these cases before implementation. Use silent native streams for the E2E probe.
+Do not launch BO3 or send nonzero audio samples during this probe.
+
+1. A game creates an unmuted session before an external observer receives its notification.
+2. A volume-change callback follows a volume reset. It cannot prevent the change itself.
+3. An observer crashes, exits, or misses a newly added endpoint.
+4. A process resets the session master volume to one and disables the session mute.
+5. Session channel volumes return to one when the process restarts.
+6. A process uses a different session GUID from the seeded default session.
+7. A process resets the session channel volumes as well as the master volume.
+8. Exclusive-mode playback bypasses the session controls.
+9. A new endpoint appears after the seed operation.
+10. An endpoint rejects initialization or has an unsupported format.
+11. A seed operation changes another application's volume or the endpoint volume.
+12. A helper emits nonzero samples while it tests its session.
+13. A helper modifies the regular game executable or normal game settings.
+14. A command accepts an invalid PID or an unknown action.
+15. A partial endpoint failure gets reported as a complete seed.
+16. The probe reports a passing native fixture as proof of BO3 behavior.
+17. The probe leaves its fixture application muted after the E2E test.
+18. Windows applies an application policy update after the first stream starts.
+19. A surround endpoint exposes eight session channels.
+    Its channel settings might not persist, even when master volume and mute persist.
+20. SetAllVolumes changes the live session, but its channel array does not persist.
+    Compare individual SetChannelVolume calls with the same surround-session case.
+
+Acceptance
+
+Check channel persistence with separate native process launches at the same executable path.
+Reset the fixture's master volume and mute. Its seeded channel volumes must remain zero.
+Check an independent executable path. Its session must retain its own settings.
+Record endpoint master volume and mute before and after the test. They must not change.
+Submit only silent buffers. Do not read or change BO3's process, files, or settings.
+Record executable hashes, process IDs, endpoint IDs, channel values, and exact commands.
+Treat BO3 session identity, exclusive-mode use, and channel resets as unresolved until verified.
+
+Observed rejection
+
+The exact lab-path probe lost all eight seeded channels on the Realtek Speakers endpoint.
+Master volume zero and mute true persisted. Other endpoints retained zero channels.
+Fresh private fixture paths reproduced the failure with the BlackOps3.exe filename.
+Direct PowerShell invocation and Start-Process with wait and output redirection both failed.
+SetAllVolumes and individual SetChannelVolume calls both failed.
+The earlier stereo fixture passes do not validate the lab path or this surround endpoint.
+Do not use this method as a verified silent BO3 launcher.
+
+Sources
+
+Microsoft documents persistent channel settings and four separate volume multipliers:
+https://learn.microsoft.com/en-us/windows/win32/api/audioclient/nn-audioclient-ichannelaudiovolume
+Session controls apply only to shared-mode audio.
+
+Microsoft documents creation callbacks from the session manager thread:
+https://learn.microsoft.com/en-us/windows/win32/api/audiopolicy/nf-audiopolicy-iaudiosessionnotification-onsessioncreated
+The API does not document a pre-render barrier for an external mute observer.
+
+Microsoft requires nonblocking session event callbacks:
+https://learn.microsoft.com/en-us/windows/win32/api/audiopolicy/nn-audiopolicy-iaudiosessionevents
+Private output boundary
+
+Reject the repository root and a fresh public-addable research directory before compilation or directory creation.
+The focused check must call the real E2E entry point and verify the refusal message and absence of output.
+Keep the boundary-check report outside the repository.
