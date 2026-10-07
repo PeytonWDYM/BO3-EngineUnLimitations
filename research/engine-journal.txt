@@ -749,6 +749,50 @@ Peyton then requested the next snapshot only when the actual target event occurs
 A new recorder note supersedes the earlier planned keybind-test label. No test snapshot is requested or saved.
 The recorder remains armed. No snapshot from this build has yet established readable memory, engine layouts or a failure cause.
 
+2026-10-07 22:36 UTC: first actual Connection Interrupted capture
+
+Peyton pressed Ctrl+Shift+F9 at 22:21:20 UTC during the actual failure.
+The full clone dump completed at 22:21:35 UTC and passed stream integrity checks.
+Its SHA-256 is ACF01B87FA74FE864938ABF11BFFA90E7C1EB5DFF0E7EF75E6757452881504DC.
+The dump matches the recorded process ID, creation time, module base, size, timestamp and downgraded executable identity.
+The complete mapped game module and full AAE native module are preserved privately.
+Peyton confirms both players saw Connection Interrupted with the upgraded War Machine, Dystopic Demolisher.
+The screenshot records Der Eisendrache, round 73, two players and Fire Works.
+Peyton has not explicitly confirmed the host role. The local server VM and entity pool are initialized.
+BO3 stayed open. This is a captured match failure, not an observed application crash.
+
+The captured VM layout retains the verified native capacities, globals, stride, fields and reuse checks.
+Eleven of sixteen previously reviewed code ranges match byte for byte.
+The remaining five retain their instruction layouts. Six differences relocate helper calls.
+Separate captured decompilation confirms initialization, error storage and VM error recovery.
+The server occupies all 129,999 usable script-variable slots. Its free head is zero, and no slot has the free type.
+The client has 25,168 reusable slots. Its complete reuse chain is in range and matches every free slot.
+The server first-error pointer reads "Invalid opcode" with function depth nine.
+A separate formatted buffer contains "exceeded maximum number of child server script variables".
+This is measured server VM exhaustion. The initiating producer and error order remain unresolved.
+Do not infer a grenade leak or identify script functions from numeric slot types.
+
+The entity allocator, free, initializer and cleanup routines retain their reviewed scalar layouts.
+Observed differences relocate direct or imported helper calls. Complete reuse-list and field checks pass.
+The normal allocator has 148 reusable slots and 127 unallocated slots. Its failure condition is false.
+There are 598 active normal entities, including 35 reserved entities. Twenty-three have verified missile type four.
+These measurements do not establish the particular War Machine effects or their allocation lifetimes.
+
+At Peyton's invitation, one further external read-only dump completed at 22:36:10 UTC.
+Its SHA-256 is 00F48D23DCC12396032014D9A9190E2F0419FA46C953FFFCB77D1B53828298E8.
+It matches the same recorded process identity. The complete server VM and entity pool hashes match the first dump.
+Server time remains unchanged across the fourteen-minute interval. The VM error flag changes between snapshots.
+This supports frozen host-world state with continued native error work. It does not prove one entity allocation lifetime.
+The native engine error-handler entry is detoured through a private trampoline into the captured AAE native module.
+The native saved engine error buffer is empty, and its stored type and processing flag are zero.
+Inspect the detour before inferring why these fields remain empty.
+Private evidence/failure-20261007T222120Z/ retains reports, exact code checks, script frames and the screenshot.
+Mapped modules, extracted scripts, and the Ghidra project remain outside the public repository.
+The extractor log names a decompressed file beside the source mod. Inspection found no such file or other .dec file there.
+Its extracted script files are in the private lab. No mod cleanup action was needed.
+No game was launched, controlled, injected or patched during this analysis. Live sampling profiles remain disabled.
+The next work is exact script-frame matching, allocation ownership and the captured native error-recovery path.
+
 Final deliverable and checkpoints:
 
 Peyton requests continued commits and pushes, a final real pull request, a fresh review, and a shareable patch-loader executable.

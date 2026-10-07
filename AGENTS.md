@@ -61,7 +61,7 @@ Peyton clarified that BO3 remains open when this happens. Treat it as a match or
 Whether the internal server crashes remains unconfirmed. A live process can still preserve the relevant failure state.
 The initial reproduction uses stock BO3, AAE, Origins, and one or two players.
 
-Peyton will provide the next reproduction through his normal game. The external read-only recorder is armed and waiting for his next launch.
+Peyton supplied the first actual failure through his normal game. The external read-only recorder remains attached.
 Prioritize that failing-match capture over automated lab startup work. Do not launch or control another game during his session.
 The earlier game process exited at 15:47 UTC. Its sampler retained 1,070 provisional rows and 110 rejected reads.
 A second recorder attached another normal game at 21:34 UTC. That process exited at 21:41 UTC without a failure snapshot.
@@ -73,16 +73,28 @@ The entity waiter was stopped before the downgraded game attached. Its exact-bui
 Keep both entity and VM profiles disabled for the downgraded build until its layouts are verified.
 The general recorder attached Peyton's downgraded process at 21:51 UTC and verified its executable hash.
 Process sampling works. Peyton confirmed a successful manual launch after the downgrade.
-The live native AAE module path identifies full Workshop package 2631943123. Active map identity remains unverified.
-Peyton will press Ctrl+Shift+F9 at the actual target event. No test snapshot is requested.
-The recorder remains armed. A completed snapshot from this executable has not yet been verified.
+The saved failure contains the native AAE module from full Workshop package 2631943123.
+Ctrl+Shift+F9 captured the actual failure at 22:21:20 UTC. The complete dump passed process and module identity checks.
+Peyton identifies the weapon as the upgraded War Machine, Dystopic Demolisher. Both players saw Connection Interrupted.
+The screenshot records Der Eisendrache, round 73, two players, and Fire Works on the weapon.
+Peyton has not explicitly confirmed the host role. The local server VM and entity pool are initialized in the dump.
+A second read-only snapshot completed at 22:36 UTC while the same game remained open.
+Both snapshots contain all 129,999 usable server script-variable slots occupied, with no free slots or reuse head.
+The client VM has 25,168 reusable slots in the first snapshot. The server retained first error "Invalid opcode".
+A separate formatted buffer contains "exceeded maximum number of child server script variables".
+The entity pool has 148 reusable normal slots and 127 unallocated normal slots. Its allocator failure condition is false.
+Server time, the complete entity pool, and the complete server VM pool match across both snapshots.
+This establishes frozen host-world state and server VM exhaustion. It does not establish the initiating script or error order.
+AAE detours the native engine error-handler entry. Its native saved buffer is empty. Inspect the captured detour before inferring its behavior.
+Private evidence/failure-20261007T222120Z/ retains exact-build code checks, reports, script frames and the screenshot.
+Offline entity and VM layouts are checked against the captured downgraded code. Live profiles remain disabled.
 Earlier entity history remains provisional. Cross-check a saved failure snapshot before interpreting game measurements.
 The 14:55 UTC F9 snapshot was a keybind test, not a reported hosting failure. Peyton requested deletion of that and old dumps.
 Automatic approval review blocked both bulk and individually named deletion. No dumps were deleted. Do not analyze those test or old dumps as the next reproduction.
 The previous process module inventory contains T7Overcharged.ff and AAEFreeAim.dll from Workshop item 2739657648.
 Both disk files match the refreshed BetaLite lab copy. This verifies native package paths, not mapped bytes, active map identity, or War Machine availability.
 
-The root cause remains unconfirmed. An engine limit is a hypothesis, not an established diagnosis.
+The initiating cause remains unconfirmed. Server script-variable exhaustion is now measured in the actual failure.
 Targeted decompilation and reverse engineering of the host state, resource allocation, cleanup, and failure paths are in scope.
 Raising a verified engine limit is in scope if the patch preserves the required compatibility.
 Check allocations, dependent arrays, bounds checks, and network behavior before changing a limit.
@@ -127,7 +139,8 @@ A separate read-only VM sampler now has owned native fixture evidence. Game meas
 Its private game profile remains disabled. Numeric slot types do not identify script functions or grenade owners.
 Its ten native E2E cases passed fresh review. The shared process API still passes all 22 entity sampler cases.
 Capture the first script error and saved engine error alongside resource usage. Old or empty error buffers do not establish a cause.
-These findings do not establish the cause of Peyton's reported failure. No failing Zombies match has been captured yet.
+The new failing-match evidence above supersedes the earlier absence of a reproduction.
+The producer, ownership, lifetime behavior, and first-error sequence still need verification before selecting a fix.
 Read research/engine-journal.txt for the current evidence, tool checks, and lab status.
 
 The installed BetaLite build 774 version gate matches the latest stock build string and changelist.
