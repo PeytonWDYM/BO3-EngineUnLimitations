@@ -71,6 +71,15 @@ It retains the parent during the child loop, then stops its velocity and marks i
 This establishes an allocation-pressure path. It does not establish the loaded War Machine split count or the reported failure cause.
 Loaded weapon settings and a marked firing capture still need verification.
 AAE's scripts also create multiple watchers around grenade-launcher fire. Their creation does not prove they leak.
+Compiled-script opcode review confirms a 20-second explosion-notification timeout and a separate three-second dud deletion delay.
+The timeout does not delete the grenade or bound every watcher.
+A dud cancels the two coordinator completion producers. Native deletion queues later teardown of entity-owned script notifications.
+The teardown traverses suspended thread data before clearing variables and releasing references.
+Cancellation of every waiter class remains unverified. A missing endon alone does not establish a leaked waiter.
+Two explosion-result fields are shared level fields. Overlapping grenades can overwrite them.
+That is a notification-correctness candidate. Live reachability and its relation to the reported failure remain unconfirmed.
+Do not multiply watcher counts by the native split count without verifying which children emit the player fire notification.
+Private evidence/agent-live-sampler/beta-grenade-lifecycle.txt records the opcode evidence and capture priorities.
 
 Snapshot diagnostics:
 
@@ -121,6 +130,9 @@ The audio E2E entry point now rejects repository output before compilation.
 Private evidence/audio-boundary-red.json and audio-boundary-green.json record the reproduced issue and its correction.
 Removing the startup movie is also unverified. Its failure callback runs after a playback request already exists.
 Native analysis does not establish that this movie failure prevents the separately banked startup sound.
+The actual stock logo control is ui_playLogoMovie. A false value skips that logo's enqueue operation.
+Its name matches the verified current-build hash algorithm and the native registration hash.
+Command-line acceptance and startup ordering remain unverified. Do not describe it as a proven quiet-launch switch yet.
 Peyton approved the Windows Security prompt himself.
 The installed beta is AAE BetaLite build 774, Workshop item 2739657648.
 Both the normal mod and this beta exited with code zero on the newer executable.

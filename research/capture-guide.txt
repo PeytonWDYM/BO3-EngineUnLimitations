@@ -10,7 +10,7 @@ Keep all dumps, settings, and raw logs local.
 4. Hold Ctrl+Shift+F6 briefly when the match starts.
 5. Hold Ctrl+Shift+F7 briefly before an upgraded War Machine volley.
 6. Hold Ctrl+Shift+F8 briefly after the last shot.
-7. Wait for projectiles and effects to clear before another marked volley.
+7. Keep the match unpaused for at least 25 seconds after a controlled volley. Let projectiles and effects clear.
 8. When Connection Interrupted appears, hold Ctrl+Shift+F9 briefly.
 9. Keep BO3 open while the snapshot completes. Record the round and exact error text.
 10. After the match, hold Ctrl+Shift+F10 briefly to stop recording.
@@ -52,4 +52,7 @@ It requires a private profile verified against the exact executable. Its native 
 Equal repeated reads reject observed changes. They do not produce an atomic game snapshot.
 Projectile creation and deletion, server frame time, and GSC script threads still need targeted instrumentation.
 OS memory and thread counts alone cannot prove an entity leak.
+The beta's grenade scripts use a 20-second notification timeout and a separate three-second dud deletion delay.
+Those values do not bound all projectile lifetimes or establish a leak.
+Record advancing server time during recovery. A paused solo match does not test cleanup.
 No root cause or fix is confirmed yet.
