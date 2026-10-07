@@ -415,6 +415,17 @@ Do not initialize COM or audio or wait for another initializer under the loader 
 Stock first-call stacks, driver compatibility, and complete quiet startup remain unvalidated. No game launch occurred during this audit.
 Private evidence/agent-engine-review/startup-output-coverage/coverage-review.txt records the coverage matrix and limits.
 
+2026-10-07: bounded script-capacity dependency review
+
+The verified VM capacities control pool allocation, reuse initialization, lifecycle scans, notification keys, and save-state serialization.
+A separate fixed hash-bucket table uses chained variable IDs. Its bucket width does not establish a slot-ID ceiling.
+Reviewed slot IDs use DWORD storage. Capacity-derived special keys retain QWORD storage and full-key comparison.
+The review establishes no 17- or 18-bit slot ceiling from nearby constants.
+Whole-pool read/write callers include verified save/load paths. This does not establish save-only use or ordinary Zombies packet use.
+Co-op save/migration transport and other consumers remain unresolved. A single larger allocation constant is not a validated patch.
+This is conditional compatibility research. No failing capture justifies a VM capacity change yet.
+Private evidence/agent-engine-review/vm-capacity-dependencies/capacity-review.txt records proven dependencies and remaining constraints.
+
 Final deliverable and checkpoints:
 
 Peyton requests continued commits and pushes, a final real pull request, a fresh review, and a shareable patch-loader executable.

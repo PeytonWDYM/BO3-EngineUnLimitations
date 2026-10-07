@@ -43,6 +43,7 @@
     "liveScriptVariables": "Separate read-only sampler passed ten owned native E2E cases and fresh review. The shared entity sampler still passes 22 cases. Game measurements remain unvalidated and the private game profile is disabled.",
     "scriptCleanup": "Native entity deletion queues notify and suspended-stack cleanup. Normal VM work drains the queue. Completion for one known grenade allocation lifetime has not been observed.",
     "entityLifetime": "The verified native reuse version repeats after 63 complete free/spawn cycles. Equal samples do not prove one lifetime. Strict correlation needs allocation/free events, world epochs, and loss detection. That recorder remains unimplemented.",
+    "scriptCapacityDependencies": "Verified capacities affect allocation, reuse initialization, lifecycle scans, notification keys, and save-state serialization. Reviewed slot IDs are 32-bit and special keys retain 64 bits. No 17/18-bit ceiling is proven. Save/migration and co-op compatibility remain unresolved. No capacity change is implemented or justified by a failing capture.",
     "savedErrors": "Private bounded inspection found empty saved engine error buffers in the startup and menu captures. Neither is a failing Zombies capture.",
     "compatibility": "Current stock runtime uses 10-bit network entity IDs. Expanding normal IDs past 1023 conflicts with unpatched clients.",
     "loader": "Native cooperative-fixture foundation only. Game safe point and engine patch remain unimplemented.",

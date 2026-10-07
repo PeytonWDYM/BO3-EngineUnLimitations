@@ -80,6 +80,8 @@ Normal VM work drains that queue. A missing grenade_dud endon alone does not est
 Some nested wait stacks can retain deferred work. Verify one entity allocation lifetime and advancing VM time before claiming failed cleanup.
 The stock script-variable pools have 129,999 usable server slots and 64,999 usable client slots.
 Threads share these pools. Function call depth does not count all suspended threads.
+Their capacities also control lifecycle scans, notification keys, and save-state serialization. Do not patch an allocation constant alone.
+The bounded review establishes no 17- or 18-bit slot ceiling. Save/migration compatibility and other consumers remain unresolved.
 Private offline menu inspection verifies pool reuse chains and headroom.
 The separate sampler's pure decoder agrees with that saved menu inspection. This does not validate live sampling.
 A separate read-only VM sampler now has owned native fixture evidence. Game measurements remain unvalidated.
