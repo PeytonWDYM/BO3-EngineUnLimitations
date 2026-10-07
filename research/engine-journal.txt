@@ -683,6 +683,24 @@ Its initial-check.json SHA-256 is 76b8f9065e37230b89f5145a829ca6fd5ffa68bac7d2df
 The VM profile remains disabled. No game was launched, controlled, injected, patched or reconfigured in this checkpoint.
 Audio prototypes remain parked while Peyton supplies the actual failure. No additional fixture tests were run.
 
+2026-10-07 17:24 UTC: closed manual session and listener rearmed
+
+The recorded stock process exited at 15:47:12 UTC. The recorder and entity sampler stopped with it.
+No BO3 process or capture tool from that session remained at this check. The reason for the game exit is unknown.
+The only saved snapshot remains the explicitly labeled keybind test. No actual failure, match details or volley markers were recorded.
+The sampler retained 1,070 provisional rows and 110 rejections over 1,180 seconds.
+Accepted rows reached normalActive 294 and highWater 500. None decoded the normal allocator failure condition.
+This does not rule out exhaustion between observations or explain an unreported failure. Game sampling remains unvalidated.
+Rejections retain 65 metadata changes, 40 data or metadata changes, and five invalid pool pointer or high-water observations.
+Private evidence/manual-session-20261007T1521Z/closure-check.json binds the closed rows and recorder events.
+Its SHA-256 is 52f2ba9a81a5c2e4fc5ca55065e26d10df838e6e002e7da999c03dbe301d4548.
+The existing recorder restarted at 17:24 UTC and verified its waiting_for_process event.
+A private copy of the existing waiting sampler binds that new recorder session. Only the session path changed in its script.
+Its frozen profile hash, real process identities, waiting state and empty error log were checked.
+Private evidence/manual-session-20261007T1723Z/ retains its launcher identities, frozen inputs and waiting state.
+No game was launched or controlled. No VM profile, audio prototype, game file or normal setting changed.
+The next required evidence remains a manually marked, live Connection Interrupted failure snapshot.
+
 Final deliverable and checkpoints:
 
 Peyton requests continued commits and pushes, a final real pull request, a fresh review, and a shareable patch-loader executable.

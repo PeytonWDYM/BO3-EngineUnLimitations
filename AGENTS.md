@@ -50,15 +50,17 @@ Peyton clarified that BO3 remains open when this happens. Treat it as a match or
 Whether the internal server crashes remains unconfirmed. A live process can still preserve the relevant failure state.
 The initial reproduction uses stock BO3, AAE, Origins, and one or two players.
 
-Peyton is providing the next reproduction through his normal game. The external read-only recorder is attached.
+Peyton will provide the next reproduction through his normal game. The external read-only recorder is armed and waiting for his next launch.
 Prioritize that failing-match capture over automated lab startup work. Do not launch or control another game during his session.
-The earlier waiting sampler stopped before this session. A new experimental entity sampler attached at 15:27 UTC.
-It uses one read pair per second, one attempt, the recorded process creation time, and a private frozen profile copy.
-Its initial check retained 29 initialized pool rows and five rejected reads. This is provisional history, not atomic sampling or validated game measurements; cross-check a saved failure snapshot.
+The previous game process exited at 15:47 UTC. Its recorder and experimental entity sampler stopped with it.
+The sampler retained 1,070 provisional rows and 110 rejected reads. No actual failure or volley markers were recorded.
+A new recorder and a separately bound waiting entity sampler were armed at 17:24 UTC.
+The sampler uses one read pair per second, one attempt, the recorded process creation time, and a private frozen profile copy.
+This is provisional history, not atomic sampling or validated game measurements. Cross-check a saved failure snapshot.
 The VM profile remains disabled.
 The 14:55 UTC F9 snapshot was a keybind test, not a reported hosting failure. Peyton requested deletion of that and old dumps.
 Automatic approval review blocked both bulk and individually named deletion. No dumps were deleted. Do not analyze those test or old dumps as the next reproduction.
-The process module inventory contains T7Overcharged.ff and AAEFreeAim.dll from Workshop item 2739657648.
+The previous process module inventory contains T7Overcharged.ff and AAEFreeAim.dll from Workshop item 2739657648.
 Both disk files match the refreshed BetaLite lab copy. This verifies native package paths, not mapped bytes, active map identity, or War Machine availability.
 
 The root cause remains unconfirmed. An engine limit is a hypothesis, not an established diagnosis.
