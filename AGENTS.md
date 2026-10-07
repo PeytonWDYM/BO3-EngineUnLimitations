@@ -52,6 +52,10 @@ The initial reproduction uses stock BO3, AAE, Origins, and one or two players.
 
 Peyton will manually play to provide the next reproduction. The external read-only recorder is armed.
 Prioritize that failing-match capture over automated lab startup work. Do not launch or control another game during his session.
+A separate experimental entity sampler is armed for that recorder session at one read pair per second and one attempt.
+It waits for the recorded process identity and binds its exact creation time with a private frozen profile copy.
+Rejected reads remain visible. This is provisional history, not atomic sampling or live game validation; cross-check a saved failure snapshot.
+The VM profile remains disabled.
 
 The root cause remains unconfirmed. An engine limit is a hypothesis, not an established diagnosis.
 Targeted decompilation and reverse engineering of the host state, resource allocation, cleanup, and failure paths are in scope.

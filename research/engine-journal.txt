@@ -644,6 +644,21 @@ Physical testing stays held while Peyton prepares or plays his manual reproducti
 Private evidence/agent-patch-loader/sdk-contained/ retains the frozen source/run envelope and prior reds.
 Private evidence/sdk-contained-fresh-review/ and evidence/sdk-contained-root-review/ retain independent checks.
 
+2026-10-07 14:31 UTC: provisional entity history armed for the manual session
+
+Fresh read-only assessment found the current exact-disk-build entity layout suitable for an explicitly experimental session.
+The existing sampler uses query and VM_READ only. It does not inject, write memory, attach a debugger or suspend BO3.
+A private waiting script is bound to the already armed recorder session and ends if that recorder exits or its wait expires.
+It waits for process.json, converts the recorded creation time to expected FILETIME ticks, and uses a private frozen profile copy.
+The existing reader will sample at one hertz with one attempt and stop at game exit or its duration bound.
+Each attempt reads two full 2,605,056-byte pools and three metadata sets. Unequal or invalid reads remain rejected records.
+Equal reads are not atomic. They do not establish one allocation lifetime or live game validation.
+The process guards bind the disk hash and loaded PE identity, not every mapped executable byte.
+Compare accepted rows with the saved failure pool and server clock before interpreting a cause.
+The waiting script's real process identity and waiting state were verified; its error log is empty.
+No game has attached yet. No VM profile was enabled, source changed, or game launched by this step.
+Private evidence/manual-session-20261007T141630Z/ retains the pre-script failure plan, frozen inputs and pending history.
+
 Final deliverable and checkpoints:
 
 Peyton requests continued commits and pushes, a final real pull request, a fresh review, and a shareable patch-loader executable.
