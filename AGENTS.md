@@ -12,7 +12,7 @@ The reviewed 0.1.0-test.2 gameplay changes are installed, with verified original
 Faster firing, sprint retention, spawn pacing, tornado count, and peer compatibility still need manual validation.
 
 The 500,000-slot startup helper and migration adapter have owned fixture and independent review evidence.
-Actual BO3 startup, full AAE loading, compressed whole state, and multiplayer remain unvalidated.
+Actual expanded-pool startup, full AAE loading, compressed whole state, and multiplayer remain unvalidated.
 One million slots remains disabled. The 200-actor storage prototype also remains disabled.
 The waiting overlay remains armed. Startup recorders stopped with their captured children; rearm capture before the next test.
 Peyton subsequently authorized unattended game launches and computer use, then explicitly requested that work continue.
@@ -62,6 +62,19 @@ A complete 5,765,079,663-byte read-only startup snapshot is retained privately.
 Ninety-six of ninety-nine prior protected files match. Steam's app manifest, Cloud cache, and user_settings_0.cgp changed.
 The current settings file matches the verified October 7 downgrade backup. Do not overwrite it from an older baseline.
 The temporary speaker mute was restored while no game was running. Automated launches must remain quiet.
+The separately reviewed startup API probe passed eleven owned native cases and nine Steam transport groups.
+Its actual Steam child, PID 60764, reached the startup screen without a debugger or hardware breakpoint.
+The exact API return and outer CRT return matched at 09:52:21 UTC, before VM and migration allocation.
+All thirteen native observation ranges were readable. Four VM pointers, five migration pointers and three sizes were zero.
+This callback record is chronology evidence. It does not prove an atomic native world or all-thread quiescence.
+A later sequential read matched all eighty-two combined guards and nineteen capacity instructions, with stock pools initialized.
+The owned diagnostic ended at its 120-second deadline with exit code 97. No expanded pool or codec was activated.
+All ninety-two profiles and protected game/mod files match the fresh baseline. Only Steam's app manifest changed.
+The root removed the temporary Steam probe through its canonical receipt and restored the original absent launch field.
+Normal Steam Play is currently stock-capacity. Audio is restored to its original unmuted state and volume 88.
+Rearm capture and apply a freshly reviewed recipe before the next authorized actual-game test.
+A separate cooperative CRT gate and late coordinator are in development. They must establish loader and all-thread admission.
+Do not use the observation probe as a publication gate or advertise 500,000 active slots from its callback.
 The direct diagnostic sets the same child Steam IDs. It is not a replay of every inherited Steam launcher environment variable.
 Do not lengthen the gate timeout or change protected startup behavior without evidence.
 Keep the startup helper outside the game and Workshop folders. Do not replace BlackOps3.exe.

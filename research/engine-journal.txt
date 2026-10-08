@@ -1187,3 +1187,27 @@ No native code, game file, launched helper, production startup gate, or live poo
 The repeatable capture audit source and declared failures are in source/tests/vm-startup/StartupGuardAudit.py and StartupGuardFailures.txt.
 Private evidence is in release-enhancement/startup-guard-sol/corrected-final/result.json.
 Review SHA-256: 143838a4c57027febbe2a6b2702abaec93f5322c33f46daf1fc02d40a1dd8643.
+
+October 8, 09:54 UTC, reviewed startup API probe reaches its early CRT caller:
+
+The separate probe forwards GetStartupInfoW and preserves its result, last error and native unwind behavior.
+Eleven owned native cases and nine inert Steam transport groups pass. Fresh review has no open findings.
+The fixed recipe binds the exact native helper, stock controller, license, source and evidence hashes.
+The actual Steam child was PID 60764, with its creation time bound by the controller and read-only sampler.
+At 09:52:21 UTC the probe recorded one exact API return and a readable matching outer CRT return on thread 59528.
+Its thirteen observation ranges were readable. All four VM pointers, five migration pointers and three sizes were zero.
+The allocator's sixteen-byte prefix was plaintext. This is sequential callback evidence, not an all-thread snapshot.
+A later read matched all eighty-two combined code guards and nineteen stock capacity instructions.
+By that later read the stock VM pools were allocated. No expanded capacity or codec was published.
+The root observed the startup game window and Press ENTER to Start screen. This test does not verify full AAE or a match.
+The controller closed only its owned child at its planned 120-second deadline, with exit code 97.
+The temporary API hook's current-thread installation does not prove concurrent-hook tolerance on every Windows environment.
+The outer CRT word alone does not prove loader-lock exclusion or safe native-code publication.
+The next separate candidate requires a bounded cooperative gate, all-thread stop, exact guards and transactional publication.
+All ninety-two profile files and protected game/mod files match the fresh baseline. Only Steam's app manifest changed.
+The canonical remover restored the original absent Steam launch field. Audio returned to unmuted volume 88.
+Keep normal Steam Play at stock capacity until the next reviewed deployment. The existing gameplay fastfiles remain installed.
+Probe helper SHA-256: 4edb6edd16e92c12b7bdd5fc14705d5981927198233906ecfdd2bc06e5ecd0a0.
+Controller SHA-256: 8221c88a094b8eedc8ba4d6607f6eb69e9d278dcab53d9584bcc899c7484f824.
+Combined review SHA-256: 3e3c690fdc4fbca7b756d730fbba6998ef445cfb69d56749eec7e12a3e9899b8.
+Private evidence: release-enhancement/unattended-steam-probe-04, startup-probe/probe-02, and vm-startup/steam-probe-freeze-01.
