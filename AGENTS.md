@@ -14,7 +14,7 @@ Faster firing, sprint retention, spawn pacing, tornado count, and peer compatibi
 The 500,000-slot startup helper and migration adapter have owned fixture and independent review evidence.
 Actual expanded-pool startup, full AAE loading, compressed whole state, and multiplayer remain unvalidated.
 One million slots remains disabled. The 200-actor storage prototype also remains disabled.
-The waiting overlay remains armed. Startup recorders stopped with their captured children; rearm capture before the next test.
+The failed job-startup recorder and waiting overlay are stopped. Rearm both for the next reviewed test.
 Peyton subsequently authorized unattended game launches and computer use, then explicitly requested that work continue.
 This authorization supersedes the historical manual-only launch holds below. Only the root agent owns actual game tests.
 Do not run BlackOps3-named stand-ins while monitoring waits.
@@ -137,6 +137,17 @@ The test synthesizes job metadata; require native serializer interoperability be
 Native job integration currently refuses an idle extra Windows worker in its inert fixture before writes.
 The next private overlay profile is prepared with stock capacity. No monitor is currently armed.
 Keep automatic startup PSS snapshots disabled for the next actual launch.
+
+The debugger-free job candidate passed fourteen owned groups and fresh bounded review.
+Its fixed Steam transport passed five groups and independent review. Native serializer metadata interoperability also passed.
+The actual Steam test at 19:44 UTC passed the freeze, sole-child membership, and sole-primary inventory checks.
+Its native unwind admission stopped after the gate wait frame. The receipt records zero edits and owned-child termination with code 97.
+This is a launcher refusal, not a demonstrated new BO3 access violation. No expanded pool became active.
+The root restored the original absent Steam launch field through the frozen job wrapper and restarted Steam silently.
+Normal Steam Play currently uses stock capacity. The installed gameplay and Lua fixes remain unchanged.
+The native owner identified encrypted on-disk BO3 unwind metadata and different valid metadata in prior runtime capture.
+A bounded runtime-metadata correction and explicit refusal diagnostics are under development. Require fresh review before deployment.
+Private evidence is in release-enhancement/manual-job-startup-01/. Its waiting overlay is stopped.
 
 ## End goal
 

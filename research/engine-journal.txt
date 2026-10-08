@@ -1373,3 +1373,25 @@ Automatic startup PSS snapshots will remain disabled for the next comparison.
 Enrollment result SHA-256: 29aeb9d03a1e5732a6ce6ce9daf1dc316330b6f3dec14402fc11c95a5e7a27dc.
 Enrollment review SHA-256: f314a46c34e66bdcd0832173fc63ef2ab7d8d2d6c5061a8fc4a8cb5a90c4a3d9.
 Private evidence: release-enhancement/job-enrollment-sol/owned-02 and fresh-review-01.
+
+October 8, 19:45 UTC, actual Steam job launch refuses before publication:
+
+The native job candidate passed fourteen owned groups and fresh bounded review before deployment.
+The fixed Steam transport passed five groups and independent review. Its source and four payloads were frozen privately.
+Peyton pressed Steam Play. Steam created game PID 26668, creation FILETIME 134359622977830444, with primary TID 12612.
+The receipt confirms parent-only job ownership, sole-child membership, successful native freeze, and one original primary thread.
+Native unwind retained four frames, ending at the verified gate wait return, gate base plus 0x1929.
+The primary admission check refused before plan preparation. No engine edits, relay, expanded pool, thaw, or gate release occurred.
+The controller terminated its owned child with code 97 and exited with code two. This does not establish a BO3 access violation.
+The recorder retained process statistics without an automatic PSS snapshot. It stopped with the child.
+All 92 profiles, the executable, four installed fastfiles, and app Cloud cache match the fresh prelaunch baseline.
+Only Steam's app manifest changed. No desktop input or audio change occurred.
+The root stopped the exact waiting monitor and its waiting overlay after PID, command-line, and parent identity checks.
+The root then used Steam's graceful shutdown command and the frozen job wrapper's canonical removal.
+The original absent LaunchOptions field is restored. Steam restarted silently. Normal Play currently uses stock capacity.
+The native owner compared exact disk metadata with prior captured runtime bytes.
+BO3's on-disk UNWIND_INFO is encrypted. Captured wrapper and CRT metadata contain valid runtime unwind records.
+The existing file-based metadata guard cannot admit that runtime frame. A bounded correction is in development.
+Add explicit refusal-stage and callback diagnostics before the next actual launch. Preserve the exact sole-primary native chain.
+Actual 500,000-slot allocation, full AAE loading, migration, and peer compatibility remain unvalidated.
+Private evidence: release-enhancement/manual-job-startup-01.
