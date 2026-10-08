@@ -41,8 +41,11 @@ That manual control exited before its window with a captured Windows c0000005 ex
 Its eight-second snapshot refused the already-exited child. The debugger received no process-exit event.
 The follow-up control uses a signaled process handle to retain early native exit codes without another termination request.
 It enforces the deadline even during continuous debug events. Its optional --no-debugger mode omits debugger attachment.
-BO3 Startup Test now selects that reviewed mode. A new read-only recorder is armed without a scheduled early snapshot.
-That manual comparison remains pending. Do not launch a game or BlackOps3-named fixture yourself.
+BO3 Startup Test selects that reviewed mode. Its manual run opened a BO3 window with a Steam-needs-running message.
+Steam was open. The helper remained ready, and provisional server storage stayed zero during the thirty-second run.
+The diagnostic closed its owned child at the deadline. The read-only recorder stopped with that child.
+A reversible same-control Steam Play comparison is being prepared to preserve Steam's inherited launch context.
+Do not launch a game or BlackOps3-named fixture yourself.
 The direct diagnostic sets the same child Steam IDs. It is not a replay of every inherited Steam launcher environment variable.
 Do not lengthen the gate timeout or change protected startup behavior without evidence.
 Keep the startup helper outside the game and Workshop folders. Do not replace BlackOps3.exe.

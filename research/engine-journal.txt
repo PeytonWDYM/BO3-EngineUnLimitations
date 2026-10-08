@@ -1116,3 +1116,15 @@ This includes all ninety-two profiles, the game executable, and four patched fas
 BO3 Startup Test now points to the frozen control with --no-debugger. A new read-only recorder waits for Peyton's manual launch.
 No early snapshot is scheduled for this comparison. No agent launched BO3 or changed the production launcher or Steam configuration.
 Actual no-debugger startup, the native crash cause, and 500,000 live slots remain unvalidated.
+
+October 8, 07:31 UTC, manual no-debugger control opened a game window:
+
+Peyton reports that BO3 opened but displayed a Steam-needs-running message while Steam was open.
+The frozen diagnostic recorded debugger false, zero edits, and an actual signaled exit with code 97 at its thirty-second deadline.
+Ninety-one provisional observations retain a ready helper and zero server pool/hash pointers.
+The external recorder shows seven threads and continued process activity. It recorded no Windows application crash.
+This differs from the prior direct diagnostic with debugger attachment, which exited before its window.
+It does not prove the exact protected failure path, a completed Steam handoff, or a working expanded VM.
+The desktop diagnostic does not inherit every Steam-launched variable. A same-control Steam Play comparison is next.
+Its setup must preserve the canonical original launch field, unrelated configuration, native helper identity, and quoted game arguments.
+No game protection, working executable, Workshop file, or production launcher changed in this comparison.

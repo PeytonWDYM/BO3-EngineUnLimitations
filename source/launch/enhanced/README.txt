@@ -14,6 +14,11 @@ This does not prove complete host migration or compatibility with unpatched frie
 The separate gameplay patcher provides the reviewed AAE cleanup, Lua guard, and gameplay changes.
 This launcher does not include or enable the unfinished 200-zombie expansion.
 
+Current manual results: the enhanced Steam launcher times out before activation or a game window.
+No capacity or migration edits became active. A separate stock-capacity diagnostic without debugger attachment opens a window with a Steam error.
+The direct diagnostic does not preserve every Steam-inherited launch variable. Its Steam Play comparison remains pending.
+The instructions below describe the experimental launcher. They do not establish a working 500,000-slot game launch.
+
 Build with PowerShell 7 and the supported Visual C++ x64 toolchain:
 pwsh -NoProfile -File source/launch/enhanced/Build.ps1 -OutputDirectory <new-private-directory> -DetoursRoot <unchanged-official-v4.0.1-checkout> -Python <python-with-standard-library>
 
