@@ -13,6 +13,17 @@ Release transforms must fail before installation when any input identity differs
 11. Spawn and sprint script edits reject one another during composition.
 12. Sprint composition changes the grant/removal wrappers or any other import.
 13. The rebuilt core omits grenade cleanup or either War Machine variant's tuning.
+14. Default apply selects a removal-only stock fastfile or creates its backup.
+15. Explicit apply selects either removal-only stock fastfile, alone or with an enabled file.
+    Refuse before locks, backups, journals, recovery, or target changes.
+16. Status or the GUI hides the removal-only state of the two stock fastfiles.
+17. Removal drops either retired identity, rejects its exact backup, or changes an unrelated file.
+18. Recovery rejects a prior four-file journal because two entries are now removal-only.
+
+Four owned-file transaction groups verify default apply and status, zero-change
+explicit refusal, four-file removal, and recovery after a legacy writer exits.
+These groups use private fixtures with a false running-process callback.
+They do not query or launch the game. They retain file hashes and transaction evidence.
 
 Owned transaction fixtures verify process refusal, exact backups, rollback,
 interrupted recovery, removal and legacy-candidate admission before deployment.

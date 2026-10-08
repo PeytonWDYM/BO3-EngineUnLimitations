@@ -8,7 +8,8 @@ The separate captured native crash occurred in full AAE's Lua custom-key callbac
 Reviewed grenade cleanup and the Lua guard are installed. Peyton reports repeated grenade use no longer causes the hosting failure.
 The supported current target is full AAE v3.9.5, Workshop item 2631943123, with the verified downgraded Steam executable.
 Its SHA-256 is 0B874DCC250848B7313EC13A0C76468DACC2009B5EFA2BFF4C587E169A9F77E0.
-The reviewed 0.1.0-test.2 gameplay changes are installed, with verified original backups.
+The reviewed 0.1.0-test.2 Workshop changes remain installed, with verified original backups.
+The two rebuilt stock fastfiles are restored to their exact originals for the signature-failure comparison.
 Faster firing, sprint retention, spawn pacing, tornado count, and peer compatibility still need manual validation.
 
 The 500,000-slot startup helper and migration adapter have owned fixture and independent review evidence.
@@ -17,8 +18,20 @@ One million slots remains disabled. The 200-actor storage prototype also remains
 The corrected job-startup test crashed after release. Keep automatic startup PSS disabled.
 The reviewed same-job stock control reached the menu, then failed during full-AAE loading. Its route and exited-session overlay are removed.
 Normal Steam Play launches directly. Its full-AAE comparison reproduced the same null read, with helper and gate absent.
-Both actual captures and their exited-session overlays are stopped. No next game test is armed.
-Existing gameplay fixes remain installed. No 500k game allocation is validated.
+The targeted fatal-dialog capture records counter 16,400 and 348 non-null asset-copy pointers.
+Two unchanged native signature-failure paths can add 16,384 to that counter. Their execution remains unobserved.
+The drain resets the count without clearing the list. Do not interpret 16,400 as 16,400 actual asset copies.
+Both stock transforms retained signature fields while changing file bodies. Authentication failure is the current causal hypothesis.
+Only zone/zm_patch.ff and zone/zm_castle_patch.ff were restored through the reviewed canonical transaction.
+The cleanup, Lua guard, and AAE weapon changes remain installed. Ninety-seven other protected files match.
+Four private removal groups and fresh independent review passed. No native verification predicate changed.
+Peyton reports full-AAE loading succeeded in manual-stock-assets-06 after those two originals were restored.
+PID 41116 / creation FILETIME 134359704791144990 has no engine helper or gate.
+The later guarded read records count zero twice and 884 retained non-null pointers. All seven code guards match.
+The external stock overlay remains attached. No match or peer validation is claimed from this frontend test.
+Keep both stock files exact. Deliver their requested script changes through a verified mod override route.
+The public patcher retains their metadata for removal and recovery, but no longer permits applying those candidates.
+Automatic PSS remains disabled. No 500k game allocation is validated.
 Peyton subsequently authorized unattended game launches and computer use, then explicitly requested that work continue.
 This authorization supersedes the historical manual-only launch holds below. Only the root agent owns actual game tests.
 Do not run BlackOps3-named stand-ins while monitoring waits.

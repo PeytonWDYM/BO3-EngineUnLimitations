@@ -33,12 +33,21 @@ The repository contains no game executable, Workshop asset, or downgrade downloa
 | Twofold War Machine fire rate | The candidate changes `fireTime` from 500 to 250 milliseconds and `lastFireTime` from 250 to 125 milliseconds. Gameplay remains unvalidated. |
 | Stamin-Up sprint fire | Ordinary Stamin-Up activates the existing sprint-fire and unlimited-sprint grants across supported guns. Eligibility and native checks passed. Gameplay remains unvalidated. |
 | 200 living zombies | A reviewed storage prototype remains disabled. The test package preserves the existing command cap of 64. Startup, unwind, serialization, and full consumer coverage remain unresolved. |
-| Zero spawn delay | Both successful ordinary-spawn paths request zero pacing. Scheduler and pre-spawn waits remain intact. Gameplay remains unvalidated. |
-| Up to three tornadoes | The offline script transform expands the Storm model pool from one to three per player. Expiry and reuse remain intact. |
+| Zero spawn delay | The stock-file candidate caused an AAE loading regression and now permits removal only. Delivery through mod assets remains unfinished. |
+| Up to three tornadoes | The decoded transform uses three reusable models. Its stock-file delivery now permits removal only. Delivery through mod assets remains unfinished. |
 | 1.5 times the split grenades | The candidate uses ceiling rounding: two children become three, and seven become eleven. Gameplay remains unvalidated. |
 | 500,000 to 1,000,000 server script-variable slots | The reviewed launcher passes 20 owned groups. Its corrected Steam test committed all 42 edits and released BO3, which then crashed before pool initialization was verified. A prior zero-edit startup also shows an invalid execution address. The cause remains under investigation. The failed launch route was removed. Allocation, AAE, migration, and friends remain unvalidated. One million remains disabled. |
 
-The four-file `0.1.0-test.2` package is installed for the next authorized manual test.
+The Workshop changes from `0.1.0-test.2` remain installed for manual testing.
+The two stock fastfile candidates were restored to their verified originals after the full-AAE loading failure.
+Their six decoded script changes retained the original file signatures while changing compressed bodies.
+A targeted capture found an asset counter of 16,400 and only 348 non-null list entries.
+Two native file-verification failure paths can add 16,384 to this counter.
+This supports a signature-failure hypothesis. The exact executed check and triggering file remain unobserved.
+Full AAE then loaded successfully through normal Steam with the Workshop fixes and both exact stock fastfiles.
+A guarded read recorded counter zero twice and 884 retained non-null pointers.
+The two candidates now allow removal and recovery only. Default apply selects the two Workshop files.
+Their requested features need signature-compatible mod delivery before they can return to the package.
 The deployment preserved the earlier Lua guard, 91 profile files, and the game executable.
 Peyton reports that repeated grenades no longer cause the hosting failure with those candidates.
 That session retained 1,408 accepted provisional samples and 219 rejected reads.
@@ -46,27 +55,26 @@ Accepted rows retained at least 18,116 free server slots and recorded no first s
 The session has no volley markers or verified host role.
 This report supports further testing. It does not prove unlimited play or isolate the effect of each candidate.
 
-The new enhancement package still needs manual gameplay tests.
+The new enhancement package still needs manual gameplay tests and a supported delivery path for the two stock script overrides.
 Friend joining, co-op hosting, and removal gameplay remain incomplete.
 Compatibility with unpatched friends is not yet established.
 Changing the pool allocation alone would leave save-state consumers inconsistent.
 The release must not offer an expanded pool before its save and migration consumers have a compatible implementation.
 
-Test manifest `0.1.0-test.3` retains the same four patch-file transformations:
+Test manifest `0.1.0-test.3` retains all four identities so older installations can remove or recover their changes:
 
-| Patch ID | Target | Included changes |
+| Patch ID | Target | Availability |
 | --- | --- | --- |
-| `aae-core` | Workshop `core_mod.ff` | Grenade cleanup, faster War Machine, extra split children, Stamin-Up sprint fire, and `/spawn 0` |
-| `aae-native` | Workshop `T7Overcharged.ff` | Native Lua input guard |
-| `zero-spawn-delay` | Game `zone/zm_patch.ff` | Zero requested pacing after successful ordinary spawns |
-| `storm-bow` | Game `zone/zm_castle_patch.ff` | Three Storm Bow tornadoes per player |
+| `aae-core` | Workshop `core_mod.ff` | Apply and remove: cleanup, faster War Machine, extra split children, Stamin-Up sprint fire, and `/spawn 0` |
+| `aae-native` | Workshop `T7Overcharged.ff` | Apply and remove: native Lua input guard |
+| `zero-spawn-delay` | Game `zone/zm_patch.ff` | Removal and recovery only |
+| `storm-bow` | Game `zone/zm_castle_patch.ff` | Removal and recovery only |
 
 Manifest status `ready` means that the package has complete transform metadata.
 It does not mean that all requested features or gameplay checks are complete.
 
-The optional `zero-spawn-delay` patch works independently of AAE and round-setting writes.
-While enabled, the configured delay does not affect ordinary spawns.
-The normal counter path bypasses configured pacing. The positive counter path changes its 0.1-second wait to zero.
+The retired `zero-spawn-delay` transform targets both ordinary-spawn paths independently of round-setting writes.
+Its decoded normal path bypasses configured pacing. The positive counter path changes its 0.1-second wait to zero.
 The patch preserves the scheduler's frame yield and all pre-spawn capacity and location waits.
 `Wait(0)` can still yield to the scheduler. Zero requested pacing does not mean instantaneous spawns or 200 living actors.
 It does not change settings on disk.

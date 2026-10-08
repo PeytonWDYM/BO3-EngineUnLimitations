@@ -6,7 +6,7 @@ import json
 import os
 from pathlib import Path
 import re
-from typing import Callable
+from typing import Callable, Literal
 import uuid
 
 from patcher.coordination import Coordinator, StateLock, canonical
@@ -29,6 +29,7 @@ class Feature:
     patched_sha256: str
     transform: Callable[[bytes, Path], bytes]
     admitted_sha256: tuple[str, ...] = field(default_factory=tuple)
+    apply_availability: Literal["enabled", "removal-only"] = "enabled"
 
     @property
     def supported(self) -> set[str]:
@@ -47,6 +48,8 @@ class Engine:
         if len(ids) != len(set(ids)) or any(not re.fullmatch(r"[a-z][a-z0-9_-]*", item) for item in ids):
             raise PatchError("The patch manifest has invalid file identities.")
         for feature in features:
+            if feature.apply_availability not in {"enabled", "removal-only"}:
+                raise PatchError("The patch manifest has invalid apply availability.")
             if any(not re.fullmatch(r"[0-9a-f]{64}", value) for value in feature.supported):
                 raise PatchError("The patch manifest has invalid file hashes.")
         # The production registry is fixed across --state, selected roots, and feature subsets.
@@ -96,7 +99,7 @@ class Engine:
             current = digest(target.read_bytes())
             state = "stock" if current == feature.original_sha256 else "patched" if current == feature.patched_sha256 else "previous patch" if current in feature.admitted_sha256 else "unsupported"
             original = self.original_path(feature)
-            rows.append({"id": feature.id, "label": feature.label, "path": str(target), "sha256": current, "status": state, "originalVerified": original.exists() and digest(original.read_bytes()) == feature.original_sha256})
+            rows.append({"id": feature.id, "label": feature.label, "path": str(target), "sha256": current, "status": state, "applyAvailability": feature.apply_availability, "originalVerified": original.exists() and digest(original.read_bytes()) == feature.original_sha256})
         return rows
 
     def save_journal(self, journal: dict) -> None:
@@ -179,6 +182,18 @@ class Engine:
     def run(self, action: str, selected: list[str] | None = None, originals: Path | None = None) -> dict:
         if action not in {"apply", "remove", "recover"}:
             raise PatchError("Choose apply, remove, or recover.")
+        requested = set(selected) if selected is not None else {
+            feature.id for feature in self.features
+            if action != "apply" or feature.apply_availability == "enabled"
+        }
+        if action != "recover":
+            if not requested or not requested <= {feature.id for feature in self.features}:
+                raise PatchError("Select at least one supported patch file.")
+            # Refuse retired apply selections before locks, backups, or recovery changes.
+            retired = {feature.id for feature in self.features
+                       if feature.id in requested and feature.apply_availability == "removal-only"}
+            if action == "apply" and retired:
+                raise PatchError(f"These patch files are removal-only: {', '.join(sorted(retired))}. Use Remove to restore their exact originals.")
         self.closed()
         check_state(self.state, self.roots.values())
         with StateLock(self.state):
@@ -198,9 +213,6 @@ class Engine:
                     return {"action": action, "status": "complete"}
             if (self.state / "journal.json").exists():
                 raise PatchError("An interrupted transaction needs recovery before another change.")
-            requested = set(selected) if selected is not None else {feature.id for feature in self.features}
-            if not requested or not requested <= {feature.id for feature in self.features}:
-                raise PatchError("Select at least one supported patch file.")
             targets = [self.target(feature) for feature in self.features if feature.id in requested]
             if len(targets) != len({canonical(target) for target in targets}):
                 raise PatchError("The manifest selects the same target more than once.")

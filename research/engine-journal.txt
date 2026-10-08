@@ -1522,3 +1522,90 @@ The recorder stopped after natural exit at 21:28:54 UTC. The stock sampler retai
 Ninety-six of ninety-nine files match the immediate prelaunch baseline. Only a player crash log and Steam/Cloud metadata changed.
 The executable, four fastfiles, and non-log profiles remain unchanged. Root removed the exited-session overlay.
 Normal Steam Play remains direct. No next test is armed, and no new binary fix has been selected from this incomplete diagnostic state.
+
+October 8, targeted asset state and stock-file comparison:
+
+Peyton left the normal Steam full-AAE fatal dialog open for a bounded read-only capture.
+PID 67092 has creation FILETIME 134359693544316236. No engine helper or startup gate is present.
+Capture-AssetCopyInfo.py uses the fixed reviewed recipe and the existing read-only VerifiedProcess API.
+The failure matrix preceded implementation. Fresh independent review accepted all seven native guards and fixed read bounds.
+At 21:43:52 UTC, both counter reads were 16,400. The fixed 15,360-pointer list contained 348 non-null entries.
+Entry 348 was zero. All code guards matched before and after. These are later sequential observations, not fault-time state.
+The new exception stream independently matches the two prior crashes: a null read at native RVA 0x13e9dc0.
+Its list-index operands identify index 348 and its descriptor address matches the historical capture recipe.
+Archive SHA-256: 473d5f4e42dbca6c9d66eac19c8004a17a8568d2d15e4c11a33fc8ea0653ac3b.
+Dump SHA-256: 00d2ab185d9f048af0ba201067d23946eb919b00c60400093fb67e36bf962bd2.
+Independent exception review SHA-256: b443780fa780fb89a6a51fa5efc5f17449ffacc1fcb2382a6f8eab7af86faf7f.
+
+The earlier prefix-only counter-writer scan missed two native ADD instructions at RVAs 0x13ec701 and 0x13ec97d.
+Each adds 0x4000 when its verification predicate fails. Both occur in the exact game reference, not a newly introduced hook.
+Root read four fixed current ranges totaling 514 bytes at 21:53:24 UTC. Every range matches both prior native references.
+The header predicate consumes the 256-byte field at file header offset 0x138 and a stream digest.
+The other predicate consumes accumulated chunk digests. Captured native dataflow binds both to fastfile loading.
+This establishes their file-verification purpose and current presence. Neither executed branch nor the exact active file is captured.
+The counter drain resets the count without clearing the pointer list. Its retained prefix cannot establish the current copy count.
+16,400 equals 0x4000 plus 16, consistent with a verification-failure increment rather than 16,400 appended pointers.
+Offline analysis SHA-256: 7b172579abaaf67efaeb52ae9f5194df5c59e556d90840f5f6655dcd987f564a.
+
+The two stock transforms preserve their first 0x248 file bytes, including nonzero original signature fields.
+Their compressed bodies and five/one decoded script bytes change. AAE's custom core header has zeros in that signature field.
+Invalid retained authentication data is therefore the causal hypothesis for the next comparison.
+Do not change the verification predicates, counter, asset limit, or null diagnostic to mask this failure.
+Peyton closed BO3. Root stopped only the identified stale overlay after game and sampler exit.
+Ninety-six of ninety-nine protected files match after this capture. Only the crash log and Steam/Cloud metadata changed.
+
+Four private removal groups passed before deployment: closed-game refusal, damaged-original refusal, unknown-target refusal, and exact removal/repeat.
+Fresh independent review accepted the existing selected-removal transaction and canonical backups with zero findings.
+Review SHA-256: 1e357f6a732b7be466ea36d4cb1080631f7d4943163f9ea44c53ae0013a0a32f.
+Root restored only zone/zm_patch.ff and zone/zm_castle_patch.ff through the canonical backup state.
+Both exact stock hashes are verified. The other ninety-seven protected files match, including both Workshop fixes and all profiles.
+Steam configuration, executable, audio, and settings did not change. Root launched no game.
+Normal Steam capture and one external stock overlay waiter are armed in manual-stock-assets-06. Automatic PSS remains disabled.
+The next full-AAE load tests the two stock-file modifications as one coherent factor. It is not yet a verified root fix.
+
+Separate mod-delivery recon confirms neither overridden stock script exists among AAE's 162 extracted server scripts.
+ACTS's pinned BO3 worker compiles source text rather than copying compiled script input.
+A raw-script serializer needs real asset records and native stream accounting. Same-name precedence and opcode handling remain unverified.
+Do not place an arbitrary extra fastfile or append payload bytes after a terminator and claim mod support.
+Private report SHA-256: 5500c32a2bd03fdfbe958cb96bccc564001fa3e17048c3a97a118208da483d0f.
+The separate VM-reset recon found no verified later activation gate. Reinitialization can retain stock backing or live references.
+Its report SHA-256 is 31ac6695290911ddaac6815d69be34c584fced9f8d9e5b5743634027907387bf.
+The native 500k startup fault, complete migration, and peers remain unresolved. No limit or integrity bypass is claimed.
+Private evidence: manual-asset-state-05, asset-writer-capture-01, asset-state-analysis-sol-01,
+asset-state-crash-validation-sol-01, stock-asset-comparison-01, stock-asset-comparison-review-sol-01,
+mod-override-recon-sol-01, vm-reset-gate-recon-sol-01, and manual-stock-assets-06.
+
+Peyton reports full AAE loads successfully after the two stock files were restored.
+The normal Steam process is PID 41116, creation FILETIME 134359704791144990, with no engine helper or gate.
+The same guarded read passes all seven native checks and records the counter at zero before and after.
+Its list retains 884 non-null pointers, directly demonstrating that pointer count does not equal the current copy count.
+This passing comparison supports the rebuilt stock files as the cause of the AAE loading regression.
+The executed signature branch remains unobserved. This frontend load does not validate a map, peer, or expanded pool.
+The external stock overlay remains attached. Moving-world rows remain provisional.
+Ninety-seven of ninety-nine protected files match after loading. Steam's app manifest changed, and BO3 removed its old crash log.
+The first post-load report omitted that missing mutable log. The retained second report explicitly accounts for all ninety-nine paths.
+No profile, executable, stock original, Workshop candidate, or Cloud-cache hash changed in that comparison.
+
+The expanded-startup causal audit reads genuinely captured zero asset-loader state from the earlier failed 42-edit process.
+The complete counter, pointer list, header, digest accumulator, load name, flags, and file-handle field are zero.
+The first invalid execution address remains outside the image. No named AAE native module is present.
+This supports failure before observable asset loading, without proving no earlier cleared activity.
+The known fastfile verifier does not authenticate edited executable instructions in its audited input flow.
+No native executable-integrity predicate or dataflow to the extra one-GiB execution target is proved.
+The same-job zero-edit control reached the menu with the faulty stock files, which were insufficient for its early failure.
+The native startup problem remains separate. One frozen-candidate comparison with restored stock files can test the remaining condition.
+Audit SHA-256: 2781e3384e737c396f6e7c0ef9844d8174a2948b7b85e4714d8f4d37afa561dc.
+
+The public patcher now marks both stock candidates removal-only while retaining all four legacy identities and exact hashes.
+Default apply selects only enabled Workshop files. An explicit retired or mixed selection refuses before transaction state writes.
+Default removal still covers all four files. Recovery still accepts the prior four-entry journal and verified original backups.
+The GUI leaves removal-only files unchecked but selectable for restoration. Status exposes their allowed action.
+Four focused file-transaction E2E groups preceded implementation and retained red/green evidence.
+They cover default apply/status, complete zero-change refusal, all-four removal, and recovery after an owned writer exits.
+Fresh independent review verified all four results, six source pins, and sixty-seven saved file hashes with zero must-fix findings.
+Review SHA-256: b1dc56a9ff0eef6d55fad60bc78437e42d35f827564cf2e39fd9d064200711ff.
+The coding owner also reports twenty-five existing transaction groups passed. No separate retained log supports independent replay of that run.
+The old enhanced-launch recipes still pin the previous engine source. These source checks do not approve new native packaging or 500k deployment.
+The frozen earlier job candidate retains its exact reviewed source and binaries for a separate controlled comparison.
+No new startup binary, game executable, asset-authentication predicate, or native transaction changed in this patcher correction.
+Private evidence: retired-stock-features-sol-01 and retired-stock-features-review-sol-01.

@@ -5,6 +5,7 @@
   "features": [
     {
       "id": "aae-core",
+      "applyAvailability": "enabled",
       "label": "AAE: cleanup, faster War Machine, extra grenades, Stamin-Up sprint-fire, /spawn 0",
       "scope": "workshop",
       "relativePath": "core_mod.ff",
@@ -15,6 +16,7 @@
     },
     {
       "id": "aae-native",
+      "applyAvailability": "enabled",
       "label": "AAE: native Lua input crash guard",
       "scope": "workshop",
       "relativePath": "T7Overcharged.ff",
@@ -24,6 +26,7 @@
     },
     {
       "id": "zero-spawn-delay",
+      "applyAvailability": "removal-only",
       "label": "Zombies: zero pacing delay after successful ordinary spawns",
       "scope": "game",
       "relativePath": "zone/zm_patch.ff",
@@ -33,6 +36,7 @@
     },
     {
       "id": "storm-bow",
+      "applyAvailability": "removal-only",
       "label": "Der Eisendrache: three simultaneous Storm Bow tornadoes per player",
       "scope": "game",
       "relativePath": "zone/zm_castle_patch.ff",

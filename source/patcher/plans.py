@@ -22,5 +22,8 @@ def load(resources: Path) -> tuple[str, list[Feature]]:
         if not module.startswith("patchplans.") or not name.isidentifier():
             raise PatchError("The release manifest has an invalid transform name.")
         transform = getattr(importlib.import_module(module), name)
-        features.append(Feature(entry["id"], entry["label"], entry["scope"], entry["relativePath"], entry["originalSha256"].lower(), entry["patchedSha256"].lower(), transform, tuple(value.lower() for value in entry.get("admittedSha256", []))))
+        availability = entry.get("applyAvailability", "enabled")
+        if availability not in {"enabled", "removal-only"}:
+            raise PatchError("The release manifest has invalid apply availability.")
+        features.append(Feature(entry["id"], entry["label"], entry["scope"], entry["relativePath"], entry["originalSha256"].lower(), entry["patchedSha256"].lower(), transform, tuple(value.lower() for value in entry.get("admittedSha256", [])), availability))
     return data["version"], features

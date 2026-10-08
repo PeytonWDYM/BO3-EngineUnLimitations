@@ -83,9 +83,12 @@ def gui(version: str, features, resource_path: Path) -> None:
         paths[key] = value
     selections = {}
     ttk.Label(frame, text="Patch files").pack(anchor="w", pady=(12, 2))
+    ttk.Label(frame, text="The two rebuilt stock fastfiles caused full AAE loading to fail.").pack(anchor="w")
+    ttk.Label(frame, text="Select removal-only files and use Remove to restore their exact originals.").pack(anchor="w")
     for feature in features:
-        value = tk.BooleanVar(value=True)
-        checkbox = ttk.Checkbutton(frame, text=feature.label, variable=value)
+        value = tk.BooleanVar(value=feature.apply_availability == "enabled")
+        label = feature.label + (" (removal only)" if feature.apply_availability == "removal-only" else "")
+        checkbox = ttk.Checkbutton(frame, text=label, variable=value)
         checkbox.pack(anchor="w")
         controls.append(checkbox)
         selections[feature.id] = value
@@ -132,7 +135,7 @@ def gui(version: str, features, resource_path: Path) -> None:
                 engine = make_engine(values["workshop"], values["game"], None, features, resource_path)
                 if action == "status":
                     rows = engine.status()
-                    result = "\n\n".join(f"{row['label']}: {row['status']}\nOriginal backup verified: {row['originalVerified']}\n{row['path']}" for row in rows)
+                    result = "\n\n".join(f"{row['label']}: {row['status']}\nApply availability: {row['applyAvailability']}\nOriginal backup verified: {row['originalVerified']}\n{row['path']}" for row in rows)
                 else:
                     result = json.dumps(engine.run(action, selected, Path(values["originals"]) if values["originals"] else None), indent=2)
                 messages.put(result + f"\n\nBackup folder: {engine.state}")
@@ -171,7 +174,7 @@ def main() -> int:
     parser.add_argument("--steam", type=Path, help="Steam installation folder; default: the current user's registry")
     parser.add_argument("--steam-user", type=int, help="Explicit numeric Steam userdata folder when account discovery is ambiguous")
     parser.add_argument("--originals", type=Path, help="Folder containing exact original files at manifest relative paths")
-    parser.add_argument("--select", nargs="+", help="Patch file IDs. Default: every supported patch file")
+    parser.add_argument("--select", nargs="+", help="Patch file IDs. Default apply: enabled files. Default remove: all supported files")
     parser.add_argument("--resources", type=Path, help="Public build resources folder when running from source")
     args = parser.parse_args()
     try:
