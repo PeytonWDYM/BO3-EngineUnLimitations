@@ -1172,3 +1172,18 @@ It must pass owned forwarding, identity, output, and unwind checks before an act
 Control08 SHA-256: c49c11e5df5cc77acef9b73493cb0fc14f17370f86251d50469c52f29da5d73c.
 Combined review SHA-256: c8b129b8dad2a08122f9aa1876c45c65d1771a3b7958403d7870cbb9e41e0ca8.
 Private evidence: release-enhancement/unattended-steam-control-03 and vm-startup/startup-control-08.
+
+October 8, 09:14 UTC, exact stock startup guard correction:
+
+Two independently bound startup snapshots contain identical stock bytes at RVA 12dba10, with all VM storage still zero.
+The prior mod-loaded capture differs only at byte zero: the stock 40 prefix becomes C3, a return instruction.
+The writer of that runtime byte remains unproven. Do not attribute it to AAE from the byte difference alone.
+The complete 195-byte stock range decodes consistently and retains its original function boundary and unwind record.
+The inventory changes only that range's hash. It does not permit an alternate runtime hash or skip a guard.
+Both startup snapshots now match all sixty VM guards and nineteen stock capacity instructions.
+The modified mature range still fails admission. Its separate known error-handler detour is recorded as a second mature mismatch.
+Fresh independent review verifies complete dump and process identities, native code, unwind, and the one-field inventory delta.
+No native code, game file, launched helper, production startup gate, or live pool changed for this correction.
+The repeatable capture audit source and declared failures are in source/tests/vm-startup/StartupGuardAudit.py and StartupGuardFailures.txt.
+Private evidence is in release-enhancement/startup-guard-sol/corrected-final/result.json.
+Review SHA-256: 143838a4c57027febbe2a6b2702abaec93f5322c33f46daf1fc02d40a1dd8643.
