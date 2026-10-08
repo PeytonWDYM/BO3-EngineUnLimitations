@@ -3,8 +3,8 @@
 
 namespace vm_startup {
 std::vector<unsigned char> ReadStopped(HANDLE process, std::uintptr_t address, size_t length);
-// All edits run while the debugger stops every target thread.
-// An uncommitted patch restores every attempted edit before caller termination.
+// All edits require every target thread to remain stopped.
+// An uncommitted patch attempts to restore every edit before caller termination.
 class PausedPatch {
     HANDLE process_;
     std::vector<AddressEdit> edits_;

@@ -1,5 +1,9 @@
 #pragma once
+#ifdef BO3_JOB_STARTUP
+#include "../job_startup/Coordinator.h"
+#else
 #include "Coordinator.h"
+#endif
 
 namespace bo3::late_startup {
 class PrivateReceipt {
@@ -13,7 +17,11 @@ public:
     PrivateReceipt(const std::filesystem::path& directory,const OwnedChild&);
 #endif
     ~PrivateReceipt();
+#ifdef BO3_JOB_STARTUP
+    void Write(const job_startup::Receipt&);
+#else
     void Write(const Receipt&);
+#endif
 #ifdef BO3_LATE_STOCK_CONTROL
     void Write(const ControlReceipt&);
 #endif

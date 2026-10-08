@@ -1,0 +1,60 @@
+Failure matrix, written before implementation.
+
+The coordinator must refuse each failure before publication where possible.
+Every refusal ends the owned process through the parent-only kill job.
+No refused child receives the gate release event.
+
+1. A file hash, helper code, gate code, boot identity, or process identity differs.
+   Refuse before edits. Preserve exact PID, creation time, and image checks.
+2. Assignment to the parent-only kill job fails, including incompatible nested jobs.
+   Keep the initial primary thread suspended. End the owned child.
+3. Job membership contains another process or omits the owned process.
+   Refuse before freeze or edits. Repeat membership and identity checks inside freeze.
+4. Freeze returns any status except STATUS_SUCCESS (zero).
+   Do not publish. Record raw status and end the owned job.
+5. A second thread exists, or the original primary thread is absent.
+   Refuse under freeze before preparation or writes.
+6. The stopped primary PC or native unwind does not match the verified gate wait chain.
+   Refuse under freeze. Do not infer frames from arbitrary stack words.
+7. A primary PC or verified frame lies inside an edit span.
+   Refuse under freeze before writes.
+8. One of 82 guards, 19 stock counts, zero storage values, bindings, or 42 originals differs.
+   Refuse under freeze. Free uncommitted relay allocations before thaw.
+9. An edit write, protection restore, instruction flush, or readback fails.
+   Restore attempted edits under freeze. Verify restored bytes and protections.
+10. Rollback fails.
+    Kill the owned child while the job remains frozen. Never thaw partial edits.
+11. The absolute 30-second gate budget expires during admission or publication.
+    Roll back under freeze if uncommitted. Kill committed state without release.
+12. Thaw returns any status except STATUS_SUCCESS.
+    Kill the owned job. Do not release the gate.
+13. Identity, debugger absence, or gate state differs after thaw.
+    Kill the committed child. Never free a committed relay or roll back resumed state.
+14. Gate release fails.
+    Kill the committed child. Keep committed relay storage until process exit.
+15. The controller dies before assignment, during freeze, or during partial publication.
+    Before assignment the suspended child cannot execute. After assignment last-close kills it.
+    Owned tests must observe zero partial execution after abrupt parent death.
+16. Production contains fixture mappings, exports, debugger attachment/events/detach, or context writes.
+    Reject the artifact before any game test.
+17. Cleanup fails or the child already exited before cleanup.
+    Preserve the initiating exception and raw statuses. Record the exit without another termination.
+    Failed cleanup keeps the job frozen until last-close kills its members.
+
+Runtime unwind correction, recorded before implementation after the actual zero-write refusal.
+18. A pinned runtime unwind guard uses the wrong RVA or function-table row.
+    Refuse the frozen primary before plan preparation. Do not substitute another row.
+19. Runtime unwind bytes differ from the exact captured wrapper/CRT guard.
+    Refuse before writes, including encrypted disk bytes presented as runtime metadata.
+20. Wrapper/CRT return PCs differ, a required runtime guard is absent, or an unguarded game frame occurs.
+    Refuse the exact call chain. Keep the native entry anchor requirement.
+21. The process or runtime module identity changes while metadata is read.
+    Refuse before writes. Preserve the independent file and mapped-image identity checks.
+22. DbgHelp refuses a function-table callback or cannot advance the native unwind.
+    Retain the initiating stage, bounded reason, and lookup PC in the private receipt.
+    Never treat callback refusal as a permissible leaf or successful truncated walk.
+
+The owned metadata reproduction encrypts only its two caller unwind bodies on disk.
+Its target restores the exact native bodies before calling the owned gate. Production
+does not write unwind data. Success must read both guarded runtime bodies while
+retaining the exact caller chain, native entry anchor, and complete 42-edit checks.

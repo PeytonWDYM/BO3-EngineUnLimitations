@@ -14,7 +14,8 @@ Faster firing, sprint retention, spawn pacing, tornado count, and peer compatibi
 The 500,000-slot startup helper and migration adapter have owned fixture and independent review evidence.
 Actual expanded-pool startup, full AAE loading, compressed whole state, and multiplayer remain unvalidated.
 One million slots remains disabled. The 200-actor storage prototype also remains disabled.
-The failed job-startup recorder and waiting overlay are stopped. Rearm both for the next reviewed test.
+The corrected job-startup test crashed after release. Its recorder and waiting overlay are stopped. Keep automatic startup PSS disabled.
+Normal Steam Play uses stock capacity after canonical removal of the failed test route. Existing gameplay fixes remain installed.
 Peyton subsequently authorized unattended game launches and computer use, then explicitly requested that work continue.
 This authorization supersedes the historical manual-only launch holds below. Only the root agent owns actual game tests.
 Do not run BlackOps3-named stand-ins while monitoring waits.
@@ -148,6 +149,36 @@ Normal Steam Play currently uses stock capacity. The installed gameplay and Lua 
 The native owner identified encrypted on-disk BO3 unwind metadata and different valid metadata in prior runtime capture.
 A bounded runtime-metadata correction and explicit refusal diagnostics are under development. Require fresh review before deployment.
 Private evidence is in release-enhancement/manual-job-startup-01/. Its waiting overlay is stopped.
+
+The runtime-metadata correction passed twenty owned groups, including an encrypted-disk fixture and six zero-write metadata refusals.
+It admits only two fixed game CRT records with exact current row, unwind-body, and code checks.
+Both metadata records must pass through the frozen reader. The full single-primary gate chain and native entry anchor remain required.
+Fresh native review verifies 211 hashes with zero open findings. The inherited rollback-comment issue is closed.
+The corrected Steam transport passed five focused groups and 37 review hashes with zero open findings.
+The root froze seventeen deployment files and enabled this recipe at 20:22 UTC.
+Only BO3's launch field changed. All ninety-nine fresh protected files match. No desktop input, audio change, or game launch occurred.
+Steam restarted silently. The original absent launch field remains preserved in the canonical receipt.
+Use the frozen corrected job wrapper in release-enhancement/manual-job-startup-02/freeze-01 for setup or removal.
+Its recipe SHA-256 is bce1c46455b37c7c94cba6136285685a09af7221b832162d61a1c715a9b08d71.
+Its launcher SHA-256 is e3ef2eca7494ca6ac611efdd348c7d73c9db0f23e374c992e6c894a73ea3dade.
+The root armed capture 20261008T202309Z-34df3f1a and overlay waiter PID 28736, with private creation identity.
+Peyton used Steam Play and selected No at the Safe Mode prompt. The corrected primary admission passed.
+PID 34648, creation FILETIME 134359646180020713, retained all forty-two committed edits, successful thaw, and gate release.
+BO3 then crashed. The final c0000409 fast-fail follows an earlier execution access violation at image plus 0x422b9b50.
+Subtracting one GiB gives native RVA 0x22b9b50. This arithmetic does not authorize changing the target.
+Reference-assisted native unwind and captured exception/context records verify the earlier execution fault and secondary GS abort.
+The exact transfer producer and its inputs remain uncaptured. Do not treat the dispatcher ControlPc as that producer.
+Two earlier debugger-based captures, with forty-two and zero edits, show the same one-GiB address-error pattern.
+This comparison does not isolate the current job freeze, context reads, publication, or integrity predicate.
+All VM and migration pointers remain zero in the crash residue. Current count instructions and relay bytes are absent from WER.
+The static forty-two-edit ABI audit found no evidenced restoration defect. It cannot prove unseen current instructions or hook execution.
+The full dump is verified privately, SHA-256 db0ebda2978300ac48cacd769ea61ff6c50552909f3674e43b5a80a6e238c870.
+The crash comparison preserves all ninety-two profiles, the executable, four fastfiles, and app Cloud cache. Only Steam's app manifest changed.
+The root removed the failed route through its frozen corrected wrapper and restarted Steam silently. The original launch field remains absent.
+Private reports are in release-enhancement/job-crash-deep-sol-01 and job-startup-sol/actual-abi-audit-01.
+A same-job, same-unwind zero-edit comparison is under design. It must not allocate relays or publish engine edits.
+Root owns actual game tests. No next comparison has been deployed. Do not bypass protection code, cookie checks, or the native startup deadline.
+Game allocation, migration, friend compatibility, one million slots, and 200 actors remain unvalidated or disabled.
 
 ## End goal
 

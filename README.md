@@ -36,7 +36,7 @@ The repository contains no game executable, Workshop asset, or downgrade downloa
 | Zero spawn delay | Both successful ordinary-spawn paths request zero pacing. Scheduler and pre-spawn waits remain intact. Gameplay remains unvalidated. |
 | Up to three tornadoes | The offline script transform expands the Storm model pool from one to three per player. Expiry and reuse remain intact. |
 | 1.5 times the split grenades | The candidate uses ceiling rounding: two children become three, and seven become eleven. Gameplay remains unvalidated. |
-| 500,000 to 1,000,000 server script-variable slots | The reviewed late CRT launcher committed all 42 edits during an actual Steam launch, detached, and released BO3. BO3 then crashed during startup. The crash dump is under investigation. No expanded game pool or match is validated. Complete migration and peer tests remain pending. One million remains disabled. |
+| 500,000 to 1,000,000 server script-variable slots | The reviewed launcher passes 20 owned groups. Its corrected Steam test committed all 42 edits and released BO3, which then crashed before pool initialization was verified. A prior zero-edit startup also shows an invalid execution address. The cause remains under investigation. The failed launch route was removed. Allocation, AAE, migration, and friends remain unvalidated. One million remains disabled. |
 
 The four-file `0.1.0-test.2` package is installed for the next authorized manual test.
 The deployment preserved the earlier Lua guard, 91 profile files, and the game executable.
@@ -98,6 +98,7 @@ Private captures, game assets, profiles, downloaded tools, and build output rema
 | `source/launch/enhanced/` | Optional 500,000-slot Zombies launcher and exact startup admission |
 | `source/launch/startup_probe/` | Separate stock-capacity API observation and owned native tests |
 | `source/launch/startup_gate/` and `source/launch/late_startup/` | Cooperative CRT gate, paused native transaction, and reversible Steam transport |
+| `source/launch/job_startup/` | Debugger-free job transaction and its fixed Steam recipe |
 | `source/tests/` | Repeatable fixture E2E harnesses |
 
 The cooperative runtime loader cannot patch stock BO3 yet.
@@ -114,7 +115,19 @@ Its sequential reads do not establish an all-thread stop. It cannot activate exp
 Its actual test opened a game window, then exited on its own with code zero after thirty seconds.
 A complete read-only snapshot is retained. The earlier access violation did not recur, but completed startup remains unresolved.
 The same binary then launched normally without automatic snapshots, according to Peyton. He closed that test himself.
-Regular Steam Play is restored. Debugger-free native publication remains under development.
+Regular Steam Play was restored after that comparison.
+The job launcher passed owned groups for failed rollback, second-process refusal, deadline enforcement, and controller death during partial publication.
+That Steam test passed the job freeze and sole-primary inventory, then refused native unwind admission before all engine writes.
+BO3's on-disk unwind metadata differs from verified runtime metadata.
+The correction admits only two exact runtime CRT records. It retains the complete gate chain and native entry anchor.
+Twenty owned groups passed, including encrypted disk metadata and six zero-write metadata refusals.
+Fresh native review has zero open findings. The correction remains an exact-host game-test candidate.
+The original Steam launch field was restored after this refusal. Normal Steam Play uses stock capacity with the existing gameplay fixes.
+The overlay parser passed eighty-two owned cases and accepted the native writer's fifty receipt fields unchanged.
+The serializer check covers metadata. It does not establish live game enrollment.
+The fixture's serial-loader setting is confined to its owned target. The production launcher preserves loader settings.
+Death before job assignment can leave a suspended child; public release still requires cleanup for that creation boundary.
+Read `source/launch/job_startup/README.txt` for the build, Steam setup, removal, and validation limits.
 The silent-audio prototypes do not establish quiet game startup.
 Their source and limits remain documented with the investigation.
 

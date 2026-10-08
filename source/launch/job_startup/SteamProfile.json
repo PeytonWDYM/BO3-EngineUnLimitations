@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "status": "experimental",
+  "startupMethod": "late-crt-job-freeze",
+  "gateDeadlineMs": 30000,
+  "successfulGameLifetime": "until-exit",
+  "serverUsableSlots": 500000,
+  "serverTotal": 500001,
+  "clientTotal": 65000,
+  "clientRoots": 18,
+  "migrationBufferBytes": 33554432,
+  "requiresSolePrimary": true,
+  "debuggerAttachment": false,
+  "transactionEntryPoint": "source/launch/job_startup/SteamSetup.py",
+  "gameSha256": "0b874dcc250848b7313ec13a0c76468dacc2009b5efa2bff4c587e169a9f77e0",
+  "nativeBuildReceiptSha256": "71ec866616fcff325e21c8460a40d2a29a9c144f0e5837f528a89f3a98918b37",
+  "nativeAuditSha256": "7c3348b4b30b66150ee8386e8672246340820897edb87338b6f98c7017e0b5dd",
+  "nativeResultSha256": "2962cda651ad5e3ca0974800cff2a45d2143fd3ce029f32c8155b3ab4ccb953c",
+  "nativeReviewSha256": "a1bb9a39bc4c0f06d18c1c96d0eb9243ed56e35390918914cc91b484e9a5063e",
+  "sharedSetupSha256": "03ecc84ace7e1d682b949c6407d46ee6ab0227f5f2fed131ef39478db12fcf61",
+  "sharedSources": {
+    "steam_launch.py": "24b6d9696bba2427e93039f2d0b564fb0bd30b980427243ae477f22e83425674",
+    "coordination.py": "bb3ff29faa487a9de8e15b7d76524ff37161e92561fba5e1ac44d7fe3090bb69",
+    "vdf_span.py": "921cd34d5e1ca0fbcfd53a88b889fb52129c3cc90d983357ad9ee393aaf87cd5",
+    "paths.py": "cff3d7de09698c8796fbf74e661a3522367233abadc84a7776ec1e6825d42e7e",
+    "storage.py": "3acfa29ae028fbf79ce694e73a21e6b54596f5edfa57099d12a2a1d1f4c232bd",
+    "windows.py": "a02c1fb10262e2804574b225e351079eb0291867c9e69e552246c55e176cf52f",
+    "engine.py": "370c2b2ba089eaf79a78f7058f5af6145f651d61270a6f6709ac9dd7cd4a3656",
+    "errors.py": "8ac70f88558ca98d0dc2112507d8fdfae449bb50165292d2dcd1857fb04f0272",
+    "enhanced_launch.py": "15f84e89722a2d609db25572986f1a2812eafd4c12b58f0d4c20032555f99c17",
+    "__init__.py": "32ac31305ed720e3f1b299fb7f64f39cc104a31fea4350d8901144ea44359980"
+  },
+  "files": {
+    "BO3-Job-Zombies.exe": "e3ef2eca7494ca6ac611efdd348c7d73c9db0f23e374c992e6c894a73ea3dade",
+    "Bo3EnhancedHelper.dll": "09b947ba384837853d5f4061a8fc3e2b61dee6b2663a751d6e7a2fb974c803c1",
+    "Bo3StartupGate.dll": "d24f274e847c63015b24a513a202815b4e0ef6bd1078a9b73ae6aec1c71bd8ca",
+    "Detours-LICENSE.md": "f854ae8aabc0404652b48a2b3bf7f21ec174c69d73f5596934c20884eb0639ef"
+  },
+  "scope": "Exact-host bounded diagnostic. Activation, game loading, AAE and friends remain unvalidated.",
+  "requiredRuntimeMetadataMask": 3
+}

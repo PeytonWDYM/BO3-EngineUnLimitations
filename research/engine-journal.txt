@@ -1395,3 +1395,71 @@ The existing file-based metadata guard cannot admit that runtime frame. A bounde
 Add explicit refusal-stage and callback diagnostics before the next actual launch. Preserve the exact sole-primary native chain.
 Actual 500,000-slot allocation, full AAE loading, migration, and peer compatibility remain unvalidated.
 Private evidence: release-enhancement/manual-job-startup-01.
+
+October 8, 20:23 UTC, corrected runtime-metadata candidate reviewed and installed:
+
+Independent snapshot checks verify both game CRT rows, runtime unwind bytes, code guards, and PE identity.
+The complete captured exception table equals the supported disk table, SHA-256 793ed7579e1ed0104c6323d8b347450b6629c1d75dc1adae3e0b161564d4053e.
+The wrapper and outer CRT unwind bodies differ from encrypted disk bytes. Only these two records receive runtime admission.
+The passive snapshot is after gate release. It does not establish current waiting-phase equality.
+The corrected provider verifies exact current frozen rows, unwind bodies, and code before the native stack walk.
+Unknown game frames refuse admission. System and gate frames retain the original disk/runtime checks.
+StackWalk and registered symbol callbacks use the frozen process reader. Both guarded records must be consumed, with read mask three.
+The success fixture records sixteen aggregate metadata reads. This does not identify separate CBA callback invocation.
+The owned target has genuinely encrypted disk metadata and receives its original runtime metadata before its gate.
+All twenty owned groups pass. Six incorrect metadata groups refuse before plan preparation with zero edits or relays.
+The success group retains all forty-two edits, sole-primary chain admission, successful thaw and release, and exit zero.
+Native review verifies 211 hashes with zero open findings. The inherited rollback wording is corrected.
+The fixed Steam recipe passed five focused installation/removal groups and 37 independent review hashes.
+Root independently verified 193 native build, source, and result pins before freezing seventeen deployment files.
+At 20:22 UTC, root used graceful Steam shutdown and enabled the corrected frozen job recipe.
+The byte comparison confirms that only BO3's launch field changed. All ninety-nine protected files remain identical.
+No desktop input, audio change, game launch, or profile write occurred. Steam restarted silently.
+The original absent launch field remains preserved for canonical removal through the corrected job wrapper.
+The recorder and one process-bound full-AAE overlay waiter are armed. No automatic startup PSS snapshot is requested.
+Peyton subsequently used Steam Play and selected No at the Safe Mode prompt. The actual failure is recorded below.
+Native review SHA-256: a1bb9a39bc4c0f06d18c1c96d0eb9243ed56e35390918914cc91b484e9a5063e.
+Transport review SHA-256: 1c29cc308c3fd3bcfa39a1a75f8c88644685ae82dd4a803af720eb5fc407ab80.
+Launcher SHA-256: e3ef2eca7494ca6ac611efdd348c7d73c9db0f23e374c992e6c894a73ea3dade.
+Recipe SHA-256: bce1c46455b37c7c94cba6136285685a09af7221b832162d61a1c715a9b08d71.
+Private evidence: release-enhancement/manual-job-startup-02, job-startup-sol/runtime-owned-final-01,
+job-startup-sol/runtime-production-final-01, job-startup-sol/runtime-unwind-review-01,
+job-startup-steam-sol/runtime-final-owned-01, job-startup-steam-sol/runtime-fresh-review-01,
+and job-unwind-adversarial-sol-01.
+
+October 8, corrected job publication succeeded, followed by native startup failure:
+
+Steam created PID 34648 with creation FILETIME 134359646180020713 and original primary TID 57868.
+The native receipt records successful freeze, exact single-primary runtime unwind, and metadata read mask three.
+It records forty-two committed edits, successful thaw, debugger absence, and gate release. The controller did not terminate BO3.
+The gate's captured phase Returned and helper boot readiness independently corroborate later startup state.
+Creation to receipt was 2.5464015 seconds. This is not a measured freeze duration.
+Windows reported c0000409 with fast-fail parameter two. The verified 397,546,253-byte dump retains the preceding execution fault.
+Its SHA-256 is db0ebda2978300ac48cacd769ea61ff6c50552909f3674e43b5a80a6e238c870.
+The captured EXCEPTION_RECORD and original CONTEXT agree on c0000005 execution access at image plus 0x422b9b50.
+Subtracting 0x40000000 produces native RVA 0x22b9b50. No target correction or protection bypass is justified.
+Reference-assisted DbgHelp uses the actual stack and logs missing module metadata supplied by a separate healthy passive capture.
+Its valid chain reaches Windows exception dispatch and restores the original invalid RIP. It accepts no later stack words as frames.
+Captured dispatcher and cookie operands establish a secondary GS-check abort during exception handling.
+The dispatcher ControlPc is image plus 0x147f7b5. It does not identify the producer of the invalid transfer.
+The global cookie and complement remain consistent. The dump does not establish an ordinary buffer overflow.
+Earlier PID 18824 with forty-two edits and PID 61712 with zero edits both jumped to image plus 0x4227a3a0.
+These share the one-GiB address-error pattern, but their debugger paths differ from the current job/context/publication path.
+All VM and migration pointers and sizes remain zero in current crash residue. This does not prove no allocator ran earlier.
+WER omits the current count instructions, helper text, relay, protected target stub, and dispatcher-selected code.
+The separate ABI audit reconstructs all forty-two edits and matches seven captured helper binding records.
+It finds no evidenced stack restoration defect, stack/cookie overlap, or planned relay destination at the invalid address.
+It does not prove unseen current instructions, hook execution, or live allocation.
+The initiating native transfer instruction and its decoder inputs remain unresolved.
+The proposed bounded observation set preserves 8,283 image bytes plus exact identity and existing transaction readback.
+Sequential read-only observations cannot promise the original transfer registers or its decisive predicate.
+A same-job, same-unwind zero-edit comparison is under design. No next control has been implemented or deployed.
+The recorder stopped with the crashed child. The overlay waiter refused multiple BO3 processes and attached no sampler.
+The post-crash comparison retains ninety-eight of ninety-nine protected files. Only Steam's app manifest changed.
+All ninety-two profiles, the game executable, four fastfiles, and app Cloud cache match the fresh baseline.
+The root gracefully stopped Steam and removed the failed test route through the frozen corrected job wrapper.
+The canonical receipt confirms restoration of the original absent LaunchOptions field. Steam restarted silently.
+No desktop controls, audio changes, profile restoration, or root game launch occurred.
+Existing gameplay fixes remain installed. Normal Steam Play uses stock capacity.
+Private evidence: release-enhancement/manual-job-startup-02, job-crash-deep-sol-01,
+and job-startup-sol/actual-abi-audit-01.
