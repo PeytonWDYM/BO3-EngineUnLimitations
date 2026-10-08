@@ -18,3 +18,15 @@ selection or the normal exhausted return. Owned memory replaces game data.
 Allocation initialization, game execution, and engine patching remain outside it.
 A temporary one-byte mutation tests the signed-immediate failure in the emulator.
 No altered game image is written.
+
+FOLLOW-UP FAILURE CASES BEFORE DOWNSTREAM REPLAY
+
+13. A downstream table consumer derives the owner from the entry pointer.
+14. A downstream consumer writes past the 0x48-byte table entry.
+15. A downstream consumer retains an external entry pointer after its call.
+16. The shared handle-node allocator exhausts before the larger pool fills.
+17. A handle index truncates a proposed sentient index of 239.
+
+The next bounded replay checks two leaf consumers with separated owner and table storage.
+It checks the shared handle allocator through its normal exhausted branch.
+It does not prove the complete pointer graph, handle demand, or live activation.

@@ -908,3 +908,48 @@ At 00:56:04 UTC, the guarded manager applied only full-AAE T7Overcharged.ff.
 The candidate hash is a4834cc251cfcba413bd80d783eec854c0c3f31d14651703a8d7a9e718e1576c.
 The post-deployment check preserves all 165 other baseline files and both Steam/Cloud metadata files.
 The exact packed original remains verified in private normal-native-deployment. Game validation is pending.
+
+October 8, 03:56 UTC, enhancement and larger-pool checkpoints:
+
+Peyton reports repeated grenade firing now works with the prior cleanup and Lua guard.
+That manual session retained 1,408 accepted provisional rows and no accepted first script error.
+The session has no volley markers or verified peer role. It does not prove unlimited or ten-player play.
+
+The reviewed 0.1.0-test.2 package adds faster War Machine timers, 3/11 split children,
+ordinary Stamin-Up sprint eligibility, zero successful normal spawn pacing, and three Storm tornadoes.
+The frozen four-file patcher passed stock apply/remove and adoption of both earlier candidates on private copies.
+Peyton approved deployment. Only core_mod.ff and two game fastfiles changed.
+The native Lua guard, game executable, 91 profiles, and 167 other baseline files remained unchanged.
+Canonical removal backups and default GUI removal records are verified.
+The new gameplay still needs manual match and peer validation.
+The current package does not contain the requested VM or 200-actor expansions.
+
+The VM means BO3's script interpreter. BO3 runs directly on Windows.
+Peyton stopped both Astra VM agents because of usage cost. Remaining work uses GPT-6.1 Sol.
+Native allocation replay returns every usable ID at 500k and 1m and preserves the 64,999 client slots.
+The native scalar codec restores 500,000 slot records and all hash buckets exactly in isolated replay.
+Its dense slot stream contains 23,500,000 bytes. This is not a bound for strings or suspended stacks.
+Eleven owned state-adapter groups pass, including malformed free chains and a Zombies-only serializer policy.
+Fresh review matches the native whole-state tail and records no open source findings or chain-test gaps.
+The current allocation gate, helper composition, and error prelude have owned Windows fixture evidence only.
+The composed actual helper and original-entry thunks remain under implementation.
+
+The native game-client allocation requests eighteen records of stride 0x171f0.
+Saved instruction replay links its allocation request, encrypted publication, recovery, and full clear.
+The eighteen-record positive case passes. The seventeen-record negative case rejects the oversized clear.
+The stock Zombies stream contains eight player script roots. Expanded networking remains unvalidated.
+The public exact-build VM inventory has nineteen count sites, four original entry records, and forty-five code guards.
+It is explicitly audit-only. No VM code or capacity changes reached the working game.
+
+The bounded actor audit adds thirty accessor uses, seven helper paths, and fifty-six exact guards.
+Four native replay cases pass, including the 2,047 usable shared handle nodes and their exhaustion.
+Separate stable table storage preserves the 0x3088 sentient stride.
+Additional arrays, narrowed indices, lifetime, save/migration, AAE consumers, and early constructors remain unresolved.
+No 200-actor patch is implemented.
+
+Peyton clarified that he plays Zombies. The optional enhanced launch retains the separate stock launch.
+Its serializer refuses other server modes before state access. Native mode selection remains unvalidated.
+Migration peer admission, buffer/compression bounds, Steam context, and game activation remain required.
+No game was launched or controlled by an agent during these checkpoints.
+Read research/vm-pool-expansion.txt, research/vm-startup-integration.txt, and research/vm-migration-integration.txt.
+Raw captures, disassembly, streams, native fixture binaries, and private profiles remain outside Git.

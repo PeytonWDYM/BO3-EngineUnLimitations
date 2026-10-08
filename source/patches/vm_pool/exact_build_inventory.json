@@ -1,0 +1,437 @@
+{
+  "status": "AUDITED INVENTORY ONLY. Migration admission, mode policy, Steam launch and live compatibility remain incomplete.",
+  "executableSha256": "0b874dcc250848b7313ec13a0c76468dacc2009b5efa2bff4c587e169a9f77e0",
+  "imageSize": 494186496,
+  "timestamp": 1765634846,
+  "allocationEntryRva": 19788336,
+  "poolPointerRva": 85083520,
+  "hashPointerRva": 85083392,
+  "modeGetterRva": 34516080,
+  "modeWordRva": 377940084,
+  "enhancedModeValue": 0,
+  "serverCountInstructions": [
+    {
+      "rva": 19740291,
+      "bytes": "41b8d0fb0100",
+      "immediateOffset": 2,
+      "stockTotal": 130000
+    },
+    {
+      "rva": 19740422,
+      "bytes": "41b8d0fb0100",
+      "immediateOffset": 2,
+      "stockTotal": 130000
+    },
+    {
+      "rva": 19742242,
+      "bytes": "41b8d0fb0100",
+      "immediateOffset": 2,
+      "stockTotal": 130000
+    },
+    {
+      "rva": 19744529,
+      "bytes": "41b8d0fb0100",
+      "immediateOffset": 2,
+      "stockTotal": 130000
+    },
+    {
+      "rva": 19747668,
+      "bytes": "bed0fb0100",
+      "immediateOffset": 1,
+      "stockTotal": 130000
+    },
+    {
+      "rva": 19750777,
+      "bytes": "bed0fb0100",
+      "immediateOffset": 1,
+      "stockTotal": 130000
+    },
+    {
+      "rva": 19770056,
+      "bytes": "41bcd0fb0100",
+      "immediateOffset": 2,
+      "stockTotal": 130000
+    },
+    {
+      "rva": 19770369,
+      "bytes": "bdd0fb0100",
+      "immediateOffset": 1,
+      "stockTotal": 130000
+    },
+    {
+      "rva": 19773467,
+      "bytes": "bed0fb0100",
+      "immediateOffset": 1,
+      "stockTotal": 130000
+    },
+    {
+      "rva": 19774129,
+      "bytes": "bad0fb0100",
+      "immediateOffset": 1,
+      "stockTotal": 130000
+    },
+    {
+      "rva": 19788368,
+      "bytes": "b8d0fb0100",
+      "immediateOffset": 1,
+      "stockTotal": 130000
+    },
+    {
+      "rva": 19788802,
+      "bytes": "bfd0fb0100",
+      "immediateOffset": 1,
+      "stockTotal": 130000
+    },
+    {
+      "rva": 19833078,
+      "bytes": "41bdd0fb0100",
+      "immediateOffset": 2,
+      "stockTotal": 130000
+    },
+    {
+      "rva": 19842390,
+      "bytes": "bfd0fb0100",
+      "immediateOffset": 1,
+      "stockTotal": 130000
+    },
+    {
+      "rva": 19846906,
+      "bytes": "41b8d0fb0100",
+      "immediateOffset": 2,
+      "stockTotal": 130000
+    },
+    {
+      "rva": 19847148,
+      "bytes": "b8d0fb0100",
+      "immediateOffset": 1,
+      "stockTotal": 130000
+    },
+    {
+      "rva": 19847827,
+      "bytes": "41b8d0fb0100",
+      "immediateOffset": 2,
+      "stockTotal": 130000
+    },
+    {
+      "rva": 19851957,
+      "bytes": "41b8d0fb0100",
+      "immediateOffset": 2,
+      "stockTotal": 130000
+    },
+    {
+      "rva": 19852158,
+      "bytes": "41b8d0fb0100",
+      "immediateOffset": 2,
+      "stockTotal": 130000
+    }
+  ],
+  "nativeHooks": [
+    {
+      "name": "reader",
+      "rva": 19747568,
+      "original5": "48895c2410",
+      "continuationRva": 19747573
+    },
+    {
+      "name": "writer",
+      "rva": 19750688,
+      "original5": "48895c2408",
+      "continuationRva": 19750693
+    },
+    {
+      "name": "insert",
+      "rva": 19764256,
+      "original5": "4053498bd8",
+      "continuationRva": 19764261
+    },
+    {
+      "name": "error",
+      "rva": 34521264,
+      "original5": "4c894c2420",
+      "continuationRva": 34521269
+    }
+  ],
+  "codeGuards": [
+    {
+      "ownerRva": 19740192,
+      "rva": 19740192,
+      "size": 149,
+      "sha256": "1bf1264f41ae2ddda4a9c34fc689908b03590364251abd0ade226d90f3aa545b"
+    },
+    {
+      "ownerRva": 19740352,
+      "rva": 19740352,
+      "size": 114,
+      "sha256": "c9ba2da337d1790ca048daa962b7d240c1df19348c7a6576e118f8332f03a7d9"
+    },
+    {
+      "ownerRva": 19740352,
+      "rva": 19740466,
+      "size": 1305,
+      "sha256": "0d9afd3a95423c0a3ff3498602d24b888b8c54c19368c04e72a9a35c9843498b"
+    },
+    {
+      "ownerRva": 19740352,
+      "rva": 19741771,
+      "size": 11,
+      "sha256": "5a900c97d335ff2db37546ef2574bf7d05cc4b50b19d3ecfbe276ad7bfc690ae"
+    },
+    {
+      "ownerRva": 19741856,
+      "rva": 19741856,
+      "size": 621,
+      "sha256": "f422ff55c5671740160cc553818e81c630edf603b92e99e058f3df95d4a5f1f3"
+    },
+    {
+      "ownerRva": 19744016,
+      "rva": 19744016,
+      "size": 787,
+      "sha256": "3043b5f539c02c38076da15615bb2d36aa2edc98ffb332db8d2eb6dd1b8ed422"
+    },
+    {
+      "ownerRva": 19747568,
+      "rva": 19747568,
+      "size": 660,
+      "sha256": "3c8f8d42360abcfc52274862532886331846ea5df5389dfed24880ec31a323e0"
+    },
+    {
+      "ownerRva": 19750688,
+      "rva": 19750688,
+      "size": 1427,
+      "sha256": "00f554fa81eb545aff8ada293017132a1bfdbe5aa99ef2b1fe2ae4ad5741d3ac"
+    },
+    {
+      "ownerRva": 19764256,
+      "rva": 19764256,
+      "size": 16,
+      "sha256": "b0157c1fc3e17d7fae2ae230a4d248bc3747c2134e929a81497a40f8062dbb5e"
+    },
+    {
+      "ownerRva": 19764256,
+      "rva": 19764272,
+      "size": 95,
+      "sha256": "dd69e922170521ad43b221adc07c3edcf85e038951315251ab91485e52cec2e0"
+    },
+    {
+      "ownerRva": 19764256,
+      "rva": 19764367,
+      "size": 2,
+      "sha256": "0ec6878258e3360694ef14f7cd9293b0e1c888ca7d072c27aebc2a92843a1483"
+    },
+    {
+      "ownerRva": 19770032,
+      "rva": 19770032,
+      "size": 43,
+      "sha256": "1ba5625286d92cdcd456c47bc684a660badff20e5fa533bac1aa74ef3233c9bc"
+    },
+    {
+      "ownerRva": 19770032,
+      "rva": 19770075,
+      "size": 258,
+      "sha256": "4f044ffbbf32a8fc8a9886e16c7b730f3d795dec8664cbf4241d99eefe649e46"
+    },
+    {
+      "ownerRva": 19770032,
+      "rva": 19770333,
+      "size": 9,
+      "sha256": "25f6dffb64a2f0f45023d0b11a9fc8ed05349b46e936842e2ed898344af66c6c"
+    },
+    {
+      "ownerRva": 19770352,
+      "rva": 19770352,
+      "size": 41,
+      "sha256": "e9e4ac3ed13a52c0588080499ae24b22b5cf7aaf2c3dbccb90a7d2f7df909a61"
+    },
+    {
+      "ownerRva": 19770352,
+      "rva": 19770393,
+      "size": 191,
+      "sha256": "30a5da75a3ed57830d25f3195d0591d115b1afb04af10b14220f818e5d83a94e"
+    },
+    {
+      "ownerRva": 19770352,
+      "rva": 19770584,
+      "size": 9,
+      "sha256": "9718e8edde3121a8cd125660959deb362cd4e17373972125c663795237842e02"
+    },
+    {
+      "ownerRva": 19773376,
+      "rva": 19773376,
+      "size": 77,
+      "sha256": "7903fae6798181541f834db6114d2ea70edfc81bf2814f170b8186cf279abba7"
+    },
+    {
+      "ownerRva": 19773376,
+      "rva": 19773453,
+      "size": 350,
+      "sha256": "a02cb0817f6aef0a9dd101438257675648c0d673e8d04bd0d6cd9e61476ca2f5"
+    },
+    {
+      "ownerRva": 19773376,
+      "rva": 19773803,
+      "size": 14,
+      "sha256": "e5b10d39c0269f27def3fcf2aa1680f7ac16b8169defd5ea9e89729341bd5dd5"
+    },
+    {
+      "ownerRva": 19773968,
+      "rva": 19773968,
+      "size": 195,
+      "sha256": "32f9310c16ed760d59d917c7f6a60a35d42a8c757e7bfd9bb8e3f44c1f3e7aca"
+    },
+    {
+      "ownerRva": 19773968,
+      "rva": 19774163,
+      "size": 49,
+      "sha256": "e0363e411ffa33de4bfaca498d61e2a9dba16a273f5e510c57744df66bb190a2"
+    },
+    {
+      "ownerRva": 19773968,
+      "rva": 19774212,
+      "size": 37,
+      "sha256": "d1975faaa2e9a622642e93b3ff8c47d5f7e3e34498d300935e2a29e19f5632cb"
+    },
+    {
+      "ownerRva": 19773968,
+      "rva": 19774249,
+      "size": 883,
+      "sha256": "a86acd4a0b7619c5a1a1fdcabc9aa9c4dbe19e3ea702b16f0b6408e107908852"
+    },
+    {
+      "ownerRva": 19773968,
+      "rva": 19775132,
+      "size": 8,
+      "sha256": "2a0cd1528b7f38a677e70ea0fda0d068be474df0c2fb098a6a5559ee749cc944"
+    },
+    {
+      "ownerRva": 19773968,
+      "rva": 19775140,
+      "size": 8,
+      "sha256": "605e2123a8170146141587a61cc1deb6b9bf7845e641e0247f8dbaf8006216ed"
+    },
+    {
+      "ownerRva": 19773968,
+      "rva": 19775148,
+      "size": 29,
+      "sha256": "f6c97ffdbf5e32bb164853a2f904397fd566cd575b153c2eff85da0184cfc8a3"
+    },
+    {
+      "ownerRva": 19773968,
+      "rva": 19775177,
+      "size": 8,
+      "sha256": "2d1a84286d3f597d59b1f5d4041b1a60f554103c6b25e432c28b27f15ada178d"
+    },
+    {
+      "ownerRva": 19788336,
+      "rva": 19788336,
+      "size": 240,
+      "sha256": "e50cbff6adab21a9aeea54832513976a3356a783c678e3e25ca568580f951638"
+    },
+    {
+      "ownerRva": 19788768,
+      "rva": 19788768,
+      "size": 217,
+      "sha256": "51cf8e05cbf20a65f2a22ac4cdfda44bf5f23af42c69d222371e9e5555b0291e"
+    },
+    {
+      "ownerRva": 19833056,
+      "rva": 19833056,
+      "size": 65,
+      "sha256": "09a44e6b86de8d4b6141837b6b9ad6dafe11f430e8d1a2d3d711de34521bf799"
+    },
+    {
+      "ownerRva": 19833056,
+      "rva": 19833121,
+      "size": 356,
+      "sha256": "3407f8d1f6d547d72030b940edf796141d491ccd661996772fbb3fb602ffc4cc"
+    },
+    {
+      "ownerRva": 19833056,
+      "rva": 19833477,
+      "size": 18,
+      "sha256": "eb61b25990420238617fcd6bf3b0b8e9d610fb41346d9d1a882e40dc35ed9b5b"
+    },
+    {
+      "ownerRva": 19842240,
+      "rva": 19842240,
+      "size": 93,
+      "sha256": "dee84752208508d5a204fa48995cbe59d2b34981e3a9249e95c78b5022718750"
+    },
+    {
+      "ownerRva": 19842240,
+      "rva": 19842333,
+      "size": 65,
+      "sha256": "930a2eec6ba7f4d4b1efe3325ba3e3edad5392a568bb2b9c74a9d8edb3d12883"
+    },
+    {
+      "ownerRva": 19842240,
+      "rva": 19842398,
+      "size": 272,
+      "sha256": "a1b46a0ed2425a3909762638c4b155d8ff0d39be5c44a7a1b4d241460257d9b2"
+    },
+    {
+      "ownerRva": 19842240,
+      "rva": 19842670,
+      "size": 25,
+      "sha256": "f2b4b0388946cf307f6cb7444b36b8477a20b3d114fb892933dc61efc7d2306e"
+    },
+    {
+      "ownerRva": 19842240,
+      "rva": 19842695,
+      "size": 19,
+      "sha256": "991da4359110b250252a3db25c0cc02a672923b043dd5b4f537f0ab26cddbe20"
+    },
+    {
+      "ownerRva": 19846720,
+      "rva": 19846720,
+      "size": 46,
+      "sha256": "fbbdac42159c3bbc2945737122f02be75580cbc41aa7711a0cb80bc4a9da1344"
+    },
+    {
+      "ownerRva": 19846720,
+      "rva": 19846766,
+      "size": 363,
+      "sha256": "bd226787214265dbdc3f434d42a029f0fcdb833fcee8adaa8d5c0c4d1116cb3d"
+    },
+    {
+      "ownerRva": 19846720,
+      "rva": 19847129,
+      "size": 137,
+      "sha256": "463b047870f14c5ce7be95f6e075e937e769f1d9a62a1993f5702b350b823255"
+    },
+    {
+      "ownerRva": 19847792,
+      "rva": 19847792,
+      "size": 183,
+      "sha256": "96c02244be5776cc36cc6895983a49b586ee8d99da4ee09397154a028b85fdcd"
+    },
+    {
+      "ownerRva": 19851680,
+      "rva": 19851680,
+      "size": 544,
+      "sha256": "ac88349b7892ed91968a4170f12aed9132e504c02988ca42a7d94a8eb2190150"
+    },
+    {
+      "ownerRva": 34521264,
+      "rva": 34521264,
+      "size": 1382,
+      "sha256": "4615f8d265286d803e34b65491ed68ef7a16e56db36e938e2096ffc001cd19dd"
+    },
+    {
+      "ownerRva": 34516080,
+      "rva": 34516080,
+      "size": 13,
+      "sha256": "566c0c650a6591bb6e935045e386283942e12b4f5341c7a7d5e46067bd0c3fb4"
+    }
+  ],
+  "clients": {
+    "pointerRva": 169543472,
+    "stride": 94704,
+    "rootOffset": 92936,
+    "allocatedRecords": 18,
+    "legacyZombiesRoots": 8,
+    "allocationBytes": 1704672,
+    "allocationCountSiteRva": 27058705,
+    "clearCountSiteRva": 27119693
+  },
+  "errorOriginalProvenance": "Five original bytes recovered from the captured AAE MinHook trampoline. Only that entry is reconstructed in code guards."
+}

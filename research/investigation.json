@@ -236,7 +236,7 @@
     }
   ],
   "nextSteps": [
-    "Finish packaged four-file apply/remove proof and fresh delta review before a new normal deployment.",
+    "The four-file test.2 package passed private apply/remove and review and was authorized and deployed. Complete manual gameplay validation.",
     "Validate ordinary Stamin-Up sprint retention with actual War Machine and Death Machine firing. Record map, round, host role and peers.",
     "Validate faster volleys, integer-rounded child counts, zero normal pacing and three Storm tornadoes with recorder markers.",
     "Resolve VM initialization lifetime and compatible serialization before offering larger server pools.",
@@ -265,10 +265,10 @@
     "record": "research/release-enhancement.json",
     "version": "0.1.0-test.2",
     "supportedFileTransforms": 4,
-    "normalDeploymentForNewFeatures": false,
+    "normalDeploymentForNewFeatures": true,
     "sprintEvidence": "Both saved players have Stamin-Up bit91 but not sprint-fire bit85. Saved perk-upgrade registry absent. Candidate changes one eligibility import to ordinary hasperk, preserves grant/removal wrappers.",
     "unsupportedRequests": [
-      "500k to1m server slots: activation/save/migration incomplete",
+      "500k to1m server slots: native allocation and scalar-state replay pass, while activation, campaign policy and migration remain incomplete",
       "200 actual zombies: actor/sentient layout and complete consumer coverage incomplete"
     ],
     "gameplayValidated": false,

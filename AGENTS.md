@@ -72,6 +72,14 @@ Actual 200 actors remains blocked by static 64-actor storage, separate actor-ind
 and a 104-sentient layout with embedded indexed data. Do not ship the command clamp as actual actor expansion.
 The 500k–1m server VM expansion needs safe activation, stock-save handling and migration budget verification.
 Matching peer patches are authorized, but no deployable expansion exists yet.
+The current server state adapter passes eleven owned E2E groups and a fresh bounded source review.
+Captured native scalar state restores all 500,000 slots and hash buckets in isolated replay.
+Native game-client allocation requests eighteen records. The original Zombies stream has eight client roots.
+The exact-build inventory remains audit-only. Migration, Steam launch, and live activation remain unfinished.
+Peyton clarified that the enhancement targets Zombies. Use an optional enhanced launch and retain the separate stock launch.
+The enhanced serializer refuses other server modes before accessing its stream or state. Native mode switching remains unvalidated.
+VM means BO3's internal script interpreter. BO3 does not run in a virtual Windows computer.
+Peyton stopped both Astra VM agents because of usage cost. Use GPT-6.1 Sol for remaining implementation and review.
 Peyton confirms firing drops him to walking with Stamin-Up.
 Both saved players own native Stamin-Up but lack native sprint-fire. The saved upgrade registry is absent.
 AAE's eligibility check requires upgraded Stamin-Up. Native sprint predicates cancel attack input without the sprint-fire bit.

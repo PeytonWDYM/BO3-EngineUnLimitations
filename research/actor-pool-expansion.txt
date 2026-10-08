@@ -274,3 +274,120 @@ No candidate can claim 200 actors until omitted member forms, auxiliary storage,
 The next focused step is to trace the thirty accessor returns and four helper calls for retained pointers and owner-relative assumptions.
 Then audit the shared handle-node capacity and the remaining per-actor client/state arrays.
 No game launch or working-installation change occurred during this classification pass.
+
+FOLLOW-UP: BOUNDED POINTER CONTRACTS AND SHARED HANDLE CAPACITY
+
+Status: no native 200-actor candidate exists.
+This pass reuses the classified inventory and the exact failing-match module ranges.
+It does not restart the broad constant search or establish complete consumer coverage.
+
+source/patches/actor_pool/downstream_inventory.json records 56 matching guard occurrences.
+The guards cover all thirty accessor call sites and the reviewed downstream code.
+All addresses remain captured, unpacked module RVAs. They are not packed-file patch offsets.
+The private guard-verification.json records the exact guard check.
+
+Accessor return paths
+
+The bounded call-path inspection divides the thirty known accessor calls as follows:
+- Eighteen calls read or write entry fields, or copy field values, in their reviewed paths.
+- Eight calls forward the entry or a subfield pointer to another native routine.
+- Four calls retain the entry in a nonvolatile register across other native calls.
+
+These categories describe observed uses. They do not prove every indirect or reentrant path.
+Several native calls can invoke script notifications while a caller retains its table pointer.
+Keep each external table entry stable throughout those calls and any nested notification work.
+Do not relocate or release its storage while a caller retains the entry.
+
+The state writer at 0x2507830 receives the table entry in RCX.
+It writes byte zero and the clock at offset four.
+When DL is nonzero, it also writes the clock and position at offsets eight through 0x17.
+The complete leaf routine performs no owner-relative arithmetic and retains no entry pointer.
+
+The position copier at 0x2506AA0 reads the owner's entity position.
+It writes exactly twelve bytes through RDX, which callers set to entry plus 0x28.
+The complete leaf routine does not derive the owner from that destination or retain it.
+
+The routine at 0x2501F80 receives an optional position pointer in RDX.
+The reviewed callers supply entry plus 0x28.
+The routine copies two scalar inputs into other storage and does not retain that input pointer.
+It retains other arguments. Do not treat those arguments as table pointers.
+
+The helper at 0x164DA80 keeps its entry argument in R14 across native calls.
+It forwards the entry to 0x2507830 and 0x164D760.
+The latter reads and writes the two-byte field at entry offset two.
+The reviewed helper routines use separate owner and entity arguments.
+No reviewed instruction derives an owner record from its table entry address.
+This bounded result supports separate table storage. Reentrant lifetime safety remains unproven.
+
+Seven known paths call 0x164DA80.
+Three paths pass accessor returns. Four paths pass the previously identified inlined table addresses.
+The guarded call sites are 0x1C2F5CF, 0x1C32EB8, 0x1C36822,
+0x24E766C, 0x24E7788, 0x24E7889, and 0x24ED206.
+
+Shared handle-node storage
+
+The native node array starts at 0x9EBB810, with sixteen bytes per node.
+Its free-list head is a four-byte value at 0x9EBB80C.
+The native initializer at 0x1595110 links nodes one through 2,047.
+Index zero is null. The final link is zero.
+The native allocator at 0x1593580 reaches its error path when the free-list head is zero.
+These nodes serve both entity and sentient handle lists.
+
+Entity handle-list heads start at 0x9EC3810.
+The initializer clears 0x1000 bytes of entity heads, then the separate sentient initializer clears 0xD0 bytes.
+The sentient heads remain at 0x9EC4810 and require relocation for a larger sentient pool.
+Entity release at 0x1595082 and sentient release at 0x159524A reference the same node array.
+Do not assume a larger actor pool has an independent handle budget.
+
+The assignment routine stores the sentient index plus one in a two-byte field at 0x159A367.
+It stores the node index in a separate two-byte field at 0x159A363.
+This field width can represent the proposed 240 sentients.
+It does not prove every actor index, bitset, save field, or network field can represent the expansion.
+The two allocator loop comparisons still use signed immediate-byte counts.
+Both counts require a wider comparison or a verified replacement routine for 200 actors and 240 sentients.
+
+The existing 2,047-node capacity is not a proven hard limit on actor count.
+Actual handle demand depends on active references, including references owned by other systems.
+Keep its capacity unchanged until demand and all node consumers are verified.
+If expansion needs more nodes, audit that pool separately before changing it.
+
+Repeatable native consumer evidence
+
+Failure cases thirteen through seventeen were recorded before the new replay implementation.
+source/tests/actor-pool/Test-ActorTableConsumers.py executes exact captured instructions in owned memory.
+Four scenarios passed:
+- disabled entry-state update with separate table storage
+- enabled entry-state update with separate table storage
+- twelve-byte position update through a separate table subfield
+- all 2,047 shared nodes allocated across 240 heads, followed by the native exhaustion branch
+
+The replay verifies each source range and four complete selected code ranges before execution.
+It compares all bytes around the selected entry writes.
+The handle replay runs the native list initialization prefix and actual allocator instructions.
+It stops before the native error handler on the exhausted request.
+It does not exercise node release, the complete helper call graph, real handle demand, or game activation.
+
+To repeat:
+python source/tests/actor-pool/Test-ActorTableConsumers.py --module <exact-private-module.json> --dependencies <unicorn-directory> --output <new-private-lab-result.json>
+
+The private result is consumer-replay.json under:
+C:/Users/plamb/.codex/labs/bo3-engine/evidence/release-enhancement/actor-pool-sol/
+That directory also contains guarded source inspection scripts and private disassembly.
+No captured code or game assets entered the public repository.
+
+Minimum coherent design and remaining work
+
+Design A remains the smallest supported direction. Preserve the sentient stride and use stable external table storage.
+Relocate the actor array, secondary actor array, sentient array, and sentient handle-list heads together.
+Rewrite the accessor and every confirmed inlined table producer and consumer.
+Clear the external owner row whenever native allocation clears the original sentient record.
+Redirect target resets, whole-table resets, and the load-time clear to the external table.
+Preserve constructor, map-reset, shutdown, and removal ownership.
+Install every dependent change before construction and the first retained consumer pointer.
+
+These requirements are concrete, but the design is not implementable as a safe stock patch yet.
+Remaining actor arrays, client fields, bitsets, and count narrowings have not received a complete audit.
+Interior addresses, unwind-free consumers, indirect paths, and reentrant reuse remain incomplete.
+Save framing, migration budgets, AAE native consumers, and first-consumer activation also remain unresolved.
+The next implementation gate is complete actor-indexed storage coverage and a verified activation boundary.
+No game launch, normal installation write, deployment, setting change, or profile write occurred in this pass.
