@@ -37,7 +37,9 @@ extern "C" const PIMAGE_TLS_CALLBACK ControlTlsEntry=Tls;
 #pragma const_seg()
 #pragma comment(linker,"/INCLUDE:ControlTlsEntry")
 int wmain(int argc,wchar_t** argv) {
-    if(argc!=4) return 1;
+    if(argc!=4 && argc!=6) return 1;
+    const bool gameOptions=argc==4 || (std::wstring_view(argv[4])==L"--observe-seconds"
+        && std::wstring_view(argv[5])==L"unrestricted-game-value");
     CONTEXT context{}; context.ContextFlags=CONTEXT_ALL;
     using Query=LONG(NTAPI*)(HANDLE,CONTEXT*);
     const auto query=reinterpret_cast<Query>(GetProcAddress(GetModuleHandleW(L"ntdll.dll"),"NtGetContextThread"));
@@ -64,11 +66,12 @@ int wmain(int argc,wchar_t** argv) {
     std::ofstream proof(argv[2]);
     proof << "{\"queryStatus\":" << status << ",\"debugger\":" << (debugger?"true":"false")
         << ",\"bootReady\":" << (ready?"true":"false") << ",\"steamIds\":" << (ids?"true":"false")
-        << ",\"argumentPreserved\":" << (argument?"true":"false") << ",\"handled\":" << handled
+        << ",\"argumentPreserved\":" << (argument?"true":"false")
+        << ",\"gameOptionsPreserved\":" << (gameOptions?"true":"false") << ",\"handled\":" << handled
         << ",\"dr0\":" << context.Dr0 << ",\"dr1\":" << context.Dr1 << ",\"dr2\":" << context.Dr2
         << ",\"dr3\":" << context.Dr3 << ",\"dr7\":" << context.Dr7 << "}\n";
     proof.close();
-    if(status<0 || !ready || !ids || !argument || debugger==passive || context.Dr0 || context.Dr1
+    if(status<0 || !ready || !ids || !argument || !gameOptions || debugger==passive || context.Dr0 || context.Dr1
         || context.Dr2 || context.Dr3 || (context.Dr7&0xffff00ff)) return 4;
     if(scenario==L"timeout" || scenario==L"passive-timeout") Sleep(INFINITE);
     if(scenario==L"event-stream") for(;;) { OutputDebugStringW(L"Owned deadline event stream"); Sleep(10); }

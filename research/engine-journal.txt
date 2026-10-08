@@ -1128,3 +1128,47 @@ It does not prove the exact protected failure path, a completed Steam handoff, o
 The desktop diagnostic does not inherit every Steam-launched variable. A same-control Steam Play comparison is next.
 Its setup must preserve the canonical original launch field, unrelated configuration, native helper identity, and quoted game arguments.
 No game protection, working executable, Workshop file, or production launcher changed in this comparison.
+
+October 8, 08:33 UTC, automated stock-capacity Steam comparison:
+
+Peyton authorized unattended launches and computer use, then explicitly requested continuation.
+The reviewed temporary Steam setup passed sixteen owned groups and a fresh review before installation.
+It restored the original launch field before installing the separate stock-capacity diagnostic.
+Steam tracks the shim, controller, and owned BO3 child. The shim preserves inherited environment and native argument boundaries.
+The first two thirty-second launches waited at BO3's Safe Mode prompt.
+The complete second-launch snapshot has eleven threads, zero debug registers, and zero server pool/hash pointers.
+The main thread is in win32u. Its stack-word candidates include user32. These words are not a verified unwound stack.
+The third test selected No to preserve existing graphics settings. A BO3 game window appeared before the diagnostic deadline.
+The controller then closed its owned child at 30,094 milliseconds and recorded exit code 97 through the process handle.
+No next startup screen or Steam API result was observed. No expanded pool became active and no VM edits occurred.
+This prompt explains the stock control's observation timeout. It does not explain the earlier hardware-gate startup loop.
+The next stock-capacity diagnostic adds an explicit longer observation deadline for UI startup handling.
+The production hardware-gate timeout remains unchanged. No protected startup checks are changed.
+All ninety-two profiles, the game executable, and four patched fastfiles match the prior baseline.
+Only Steam's app manifest changed after these launches. The private comparison retains all ninety-nine file hashes.
+The temporary output mute was restored while BO3 was closed. Future automated launches must remain quiet.
+Repeatable evidence is in release-enhancement/unattended-steam-control-01 and unattended-steam-control-02.
+
+October 8, 08:55 UTC, reviewed longer stock diagnostic reaches the online menu:
+
+Control08 accepts an explicit --observe-seconds 30 or 120 option. The default remains thirty seconds.
+It validates leading options before child creation and forwards all game arguments literally.
+Twenty-five owned native cases and seventeen Steam transport groups pass. Fresh combined review has no open findings.
+Actual native debug and passive 120-second fixture deadlines retained code 97 at 120,094 and 120,062 milliseconds.
+The production 500,000-slot gate, helper, and debugger behavior are unchanged by this diagnostic.
+The root installed the frozen stock-capacity control through the canonical Steam receipt while Steam was closed.
+The actual Steam launch selected No at Safe Mode, displayed the startup video, and reached Press ENTER to Start.
+The root then observed BO3's online main menu, open party privacy, and open NAT type.
+The ready helper remained loaded. Provisional server pool/hash pointers became nonzero around sixty-four seconds.
+No script-pool edits or migration hooks were activated. This is an actual stock-capacity startup result.
+The child exited with code zero at 77,000 milliseconds, before the diagnostic's 120-second deadline.
+The attempted mod-list action could not target the exited game. Full AAE loading is not verified by this test.
+A complete 5,765,079,663-byte read-only startup snapshot and process identity are retained privately.
+Ninety-six of ninety-nine prior protected files match. Steam's app manifest, Cloud cache, and user_settings_0.cgp changed.
+The settings file now matches the October 7 downgrade backup. No stale profile is restored over those game writes.
+The root restored the original speaker mute state after exit.
+The next native probe observes the verified CRT GetStartupInfoW caller without a debugger or VM publication.
+It must pass owned forwarding, identity, output, and unwind checks before an actual game test.
+Control08 SHA-256: c49c11e5df5cc77acef9b73493cb0fc14f17370f86251d50469c52f29da5d73c.
+Combined review SHA-256: c8b129b8dad2a08122f9aa1876c45c65d1771a3b7958403d7870cbb9e41e0ca8.
+Private evidence: release-enhancement/unattended-steam-control-03 and vm-startup/startup-control-08.

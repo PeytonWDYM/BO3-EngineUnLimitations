@@ -45,22 +45,24 @@ std::wstring FileName(HANDLE file) {
     return std::filesystem::path(path.data()).filename().wstring();
 }
 }
-Outcome Observe(const PROCESS_INFORMATION& child,const Profile& profile,Timeline& trace,Mode mode) {
+Outcome Observe(const PROCESS_INFORMATION& child,const Profile& profile,Timeline& trace,Mode mode,ObservationLimit limit) {
     Require(profile.imageSize>=8 && profile.poolPointerRva<=profile.imageSize-8
         && profile.hashPointerRva<=profile.imageSize-8,"Invalid diagnostic pool bounds.");
-    if(mode==Mode::Passive) return ObservePassive(child,profile,trace);
+    if(mode==Mode::Passive) return ObservePassive(child,profile,trace,limit);
     Threads threads;
     std::uintptr_t image{},helper{};
     bool initialBreakpoint=false;
     Outcome result;
-    const ULONGLONG start=GetTickCount64(),deadline=start+30000;
+    const auto deadlineMs=static_cast<DWORD>(limit);
+    const ULONGLONG start=GetTickCount64(),deadline=start+deadlineMs;
     ULONGLONG nextObservation=start;
     for (;;) {
         const auto now=GetTickCount64();
         Require(!result.timedOut || now<deadline+5000,"Diagnostic child did not drain to exit.");
         if(!result.timedOut && now>=deadline) {
             if(RecordSignaledExit(child.hProcess,result,trace)) return result;
-            trace.Event("timeout","\"deadlineMs\":30000,\"activated\":false,\"editsWritten\":0");
+            const auto fields="\"deadlineMs\":"+std::to_string(deadlineMs)+",\"activated\":false,\"editsWritten\":0";
+            trace.Event("timeout",fields.c_str());
             if(!TerminateProcess(child.hProcess,97)) {
                 if(RecordSignaledExit(child.hProcess,result,trace)) return result;
                 Require(false,"Cannot terminate diagnostic child at deadline.");

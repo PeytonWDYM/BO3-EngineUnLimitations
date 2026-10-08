@@ -82,12 +82,12 @@
     }
   ],
   "workingInstallationChangedForNewFeatures": true,
-  "gameLaunchedByAgent": false,
+  "gameLaunchedByAgent": true,
   "steamPlayDeployment": {
     "version": "0.1.0-test.3",
     "artifactSha256": "1009fc8a58159ee55df21e2a5cb815e196fd4e7824f78a14a96c75696cb38a0b",
     "authorized": true,
-    "status": "enabled_manual_child_created_but_startup_timed_out",
+    "status": "production_route_temporarily_restored_for_reviewed_stock_diagnostic",
     "changedSetting": "Current Steam account's direct BO3 LaunchOptions field",
     "originalFieldAbsent": true,
     "actualRemovalRestoredEveryConfigurationByte": true,
@@ -145,7 +145,34 @@
         "productionLauncherChanged": false,
         "steamConfigChanged": false
       },
-      "nextStep": "Same-control manual comparison through Steam Play with inherited launch context; no pool edits or protection changes"
+      "stockSteamComparison": {
+        "status": "online_main_menu_reached_stock_pool_initialized_then_native_exit_zero",
+        "ownedSetupGroupsPassed": 17,
+        "ownedNativeCasesPassed": 25,
+        "independentReviewOpenFindings": 0,
+        "debuggerAttached": false,
+        "capacity": "stock",
+        "poolEditsWritten": 0,
+        "gameLaunchedByAgent": true,
+        "safeModeChoice": "No",
+        "observationLimitSeconds": 120,
+        "nextStartupScreenObserved": true,
+        "onlineMainMenuObserved": true,
+        "stockServerStorageInitialized": true,
+        "fullAAELoadingVerified": false,
+        "nativeExitCode": 0,
+        "nativeExitElapsedMs": 77000,
+        "timedOut": false,
+        "completeReadOnlySnapshotCaptured": true,
+        "snapshotThreadCount": 11,
+        "snapshotHardwareDebugRegistersZero": true,
+        "snapshotServerStorageUnallocated": true,
+        "protectedFilesUnchanged": 96,
+        "profileFilesUnchanged": 91,
+        "changedBaselineFiles": ["Steam app manifest", "Steam Cloud cache", "user_settings_0.cgp"],
+        "currentSettingsMatchOctober7DowngradeBackup": true
+      },
+      "nextStep": "Owned observation-only probe at verified CRT GetStartupInfoW caller; production hardware-gate timeout unchanged"
     },
     "gameplayValidated": false,
     "friendsValidated": false

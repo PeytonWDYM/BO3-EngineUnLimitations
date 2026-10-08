@@ -35,6 +35,16 @@ Follow-up failures, declared before no-debugger implementation:
 12. Failure cleanup must check the child handle before termination. If the child has already
     exited, close owned handles without another TerminateProcess or debugger detach request.
 
+Follow-up bounded observation failures, declared before implementation:
+
+13. Default observation remains 30 seconds. Explicit --observe-seconds accepts only 30 or 120.
+    Unsupported, malformed, missing and duplicate leading options must refuse before any child
+    or timeline. Options after the game path remain literal game arguments.
+14. Both debug and passive observation must enforce the selected deadline and preserve native
+    exit and cleanup. A 120-second child must remain alive beyond the former 30-second deadline.
+15. Configuration, console output and timeout evidence must agree on the selected bound.
+    Production VM activation keeps its separate unchanged 30-second allocation deadline.
+
 Retain repeatable native E2E receipts, actual target context-query output, private debug timeline,
 identity hashes and before/after file hashes. A passing control does not activate 500k slots or
 prove game startup, mod loading, license context, peer compatibility or protection tolerance.

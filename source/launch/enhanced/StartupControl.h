@@ -11,6 +11,7 @@ struct Profile {
     std::uint32_t imageSize, poolPointerRva, hashPointerRva, helperBootRva;
 };
 enum class Mode { Debugger, Passive };
+enum class ObservationLimit : DWORD { ThirtySeconds=30000, TwoMinutes=120000 };
 struct Outcome { bool timedOut = false; DWORD exitCode = 0; bool debugExitSeen = false; };
 
 // Private JSONL evidence. Observations are passive and provisional, never VM readiness.
@@ -22,6 +23,7 @@ public:
     void Event(const char* kind, const char* fields);
 };
 
-// Own only debugger event handling and deadline cleanup. Never writes target memory/context.
-Outcome Observe(const PROCESS_INFORMATION& child, const Profile& profile, Timeline& trace, Mode mode=Mode::Debugger);
+// Observe startup and enforce the selected deadline. Never writes target memory/context.
+Outcome Observe(const PROCESS_INFORMATION& child, const Profile& profile, Timeline& trace, Mode mode=Mode::Debugger,
+    ObservationLimit limit=ObservationLimit::ThirtySeconds);
 }

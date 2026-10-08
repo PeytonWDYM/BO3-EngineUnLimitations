@@ -25,6 +25,31 @@ struct Child {
         CloseHandle(info.hThread); CloseHandle(info.hProcess);
     }
 };
+struct Options {
+    bool noDebugger=false;
+    bo3::startup_control::ObservationLimit limit=bo3::startup_control::ObservationLimit::ThirtySeconds;
+    int first=1;
+};
+Options ParseOptions(int argc,wchar_t** argv) {
+    Options options;
+    bool observed=false;
+    while(options.first<argc && std::wstring_view(argv[options.first]).starts_with(L"--")) {
+        const std::wstring_view option=argv[options.first++];
+        if(option==L"--no-debugger") {
+            Require(!options.noDebugger,"Duplicate --no-debugger option.");
+            options.noDebugger=true;
+        } else if(option==L"--observe-seconds") {
+            Require(!observed,"Duplicate --observe-seconds option.");
+            Require(options.first<argc,"Supply 30 or 120 after --observe-seconds.");
+            const std::wstring_view value=argv[options.first++];
+            Require(value==L"30" || value==L"120","Observation seconds must be exactly 30 or 120.");
+            options.limit=value==L"120" ? bo3::startup_control::ObservationLimit::TwoMinutes
+                : bo3::startup_control::ObservationLimit::ThirtySeconds;
+            observed=true;
+        } else Require(false,"Unknown startup diagnostic option.");
+    }
+    return options;
+}
 std::wstring Quote(std::wstring_view argument) {
     std::wstring text=L"\""; unsigned int slashes{};
     for(wchar_t c:argument) {
@@ -36,9 +61,11 @@ std::wstring Quote(std::wstring_view argument) {
 }
 int wmain(int argc,wchar_t** argv) {
     try {
-        const bool noDebugger=argc>1 && std::wstring_view(argv[1])==L"--no-debugger";
-        const int first=noDebugger ? 2 : 1;
-        Require(argc>=first+2,"Use BO3-Startup-Control.exe [--no-debugger] <BlackOps3.exe> <new-private.jsonl> [game arguments].");
+        const auto options=ParseOptions(argc,argv);
+        const bool noDebugger=options.noDebugger;
+        const int first=options.first;
+        const auto deadlineMs=static_cast<DWORD>(options.limit);
+        Require(argc>=first+2,"Use BO3-Startup-Control.exe [--no-debugger] [--observe-seconds 30|120] <BlackOps3.exe> <new-private.jsonl> [game arguments].");
         bo3::enhanced::LaunchLease lease;
         const auto game=std::filesystem::canonical(argv[first]);
         Require(game.filename()==kControlTargetName,"This diagnostic accepts only its build-pinned target.");
@@ -58,9 +85,10 @@ int wmain(int argc,wchar_t** argv) {
         for(int i=first+2;i<argc;++i) command+=L" "+Quote(argv[i]);
         bo3::startup_control::Timeline trace(output);
         const auto config=std::string("\"debugger\":")+(noDebugger?"false":"true")
-            +",\"diagnosticOnly\":true,\"hardwareGate\":false,\"activated\":false,\"editsWritten\":0,\"deadlineMs\":30000";
+            +",\"diagnosticOnly\":true,\"hardwareGate\":false,\"activated\":false,\"editsWritten\":0,\"deadlineMs\":"+std::to_string(deadlineMs);
         trace.Event("configuration",config.c_str());
-        std::cout << "Stock-capacity startup diagnostic. No VM expansion. Child stops after 30 seconds.\n";
+        std::cout << "Stock-capacity startup diagnostic. No VM expansion. Child stops after "
+            << deadlineMs/1000 << " seconds.\n";
         STARTUPINFOW startup{sizeof(startup)}; Child child;
         child.debugger=!noDebugger;
         const DWORD creationFlags=CREATE_UNICODE_ENVIRONMENT|(noDebugger ? 0 : DEBUG_ONLY_THIS_PROCESS);
@@ -74,7 +102,7 @@ int wmain(int argc,wchar_t** argv) {
             << ((static_cast<std::uint64_t>(created.dwHighDateTime)<<32)|created.dwLowDateTime);
         trace.Event("identity",fields.str().c_str());
         const auto result=bo3::startup_control::Observe(child.info,kControlProfile,trace,
-            noDebugger ? bo3::startup_control::Mode::Passive : bo3::startup_control::Mode::Debugger);
+            noDebugger ? bo3::startup_control::Mode::Passive : bo3::startup_control::Mode::Debugger,options.limit);
         Require(WaitForSingleObject(child.info.hProcess,5000)==WAIT_OBJECT_0,"Diagnostic child exit was not signaled.");
         child.done=true;
         fields.str({}); fields.clear();

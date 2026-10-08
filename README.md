@@ -36,7 +36,7 @@ The repository contains no game executable, Workshop asset, or downgrade downloa
 | Zero spawn delay | Both successful ordinary-spawn paths request zero pacing. Scheduler and pre-spawn waits remain intact. Gameplay remains unvalidated. |
 | Up to three tornadoes | The offline script transform expands the Storm model pool from one to three per player. Expiry and reuse remain intact. |
 | 1.5 times the split grenades | The candidate uses ceiling rounding: two children become three, and seven become eleven. Gameplay remains unvalidated. |
-| 500,000 to 1,000,000 server script-variable slots | Owned fixtures and review passed. The enhanced Steam launcher times out before activation. A separate diagnostic without debugger attachment opens a window but reports a Steam error. Startup, complete migration, and peers remain unresolved. No expanded game pool is validated. One million remains disabled. |
+| 500,000 to 1,000,000 server script-variable slots | Owned fixtures and review passed. The enhanced Steam launcher times out before activation. A separate stock-capacity diagnostic launched through Steam reaches the online main menu with the helper loaded. Safe activation, complete migration, and peers remain unresolved. No expanded game pool is validated. One million remains disabled. |
 
 The four-file `0.1.0-test.2` package is installed for the next authorized manual test.
 The deployment preserved the earlier Lua guard, 91 profile files, and the game executable.

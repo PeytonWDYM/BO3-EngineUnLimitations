@@ -15,8 +15,10 @@ The separate gameplay patcher provides the reviewed AAE cleanup, Lua guard, and 
 This launcher does not include or enable the unfinished 200-zombie expansion.
 
 Current manual results: the enhanced Steam launcher times out before activation or a game window.
-No capacity or migration edits became active. A separate stock-capacity diagnostic without debugger attachment opens a window with a Steam error.
-The direct diagnostic does not preserve every Steam-inherited launch variable. Its Steam Play comparison remains pending.
+No capacity or migration edits became active. A separate stock-capacity diagnostic through Steam reaches BO3's online main menu.
+Its reviewed --observe-seconds 120 option permits UI startup handling. The default remains thirty seconds.
+The actual child exits with code zero at 77 seconds. Full AAE loading is not verified by that run.
+The earlier direct diagnostic reported a Steam error and did not preserve every Steam-inherited launch variable.
 The instructions below describe the experimental launcher. They do not establish a working 500,000-slot game launch.
 
 Build with PowerShell 7 and the supported Visual C++ x64 toolchain:

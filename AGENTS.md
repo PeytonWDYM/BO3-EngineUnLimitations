@@ -14,14 +14,16 @@ Faster firing, sprint retention, spawn pacing, tornado count, and peer compatibi
 The 500,000-slot startup helper and migration adapter have owned fixture and independent review evidence.
 Actual BO3 startup, full AAE loading, compressed whole state, and multiplayer remain unvalidated.
 One million slots remains disabled. The 200-actor storage prototype also remains disabled.
-The waiting overlay remains armed. Startup recorders stopped with their captured children; rearm capture before the next manual test.
-Do not launch another game or a BlackOps3-named stand-in while monitoring waits.
+The waiting overlay remains armed. Startup recorders stopped with their captured children; rearm capture before the next test.
+Peyton subsequently authorized unattended game launches and computer use, then explicitly requested that work continue.
+This authorization supersedes the historical manual-only launch holds below. Only the root agent owns actual game tests.
+Do not run BlackOps3-named stand-ins while monitoring waits.
 Enhanced VM monitoring requires an exact process-bound startup receipt and live helper/count verification.
 Invalid enrollment refuses before expanded pool reads. Moving-match measurements remain provisional.
 
 Peyton authorized reversible Steam Play integration. The original BO3 LaunchOptions field is absent.
 Use the reviewed file-based setup while Steam is closed. Preserve the original field and unrelated Steam configuration bytes.
-Do not use desktop controls for this setup. Peyton is watching a movie.
+Use file-based deployment for this setup. Peyton later authorized desktop controls for game testing while he sleeps.
 The new working-installation baseline contains ninety-two profile files.
 Steam Play setup is now enabled. The reviewed r4 patcher passed 56 owned cases and positive frozen enable/remove.
 Actual removal restored every original Steam configuration byte before re-enabling the setup.
@@ -44,8 +46,22 @@ It enforces the deadline even during continuous debug events. Its optional --no-
 BO3 Startup Test selects that reviewed mode. Its manual run opened a BO3 window with a Steam-needs-running message.
 Steam was open. The helper remained ready, and provisional server storage stayed zero during the thirty-second run.
 The diagnostic closed its owned child at the deadline. The read-only recorder stopped with that child.
-A reversible same-control Steam Play comparison is being prepared to preserve Steam's inherited launch context.
-Do not launch a game or BlackOps3-named fixture yourself.
+A reviewed reversible same-control Steam Play comparison is installed and preserves Steam's inherited launch context.
+Its sixteen owned setup groups and fresh review passed. It uses stock capacity and never writes hardware registers.
+Automated Steam launches reached BO3's Safe Mode prompt. Selecting No preserved graphics settings and opened a game window.
+The thirty-second diagnostic deadline then closed the owned child before the next startup screen was observed.
+The complete second-launch snapshot contains eleven threads, zero debug registers, and zero server pool/hash pointers.
+Its main thread is in win32u with user32 stack-word candidates. These words are not an unwound call stack.
+All ninety-two profiles, the game executable, and four patched fastfiles remain unchanged. Steam's app manifest changed.
+The reviewed Control08 stock diagnostic adds an explicit 120-second observation limit. Its default remains thirty seconds.
+Twenty-five native cases and seventeen Steam transport groups pass. Fresh review has no open findings.
+The production allocation-gate timeout remains unchanged.
+The actual Steam test reached BO3's online main menu with the helper ready and stock server storage initialized.
+The process exited with code zero at 77 seconds, before the diagnostic deadline. Full AAE loading was not verified.
+A complete 5,765,079,663-byte read-only startup snapshot is retained privately.
+Ninety-six of ninety-nine prior protected files match. Steam's app manifest, Cloud cache, and user_settings_0.cgp changed.
+The current settings file matches the verified October 7 downgrade backup. Do not overwrite it from an older baseline.
+The temporary speaker mute was restored while no game was running. Automated launches must remain quiet.
 The direct diagnostic sets the same child Steam IDs. It is not a replay of every inherited Steam launcher environment variable.
 Do not lengthen the gate timeout or change protected startup behavior without evidence.
 Keep the startup helper outside the game and Workshop folders. Do not replace BlackOps3.exe.

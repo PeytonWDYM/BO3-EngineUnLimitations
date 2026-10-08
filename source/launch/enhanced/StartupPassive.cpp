@@ -26,15 +26,17 @@ void ObserveModules(HANDLE process,const Profile& profile,Timeline& trace) {
     RecordObservation(process,image,helper,profile,trace);
 }
 }
-Outcome ObservePassive(const PROCESS_INFORMATION& child,const Profile& profile,Timeline& trace) {
+Outcome ObservePassive(const PROCESS_INFORMATION& child,const Profile& profile,Timeline& trace,ObservationLimit limit) {
     Outcome outcome;
-    const auto deadline=GetTickCount64()+30000;
+    const auto deadlineMs=static_cast<DWORD>(limit);
+    const auto deadline=GetTickCount64()+deadlineMs;
     ULONGLONG nextObservation{};
     for(;;) {
         if(RecordSignaledExit(child.hProcess,outcome,trace)) return outcome;
         const auto now=GetTickCount64();
         if(now>=deadline) {
-            trace.Event("timeout","\"deadlineMs\":30000,\"activated\":false,\"editsWritten\":0");
+            const auto fields="\"deadlineMs\":"+std::to_string(deadlineMs)+",\"activated\":false,\"editsWritten\":0";
+            trace.Event("timeout",fields.c_str());
             if(!TerminateProcess(child.hProcess,97)) {
                 if(RecordSignaledExit(child.hProcess,outcome,trace)) return outcome;
                 Require(false,"Cannot terminate passive diagnostic child at deadline.");
