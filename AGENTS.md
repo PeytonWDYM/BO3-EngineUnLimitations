@@ -71,9 +71,19 @@ A later sequential read matched all eighty-two combined guards and nineteen capa
 The owned diagnostic ended at its 120-second deadline with exit code 97. No expanded pool or codec was activated.
 All ninety-two profiles and protected game/mod files match the fresh baseline. Only Steam's app manifest changed.
 The root removed the temporary Steam probe through its canonical receipt and restored the original absent launch field.
-Normal Steam Play is currently stock-capacity. Audio is restored to its original unmuted state and volume 88.
-Rearm capture and apply a freshly reviewed recipe before the next authorized actual-game test.
-A separate cooperative CRT gate and late coordinator are in development. They must establish loader and all-thread admission.
+The reviewed cooperative CRT gate, late coordinator, Steam transport, and process-bound enrollment are now installed for testing.
+The gate passed 24 owned cases, the coordinator passed nine owned groups, and enrollment passed 64 focused cases.
+The transport passed eleven owned groups. Fresh independent reviews have no open findings.
+An actual manual Steam launch at 17:23 UTC created BO3 PID 18824, creation FILETIME 134359538053866473.
+Its late receipt records 42 committed edits, successful detach, debugger absence, and gate release, with zero debug-register writes.
+Windows then captured an execution access violation at 0x7ff7d2a9a3a0. Actual allocation and AAE loading remain unvalidated.
+The exact dump is preserved privately in release-enhancement/manual-late-startup-02/native-crash/.
+The fresh protected-file comparison retains all 92 profiles, the executable, and patched mod files. Only Steam's app manifest changed.
+Steam Cloud also failed across several applications before launch. Peyton reports that Retry Sync now succeeds.
+Peyton is using his desktop again. Do not use desktop controls. Work through files and logs, and let him launch the next test.
+The desktop's current audio is unmuted at volume 100. Leave the user's current audio setting alone.
+The capture stopped with this child. Rearm read-only capture before the next manual test.
+Diagnose the captured native fault before another actual launch. Do not claim that 500,000 live slots have been verified.
 Do not use the observation probe as a publication gate or advertise 500,000 active slots from its callback.
 The direct diagnostic sets the same child Steam IDs. It is not a replay of every inherited Steam launcher environment variable.
 Do not lengthen the gate timeout or change protected startup behavior without evidence.

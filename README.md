@@ -36,7 +36,7 @@ The repository contains no game executable, Workshop asset, or downgrade downloa
 | Zero spawn delay | Both successful ordinary-spawn paths request zero pacing. Scheduler and pre-spawn waits remain intact. Gameplay remains unvalidated. |
 | Up to three tornadoes | The offline script transform expands the Storm model pool from one to three per player. Expiry and reuse remain intact. |
 | 1.5 times the split grenades | The candidate uses ceiling rounding: two children become three, and seven become eleven. Gameplay remains unvalidated. |
-| 500,000 to 1,000,000 server script-variable slots | Owned fixtures and review passed. The first enhanced launcher times out before activation. Stock-capacity Steam tests reach BO3's startup and online menu. A separate API probe observes the expected early CRT call before VM allocation. Safe publication, complete migration, and peers remain unresolved. No expanded game pool is validated. One million remains disabled. |
+| 500,000 to 1,000,000 server script-variable slots | The reviewed late CRT launcher committed all 42 edits during an actual Steam launch, detached, and released BO3. BO3 then crashed during startup. The crash dump is under investigation. No expanded game pool or match is validated. Complete migration and peer tests remain pending. One million remains disabled. |
 
 The four-file `0.1.0-test.2` package is installed for the next authorized manual test.
 The deployment preserved the earlier Lua guard, 91 profile files, and the game executable.
@@ -97,11 +97,13 @@ Private captures, game assets, profiles, downloaded tools, and build output rema
 | `source/launch/` | Separate silent-audio prototypes and owned fixtures |
 | `source/launch/enhanced/` | Optional 500,000-slot Zombies launcher and exact startup admission |
 | `source/launch/startup_probe/` | Separate stock-capacity API observation and owned native tests |
+| `source/launch/startup_gate/` and `source/launch/late_startup/` | Cooperative CRT gate, paused native transaction, and reversible Steam transport |
 | `source/tests/` | Repeatable fixture E2E harnesses |
 
 The cooperative runtime loader cannot patch stock BO3 yet.
 The startup API probe reads provisional storage at one verified caller. It does not publish larger pools.
-Its temporary Steam test setup has been removed from Peyton's installation; normal Steam Play uses stock capacities.
+The observation probe was removed before installing the reviewed late CRT candidate through reversible Steam launch options.
+That candidate commits its native transaction, but the actual game crashes during startup. It is not ready for release.
 The silent-audio prototypes do not establish quiet game startup.
 Their source and limits remain documented with the investigation.
 

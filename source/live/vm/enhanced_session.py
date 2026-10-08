@@ -42,6 +42,7 @@ class CapacitySite:
 
 
 _SEAL = object()
+_LATE_HELPER_SHA256 = "09b947ba384837853d5f4061a8fc3e2b61dee6b2663a751d6e7a2fb974c803c1"
 
 
 def _fingerprint(profile: dict) -> str:
@@ -110,24 +111,51 @@ def _receipt(path: Path) -> bytes:
     return data
 
 
-def _session(data: bytes, process: Process) -> dict:
+def _selected_receipt(process: Process, directory: Path) -> tuple[Path, bytes, bool] | None:
+    stem = f"{process.started_ticks}-{process.pid}"
+    paths = (directory / f"{stem}.json", directory / f"{stem}-late.json")
+    present = tuple(path for path in paths if path.exists())
+    if len(present) > 1:
+        raise ValueError("Enhanced session has ambiguous exact-process receipts.")
+    if not present:
+        return None
+    path = present[0]
+    return path, _receipt(path), path == paths[1]
+
+
+def _session(data: bytes, process: Process, *, late: bool = False) -> dict:
     session = json.loads(data)
     if not isinstance(session, dict):
         raise ValueError("Enhanced session receipt must be an object.")
-    expected = {"schema": 1, "candidate": "0.1.0-test.3", "status": "ready", "processId": process.pid,
+    expected = {"schema": 1, "candidate": "0.1.0-test.3", "processId": process.pid,
                 "processCreatedFileTime": process.started_ticks, "imageBase": process.module.baseaddress,
                 "serverTotal": 500001, "clientTotal": 65000, "clientRoots": 18, "stockClientRoots": 8,
-                "migrationBufferBytes": 33554432, "editsWritten": 42, "activated": True}
+                "migrationBufferBytes": 33554432, "editsWritten": 42}
+    if late:
+        expected |= {"startupMethod": "late-crt-gate", "attached": True, "committed": True,
+                     "detached": True, "debuggerAbsent": True, "released": True,
+                     "terminated": False, "rollbackCompleted": False,
+                     "debugRegisterWrites": 0, "liveAllocationValidated": False, "generation": 1}
+    else:
+        expected |= {"status": "ready", "activated": True}
     for name, value in expected.items():
         if type(session.get(name)) is not type(value) or session[name] != value:
             raise ValueError(f"Enhanced session receipt disagrees with {name}.")
     integer(session["helperBase"], "helper base", 1, (1 << 64) - 1)
+    if late:
+        for name in ("primaryThreadId", "attachThread", "writeEventThread"):
+            integer(session[name], name, 1, 0xFFFFFFFF)
+        if session["attachThread"] != session["writeEventThread"]:
+            raise ValueError("Late receipt write event differs from its attach thread.")
+        for name in ("gateBase", "attachBreakpoint", "attachThreadEntry"):
+            integer(session[name], name, 1, (1 << 64) - 1)
+        integer(session["threadsObserved"], "observed thread count", 2, 0xFFFFFFFF)
     if session.get("exited", False) is not False or session.get("rollbackCompleted", False) is not False:
         raise ValueError("Enhanced session receipt records exit or rollback.")
     return session
 
 
-def _helper(process: Process, profile: dict, session: dict) -> Module:
+def _helper(process: Process, profile: dict, session: dict, *, late: bool = False) -> Module:
     evidence = profile.get("enhancedHelper")
     if not isinstance(evidence, dict):
         raise ValueError("Enhanced helper evidence is missing from the private profile.")
@@ -139,6 +167,9 @@ def _helper(process: Process, profile: dict, session: dict) -> Module:
     expected_hash = evidence["sha256"]
     if not isinstance(expected_hash, str) or len(expected_hash) != 64 or digest != expected_hash.casefold():
         raise ValueError("The enhanced helper file differs from the reviewed identity.")
+    if (late and (profile["status"] != "fixture-only" or process.path.name.casefold() == "blackops3.exe")
+            and digest != _LATE_HELPER_SHA256):
+        raise ValueError("Late enrollment requires the deployed original VM helper.")
     integer(evidence["bootRva"], "helper boot RVA", 0, helper.size - 24)
     integer(evidence["stateBindingsRva"], "helper state bindings RVA", 0, helper.size - 48)
     return helper
@@ -170,16 +201,16 @@ def resolve_enhanced_session(process: Process, profile: dict, sessions_directory
     """
     directory = sessions_directory if sessions_directory is not None else (
         Path(os.environ["LOCALAPPDATA"]) / "BO3 Engine UnLimitations/sessions")
-    path = directory / f"{process.started_ticks}-{process.pid}.json"
-    try:
-        before = _receipt(path)
-    except FileNotFoundError:
+    selected = _selected_receipt(process, directory)
+    if selected is None:
         return None
-    session = _session(before, process)
+    path, before, late = selected
+    session = _session(before, process, late=late)
     sites = _sites(process, profile, capacity_sites)
-    helper = _helper(process, profile, session)
+    helper = _helper(process, profile, session, late=late)
     first = _runtime(process, profile, helper, sites)
-    if first != _runtime(process, profile, helper, sites) or _receipt(path) != before or not process.alive():
+    if (first != _runtime(process, profile, helper, sites)
+            or _selected_receipt(process, directory) != selected or not process.alive()):
         raise ValueError("Enhanced evidence changed during enrollment.")
     return EnhancedSession(process.pid, process.started_ticks, process.module.baseaddress, helper.baseaddress,
                            path, sites, process, _fingerprint(profile), _SEAL)
@@ -191,9 +222,12 @@ def verify_code_evidence(process: Process, profile: dict, enrollment: EnhancedSe
     if enrollment is not None:
         enrollment.authorize(profile, process)
         sites = enrollment.capacity_sites
-        receipt_before = _receipt(enrollment.receipt_path)
-        session = _session(receipt_before, process)
-        helper = _helper(process, profile, session)
+        selected = _selected_receipt(process, enrollment.receipt_path.parent)
+        if selected is None or selected[0] != enrollment.receipt_path:
+            raise ValueError("The enrolled enhanced receipt route changed.")
+        path, receipt_before, late = selected
+        session = _session(receipt_before, process, late=late)
+        helper = _helper(process, profile, session, late=late)
         first = _runtime(process, profile, helper, sites)
     for evidence in profile.get("codeEvidence", []):
         start, end = int(evidence["startRva"], 0), int(evidence["endRva"], 0)
@@ -210,5 +244,5 @@ def verify_code_evidence(process: Process, profile: dict, enrollment: EnhancedSe
             raise ValueError("The live native code differs from the reviewed profile.")
     if enrollment is not None:
         if (first != _runtime(process, profile, helper, sites)
-                or _receipt(enrollment.receipt_path) != receipt_before or not process.alive()):
+                or _selected_receipt(process, path.parent) != selected or not process.alive()):
             raise ValueError("Enhanced runtime evidence changed during code verification.")

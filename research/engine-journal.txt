@@ -1211,3 +1211,28 @@ Probe helper SHA-256: 4edb6edd16e92c12b7bdd5fc14705d5981927198233906ecfdd2bc06e5
 Controller SHA-256: 8221c88a094b8eedc8ba4d6607f6eb69e9d278dcab53d9584bcc899c7484f824.
 Combined review SHA-256: 3e3c690fdc4fbca7b756d730fbba6998ef445cfb69d56749eec7e12a3e9899b8.
 Private evidence: release-enhancement/unattended-steam-probe-04, startup-probe/probe-02, and vm-startup/steam-probe-freeze-01.
+
+October 8, 17:23 UTC, actual late CRT transaction and startup crash:
+
+The separate cooperative CRT gate passed 24 owned native cases and fresh independent review.
+The late coordinator passed nine owned groups. Its Steam transport passed eleven owned groups.
+Process-bound late-receipt enrollment passed 64 focused native cases. Each component has a fresh review with no open findings.
+The root installed the frozen recipe through the canonical reversible Steam setup while Steam was closed.
+The fixed recipe retains the original absent launch field and leaves game files unchanged.
+It uses the original combined helper, a separate gate helper, and a native launcher outside the game and Workshop folders.
+The actual manual Steam launch created PID 18824, creation FILETIME 134359538053866473.
+The receipt records all 42 edits committed, successful detach, debugger absence, and gate release. Debug-register writes remain zero.
+This verifies the actual stopped transaction. It does not verify native expanded allocation, AAE loading, migration, or a match.
+Windows recorded an execution access violation at 0x7ff7d2a9a3a0, outside the captured game image.
+The exact Windows crash dump is retained privately. Its SHA-256 is e064a4f0b5dc77371db7eb937478430a85eeadb949c548cafbe8988fad557f76.
+The initiating instruction and crash cause remain under investigation. Do not attribute the fault to a relay without decoding the captured path.
+Steam Cloud also reported connection failures across several applications before the launcher started.
+Steam's console records IgnoreCloud before creating the launcher. Peyton subsequently reports that Retry Sync succeeds.
+The protected-file comparison preserves all 92 profiles, the executable, and installed fastfiles. Steam's app manifest changed.
+Peyton is using his desktop. Continue through files and logs, without desktop controls or audio changes.
+The read-only recorder stopped with this child. Rearm capture before another manual launch.
+Gate review SHA-256: e5c183de7703f37eb81274322f2bea0df83671f6995d673f7de1a6f2a4cb7c7e.
+Coordinator review SHA-256: 1cd62db26f28ad936e5b4663da09c284ad61fae13bf4586c4ebec9fee380a0d6.
+Steam transport review SHA-256: 3892f25620b62f12ef004ac8ba28cb18ae84bab86604340e1f3c7bfd9772bb1d.
+Enrollment review SHA-256: d2ca8371b048f68853afcb47c6899debafd85595f92fcbd521cf39eea31b3ea1.
+Private evidence: release-enhancement/manual-late-startup-02, startup-gate/gate-07, late-startup, and late-enrollment/late-02.
