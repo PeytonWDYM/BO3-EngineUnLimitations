@@ -1,5 +1,39 @@
 # BO3 Engine UnLimitations
 
+## Current checkpoint, October 8
+
+This checkpoint supersedes older capture and package status below. Keep historical evidence as history.
+The captured co-op failure exhausted all 129,999 usable server script-variable slots.
+The separate captured native crash occurred in full AAE's Lua custom-key callback.
+Reviewed grenade cleanup and the Lua guard are installed. Peyton reports repeated grenade use no longer causes the hosting failure.
+The supported current target is full AAE v3.9.5, Workshop item 2631943123, with the verified downgraded Steam executable.
+Its SHA-256 is 0B874DCC250848B7313EC13A0C76468DACC2009B5EFA2BFF4C587E169A9F77E0.
+The reviewed 0.1.0-test.2 gameplay changes are installed, with verified original backups.
+Faster firing, sprint retention, spawn pacing, tornado count, and peer compatibility still need manual validation.
+
+The 500,000-slot startup helper and migration adapter have owned fixture and independent review evidence.
+Actual BO3 startup, full AAE loading, compressed whole state, and multiplayer remain unvalidated.
+One million slots remains disabled. The 200-actor storage prototype also remains disabled.
+The next manual recorder and waiting overlay are armed. Do not launch another game or a BlackOps3-named stand-in while they wait.
+Enhanced VM monitoring requires an exact process-bound startup receipt and live helper/count verification.
+Invalid enrollment refuses before expanded pool reads. Moving-match measurements remain provisional.
+
+Peyton authorized reversible Steam Play integration. The original BO3 LaunchOptions field is absent.
+Use the reviewed file-based setup while Steam is closed. Preserve the original field and unrelated Steam configuration bytes.
+Do not use desktop controls for this setup. Peyton is watching a movie.
+The new working-installation baseline contains ninety-two profile files.
+Steam Play setup is now enabled. The reviewed r4 patcher passed 56 owned cases and positive frozen enable/remove.
+Actual removal restored every original Steam configuration byte before re-enabling the setup.
+Steam retained the command after a background restart. All ninety-nine protected files remain unchanged.
+Deployment used no desktop input and launched no game. Peyton's first manual Steam Play test created the owned BO3 child.
+That child remained on one busy thread and timed out before a game window or the first VM allocation gate.
+Its refusal receipt records zero edits. No expanded pool became active.
+The helper module loaded, but boot readiness and the stopped instruction pointer still need capture.
+The next manual startup has a read-only snapshot scheduled eight seconds after process creation.
+Do not lengthen the gate timeout or change protected startup behavior without evidence.
+Keep the startup helper outside the game and Workshop folders. Do not replace BlackOps3.exe.
+Use GPT-6.1 Sol for coding and review. Peyton explicitly stopped the expensive Astra VM agents.
+
 ## End goal
 
 Deliver an optional, reversible patch for stock Steam Black Ops III that prevents the reported Zombies hosting failures.

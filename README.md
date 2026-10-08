@@ -32,11 +32,11 @@ The repository contains no game executable, Workshop asset, or downgrade downloa
 | Native Lua input guard | Missing UI context follows the existing unlock and string cleanup path. Replay, unwind, and removal checks passed. Controlled lifecycle validation remains pending. |
 | Twofold War Machine fire rate | The candidate changes `fireTime` from 500 to 250 milliseconds and `lastFireTime` from 250 to 125 milliseconds. Gameplay remains unvalidated. |
 | Stamin-Up sprint fire | Ordinary Stamin-Up activates the existing sprint-fire and unlimited-sprint grants across supported guns. Eligibility and native checks passed. Gameplay remains unvalidated. |
-| 200 living zombies | Not implemented. The test package preserves the existing command cap of 64. Native actor and backing-array expansion remain unresolved. |
+| 200 living zombies | A reviewed storage prototype remains disabled. The test package preserves the existing command cap of 64. Startup, unwind, serialization, and full consumer coverage remain unresolved. |
 | Zero spawn delay | Both successful ordinary-spawn paths request zero pacing. Scheduler and pre-spawn waits remain intact. Gameplay remains unvalidated. |
 | Up to three tornadoes | The offline script transform expands the Storm model pool from one to three per player. Expiry and reuse remain intact. |
 | 1.5 times the split grenades | The candidate uses ceiling rounding: two children become three, and seven become eleven. Gameplay remains unvalidated. |
-| 500,000 to 1,000,000 server script-variable slots | No supported expansion yet. Fixed-count save serialization and host migration remain unresolved. |
+| 500,000 to 1,000,000 server script-variable slots | The reviewed helper has owned fixture evidence. The first manual Steam launch timed out before a game window, with no pool edits applied. Startup diagnosis, complete migration, and peers remain open. One million remains disabled. |
 
 The four-file `0.1.0-test.2` package is installed for the next authorized manual test.
 The deployment preserved the earlier Lua guard, 91 profile files, and the game executable.
@@ -52,7 +52,7 @@ Compatibility with unpatched friends is not yet established.
 Changing the pool allocation alone would leave save-state consumers inconsistent.
 The release must not offer an expanded pool before its save and migration consumers have a compatible implementation.
 
-Test manifest `0.1.0-test.2` contains four patch files:
+Test manifest `0.1.0-test.3` retains the same four patch-file transformations:
 
 | Patch ID | Target | Included changes |
 | --- | --- | --- |
@@ -95,6 +95,7 @@ Private captures, game assets, profiles, downloaded tools, and build output rema
 | `source/reverse/` and `source/ghidra/` | Snapshot inspection and native code research |
 | `source/loader/` | Runtime loader for an owned cooperative fixture |
 | `source/launch/` | Separate silent-audio prototypes and owned fixtures |
+| `source/launch/enhanced/` | Optional 500,000-slot Zombies launcher and exact startup admission |
 | `source/tests/` | Repeatable fixture E2E harnesses |
 
 The cooperative runtime loader cannot patch stock BO3 yet.
@@ -102,6 +103,16 @@ The silent-audio prototypes do not establish quiet game startup.
 Their source and limits remain documented with the investigation.
 
 ## Build the Windows patcher
+
+The optional enhanced launcher is an experimental test candidate.
+Its source, build command, and manual launch instructions are in `source/launch/enhanced/README.txt`.
+It changes memory in its owned process. The patcher can configure Steam's normal Play button to start it.
+The one-time setup requires Steam to be closed and saves the original BO3 launch options.
+Restore Steam Play before starting other game modes or returning to stock engine capacities.
+Matching enhanced clients are required to receive its expanded migration format.
+Actual BO3 startup, full AAE, compressed state, and host/join compatibility remain unvalidated.
+The first candidate keeps 200-zombie expansion disabled.
+The patcher includes Steam Play setup only when the build bundles the optional native payload.
 
 Use Windows x64, Python 3.12 or later, and PowerShell 7.
 Run these commands from the repository root:

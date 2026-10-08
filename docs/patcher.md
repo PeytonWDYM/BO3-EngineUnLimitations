@@ -7,6 +7,46 @@ It includes patch code and public transform metadata. It includes no game binari
 The patches still need gameplay and friend compatibility validation.
 The executable does not establish unlimited play or a completed stock engine fix.
 
+Test.3 can include an optional **Play enhanced Zombies** action when built with the reviewed native payload.
+That experimental launcher uses 500,000 usable server slots and leaves the game executable unchanged.
+Direct **Play enhanced Zombies** does not change Steam launch options.
+The separate **Enable Steam Play** setup changes the one Black Ops III launch field described below.
+It does not enable 200 zombies. Actual startup, AAE, and multiplayer still need testing.
+Keep its console open until the game exits.
+After **Restore Steam Play**, normal Steam Play uses the original engine capacities.
+The gameplay-only build does not include this optional action.
+
+## Use the normal Steam Play button
+
+The optional native build can configure Steam Play once. The patcher does not start the game during setup.
+
+1. Exit Steam, Black Ops III, and the enhanced launcher.
+2. Select the game folder in the patcher.
+3. Select **Enable Steam Play**.
+4. Restart Steam normally.
+5. Use the normal Black Ops III **Play** button.
+
+Steam starts the private enhanced launcher with its normal game command.
+The launcher console must stay open until the game exits.
+Setup preserves existing plain game arguments. An existing `%command%` wrapper stops setup.
+The patcher selects the current account, or an exact automatic-login account match.
+It refuses ambiguous account selection. The CLI supports an explicit userdata folder number when needed.
+
+To remove this setup, exit Steam and the game, then select **Restore Steam Play**.
+Restore changes only the original Black Ops III launch field, including whether that field was absent.
+It preserves unrelated later Steam settings. It refuses restoration if you changed the installed launch options.
+The private receipt is `%LOCALAPPDATA%/BO3 Engine UnLimitations/steam-play/<configuration identity>/receipt.json`.
+Keep this receipt until restoration finishes. Interrupted edits recover before the next enable or restore attempt.
+The public `--state` option controls fastfile backups only. It cannot change Steam receipt or locking locations.
+
+```powershell
+BO3-Engine-UnLimitations.exe steam-enable --game '<game folder>'
+BO3-Engine-UnLimitations.exe steam-remove
+```
+
+For explicit selection, add `--steam '<Steam folder>' --steam-user <userdata folder number>`.
+These actions change no game binary, save, gameplay setting, or Cloud setting.
+
 ## Apply or remove
 
 1. Close Black Ops III.
@@ -24,7 +64,8 @@ Unsupported content stops the transaction before any target file changes.
 
 Select **Remove** to restore the selected exact originals.
 The patcher verifies each original backup before removal.
-The patcher changes only the selected target files. It does not edit saves, settings, executable launch options, or Cloud settings.
+Apply and Remove change only the selected patch files. They do not edit saves, launch options, or Cloud settings.
+The separate Steam Play setup changes only the selected account's Black Ops III launch field.
 
 ## Original backups
 
@@ -101,6 +142,7 @@ The build refuses an incomplete public manifest.
 It runs the owned-file transaction suite before it builds the executable.
 The suite needs no game files. Its cases cover paired changes, exact removal, rejected inputs, rollback, and process-death recovery.
 The test result folder contains `result.json` and `test-output.txt`.
+It also contains enhanced and Steam logs. Owned Steam fixtures retain before/after VDF files and hash evidence.
 After packaging, the build runs the executable against owned unsupported-file fixtures.
 It checks CLI status, rejection, and unchanged target hashes.
 These results are in `executable-tests/result.json` under the build folder.

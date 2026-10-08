@@ -2,9 +2,10 @@ Enhanced Zombies launcher, experimental candidate 0.1.0-test.3
 
 This optional launcher targets the supported downgraded Steam executable and full AAE.
 It starts the normal game with a pre-imported project helper.
-It does not replace BlackOps3.exe, change Steam launch options, or write an app-ID file.
-Normal Steam launches retain their normal engine capacities.
-The enhanced serializer supports Zombies. Use a normal Steam launch for other modes.
+It does not replace BlackOps3.exe or write an app-ID file.
+The patcher can configure Steam's Play button to start this helper before the game.
+Restore Steam Play in the patcher to return that button to the original launch options.
+The enhanced serializer supports Zombies. Restore Steam Play before starting other modes.
 
 The first candidate uses 500,000 usable server script slots and the stock client pool.
 It keeps eighteen backing client roots and imports the legacy eight-root Zombies stream.
@@ -19,10 +20,11 @@ pwsh -NoProfile -File source/launch/enhanced/Build.ps1 -OutputDirectory <new-pri
 The output contains BO3-Enhanced-Zombies.exe, Bo3EnhancedHelper.dll, and the Detours license.
 Keep the helper beside the launcher. Generated metadata and build evidence remain private.
 Start Steam. Close any existing BO3 process before testing.
-Run BO3-Enhanced-Zombies.exe "<game-folder>\BlackOps3.exe".
+After the one-time Steam Play setup, use BO3's normal Play button in Steam.
+Direct invocation remains available: BO3-Enhanced-Zombies.exe "<game-folder>\BlackOps3.exe" [game arguments].
 Keep the launcher open until the game exits. Windows ends its owned debug child if the launcher closes.
 Wait for the launcher's ready message before loading full AAE and entering Zombies.
-Use the separate stock Steam launch to remove all memory changes.
+Close the game and restore Steam Play to remove the helper from future Steam launches.
 
 Admission and rollback
 

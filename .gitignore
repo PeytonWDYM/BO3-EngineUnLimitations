@@ -35,6 +35,17 @@ __pycache__/
 *.ff
 *.xpak
 *.iwd
+*.gscc
+*.cscc
+*.bin
+
+# Private Steam configuration and downloaded archives
+*.vdf
+*.acf
+*.zip
+*.7z
+*.tar.gz
+*.tar.xz
 
 # Local environment settings
 .env

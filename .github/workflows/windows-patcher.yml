@@ -37,5 +37,7 @@ jobs:
             ${{ runner.temp }}/bo3-patcher/dist/
             ${{ runner.temp }}/bo3-patcher/tests/
             ${{ runner.temp }}/bo3-patcher/executable-tests/
+            ${{ runner.temp }}/bo3-patcher/enhanced-executable-tests/
+            ${{ runner.temp }}/bo3-patcher/steam-executable-tests/
           if-no-files-found: warn
           retention-days: 14

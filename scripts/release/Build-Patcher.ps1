@@ -3,7 +3,8 @@ param(
     [Parameter(Mandatory)][string]$Output,
     [string]$Python = 'python',
     [string]$UpxArchive,
-    [string]$UpxSourceArchive
+    [string]$UpxSourceArchive,
+    [string]$EnhancedBuild
 )
 $ErrorActionPreference = 'Stop'
 $repo = (Resolve-Path (Join-Path $PSScriptRoot '../..')).Path
@@ -59,6 +60,22 @@ Get-ChildItem -LiteralPath (Join-Path $repo 'source/patchplans') -Filter '*.json
 }
 $dist = Join-Path $buildRoot 'dist'
 $arguments = @('-m', 'PyInstaller', '--noconfirm', '--clean', '--onefile', '--console', '--noupx', '--name', 'BO3-Engine-UnLimitations', '--paths', (Join-Path $repo 'source'), '--add-data', "$data;patchplans", '--add-data', "$tools;upx", '--distpath', $dist, '--workpath', (Join-Path $buildRoot 'work'), '--specpath', (Join-Path $buildRoot 'spec'))
+$enhancedManifest = Join-Path $repo 'source/patcher/enhanced_manifest.json'
+if ($EnhancedBuild) {
+    $enhanced = Get-Content -LiteralPath $enhancedManifest -Raw | ConvertFrom-Json
+    if ($enhanced.version -ne $plan.version) { throw 'Enhanced payload version differs from the patcher release.' }
+    $enhancedResources = Join-Path $buildRoot 'resources/enhanced'
+    New-Item -ItemType Directory -Path $enhancedResources | Out-Null
+    foreach ($entry in $enhanced.files.PSObject.Properties) {
+        $inputFile = Join-Path $EnhancedBuild $entry.Name
+        if ((Get-FileHash -LiteralPath $inputFile -Algorithm SHA256).Hash.ToLowerInvariant() -ne $entry.Value) {
+            throw "The reviewed enhanced launcher payload differs: $($entry.Name)"
+        }
+        Copy-Item -LiteralPath $inputFile -Destination (Join-Path $enhancedResources $entry.Name)
+    }
+    Copy-Item -LiteralPath $enhancedManifest -Destination (Join-Path $enhancedResources 'manifest.json')
+    $arguments += @('--add-data', "$enhancedResources;enhanced")
+}
 foreach ($module in ($plan.features.transform | ForEach-Object { ($_ -split ':')[0] } | Sort-Object -Unique)) {
     $arguments += @('--hidden-import', $module)
 }
@@ -85,10 +102,20 @@ if (Test-Path -LiteralPath (Join-Path $repo 'LICENSE')) {
     Copy-Item -LiteralPath (Join-Path $repo 'LICENSE') -Destination (Join-Path $dist 'LICENSE-patcher')
 }
 $artifact = Join-Path $dist 'BO3-Engine-UnLimitations.exe'
+if ($EnhancedBuild) {
+    Copy-Item -LiteralPath (Join-Path $enhancedResources 'Detours-LICENSE.md') -Destination (Join-Path $dist 'Detours-LICENSE.md')
+    Copy-Item -LiteralPath $enhancedManifest -Destination (Join-Path $dist 'enhanced-launcher-manifest.json')
+}
 & $buildPython (Join-Path $PSScriptRoot 'Collect-Licenses.py') (Join-Path $dist 'third-party-licenses')
 if ($LASTEXITCODE -ne 0) { throw 'The dependency license collection failed.' }
 & $buildPython (Join-Path $repo 'source/tests/patcher/test_executable.py') --executable $artifact --manifest $manifest --output (Join-Path $buildRoot 'executable-tests')
 if ($LASTEXITCODE -ne 0) { throw 'The packaged executable checks failed.' }
+$enhancedChecks = @((Join-Path $repo 'source/tests/patcher/test_packaged_enhanced.py'), '--executable', $artifact, '--manifest', $enhancedManifest, '--output', (Join-Path $buildRoot 'enhanced-executable-tests'))
+if ($EnhancedBuild) { $enhancedChecks += '--bundled' }
+& $buildPython @enhancedChecks
+if ($LASTEXITCODE -ne 0) { throw 'The optional enhanced payload checks failed.' }
+& $buildPython (Join-Path $repo 'source/tests/patcher/test_packaged_steam.py') --executable $artifact --manifest $manifest --output (Join-Path $buildRoot 'steam-executable-tests')
+if ($LASTEXITCODE -ne 0) { throw 'The frozen Steam setup checks failed.' }
 $report = [ordered]@{
     schema = 1
     version = $plan.version
@@ -103,6 +130,8 @@ $report = [ordered]@{
     containsGameAssets = $false
     gameplayValidated = $false
     friendsValidated = $false
+    enhancedLauncherBundled = [bool]$EnhancedBuild
+    enhancedLauncherStatus = $(if ($EnhancedBuild) { 'experimental-unvalidated-game' } else { 'not-bundled' })
 }
 $report | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $dist 'build.json') -Encoding utf8
 Write-Output "Release files: $dist"

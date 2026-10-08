@@ -1,5 +1,6 @@
 """Read Steam locations and the process list without launching the game."""
 import ctypes
+from dataclasses import dataclass
 from ctypes import wintypes
 import os
 from pathlib import Path
@@ -8,7 +9,31 @@ import re
 from patcher.engine import PatchError
 
 
-def game_running() -> bool:
+@dataclass(frozen=True)
+class SteamContext:
+    directory: Path
+    active_user: int | None
+    auto_login_name: str | None
+
+
+def steam_context() -> SteamContext:
+    """Read installation and account hints. This never changes Steam registry values."""
+    import winreg
+    with winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"Software\Valve\Steam") as key:
+        directory = Path(winreg.QueryValueEx(key, 'SteamPath')[0])
+        try:
+            auto_login = winreg.QueryValueEx(key, 'AutoLoginUser')[0] or None
+        except FileNotFoundError:
+            auto_login = None
+    try:
+        with winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"Software\Valve\Steam\ActiveProcess") as key:
+            active_user = winreg.QueryValueEx(key, 'ActiveUser')[0] or None
+    except FileNotFoundError:
+        active_user = None
+    return SteamContext(directory, active_user, auto_login)
+
+
+def game_running(executable_name: str = "BlackOps3.exe") -> bool:
     if os.name != "nt":
         raise PatchError("The game patcher requires Windows.")
     class ProcessEntry(ctypes.Structure):
@@ -32,7 +57,7 @@ def game_running() -> bool:
         if not found:
             raise ctypes.WinError(ctypes.get_last_error())
         while found:
-            if entry.szExeFile.casefold() == "blackops3.exe":
+            if entry.szExeFile.casefold() == executable_name.casefold():
                 return True
             found = api.Process32NextW(handle, ctypes.byref(entry))
         if ctypes.get_last_error() != 18:  # ERROR_NO_MORE_FILES
@@ -45,10 +70,8 @@ def game_running() -> bool:
 def steam_installs() -> list[dict[str, Path]]:
     if os.name != "nt":
         return []
-    import winreg
     try:
-        with winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"Software\Valve\Steam") as key:
-            steam = Path(winreg.QueryValueEx(key, "SteamPath")[0])
+        steam = steam_context().directory
     except FileNotFoundError:
         return []
     libraries = [steam]

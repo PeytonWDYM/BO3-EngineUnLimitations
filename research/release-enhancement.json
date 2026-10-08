@@ -26,14 +26,17 @@
     },
     {
       "id": "server-slots",
-      "status": "activation_and_serialization_blocked",
+      "status": "manual_startup_timeout_before_activation_under_investigation",
       "target": "500k to 1m usable server slots",
+      "candidateUsableSlots": 500000,
+      "oneMillionEnabled": false,
+      "gameplayValidated": false,
       "peerPatchesAllowed": true
     },
     {
       "id": "200-zombies",
-      "status": "native_layout_expansion_blocked",
-      "reason": "64 actor storage and 104 sentient records have dependent embedded indexed data."
+      "status": "reviewed_storage_prototype_activation_disabled",
+      "reason": "Pre-constructor activation, chained unwind, combined state format, and complete consumer coverage remain unresolved."
     },
     {
       "id": "zero-spawn-delay",
@@ -80,6 +83,29 @@
   ],
   "workingInstallationChangedForNewFeatures": true,
   "gameLaunchedByAgent": false,
+  "steamPlayDeployment": {
+    "version": "0.1.0-test.3",
+    "artifactSha256": "1009fc8a58159ee55df21e2a5cb815e196fd4e7824f78a14a96c75696cb38a0b",
+    "authorized": true,
+    "status": "enabled_manual_child_created_but_startup_timed_out",
+    "changedSetting": "Current Steam account's direct BO3 LaunchOptions field",
+    "originalFieldAbsent": true,
+    "actualRemovalRestoredEveryConfigurationByte": true,
+    "commandRetainedAfterSteamRestart": true,
+    "protectedFilesUnchanged": 99,
+    "profilesPreserved": 92,
+    "ownedCasesPassed": 56,
+    "positiveFrozenEnableAndRemovePassed": true,
+    "independentReviewOpenFindings": 0,
+    "desktopControlsUsedForDeployment": false,
+    "nativePayloadUnchanged": true,
+    "manualChildCreated": true,
+    "manualFirstAllocationGateReached": false,
+    "manualPoolEditsWritten": 0,
+    "manualGameWindowAppeared": false,
+    "gameplayValidated": false,
+    "friendsValidated": false
+  },
   "normalDeployment": {
     "version": "0.1.0-test.2",
     "authorized": true,

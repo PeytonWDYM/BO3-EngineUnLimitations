@@ -21,11 +21,20 @@ Fixture evidence proves the tested transaction behavior.
 It does not prove a successful game launch or a fix for the hosting failure.
 Release notes must state each incomplete gameplay check.
 
-The current test manifest is `0.1.0-test.2`.
+The current test manifest is `0.1.0-test.3`.
 It lists four patch files, including the optional `zero-spawn-delay` target at `zone/zm_patch.ff`.
 It includes grenade cleanup, the Lua guard, faster War Machine fire, extra split children, Stamin-Up sprint fire, zero pacing, and three Storm tornadoes.
 The package preserves the zombie-limit command cap of 64.
 Actual 200-actor support and expanded VM pools remain required, incomplete work.
+The optional 500,000-slot launcher now has source, a checked combined build, and fresh review.
+The patcher also supports optional reversible Steam Play setup.
+Verify absent and empty launch fields, preserved arguments, exact account selection, and unrelated later settings.
+Require Steam, BO3, and the enhanced launcher to be closed before a config edit.
+Record the private original-field receipt and interrupted-edit evidence.
+Keep Steam account names and IDs out of public reports.
+Owned mapping tests reject damaged helper code, boot state, and unwind metadata.
+Actual Steam startup, full AAE, complete compressed migration, and matching-peer tests remain open.
+The 200-actor prototype remains disabled in this test candidate.
 Do not mark those features complete through manifest status or fixture results.
 
 The optional spawn patch sets requested pacing to zero after successful ordinary spawns independently of AAE and round-setting writes.

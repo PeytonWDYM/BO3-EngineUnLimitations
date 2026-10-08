@@ -989,3 +989,59 @@ No Steam SDK API or BO3 instruction runs in these owned tests.
 The final private build and receipts reside in release-enhancement/vm-startup/enhanced-build-03 and enhanced-owned-02.
 Actual game startup, AAE loading, whole compressed state, deadline behavior, and matching-peer gameplay remain unvalidated.
 The 200-actor prototype remains separate and refuses activation until its storage, codec, unwind, and startup gates close.
+
+October 8, 05:58 UTC, reviewed monitoring and storage checkpoint:
+
+The final native launcher build adds a session lease before game-file admission.
+Owned checks cover duplicate-launch refusal, lease recovery, and mapped helper admission.
+Its build receipt binds forty-nine inputs. Fresh review records no open findings.
+The read-only VM sampler admits 500,000 usable slots only through an exact live startup receipt.
+It binds PID, creation time, helper identity, boot/configuration records, and nineteen capacity instructions.
+Thirty-five owned native enrollment cases pass. Invalid enrollment stops before pool reads.
+The waiting overlay and manual recorder remain armed for Peyton's next game launch.
+No BO3 game process ran in these checks.
+
+The actor storage prototype has 141 guarded edits and separate indexed sentient tables.
+Its owned replay covers ninety-one groups and 375 states. Fresh review records no open checkpoint findings.
+Activation remains disabled. Constructor timing, native unwind, combined state format, and full coverage remain unresolved.
+Checkpoint 7265ad9 retains this source and the reviewed monitoring source on GitHub.
+
+Peyton authorized normal Steam Play integration and requested file-based setup without desktop controls.
+The current BO3 launch-options field is absent. The working game has ninety-two profile files in the new baseline.
+Steam setup and restoration need independent review before normal configuration changes.
+Native startup, AAE loading, compressed whole state, and friends remain unvalidated.
+
+October 8, 06:22 UTC, Steam Play setup deployment:
+
+The patcher adds Enable Steam Play and Restore Steam Play with canonical per-account receipt locking.
+Its VDF parser changes only the direct BO3 launch field and preserves unrelated bytes and prior plain arguments.
+Closed-Steam account selection uses the retained active identity or an exact automatic-login account match.
+It refuses ambiguous accounts, existing wrappers, later launch-option edits, invalid receipts, and unsafe file paths.
+Pending receipts recover interrupted enable/remove without replacing later unrelated Steam changes.
+Independent review found a corrupt insertion receipt could remove an unrelated field. The corrected scope check refuses that receipt.
+All fifty-six owned cases pass. The final executable's twenty-three authored code objects match the reviewed source.
+The executable SHA-256 is 1009fc8a58159ee55df21e2a5cb815e196fd4e7824f78a14a96c75696cb38a0b.
+The native build-04 payload and all four existing gameplay transformations remain unchanged.
+
+Peyton authorized the setup. Steam closed through its own shutdown command without desktop input.
+The frozen patcher passed positive enable/removal on an owned Steam tree with inert binaries.
+Normal setup then changed only BO3 LaunchOptions. Actual removal restored every original configuration byte.
+The patcher re-enabled the command, and Steam retained it after a background restart.
+All ninety-nine protected files match the new baseline, including ninety-two profile files and the existing patched fastfiles.
+No game, native helper, or Steam SDK call ran in these setup checks.
+Peyton will launch the actual game manually. Steam handoff, 500,000 live slots, and friends remain pending.
+
+October 8, 06:23 UTC, first manual Steam startup refusal:
+
+Steam created the owned BO3 child through the installed launcher. Peyton saw only its console, with no game window.
+The launcher refused after its existing thirty-second first-allocation timeout. The session receipt records zero edits.
+The helper module appears in the recorder inventory. helperBase zero only means the paused admission callback never ran.
+Twenty-seven recorded metric rows retain one thread and approximately one logical core of CPU activity.
+Private memory plateaued at 498,946,048 bytes. These counters do not locate the loop or identify its cause.
+The same-debugger owned fixtures and official Detours source show that the child is resumed after import injection.
+The current receipt does not capture startup milestones, current instruction pointers, or helper boot readiness.
+A second empty receipt exists; it does not establish the second child's outcome.
+No expanded VM pool or migration changes became active in the captured attempt.
+Do not treat the console's Steam reminder as the refusal reason or increase the timeout without locating the stall.
+An existing read-only recorder and clone-based snapshot are armed for Peyton's next manual launch.
+The snapshot is scheduled eight seconds after the recorded process creation. No native source or installed payload changed.
