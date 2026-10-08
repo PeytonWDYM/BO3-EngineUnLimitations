@@ -2,8 +2,9 @@
 /build/
 /out/
 /dist/
-/bin/
-/obj/
+bin/
+obj/
+/artifacts/
 .cache/
 .vs/
 *.obj
@@ -19,6 +20,8 @@
 *.ipch
 *.idb
 *.class
+*.nupkg
+*.snupkg
 __pycache__/
 *.py[cod]
 .venv/
@@ -27,6 +30,11 @@ __pycache__/
 *.log
 *.dmp
 *.mdmp
+
+# Game and Workshop payloads
+*.ff
+*.xpak
+*.iwd
 
 # Local environment settings
 .env
