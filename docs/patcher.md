@@ -1,14 +1,16 @@
 # Windows patcher
 
 The patcher changes exact supported files in an existing full All-around Enhancement installation.
-It also supports game-folder files listed in its public release manifest.
+It retains game-folder entries so older patches can be removed or recovered.
 It includes patch code and public transform metadata. It includes no game binaries, mod assets, or extracted scripts.
 
 The patches still need gameplay and friend compatibility validation.
 The executable does not establish unlimited play or a completed stock engine fix.
+The corrected gameplay-only `0.1.0-test.4` build bundles no engine launcher.
 
 Test.3 can include an optional **Play enhanced Zombies** action when built with the reviewed native payload.
-That experimental launcher uses 500,000 usable server slots and leaves the game executable unchanged.
+That experimental launcher targets 500,000 usable server slots and leaves the game executable unchanged.
+Actual startup failed after all 42 edits were committed. No expanded game allocation is validated.
 Direct **Play enhanced Zombies** does not change Steam launch options.
 The separate **Enable Steam Play** setup changes the one Black Ops III launch field described below.
 It does not enable 200 zombies. Actual startup, AAE, and multiplayer still need testing.
@@ -54,7 +56,7 @@ These actions change no game binary, save, gameplay setting, or Cloud setting.
 3. Start `BO3-Engine-UnLimitations.exe`.
 4. Select the full-AAE folder and game folder.
 5. Select **Status** to check the installed files.
-6. Select the patch files.
+6. Select the enabled Workshop patch files.
 7. Select **Apply**.
 
 The patcher detects Steam library folders. You can also browse to each folder.
@@ -62,7 +64,14 @@ The full-AAE Workshop item is `2631943123` under game ID `311210`.
 Each selected file must match an original, current candidate, or explicitly supported earlier candidate hash.
 Unsupported content stops the transaction before any target file changes.
 
+Default Apply selects `aae-core` and `aae-native`.
+The `zero-spawn-delay` and `storm-bow` entries permit removal and recovery only.
+Their rebuilt stock files caused a full-AAE loading regression. Restoring both exact originals allowed AAE to load.
+An explicit Apply selection that includes either retired entry stops before transaction state or target files change.
+Those entries remain selectable for Remove, which restores the verified originals.
+
 Select **Remove** to restore the selected exact originals.
+Default CLI removal includes all four entries, including both retired entries.
 The patcher verifies each original backup before removal.
 Apply and Remove change only the selected patch files. They do not edit saves, launch options, or Cloud settings.
 The separate Steam Play setup changes only the selected account's Black Ops III launch field.
@@ -141,6 +150,7 @@ pwsh -File scripts/release/Build-Patcher.ps1 -Output '<new build folder>' -Pytho
 The build refuses an incomplete public manifest.
 It runs the owned-file transaction suite before it builds the executable.
 The suite needs no game files. Its cases cover paired changes, exact removal, rejected inputs, rollback, and process-death recovery.
+Four retained groups cover removal-only stock entries, including recovery of older four-file transactions.
 The test result folder contains `result.json` and `test-output.txt`.
 It also contains enhanced and Steam logs. Owned Steam fixtures retain before/after VDF files and hash evidence.
 After packaging, the build runs the executable against owned unsupported-file fixtures.
@@ -162,6 +172,8 @@ The build report covers packaging. Gameplay and multiplayer results remain separ
 Each entry in `features` describes one file, even if that file contains several changes.
 Entries use `id`, `label`, `scope`, `relativePath`, `originalSha256`, `patchedSha256`, and `transform`.
 Optional `admittedSha256` values identify supported older candidates.
+Optional `applyAvailability` is `enabled` or `removal-only`. Its default is `enabled`.
+This field limits new applies. It does not change removal, recovery, or original-file identity.
 Scopes are `workshop` or `game`.
 
 A transform name has the form `patchplans.module:function`.

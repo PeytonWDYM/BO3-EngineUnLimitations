@@ -36,7 +36,7 @@ The repository contains no game executable, Workshop asset, or downgrade downloa
 | Zero spawn delay | The stock-file candidate caused an AAE loading regression and now permits removal only. Delivery through mod assets remains unfinished. |
 | Up to three tornadoes | The decoded transform uses three reusable models. Its stock-file delivery now permits removal only. Delivery through mod assets remains unfinished. |
 | 1.5 times the split grenades | The candidate uses ceiling rounding: two children become three, and seven become eleven. Gameplay remains unvalidated. |
-| 500,000 to 1,000,000 server script-variable slots | The reviewed launcher passes 20 owned groups. Its corrected Steam test committed all 42 edits and released BO3, which then crashed before pool initialization was verified. A prior zero-edit startup also shows an invalid execution address. The cause remains under investigation. The failed launch route was removed. Allocation, AAE, migration, and friends remain unvalidated. One million remains disabled. |
+| 500,000 to 1,000,000 server script-variable slots | The corrected Steam test committed 42 edits, then crashed before allocation was verified. The restored-stock-file comparison also failed, with a different handler-reference-count exception. The producer remains unknown. Normal Steam Play is restored. Allocation, AAE, migration, and friends remain unvalidated. One million remains disabled. |
 
 The Workshop changes from `0.1.0-test.2` remain installed for manual testing.
 The two stock fastfile candidates were restored to their verified originals after the full-AAE loading failure.
@@ -61,7 +61,7 @@ Compatibility with unpatched friends is not yet established.
 Changing the pool allocation alone would leave save-state consumers inconsistent.
 The release must not offer an expanded pool before its save and migration consumers have a compatible implementation.
 
-Test manifest `0.1.0-test.3` retains all four identities so older installations can remove or recover their changes:
+Test manifest `0.1.0-test.4` retains all four identities so older installations can remove or recover their changes:
 
 | Patch ID | Target | Availability |
 | --- | --- | --- |
@@ -72,6 +72,8 @@ Test manifest `0.1.0-test.3` retains all four identities so older installations 
 
 Manifest status `ready` means that the package has complete transform metadata.
 It does not mean that all requested features or gameplay checks are complete.
+The gameplay-only test.4 executable bundles no engine launcher.
+Sixty owned test groups, three packaged checks, two private real-file cases, and fresh independent review passed.
 
 The retired `zero-spawn-delay` transform targets both ordinary-spawn paths independently of round-setting writes.
 Its decoded normal path bypasses configured pacing. The positive counter path changes its 0.1-second wait to zero.

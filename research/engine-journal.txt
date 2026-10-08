@@ -1609,3 +1609,61 @@ The old enhanced-launch recipes still pin the previous engine source. These sour
 The frozen earlier job candidate retains its exact reviewed source and binaries for a separate controlled comparison.
 No new startup binary, game executable, asset-authentication predicate, or native transaction changed in this patcher correction.
 Private evidence: retired-stock-features-sol-01 and retired-stock-features-review-sol-01.
+October 8, restored-stock expanded-startup comparison and corrected package:
+
+Root froze the prior reviewed 17-file native recipe without changing its source or binaries.
+The canonical Steam setup passed byte-preserving removal projection and retained the installed field after silent restart.
+All ninety-nine protected paths matched during setup. Root launched no game and used no desktop or audio controls.
+Peyton pressed Steam Play. PID 41376 has creation FILETIME 134359718657199747 and primary TID 68160.
+The released receipt records forty-two committed edits, sole-primary admission, runtime metadata mask three,
+job freeze/thaw success, no debugger, no hardware-register writes, and no automatic PSS snapshot.
+Peyton reports failure before the menu without a Safe Mode prompt. Absence of that prompt does not classify the failure.
+The Windows event records c0000409 at ntdll offset cc21a with parameter 14.
+The final receipt remains released and nonfinal. It does not establish controller exit or cleanup ordering.
+
+The retained 397,628,550-byte dump has SHA-256 782abefef484dfd9fde7b2ab09f571ea0249fc824c2552439028cce6bdc398ca.
+Independent exception-stream validation identifies auxiliary TID 68764 and FAST_FAIL_INVALID_REFERENCE_COUNT.
+Actual ntdll bytes prove a handler-reference decrement rejected an original signed count at or below zero.
+The handler node and counter cell are absent. Do not assign their ownership or corruption producer.
+Saved exception pointers describe a thread-naming exception rather than the prior one-GiB execute access violation.
+Healthy reference naming code matches the record's six-parameter form and Stream name.
+The current naming code and unwind information are absent. This is reference-assisted context, not a full current unwind.
+All thirty-three game edit spans, both relays, and seven helper thunk prefixes are absent.
+The seven captured helper binding records match the reconstructed plan.
+All twelve observed VM/migration pointer and size fields, plus the encoded decoder global, are zero.
+No executed patched consumer, expanded allocation, or executable-integrity predicate is proved.
+Independent exception report SHA-256: 18da9b791c62bdc7210642812fa49afd32467a043a1d901dad2fb3f4855333f7.
+Separate causal audit SHA-256: c5b929b146db7ad7da1f5348be3c22fdbf65e501b3ded3d79d725641b936b860.
+
+The overlay waiter refused multiple BO3 processes before attachment. No expanded sampler ran.
+Root verified both owned child and controller had exited, gracefully closed Steam, and removed the route canonically.
+The original absent launch field is verified. Steam restarted silently.
+Ninety-eight of ninety-nine protected paths match. Only Steam's app manifest changed.
+The executable, restored stock assets, Workshop candidates, profiles, and Cloud cache match the fresh baseline.
+Normal Steam Play is direct again. Do not repeat the same launch without a new diagnostic condition.
+A narrower helper-data and relay-publication control is in development. It must keep all game instructions stock.
+It is not implemented, reviewed, or ready for actual deployment at this checkpoint.
+
+The corrected gameplay-only package is version 0.1.0-test.4.
+The build gate now runs and retains all four removal-only transaction groups in addition to the existing suites.
+Its sixty owned groups, three packaged checks, and two exact private asset cases pass.
+Default frozen apply changes only enabled Workshop targets and creates no retired stock backup.
+Explicit mixed selections reject each retired stock identity before transaction state or target changes.
+The legacy cleanup and native guard adoption case passes, followed by exact removal of both Workshop changes.
+All private source assets and unrelated fixture files are preserved. No game or module code was launched.
+The executable contains no enhanced launcher or game assets. Its eleven embedded current modules and manifest were independently verified.
+Artifact SHA-256: daa729e1b9019eb54a44f140317cd8f93e4bba54b57f3ad3e95ac4b80405e9aa.
+Manifest SHA-256: 9450837963a89f3436e37c5db24ac168e05fe750127e42a71d7f8c75f8215dd5.
+Fresh review SHA-256: 709d68e21df6e4f17771e0034a11b05188a2cd485dc0ef85c1351838156f500b.
+No public release or claim of 500k, gameplay, friends, one million, or 200 actors follows from packaging.
+
+The mixed-asset override prototype safely refuses a merged fastfile.
+AAE's original archive has 5,036 mixed assets, including 216 script records and 868 existing offset references.
+Growing its asset table would require unverified relocation and stream-cursor contracts.
+All 162 saved server script payloads and both proposed stock script changes were verified privately.
+No merged candidate, deleted feature, guessed pointer relocation, or installation change occurred.
+The runtime replacefunc wrapper is a separate research lead. Its native contract remains under investigation.
+Prototype report SHA-256: 895e3bbf1007b6462df8f4adf9bc3bac93248b411de7ff78a92edf30a2a725d6.
+Private evidence: manual-signed-job-startup-07, signed-job-crash-validation-sol-01, signed-job-causal-audit-sol-01,
+patcher/build-0.1.0-test.4, frozen-real-assets-test4, signed-stock-patcher-review-sol-01,
+and mod-script-delivery-prototype-sol-01.

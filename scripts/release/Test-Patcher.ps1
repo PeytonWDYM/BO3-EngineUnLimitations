@@ -12,6 +12,11 @@ $test = Join-Path $repo 'source/tests/patcher/test_transactions.py'
 $log = Join-Path $resultRoot 'test-output.txt'
 & $Python $test 2>&1 | Tee-Object -FilePath $log
 $code = $LASTEXITCODE
+$retiredTest = Join-Path $repo 'source/tests/patcher/test_retired_stock_features.py'
+$retiredLog = Join-Path $resultRoot 'retired-stock-output.txt'
+& $Python $retiredTest --output (Join-Path $resultRoot 'retired-stock-fixtures') 2>&1 | Tee-Object -FilePath $retiredLog
+$retiredCode = $LASTEXITCODE
+if ($retiredCode -ne 0) { $code = $retiredCode }
 $enhancedTest = Join-Path $repo 'source/tests/patcher/test_enhanced_launch.py'
 $enhancedLog = Join-Path $resultRoot 'enhanced-output.txt'
 & $Python $enhancedTest 2>&1 | Tee-Object -FilePath $enhancedLog
@@ -31,6 +36,8 @@ $result = [ordered]@{
     testSourceSha256 = (Get-FileHash -LiteralPath $test -Algorithm SHA256).Hash.ToLowerInvariant()
     fixtureScope = 'Owned temporary files. No game or mod assets.'
     logSha256 = (Get-FileHash -LiteralPath $log -Algorithm SHA256).Hash.ToLowerInvariant()
+    retiredTestSourceSha256 = (Get-FileHash -LiteralPath $retiredTest -Algorithm SHA256).Hash.ToLowerInvariant()
+    retiredLogSha256 = (Get-FileHash -LiteralPath $retiredLog -Algorithm SHA256).Hash.ToLowerInvariant()
     enhancedTestSourceSha256 = (Get-FileHash -LiteralPath $enhancedTest -Algorithm SHA256).Hash.ToLowerInvariant()
     enhancedLogSha256 = (Get-FileHash -LiteralPath $enhancedLog -Algorithm SHA256).Hash.ToLowerInvariant()
     steamTestSourceSha256 = (Get-FileHash -LiteralPath $steamTest -Algorithm SHA256).Hash.ToLowerInvariant()

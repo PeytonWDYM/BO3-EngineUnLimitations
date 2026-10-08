@@ -32,6 +32,8 @@ def main() -> None:
     if args.stock_spawn is not None:
         inputs["zero-spawn-delay"] = args.stock_spawn
     features = {row["id"]: row for row in manifest["features"]}
+    enabled = {identity for identity, row in features.items() if row.get("applyAvailability", "enabled") == "enabled"}
+    retired = set(features) - enabled
     if set(inputs) != set(features):
         parser.error("Supply an original input for every file in the current test manifest.")
     for identity, path in inputs.items():
@@ -52,15 +54,21 @@ def main() -> None:
     logs = output / "logs"
     logs.mkdir()
 
-    def run(action: str, roots: dict[str, Path], state: Path, originals: Path | None = None) -> dict:
+    def run(action: str, roots: dict[str, Path], state: Path, originals: Path | None = None,
+            selected: tuple[str, ...] = (), expected_error: str | None = None) -> dict:
         command = [str(args.artifact.resolve()), action, "--workshop", str(roots["workshop"]), "--game", str(roots["game"]), "--state", str(state)]
         if originals is not None:
             command += ["--originals", str(originals)]
+        if selected:
+            command += ["--select", *selected]
         result = subprocess.run(command, capture_output=True, text=True, env=environment,
                                 timeout=180, creationflags=subprocess.CREATE_NO_WINDOW)
         name = f"{len(list(logs.iterdir())):02d}-{action}"
         (logs / (name + ".json")).write_text(json.dumps({"command": command, "exitCode": result.returncode,
                                                        "stdout": result.stdout, "stderr": result.stderr}, indent=2))
+        if expected_error is not None:
+            assert result.returncode == 1 and expected_error in result.stderr, result.stderr
+            return {}
         if result.returncode:
             raise AssertionError(f"Frozen {action} failed: {result.stderr}")
         return json.loads(result.stdout)
@@ -89,11 +97,24 @@ def main() -> None:
         if adopted:
             expected_before.update({"aae-core": "previous patch", "aae-native": "patched"})
         assert {row["id"]: row["status"] for row in status["result"]} == expected_before
+        before_refusal = {identity: digest(roots[feature["scope"]] / feature["relativePath"])
+                          for identity, feature in features.items()}
+        for identity in sorted(retired):
+            run("apply", roots, state, selected=("aae-core", identity), expected_error="removal-only")
+            assert not state.exists(), "Retired apply wrote transaction state."
+            assert {key: digest(roots[row["scope"]] / row["relativePath"])
+                    for key, row in features.items()} == before_refusal
         assert run("apply", roots, state, originals if adopted else None)["result"]["status"] == "complete"
         for identity, feature in features.items():
-            assert digest(roots[feature["scope"]] / feature["relativePath"]) == feature["patchedSha256"]
-            assert digest(state / "originals" / (identity + ".bin")) == feature["originalSha256"]
-        assert all(row["status"] == "patched" for row in run("status", roots, state)["result"])
+            expected = feature["patchedSha256"] if identity in enabled else feature["originalSha256"]
+            assert digest(roots[feature["scope"]] / feature["relativePath"]) == expected
+            backup = state / "originals" / (identity + ".bin")
+            if identity in enabled:
+                assert digest(backup) == feature["originalSha256"]
+            else:
+                assert not backup.exists(), "Default apply backed up a retired stock file."
+        assert {row["id"]: row["status"] for row in run("status", roots, state)["result"]} == {
+            identity: "patched" if identity in enabled else "stock" for identity in features}
         assert run("remove", roots, state)["result"]["status"] == "complete"
         for identity, feature in features.items():
             assert digest(roots[feature["scope"]] / feature["relativePath"]) == feature["originalSha256"]
@@ -101,7 +122,8 @@ def main() -> None:
         assert all((root / "unrelated-settings.txt").read_bytes() == b"owned unchanged settings\r\n" for root in roots.values())
         assert not (state / "journal.json").exists()
         cases.append({"case": name, "passed": True, "exactInstalledHashes": True,
-                      "canonicalBackups": True, "exactRemoval": True, "unrelatedFilesPreserved": True})
+                      "canonicalBackups": True, "exactRemoval": True, "unrelatedFilesPreserved": True,
+                      "retiredApplyRefused": sorted(retired), "retiredTargetsUnchanged": True})
     assert all(digest(Path(path)) == value for path, value in original_hashes.items())
     report = {"passed": True, "version": manifest["version"], "artifactSha256": build["artifactSha256"],
               "manifestSha256": build["manifestSha256"], "cases": cases, "inputsPreserved": True,

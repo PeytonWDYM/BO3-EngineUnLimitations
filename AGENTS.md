@@ -28,9 +28,25 @@ Four private removal groups and fresh independent review passed. No native verif
 Peyton reports full-AAE loading succeeded in manual-stock-assets-06 after those two originals were restored.
 PID 41116 / creation FILETIME 134359704791144990 has no engine helper or gate.
 The later guarded read records count zero twice and 884 retained non-null pointers. All seven code guards match.
-The external stock overlay remains attached. No match or peer validation is claimed from this frontend test.
+That frontend game and its overlay are closed. No match or peer validation is claimed from that test.
 Keep both stock files exact. Deliver their requested script changes through a verified mod override route.
 The public patcher retains their metadata for removal and recovery, but no longer permits applying those candidates.
+The same frozen 42-edit startup candidate was tested with both stock originals in manual-signed-job-startup-07.
+PID 41376 / creation FILETIME 134359718657199747 failed before the menu. No Safe Mode prompt was observed.
+The released receipt records 42 committed edits, successful job thaw, and no debugger or hardware-register writes.
+The retained exception is an auxiliary-thread invalid handler-reference-count fast-fail, not the earlier execute AV.
+Captured ntdll code proves its reference decrement rejected an original count at or below zero.
+The handler node and count cell are absent. The corruption producer and handler ownership remain unknown.
+Saved exception data matches thread naming. The current naming code is absent, so reference-assisted ancestry remains limited.
+All 33 game edit spans and both relays are absent from the dump. Seven helper bindings match their intended records.
+All twelve observed VM/migration pointer and size fields are zero. No expanded game allocation is validated.
+The overlay waiter refused multiple BO3 processes and attached no sampler. Do not bypass this refusal.
+Root removed the failed route through its frozen canonical wrapper. Normal Steam Play is direct again.
+Ninety-eight of ninety-nine protected paths match. Only Steam's app manifest changed.
+No game, Workshop asset, profile, Cloud-cache, audio, or desktop input changed during this comparison.
+Gameplay-only patcher 0.1.0-test.4 passed sixty owned groups, three packaged checks, and two private real-file cases.
+Fresh review verifies its embedded manifest and eleven code modules. No engine launcher or game assets are bundled.
+The failed native candidate remains separate. A helper-publication diagnostic is in development, not ready for deployment.
 Automatic PSS remains disabled. No 500k game allocation is validated.
 Peyton subsequently authorized unattended game launches and computer use, then explicitly requested that work continue.
 This authorization supersedes the historical manual-only launch holds below. Only the root agent owns actual game tests.

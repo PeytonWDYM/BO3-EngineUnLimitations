@@ -90,7 +90,7 @@ class RetiredStockTransactions(unittest.TestCase):
 
     def test_default_apply_and_status(self):
         version, public_features = load(RESOURCES)
-        self.assertEqual(version, "0.1.0-test.3")
+        self.assertEqual(version, "0.1.0-test.4")
         self.assertEqual({f.id for f in public_features}, ENABLED | RETIRED)
         self.assertEqual({f.id for f in public_features if f.apply_availability == "enabled"}, ENABLED)
         self.observations["result"] = self.engine.run("apply")
