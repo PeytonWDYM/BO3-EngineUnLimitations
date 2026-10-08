@@ -1308,3 +1308,16 @@ Its SHA-256 is 80cdba63531333fbd243cd94d50015abc683da2ae427a2799514fe36c7f9e5ef.
 All 92 profiles, the executable, and four fastfiles match the fresh baseline. Only Steam's app manifest changed.
 This comparison removes debugger attachment but adds a successful snapshot capture. The normal exit cause remains unresolved.
 The saved native startup state is under inspection. This result does not validate completed startup, AAE, or expanded allocation.
+
+October 8, 18:15 UTC, same passive binary launches normally without PSS capture:
+
+The same reviewed native binary and Steam recipe created PID 65600, creation FILETIME 134359568591372266.
+This comparison requested no memory snapshot and retained the ordinary process-statistics recorder.
+Peyton reports that BO3 launched fine. He then explicitly reports that he closed it himself.
+The receipt retains exit code zero after 28,562 milliseconds, with controller termination false and zero engine edits.
+This validates his reported debugger-free launch. The exact menu stage, full AAE, and expanded allocation remain unverified.
+All 92 profiles, the executable, and four fastfiles match. Only Steam's app manifest changed.
+The root used Steam's graceful shutdown command, removed the temporary route through the frozen passive wrapper, and restarted Steam silently.
+The canonical receipt now records the original absent launch field as restored. Desktop controls and audio remained untouched.
+The next owned-only task tests a debugger-free process-state freeze before any native transaction integration.
+Private evidence: release-enhancement/manual-passive-no-dump-05.

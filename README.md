@@ -113,6 +113,8 @@ Eight native cases, four focused Steam groups, and fresh independent reviews pas
 Its sequential reads do not establish an all-thread stop. It cannot activate expanded pools.
 Its actual test opened a game window, then exited on its own with code zero after thirty seconds.
 A complete read-only snapshot is retained. The earlier access violation did not recur, but completed startup remains unresolved.
+The same binary then launched normally without automatic snapshots, according to Peyton. He closed that test himself.
+Regular Steam Play is restored. Debugger-free native publication remains under development.
 The silent-audio prototypes do not establish quiet game startup.
 Their source and limits remain documented with the investigation.
 

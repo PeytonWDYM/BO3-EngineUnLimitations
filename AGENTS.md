@@ -109,12 +109,19 @@ The corrected waiter captured a complete 585,457,206-byte read-only snapshot bef
 This test omitted debugger attachment, but included a PSS clone capture. Do not isolate the exit cause without another comparison.
 All 92 profiles, the executable, and four installed fastfiles still match. Only Steam's app manifest changed.
 Private evidence is in release-enhancement/manual-passive-control-04/. This result does not validate a completed startup or expanded pool.
+The same passive binary launched normally in a second manual test with automatic PSS snapshots disabled.
+Peyton then closed it himself. PID 65600 retained exit code zero and controller termination false.
+This validates the reported debugger-free launch path, not an expanded pool or a specific menu stage.
+The root removed the temporary route through its frozen passive wrapper and restored the original absent Steam launch field.
+Normal Steam Play is now stock-capacity. Game files and existing fastfile fixes remain unchanged.
+The next work verifies debugger-free process freezing on owned targets before integrating the complete native transaction.
 Peyton authorizes future Steam shutdown through commands without computer use. Keep desktop controls and current audio untouched.
 Do not use the observation probe as a publication gate or advertise 500,000 active slots from its callback.
 The direct diagnostic sets the same child Steam IDs. It is not a replay of every inherited Steam launcher environment variable.
 Do not lengthen the gate timeout or change protected startup behavior without evidence.
 Keep the startup helper outside the game and Workshop folders. Do not replace BlackOps3.exe.
 Use GPT-6.1 Sol for coding and review. Peyton explicitly stopped the expensive Astra VM agents.
+Raw startup recipe hashes depend on source line endings. Preserve .gitattributes rules when preparing a Windows checkout.
 
 ## End goal
 
