@@ -1,0 +1,19 @@
+Release transforms must fail before installation when any input identity differs.
+
+1. Native input is not the inspected packed full-AAE module.
+2. The bundled UPX tool does not match its pinned executable hash.
+3. The packed header magic or section topology differs from the inspected image.
+4. UPX rejects the input or emits a different unpacked payload.
+5. The Lua guard changes its ready callback, cleanup path or Windows unwind result.
+6. The final native output differs from the independently reviewed candidate hash.
+7. A core fastfile has a different hash, script identity or instruction preimage.
+8. A changed compressed block exceeds its original reserved capacity.
+9. Core reconstruction changes data outside the composed, admitted patch plans.
+10. A build embeds a game, mod, extracted asset, capture or user profile.
+11. Spawn and sprint script edits reject one another during composition.
+12. Sprint composition changes the grant/removal wrappers or any other import.
+13. The rebuilt core omits grenade cleanup or either War Machine variant's tuning.
+
+Owned transaction fixtures verify process refusal, exact backups, rollback,
+interrupted recovery, removal and legacy-candidate admission before deployment.
+Private real-asset CLI evidence must preserve every source hash.

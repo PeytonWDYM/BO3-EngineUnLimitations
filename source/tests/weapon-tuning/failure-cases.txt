@@ -1,0 +1,14 @@
+Record these failures before the weapon transform exists.
+
+Reject the wrong full-AAE source, truncated fastfiles, and changed weapon records.
+Reject ambiguous weapon names and mismatched native field consumers.
+Reject repeated application and changed expected field values.
+Reject a compressed result that exceeds its original block capacity.
+Preserve the cleanup candidate, native Lua guard, and all unrelated assets.
+Change both base and upgraded War Machine firing intervals by exactly one half.
+Round fractional split-child counts upward and report the original integer count.
+Change sprint and moving-fire rules for the two requested weapons only.
+Preserve the global true-sprint setting and all unrelated weapon behavior.
+Decode the result and verify every changed field against the exact edit plan.
+Retain an independent extraction report and an exact restoration artifact.
+Offline checks do not prove gameplay, multiplayer, or resource stability.

@@ -1,0 +1,161 @@
+Offline gameplay script candidates
+=================================
+
+The script converter prepares private candidates and a separate release zero-delay edit. It does not install them.
+Source: source/patches/gameplay/script_features.py.
+E2E: source/tests/gameplay/Test-ScriptFeatures.py.
+Actor counter replay: source/tests/gameplay/Test-ActorCapacity.py.
+
+Full AAE command settings
+-------------------------
+Exact source commands script: scripts/zm/motherfucker.gsc.
+Source SHA-256: 245c7d155b6a87a088e1744887157de058f2839a492d3de50449f51be29b223d.
+Script size:212348 bytes. Eight decoded bytes change.
+The existing zm_limit command clamp changes from64 to200 in the elmg_cheats branch.
+Four byte operands change. Each retains its GetByte opcode and padding.
+The existing no-cheats command path already accepts values above23 without that clamp.
+This private research change does not set a default or increase the native actor pool.
+The release uses apply_spawn_delay and retains all four64 clamp operands.
+
+The spawn command currently treats literal zero as a status query when cheats are enabled.
+A four-byte jump at script offset0x1864e redirects that query into the existing assignment.
+Both outcomes retain the original comparison, stack consumption, dvar read, assignment, and dvar reset.
+The new branch reaches offset0x1867e. Its signed displacement is0x2c.
+The string relocation at0x18654 remains inside unreachable original query code.
+No import record, string record, branch destination, or script length changes.
+The captured native jump handler at0x12cd9b0 aligns and reads a signed16-bit displacement.
+Its destination calculation agrees with the independent decompiler.
+
+Saved stock spawn scheduling
+---------------------------
+The actual failure dump contains scripts/zm/_zm.gsc at0x2808fb43bc0.
+The verified saved round-spawn function starts at script offset0xd938.
+It waits on the configurable zombie_spawn_delay after a successful normal spawn.
+It then calls util::wait_network_frame unconditionally before the next loop iteration.
+Host-migration and successful custom-spawn continue branches also call this function.
+Capacity and missing-location wait loops retain a0.1-second delay.
+A literal configurable zero therefore does not remove the stock frame yield.
+This is saved-code evidence. The candidates still need a moving game test.
+
+Storm bow
+---------
+Target: stock zone/zm_castle_patch.ff,774272 bytes.
+Original SHA-256:06f95fa4a2826d26747a54c8b13484c1067b379c9c8f0887f706a9f1431e7138.
+Exact script: scripts/zm/_zm_weap_elemental_bow_storm.gsc,13660 bytes.
+Source script SHA-256:8d4742a7555dedc1fd1ccca9978133e881e1a9f94f5928aafa9587404ab2fc0a.
+A single GetByte operand at0x1e60 changes from1 to3.
+The player now initializes three reusable tornado models.
+The existing free-slot search uses the pool size.
+When all slots are busy, the existing function sorts by script_int and stops the oldest tornado.
+It waits0.1 seconds and returns that same slot for reuse.
+The candidate preserves the7.8-second timeout, force-off notification, done notification, and b_in_use clearing.
+All damage, lift, clientfield, rumble, expiry, and pool-reuse code remains byte-identical.
+Other scripts remain byte-identical. Gameplay and friend compatibility remain unvalidated.
+This optional feature applies to the exact stock Der Eisendrache patch file.
+
+Actual200 actors remains blocked
+-------------------------------
+The exact downgraded stock image has a separate64-entry native actor pool.
+The builtin getfreeactorcount registration at0x32c7d40 points to0x1a6dd50.
+That wrapper calls0x24b15e0, which checks16 groups of four entries with stride0x2110.
+The allocator at0x24ab010 stops at index0x40.
+The actor array iterators at0x24ae590 and0x24b1500 also stop at0x40.
+One actor deletion path scans0x84400 bytes, which equals64 times the actor stride.
+The separate sentient path also exposes104 entries with stride0x3088.
+Raising the command clamp cannot overcome these native limits.
+Backing allocations, dependent arrays, lifecycle scans, save/migration, and networking need review before native expansion.
+The native counter replay confirms64 free,0 free, and32 free in owned states.
+Providing200 owned slots with the first64 busy still returns0 free.
+Do not describe the command candidate as support for200 simultaneous zombies.
+The actor-pool agent owns that remaining native work.
+
+Private evidence and validation
+-------------------------------
+Evidence: C:/Users/plamb/.codex/labs/bo3-engine/evidence/release-enhancement/gameplay/.
+Failure cases were recorded before implementation in failure-cases.json.
+The test first failed because the converter did not exist.
+Final E2E results: e2e-zero-release/verification.json and independent decompiled output.
+The complete core fastfile rebuild preserves the existing five-byte grenade cleanup candidate.
+It changes only the eight planned command bytes beyond that cleanup.
+The separate release rebuild changes only the four zero-delay branch bytes beyond the cleanup.
+Independent decompilation confirms its original64 command clamp remains unchanged.
+The complete map rebuild changes exactly one decoded byte.
+Repeated apply and absent or repeated exact-script inputs are rejected.
+Recompression retains each original block capacity and the complete file length.
+Both rebuilt files decode to the exact planned complete asset stream.
+The test writes all game assets and decompiler output inside the private lab.
+
+Core candidate with existing cleanup SHA-256:911497fb46bc7c40b0068f756bedc8e63598351dad9d5a29bc0df2786057d9f5.
+Release zero-only candidate with existing cleanup SHA-256:1ed3ad9a52b3c6400556d49e45eda11b7305184196b27bfdc4b1c973eea681e0.
+Storm candidate SHA-256:c5fcd137b686b1a4e034b952952a14de81c209ffe993c14d84de79d3c281abf4.
+Native counter replay: actor-capacity-e2e.json.
+No game launch, game control, normal installation mutation, or multiplayer test occurred.
+ACTS printed a normal-input decoded sidecar path on the first map extraction.
+A direct file check found no sidecar at that path. It wrote extracted scripts in the private working directory.
+All later ACTS inputs use private copies or privately captured script bytes.
+The original map fastfile and its private copy retain the same SHA-256 above.
+
+Integration API
+---------------
+apply_commands(decoded: bytearray) mutates only the guarded commands script and returns its report.
+Keep this200-clamp transform in private research until native actor expansion passes review.
+apply_spawn_delay(decoded: bytearray) changes only the zero-delay branch and preserves the64 command clamp.
+apply_storm(decoded: bytearray) mutates only the guarded storm script and returns its report.
+rebuild(source: bytes, desired: bytes) returns a verified same-length fastfile.
+transform_commands(source: bytes, resources: Path) and transform_storm(source: bytes, resources: Path) compose these operations.
+The release patcher must admit the complete target hash before either transform.
+Combine apply_spawn_delay, existing grenade cleanup, and any weapon edits before one final release core_mod rebuild.
+Do not package game assets, extracted scripts, dumps, or private native profiles.
+
+Automatic zero normal-spawn pacing
+---------------------------------
+The one-shot /spawn command does not enable a persistent zero default by itself.
+Stock round setup rewrites zombie_spawn_delay through level.func_get_zombie_spawn_delay.
+AAE turbo modes also assign0.01 or0.1. All these writers remain unchanged.
+The optional automatic-zero target bypasses the configured wait at its actual normal-spawn consumer.
+Source: source/patches/gameplay/spawn_delay.py.
+Integration: patches.gameplay.spawn_delay:transform.
+Target: stock zone/zm_patch.ff,3013504 bytes.
+Source SHA-256:ed2134e10b1f57812bf8662926a269962a75b44d377cb5cca9245e86f2194a05.
+Candidate SHA-256:68238516eddc864131356e6771323a6491e4e25b1a290d7211a0713538be399c.
+Exact source _zm.gsc script:126432 bytes, SHA-2564bc0bec345b2f08c0653d3884435f7bcbb5e794436c5178ce3b477fbd0ad50d5.
+Result script SHA-256:42ebae8db940671f26554a7b097fc9ccdcc37acee424a86afd871c1266c4114c.
+
+Five decoded bytes change: the branch byte at0xde36 and the float operand at0xde3c through0xde3f.
+The existing JumpOnFalse displacement changes from0x0e to0x20.
+When the remaining zombie_respawns counter is nonpositive, the branch now enters the existing network-frame yield at0xde58.
+It skips the original read of zombie_spawn_delay and its configured Wait instruction.
+The successful-spawn path decrements a positive zombie_respawns counter before this check.
+If that counter remains positive, its after-spawn float wait now uses literal0 instead of0.1.
+The counter producer and whether it represents despawned replacements remain unverified.
+Both successful ordinary-spawn branches therefore add no requested pacing delay.
+Wait0 can still yield through the engine scheduler. This does not make spawns instantaneous or bypass game-frame timing.
+Capacity, location, pause, migration, and custom-spawn waits also remain unchanged.
+The network-frame yield prevents a busy loop and still limits spawn attempts to scheduled game frames.
+
+The patch ignores configured normal spawn pacing while enabled.
+It does not overwrite profiles or settings, or force the displayed zombie_spawn_delay variable to zero.
+Removal restores the exact original consumer and its configured pacing.
+The stock global target affects ordinary Zombies spawning when that script is selected, including play without AAE.
+Other custom spawn loops and special enemy schedules remain outside this edit.
+
+Failure cases preceded each implementation in automatic-zero-failure-cases.json and all-successful-spawn-failure-cases.json.
+Focused complete-asset E2E: source/tests/gameplay/Test-AutomaticSpawnDelay.py.
+Private output: all-successful-spawn-e2e/verification.json and independent decompiled _zm.gsc.
+The candidate changes exactly five decoded bytes and retains every other byte.
+Missing, changed, and repeated source scripts are rejected.
+The rebuilt asset preserves file length and decodes to the exact desired stream.
+Independent decompilation confirms normal configured wait removal, positive-counter wait0, frame yield, and original round writers.
+The former one-byte b70d5917 candidate retained positive-counter pacing and is superseded.
+The release binding must admit the complete original hash before this transform.
+No game launch, normal installation write, or moving-game validation occurred.
+
+Storm opcode evidence limit
+---------------------------
+The raw storm GetByte source opcode0x0fa5 resolves to a stub in the direct captured native table lookup.
+That lookup does not prove runtime execution of GetByte.
+Source-to-executed opcode resolution remains unresolved for that raw opcode.
+The captured storm loop retains the exact original raw bytes, including the1 operand.
+The independent source decompiler identifies that loop as a one-model initializer.
+The candidate changes only that guarded operand to3 and retains all other script bytes.
+Treat these as offline source and asset-preservation checks, not native runtime or gameplay proof.

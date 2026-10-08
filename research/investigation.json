@@ -1,5 +1,5 @@
 {
-  "status": "approved_candidate_deployed_for_manual_test",
+  "status": "reviewed_gameplay_candidates_and_shareable_patcher_in_progress",
   "rootCause": "unconfirmed",
   "deliverable": "A reversible stock BO3 engine patch, a shareable Windows patch-loader executable, and a reviewed real pull request.",
   "reportedSymptoms": [
@@ -77,7 +77,7 @@
     "quietStartupComposition": "The original composition passed nine native groups and fresh review. Its worker extension passed seven focused groups across thirteen child scenarios and fresh review. Exact owned entry/context matching preserves real suspended creation, ID, handle, priority, resume, and original setup. Worker initialization precedes dispatch without depending on the fixture entry marker. Cold calls stop before raw publication; joined cleanup precedes removal. These are memory-only single-caller contracts. Earlier dependencies, Windows factory interception, actual EXE chronology, and stock timing remain unvalidated.",
     "overlay": "External click-through diagnostics window passed five rendered native modes and twenty fresh-review items after three fixes. It shows last accepted server slot counts, cleanup queue, call depth, first error, sample age and accepted/rejected reads. No game memory or render hook is modified.",
     "cleanupCandidate": {
-      "status": "private_candidate_only",
+      "status": "deployed_with_user_reported_grenade_improvement",
       "mod": "full All-around Enhancement v3.9.5",
       "decodedBytesChanged": 5,
       "scriptsExtracted": 162,
@@ -236,32 +236,42 @@
     }
   ],
   "nextSteps": [
-    "Verify both approved candidates load in Peyton's next manual full-AAE match. Their exact originals are backed up. Normal apply checks passed without an agent game launch.",
-    "Test the native input guard with normal mod loading and custom keys, including return to the game, before volley tests. Real Lua lifetime and synchronization remain unresolved.",
-    "Verify next-process native identities and candidate script loading. Rebind external monitoring and cross-check saved snapshots.",
-    "Validate waiter growth and recovery during controlled original and candidate volleys. Record map, round, host role, player count, weapon upgrade history and exact identities.",
-    "After Peyton's manual session, verify the reviewed contained DirectSound rule in a separately bounded silent physical run if still needed. Its memory checkpoint does not prove the genuine positive Windows provider path.",
-    "Recover stock first-factory timing and remaining output coverage. The reviewed owned composition is not a Windows loader-lock detector or stock launch proof.",
-    "Select the smallest fixed-lab Windows factory interception and stock first-call measurement from the reviewed worker gate. Control earlier dependency and independent DirectSound output before permitting BO3 startup; do not repeat the owned gate as stock evidence.",
-    "Validate complete quiet lab startup without changing system audio or the normal profile.",
-    "Complete active map and script identity checks after the observed BetaLite native module paths. Preserve the manual session.",
-    "Verify the live War Machine entry in BetaLite. Keep built-in direct-grant diagnostics separate from physical Pack-a-Punch reproduction and record actual grenade count and upgrade history.",
-    "Capture the stock client with AAE on Origins.",
-    "Record the actual player count and host role.",
-    "Compare an idle baseline, controlled volleys, and recovery intervals.",
-    "Mark Connection Interrupted immediately and preserve the error text.",
-    "Read the first script error, saved engine error, entity pool, and script-variable pools from the failure snapshot.",
-    "Record the active split count, resolved child weapon, notification category, and owner. Correlate listener receipts before counting descendant scripts.",
-    "Capture allocation/free events with loss detection before making strict same-lifetime cleanup claims. A repeated native version is insufficient.",
-    "Inspect available AAE weapon scripts and assets after locating the active mod files.",
-    "Select targeted instrumentation from the captured errors and verified script paths.",
-    "Verify a cause before changing gameplay or engine limits."
+    "Finish packaged four-file apply/remove proof and fresh delta review before a new normal deployment.",
+    "Validate ordinary Stamin-Up sprint retention with actual War Machine and Death Machine firing. Record map, round, host role and peers.",
+    "Validate faster volleys, integer-rounded child counts, zero normal pacing and three Storm tornadoes with recorder markers.",
+    "Resolve VM initialization lifetime and compatible serialization before offering larger server pools.",
+    "Resolve actor and embedded sentient storage consumers before claiming200 actors.",
+    "Complete normal loading, host/join and removal gameplay before a final release and authorized PR merge."
   ],
   "manualSession": {
     "hostRole": "host on this PC, confirmed by Peyton",
     "gameClosedUtc": "2026-10-07T23:45:18Z",
     "frozenMonitorAccepted": 154,
     "frozenMonitorRejected": 163,
-    "nextRecorder": "armed for manual launch"
+    "nextRecorder": "armed for manual launch",
+    "latestCandidateProcess": {
+      "startedUtc": "2026-10-08T01:00:18Z",
+      "exitedUtc": "2026-10-08T01:30:35Z",
+      "userReport": "Repeated grenade firing fully fixed in manual gameplay.",
+      "acceptedProvisionalRows": 1408,
+      "rejectedRows": 219,
+      "minimumAcceptedFreeSlots": 18116,
+      "firstErrorsInAcceptedRows": 0,
+      "volleyMarkers": false,
+      "peerRoleVerified": false
+    }
+  },
+  "releaseEnhancements": {
+    "record": "research/release-enhancement.json",
+    "version": "0.1.0-test.2",
+    "supportedFileTransforms": 4,
+    "normalDeploymentForNewFeatures": false,
+    "sprintEvidence": "Both saved players have Stamin-Up bit91 but not sprint-fire bit85. Saved perk-upgrade registry absent. Candidate changes one eligibility import to ordinary hasperk, preserves grant/removal wrappers.",
+    "unsupportedRequests": [
+      "500k to1m server slots: activation/save/migration incomplete",
+      "200 actual zombies: actor/sentient layout and complete consumer coverage incomplete"
+    ],
+    "gameplayValidated": false,
+    "friendsValidated": false
   }
 }

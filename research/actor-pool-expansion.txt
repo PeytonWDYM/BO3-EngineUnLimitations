@@ -1,0 +1,276 @@
+200 SIMULTANEOUS ZOMBIES: NATIVE CAPACITY AUDIT
+
+Status: no 200-actor patch is implemented or validated.
+This audit does not prove that expansion is impossible. It identifies required native layout changes.
+A script spawn clamp of 200 cannot provide 200 simultaneous native actors.
+Script-model substitutes would change normal AI behavior and are outside the requested feature.
+
+Scope
+
+The source is the actual two-player host failure captured at 2026-10-07 22:21:20 UTC.
+The associated downgraded stock executable has SHA-256:
+0b874dcc250848b7313ec13a0c76468dacc2009b5efa2bff4c587e169a9f77e0
+Addresses below are module-relative RVAs in captured, unpacked memory.
+They are not offsets into the packed executable on disk.
+Each captured range passed its export-manifest SHA-256 check before inspection.
+
+Verified actor allocation
+
+The native allocator starts at RVA 0x24AB010.
+Its pool pointer is at RVA 0xA1B0798.
+It tests flag bit zero, advances by 0x2110 bytes, and stops after 64 records.
+The allocation initializer starts at RVA 0x24AB047.
+The free-count routine at RVA 0x24B15E0 separately checks sixteen groups of four records.
+The getactorarray iterator paths at 0x24AE590 and 0x24B1500 also stop at 64.
+
+Map initialization at 0x19DD4BC assigns static backing storage at RVA 0xA4EF1C0.
+The stock actor region ends at RVA 0xA5735C0 after 64 * 0x2110 bytes.
+Initialization assigns another static object at RVA 0xA573610, only 0x50 bytes later.
+Expansion in place would overlap that object. A verified relocation is required.
+
+A second array starts at RVA 0xA1846C0.
+The actor state update at 0x24B29C2 derives a record with actor_index * 0xB00.
+Map initialization at 0x19E0E01 clears 0x2C000 bytes, exactly 64 * 0xB00.
+This array must also expand, and its direct references must move with it.
+
+Verified sentient dependency
+
+Actor attachment at 0x24B6480 calls both the actor and sentient allocators.
+The sentient allocator starts at 0x2505CF0 and uses the pointer at RVA 0xA1B0790.
+It tests the byte at offset 0xA0, advances by 0x3088 bytes, and stops at 104 records.
+Map initialization assigns static sentient backing storage at RVA 0xA037CD0.
+The sentient initialization loop at 0x2505B20 spans 0x13B740 bytes, exactly 104 * 0x3088.
+Thus, an actor-only capacity increase cannot support 200 actor/sentient pairs.
+Sentient capacity also needs room for other users. A target of exactly 200 is not established as sufficient.
+
+The sentient layout contains indexed data for other sentients.
+At 0x24B0F80, native code reads the actor's sentient pointer and the global sentient pool.
+It reads a field at sentient_base + 0x12BC + index * 0x48.
+It advances the global record by 0x3088 and the embedded field by 0x48 for 104 iterations.
+At index 104, that embedded field would occupy offset 0x2FFC.
+The sentient initializer already writes an unrelated eight-byte field at offset 0x2FF8.
+At index 199, the same calculation reaches offset 0x4AB4, beyond the 0x3088-byte record.
+Changing only the sentient loop count would reinterpret existing fields and eventually leave the record.
+The embedded layout needs a complete reference audit and a replacement design.
+
+Instruction encoding matters
+
+The actor allocator compares a 64-bit index with the signed immediate byte 0x40.
+Changing that byte to 0xC8 compares against negative 56, not positive 200.
+A wider instruction or verified replacement routine is required.
+The captured-code replay demonstrates this failure with owned memory.
+
+Bounded inventory
+
+The private inventory finds ten 0x84400 actor-region loop bounds in nine unwind roots:
+0xB60E0, 0xC7FC0, 0xC9E50, 0x1BFDE70, 0x24AE5E0,
+0x24B1260, 0x24B5F10, 0x27C1880, and 0x27C1940.
+The 0x1BFDE70 root contains two such bounds.
+Other actor scans use the count 64 rather than the total byte size.
+The inventory also includes actor/sentient stride references and actor pointer references.
+Raw constant matches can include unrelated immediates or branch displacements.
+The inventory is a discovery aid, not an exhaustive patch manifest.
+Leaf functions, indirect references, computed bounds, and packed paths need separate coverage.
+
+Required work before a native candidate
+
+1. Trace every direct and indirect reference to both pools and the secondary actor array.
+2. Identify the complete embedded sentient table and all users of later record fields.
+3. Choose relocation or external-table replacements that preserve every required AI feature.
+4. Verify actor IDs, client caches, bitsets, packet fields, save/load, and host migration.
+5. Verify every selected AAE native consumer against the same replacement layouts.
+6. Prove an activation point before the first consumer or cached reference.
+7. Implement atomic activation and removal across all dependent changes.
+8. Run normal Zombies at 200 actors with repeated volleys, cleanup, and map transitions.
+9. Validate hosting and joining with the agreed matching-patch friend configuration.
+10. Validate removal and restore the original game behavior.
+
+Matched friend patches remove one compatibility constraint. They do not remove these memory-layout dependencies.
+AAE module initialization has not been proven early enough for this expansion.
+No game process, normal executable, Workshop asset, profile, or audio setting changed during this audit.
+
+Repeatable evidence
+
+source/tests/actor-pool/failure-cases.txt records failure cases before implementation.
+source/tests/actor-pool/Test-ActorAllocators.py replays exact captured native instructions in Unicorn.
+All seven scenarios pass:
+- actor slot zero selected from an empty pool
+- actor slot 63 selected when all earlier stock slots are busy
+- free actor slots above 63 ignored
+- a one-byte 200 edit fails through signed-immediate behavior
+- sentient slot zero selected from an empty pool
+- sentient slot 103 selected when all earlier stock slots are busy
+- free sentient slots above 103 ignored
+
+The allocator replay validates source hashes and captured range hashes.
+It stops before allocation initialization and verifies that the owned pool remains unchanged.
+It does not execute game initialization, write a patch, launch BO3, or validate live stability.
+
+Private evidence is under:
+C:/Users/plamb/.codex/labs/bo3-engine/evidence/release-enhancement/actor-pool/
+The directory contains inventory.json, function disassembly, prove-layout.py, and allocator-replay.json.
+Captured code and assets remain outside the public repository.
+
+To repeat, supply the exact private module manifest and Unicorn dependency directory:
+python source/tests/actor-pool/Test-ActorAllocators.py --module <module.json> --dependencies <python-dependencies> --output <new-private-lab-result.json>
+
+FOLLOW-UP: CONCRETE RELOCATION OPTIONS
+
+The next audit confirms the embedded table starts at sentient offset 0x12A0.
+Native reset code at 0x25063F0 computes the target sentient index from its pointer.
+It clears nine qwords at 0x12A0 + index * 0x48, ending just before the next table record.
+The confirmed stock table occupies [0x12A0, 0x2FE0).
+
+Four more captured-code replay cases execute that actual reset prefix in owned memory.
+Index 0 clears [0x12A0, 0x12E8).
+Index 103 clears [0x2F98, 0x2FE0), the last valid stock entry.
+Index 104 clears [0x2FE0, 0x3028), which contains existing trailing sentient fields.
+Index 199 clears [0x4A98, 0x4AE0), outside the owner's entire record.
+All four checks pass by comparing the complete owned region against the expected writes.
+The reset replay stops before later native calls. It proves corruption from an unexpanded layout, not a working expansion.
+The latest private result is allocator-and-table-replay.json, with eleven total scenarios.
+
+Relocation cannot rely on changing the two global pool pointers alone.
+Within unwind-described code, the bounded address search found:
+- 49 references to the sentient pool pointer at 0xA1B0790
+- 12 direct references to the original sentient backing address at 0xA037CD0
+- seven direct references to the secondary actor array at 0xA1846C0
+- two direct references to the original actor backing address at 0xA4EF1C0
+
+These counts exclude references to interior addresses, leaf functions, absolute pointers, and computed addresses.
+The direct-array paths include handle-to-sentient conversion. They must use the same backing array as pointer-based consumers.
+
+Actor static construction adds an earlier lifetime requirement.
+The routine at 0x2DD10C0 passes the actor backing address, stride 0x2110, and count 64 to a constructor loop.
+Its constructor target is 0x19C00B0. Its cleanup target is 0x19C0160.
+The constructor initializes a member vtable and member fields inside each actor record.
+The replacement allocation must receive the required construction and cleanup behavior.
+Its timing relative to AAE module initialization remains unverified.
+
+Two candidate designs remain possible. Neither is implemented.
+
+Design A: retain the sentient stride and use a separate table.
+
+Allocate 200 actor records and 200 secondary actor records, preserving their native strides.
+Use a candidate sentient capacity of 240 to retain the stock difference of 40 between sentient and actor capacities.
+That difference is a sizing hypothesis, not proof that 240 covers every normal mode.
+Keep sentient records at stride 0x3088 and place per-target data in separate storage.
+A complete 240-by-240 table needs 4,147,200 bytes at stride 0x48.
+The actor and secondary arrays need 1,692,800 and 563,200 bytes respectively.
+The 240 sentient records need 2,981,760 bytes.
+
+This preserves existing sentient field offsets, index division, and member layout.
+It requires every embedded-table read, write, reset, copy, save, and load to use the replacement table.
+There is no verified single table accessor. Native AI code inlines these operations.
+Instruction replacements must preserve registers, flags, call contracts, and exception behavior.
+Replacing a sentient base register for a whole function is invalid when that function also reads ordinary sentient fields.
+
+The bounded table scan found 97 candidate memory instructions across 44 unwind roots.
+Fifty-four candidates use an index register. Some matches are unrelated and require classification.
+Confirmed table readers and writers include roots 0x24B0F20, 0x24E7B30, 0x24EF500, and 0x25063F0.
+The scan covers displacements 0x12A0 through 0x12E7 in unwind-described code.
+It excludes some base-register forms and does not establish complete access coverage.
+Pointer-derived access, bulk copies, and serialization descriptors remain separate audit work.
+
+Design B: expand each sentient record.
+
+For a candidate capacity of 240, grow the embedded table by 136 * 0x48 = 0x2640 bytes.
+Move the original trailing fields by that delta. The candidate record stride becomes 0x56C8.
+The 240-record pool would need 5,331,840 bytes.
+Every stride multiplication, reciprocal division, end bound, member offset, copy, and serialization layout must change consistently.
+For example, native pointer-to-index conversion uses reciprocal 0x2A3319E156DF3247 with a shift for the original stride.
+Changing multiplication constants alone would produce incorrect sentient indices.
+This design changes more native field contracts and has broader impact on AAE consumers.
+
+Current implementation bottleneck
+
+Neither design has a complete consumer inventory or a verified activation boundary.
+The nearest verified map setup sequence assigns the sentient pointer at 0x19DD4B5 and actor pointer at 0x19DD4C3.
+It then calls sentient initialization at 0x2505B20 and actor reset at 0x24B5F10.
+An installer must finish every dependent change before these routines run, and before any earlier retained references.
+Hooking this sequence alone does not prove that earlier consumers, concurrent workers, or repeated map loads are safe.
+The VM expansion investigation also has no verified AAE installation gate at this checkpoint.
+
+Most useful next trace
+
+First, classify the 97 table-access candidates and trace all derived table pointers through their callers and bulk operations.
+Then identify actor/sentient serialization descriptors and actor-ID client fields.
+For activation, trace the captured AAE initialization call chain into the native map setup sequence and global constructor registration.
+This must establish the first consumer, retained pointers, thread ownership, and every repeated initialization path.
+The current stopped-match dump proves layouts but cannot prove startup ordering.
+A future startup trace needs a separate approved lab plan with verified silence before any automated game launch.
+
+Private follow-up artifacts are relocation-inventory.json, table-access-candidates.json,
+scan-relocation.py, scan-table.py, and allocator-and-table-replay.json in the same actor-pool evidence directory.
+
+FOLLOW-UP: CLASSIFIED CONSUMERS AND REWRITE REQUIREMENTS
+
+source/patches/actor_pool/consumer_inventory.json records the reviewed sites and instruction hashes.
+Its status explicitly rejects use as an applicable patch manifest. It contains no replacement bytes.
+All 179 recorded instruction-guard occurrences match the captured image.
+The private verification artifact is classification-verification.json.
+
+The original 97 candidates now have these classifications:
+- 55 instructions access or produce addresses into the sentient table.
+- 42 instructions belong to unrelated objects, arrays, or a RIP-relative address.
+
+The excluded candidates include objects returned by the nine-bit lookup at 0x2671510.
+Other exclusions use fixed channel-state pointer banks or a separate array with stride 0x7F618.
+These exclusions show why a numerical displacement replacement would corrupt unrelated systems.
+The inventory records the classification and reason for all 44 original function roots.
+
+The direct sentient backing-address audit now includes two additional leaf references.
+At 0x1595210, native code converts a sentient pointer to an index before releasing its handles.
+At 0x24FFDBE, native code converts an index back to the original sentient backing address.
+There are therefore fourteen identified direct sentient backing references, not twelve.
+The seven secondary actor references include four fixed-count record reader/writer loops,
+the map-wide clear, per-record initialization, and per-record state update.
+Their four count instructions and the map clear extent are recorded separately.
+
+A further auxiliary array must expand with the sentient pool.
+The handle-list heads start at RVA 0x9EC4810 and use two bytes per sentient.
+The leaf initializer at 0x1595160 clears 0xD0 bytes, exactly 104 entries.
+Handle assignment at 0x159A2B0 and release at 0x1595210 index this array with the native sentient index.
+Both relocation designs must retarget this storage and its clear extent.
+The shared handle-node allocator remains a separate coverage requirement.
+
+Actor construction and destruction both retain the original static address.
+The existing constructor registration uses the original actor backing array at 0x2DD10D2.
+The destructor registration repeats that address at 0x2EFA3D7 and count 64 at 0x2EFA3E3.
+These lifetimes must agree with the relocated allocation and its final removal.
+
+Derived table pointers
+
+The leaf accessor at 0x2505BB0 takes an owner sentient in RCX and a target sentient in RDX.
+It returns owner + 0x12A0 + target_index * 0x48.
+Its address arithmetic folds the table offset into 0x254 before multiplication by eight.
+Thirty direct calls to this accessor are recorded in the inventory.
+These callers use returned pointers with small field offsets and would evade a search for 0x12A0.
+Five additional folded address producers exist in the reviewed non-leaf paths.
+Four pass a derived table pointer into the helper at 0x164DA80.
+The fifth produces table pointers for load-time clearing.
+
+The leaf audit also adds thirteen specific table access/address instructions outside the original 97-site scan.
+Their surrounding routines preserve ordinary sentient fields alongside table data.
+Thus, an entire-function base-register substitution would still be invalid.
+The separate-table design requires a replacement accessor plus local rewrites for inlined producers and direct accesses.
+Returned-pointer retention, pointer arithmetic, and downstream call contracts still need complete coverage.
+
+Save/load narrows the design
+
+The reader at 0xC44C0 reads the 0x3088-byte sentient record and applies its field descriptors.
+It then clears all 104 table entries through the leaf reset routine at 0x2505BF0.
+The corresponding writer at 0xD1F00 copies the complete stock record before descriptor processing.
+This reader discards the table on load. Separate table storage can preserve that behavior by clearing the replacement table.
+This result supports Design A and avoids changing every trailing sentient member offset.
+It establishes one native save/load path, not all migration or save compatibility.
+Expanded pool counts, handle bounds, descriptors, and old-save framing still require a consistent version strategy.
+
+Current bounded result
+
+Design A is the preferred implementation direction because it preserves the native sentient record layout.
+The inventory gives exact guarded sites and required rewrite categories. It is not a complete set of executable edits.
+No candidate can claim 200 actors until omitted member forms, auxiliary storage, serialization, and activation are covered.
+The next focused step is to trace the thirty accessor returns and four helper calls for retained pointers and owner-relative assumptions.
+Then audit the shared handle-node capacity and the remaining per-actor client/state arrays.
+No game launch or working-installation change occurred during this classification pass.

@@ -1,0 +1,14 @@
+FROZEN PATCHER WITH PRIVATE EXACT GAME ASSETS
+
+Record these cases before writing the end-to-end harness.
+
+1. A frozen build must contain every manifest transform and its static imports.
+2. Applying every selected stock file must produce each exact manifest result hash.
+3. Removal must restore each exact original, including the packed native module.
+4. The original inputs and unrelated lab files must remain unchanged.
+5. An existing cleanup patch and native guard need canonical originals for adoption.
+6. Adoption must produce the current composed core, not patch the legacy file twice.
+7. Status must not create or change backup files.
+8. Test state and coordination must remain inside the private evidence directory.
+9. The harness must reject an unsupported input or a changed packaged executable.
+10. These file transactions must not launch or execute game or mod code.

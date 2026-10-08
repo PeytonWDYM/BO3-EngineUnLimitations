@@ -1,0 +1,98 @@
+{
+  "status": "implementation_and_review",
+  "scope": "Normal Zombies with full AAE. Friends may install matching patches. No separate custom game mode.",
+  "manualPriorFixResult": {
+    "userReport": "Repeated grenade firing is fully fixed in Peyton's game test.",
+    "acceptedProvisionalSamples": 1408,
+    "rejectedSamples": 219,
+    "peakAllocated": 111883,
+    "minimumReusableInAcceptedRows": 18116,
+    "acceptedFirstScriptErrors": 0,
+    "volleyMarkers": false,
+    "peerRoleVerified": false
+  },
+  "requestedFeatures": [
+    {
+      "id": "war-machine-speed",
+      "status": "offline_candidate",
+      "change": "500/250 ms timers become 250/125 ms."
+    },
+    {
+      "id": "sprint-retention",
+      "status": "reviewed_offline_candidate",
+      "change": "Ordinary Stamin-Up ownership enters the existing sprint-fire and unlimited-sprint branch across supported guns. Both grant/removal wrappers remain intact.",
+      "requirement": "Keep sprint active while firing Death Machine and War Machine, including with Stamin-Up already owned.",
+      "liveValidated": false
+    },
+    {
+      "id": "server-slots",
+      "status": "activation_and_serialization_blocked",
+      "target": "500k to 1m usable server slots",
+      "peerPatchesAllowed": true
+    },
+    {
+      "id": "200-zombies",
+      "status": "native_layout_expansion_blocked",
+      "reason": "64 actor storage and 104 sentient records have dependent embedded indexed data."
+    },
+    {
+      "id": "zero-spawn-delay",
+      "status": "reviewed_offline_candidate",
+      "change": "Zero pacing after both successful ordinary-spawn counter branches. Pre-spawn capacity and missing-location waits remain.",
+      "schedulerYieldPreserved": true
+    },
+    {
+      "id": "multiple-storm-tornadoes",
+      "status": "offline_candidate",
+      "maximumPerPlayer": 3
+    },
+    {
+      "id": "extra-grenades",
+      "status": "offline_candidate",
+      "baseChildren": 3,
+      "upgradedChildren": 11,
+      "rounding": "ceil of 1.5 times the original integer count"
+    },
+    {
+      "id": "shareable-patcher",
+      "status": "built_independently_reviewed_and_deployed_for_manual_test",
+      "ownedTransactionCases": 25,
+      "priorFrozenActualAssetCases": 2,
+      "includesPriorFixes": true,
+      "finalFrozenActualAssetCases": 2
+    },
+    {
+      "id": "release-readiness",
+      "status": "blocked_on_remaining_features_and_game_validation"
+    },
+    {
+      "id": "source-and-ignore-rules",
+      "status": "source_retained_generated_assets_ignored"
+    },
+    {
+      "id": "pr-review-merge-main",
+      "status": "authorized_pending_completion"
+    },
+    {
+      "id": "obsolete-branches",
+      "status": "authorized_after_verified_merge"
+    }
+  ],
+  "workingInstallationChangedForNewFeatures": true,
+  "gameLaunchedByAgent": false,
+  "normalDeployment": {
+    "version": "0.1.0-test.2",
+    "authorized": true,
+    "changedFiles": [
+      "full-AAE/core_mod.ff",
+      "zone/zm_patch.ff",
+      "zone/zm_castle_patch.ff"
+    ],
+    "unchangedBaselineFiles": 167,
+    "profilesPreserved": 91,
+    "nativeGuardPreserved": true,
+    "canonicalOriginalsVerified": true,
+    "defaultGuiRemovalBackupsVerified": true,
+    "gameplayValidated": false
+  }
+}

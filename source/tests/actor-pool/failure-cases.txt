@@ -1,0 +1,20 @@
+ACTOR EXPANSION FAILURE CASES BEFORE ANY PATCH IMPLEMENTATION
+
+1. A changed capture or code range invalidates the native replay.
+2. The native actor allocator ignores free slots at index 64 and above.
+3. The native sentient allocator ignores free slots at index 104 and above.
+4. A one-byte 64-to-200 edit becomes signed -56 in CMP r64, imm8.
+5. The actor pool overlaps the next static array after expansion in place.
+6. Sentient-indexed fields overlap other fields after index 103.
+7. The secondary actor array remains sized for 64 records.
+8. Actor lifecycle scans leave expanded records unprocessed.
+9. Save/load and migration omit, truncate, or reinterpret expanded records.
+10. A client cannot decode a higher actor ID or its expanded state.
+11. AAE initialization occurs after a consumer retains the original pointers.
+12. Removal leaves references to expanded records or incompatible saved state.
+
+The bounded replay executes captured allocator instructions only until allocation
+selection or the normal exhausted return. Owned memory replaces game data.
+Allocation initialization, game execution, and engine patching remain outside it.
+A temporary one-byte mutation tests the signed-immediate failure in the emulator.
+No altered game image is written.

@@ -1,0 +1,41 @@
+name: Windows patcher
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: windows-patcher-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
+        with:
+          python-version: '3.13'
+          architecture: x64
+      - name: Test owned transactions and build the executable
+        shell: pwsh
+        run: ./scripts/release/Build-Patcher.ps1 -Output (Join-Path $env:RUNNER_TEMP 'bo3-patcher') -Python python
+      - name: Save the patcher and owned test evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        with:
+          name: windows-patcher-${{ github.sha }}
+          path: |
+            ${{ runner.temp }}/bo3-patcher/dist/
+            ${{ runner.temp }}/bo3-patcher/tests/
+            ${{ runner.temp }}/bo3-patcher/executable-tests/
+          if-no-files-found: warn
+          retention-days: 14

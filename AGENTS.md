@@ -14,8 +14,9 @@ Finish with a real pull request and a fresh review. Do not merge without Peyton'
 - Preserve Peyton's existing working installation, saves, settings, and Workshop content.
 - Preserve normal game launches, mod loading, and modded Zombies gameplay, including All-around Enhancement (AAE).
 - The patched game must still join friends' Zombies lobbies and host games that friends can join.
-- Target compatibility with friends who use unpatched stock clients, subject to the game's existing mod requirements.
-- Do not assume friends must install the patch.
+- Peyton's October 7 enhancement request permits friends to install the same patch when required.
+- Keep normal Zombies and existing lobby behavior. Do not introduce a separate custom Zombies mode.
+- Identify features that require matching patched clients. Do not assume unpatched-client compatibility.
 - Do not replace the stock client with BOIII, T7x, or another alternative client.
 - Preserve existing gameplay and mod features when selecting a fix.
 - Treat a patch that breaks mod loading or joining friends as incomplete, even if it prevents the reported failure.
@@ -54,6 +55,33 @@ Apply these settings in the lab copy, without changing Peyton's normal game conf
 Mute the game rather than the system audio.
 
 ## Reported failure and current evidence
+
+Peyton reports that repeated grenade firing now works in his manual test with both existing candidates.
+The recorded process ran from 01:00:18 to 01:30:35 UTC on October 8.
+It retained 1,408 accepted provisional samples and 219 rejections, with no accepted first script error.
+Peak accepted allocation was 111,883, with at least 18,116 reusable server slots in accepted rows.
+The recorder has no volley markers or failure snapshot for this session. Do not infer exact player count or unlimited play.
+New release work includes faster War Machine, sprint retention while firing, larger VM and actor pools,
+zero spawn delay, multiple Storm tornadoes, extra split grenades, and a shareable reversible patcher.
+The optional zero-pacing patch covers both successful ordinary-spawn counter branches and preserves the network-frame yield.
+It preserves pre-spawn capacity and missing-location waits. Wait zero can still yield through the scheduler.
+The Storm pool uses three existing reusable models.
+Exact War Machine data patches halve 500/250 millisecond timers and change split counts from 2/7 to 3/11.
+These new gameplay candidates still require a manual match and peer test.
+Actual 200 actors remains blocked by static 64-actor storage, separate actor-indexed storage,
+and a 104-sentient layout with embedded indexed data. Do not ship the command clamp as actual actor expansion.
+The 500k–1m server VM expansion needs safe activation, stock-save handling and migration budget verification.
+Matching peer patches are authorized, but no deployable expansion exists yet.
+Peyton confirms firing drops him to walking with Stamin-Up.
+Both saved players own native Stamin-Up but lack native sprint-fire. The saved upgrade registry is absent.
+AAE's eligibility check requires upgraded Stamin-Up. Native sprint predicates cancel attack input without the sprint-fire bit.
+The reviewed candidate replaces only that eligibility query with ordinary hasperk, retaining both grant and removal wrappers.
+It enables existing sprint-fire and unlimited-sprint behavior for ordinary Stamin-Up across supported guns.
+Eight eligibility replays and seven captured native sprint predicate replays passed. Live sprint retention remains unvalidated.
+The new public patcher builds candidates from the owner's supported originals. It ships no game or mod assets.
+Keep its test release manifest accurate. Do not offer the larger pools before their implementation and validation.
+Version 0.1.0-test.2 contains four exact-file transformations. New gameplay remains a manual-test candidate.
+Peyton authorizes a real PR, fresh review, merge, and removal of obsolete branches after their commits reach main.
 
 The approved full-AAE cleanup candidate remains installed in core_mod.ff for manual testing.
 Peyton confirmed two marked solo volleys with the Dystopic Demolisher on Der Eisendrache.
@@ -290,7 +318,7 @@ Use PowerShell 7 for native harnesses that resolve directory junctions through t
 
 Validate the original reproduction in solo and co-op, including repeated volleys and recovery intervals.
 Validate normal mod loading and joining friends with the patch enabled.
-Test both hosting and joining, including compatibility with unpatched friends.
+Test both hosting and joining. Record whether friends use matching patches or unpatched clients.
 Produce repeatable E2E evidence and record the executable, patch version, mod, map, player count, and host role.
 Also verify patch removal and return to stock behavior.
 The current loader supports an owned cooperative native fixture. Stock BO3 does not expose that safe-point contract.
