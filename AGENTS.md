@@ -130,6 +130,13 @@ Do not lengthen the gate timeout or change protected startup behavior without ev
 Keep the startup helper outside the game and Workshop folders. Do not replace BlackOps3.exe.
 Use GPT-6.1 Sol for coding and review. Peyton explicitly stopped the expensive Astra VM agents.
 Raw startup recipe hashes depend on source line endings. Preserve .gitattributes rules when preparing a Windows checkout.
+The job receipt enrollment passed 82 owned cases and fresh review with no open findings.
+It preserves the original and late receipt routes. Job metadata is strict and process-bound.
+Live count, helper, boot, and binding evidence remains mandatory before expanded reads.
+The test synthesizes job metadata; require native serializer interoperability before combined deployment.
+Native job integration currently refuses an idle extra Windows worker in its inert fixture before writes.
+The next private overlay profile is prepared with stock capacity. No monitor is currently armed.
+Keep automatic startup PSS snapshots disabled for the next actual launch.
 
 ## End goal
 

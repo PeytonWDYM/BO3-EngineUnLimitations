@@ -1,6 +1,7 @@
 """Enroll one verified handle for the optional 500k launcher, using read-only evidence."""
 
 from dataclasses import dataclass, field
+from enum import Enum
 import hashlib
 import json
 import os
@@ -43,6 +44,12 @@ class CapacitySite:
 
 _SEAL = object()
 _LATE_HELPER_SHA256 = "09b947ba384837853d5f4061a8fc3e2b61dee6b2663a751d6e7a2fb974c803c1"
+
+
+class ReceiptOrigin(Enum):
+    LEGACY = ""
+    LATE = "-late"
+    JOB = "-job"
 
 
 def _fingerprint(profile: dict) -> str:
@@ -111,19 +118,19 @@ def _receipt(path: Path) -> bytes:
     return data
 
 
-def _selected_receipt(process: Process, directory: Path) -> tuple[Path, bytes, bool] | None:
+def _selected_receipt(process: Process, directory: Path) -> tuple[Path, bytes, ReceiptOrigin] | None:
     stem = f"{process.started_ticks}-{process.pid}"
-    paths = (directory / f"{stem}.json", directory / f"{stem}-late.json")
-    present = tuple(path for path in paths if path.exists())
+    paths = tuple((directory / f"{stem}{origin.value}.json", origin) for origin in ReceiptOrigin)
+    present = tuple((path, origin) for path, origin in paths if path.exists())
     if len(present) > 1:
         raise ValueError("Enhanced session has ambiguous exact-process receipts.")
     if not present:
         return None
-    path = present[0]
-    return path, _receipt(path), path == paths[1]
+    path, origin = present[0]
+    return path, _receipt(path), origin
 
 
-def _session(data: bytes, process: Process, *, late: bool = False) -> dict:
+def _session(data: bytes, process: Process, *, origin: ReceiptOrigin = ReceiptOrigin.LEGACY) -> dict:
     session = json.loads(data)
     if not isinstance(session, dict):
         raise ValueError("Enhanced session receipt must be an object.")
@@ -131,18 +138,26 @@ def _session(data: bytes, process: Process, *, late: bool = False) -> dict:
                 "processCreatedFileTime": process.started_ticks, "imageBase": process.module.baseaddress,
                 "serverTotal": 500001, "clientTotal": 65000, "clientRoots": 18, "stockClientRoots": 8,
                 "migrationBufferBytes": 33554432, "editsWritten": 42}
-    if late:
+    if origin is ReceiptOrigin.LATE:
         expected |= {"startupMethod": "late-crt-gate", "attached": True, "committed": True,
                      "detached": True, "debuggerAbsent": True, "released": True,
                      "terminated": False, "rollbackCompleted": False,
                      "debugRegisterWrites": 0, "liveAllocationValidated": False, "generation": 1}
+    elif origin is ReceiptOrigin.JOB:
+        expected |= {"startupMethod": "late-crt-job-freeze", "jobOwned": True,
+                     "jobMembershipVerified": True, "primaryOnlyAdmitted": True,
+                     "frozenForTransaction": True, "thawed": True, "committed": True,
+                     "released": True, "debuggerAbsent": True, "freezeStatus": 0, "thawStatus": 0,
+                     "threadsObserved": 1, "attached": False, "detached": False,
+                     "debugRegisterWrites": 0, "liveAllocationValidated": False,
+                     "terminated": False, "rollbackCompleted": False, "generation": 1}
     else:
         expected |= {"status": "ready", "activated": True}
     for name, value in expected.items():
         if type(session.get(name)) is not type(value) or session[name] != value:
             raise ValueError(f"Enhanced session receipt disagrees with {name}.")
     integer(session["helperBase"], "helper base", 1, (1 << 64) - 1)
-    if late:
+    if origin is ReceiptOrigin.LATE:
         for name in ("primaryThreadId", "attachThread", "writeEventThread"):
             integer(session[name], name, 1, 0xFFFFFFFF)
         if session["attachThread"] != session["writeEventThread"]:
@@ -150,6 +165,9 @@ def _session(data: bytes, process: Process, *, late: bool = False) -> dict:
         for name in ("gateBase", "attachBreakpoint", "attachThreadEntry"):
             integer(session[name], name, 1, (1 << 64) - 1)
         integer(session["threadsObserved"], "observed thread count", 2, 0xFFFFFFFF)
+    elif origin is ReceiptOrigin.JOB:
+        integer(session["primaryThreadId"], "primary thread ID", 1, 0xFFFFFFFF)
+        integer(session["gateBase"], "gate base", 1, (1 << 64) - 1)
     if session.get("exited", False) is not False or session.get("rollbackCompleted", False) is not False:
         raise ValueError("Enhanced session receipt records exit or rollback.")
     return session
@@ -204,10 +222,10 @@ def resolve_enhanced_session(process: Process, profile: dict, sessions_directory
     selected = _selected_receipt(process, directory)
     if selected is None:
         return None
-    path, before, late = selected
-    session = _session(before, process, late=late)
+    path, before, origin = selected
+    session = _session(before, process, origin=origin)
     sites = _sites(process, profile, capacity_sites)
-    helper = _helper(process, profile, session, late=late)
+    helper = _helper(process, profile, session, late=origin is not ReceiptOrigin.LEGACY)
     first = _runtime(process, profile, helper, sites)
     if (first != _runtime(process, profile, helper, sites)
             or _selected_receipt(process, directory) != selected or not process.alive()):
@@ -225,9 +243,9 @@ def verify_code_evidence(process: Process, profile: dict, enrollment: EnhancedSe
         selected = _selected_receipt(process, enrollment.receipt_path.parent)
         if selected is None or selected[0] != enrollment.receipt_path:
             raise ValueError("The enrolled enhanced receipt route changed.")
-        path, receipt_before, late = selected
-        session = _session(receipt_before, process, late=late)
-        helper = _helper(process, profile, session, late=late)
+        path, receipt_before, origin = selected
+        session = _session(receipt_before, process, origin=origin)
+        helper = _helper(process, profile, session, late=origin is not ReceiptOrigin.LEGACY)
         first = _runtime(process, profile, helper, sites)
     for evidence in profile.get("codeEvidence", []):
         start, end = int(evidence["startRva"], 0), int(evidence["endRva"], 0)

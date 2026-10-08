@@ -44,7 +44,11 @@ After opening VerifiedProcess, the caller must perform this sequence before samp
   instances = validate(profile, enhanced_session=enrollment)
 Import the first two functions from enhanced_session and validate from profile.
 
-Enrollment reads the exact LocalAppData/BO3 Engine UnLimitations/sessions/<FILETIME>-<PID>.json.
+Enrollment selects one exact process receipt in LocalAppData/BO3 Engine UnLimitations/sessions/:
+  <FILETIME>-<PID>.json for the original allocation gate,
+  <FILETIME>-<PID>-late.json for the late debugger transaction, or
+  <FILETIME>-<PID>-job.json for the debugger-free job transaction.
+More than one receipt for that process refuses enrollment.
 A missing receipt retains stock capacity. A present invalid or non-ready receipt refuses capture.
 The ready test.3 receipt must match process identity, main/helper bases and complete activation.
 All nineteen complete capacity instructions must match the reviewed 500001-total replacements.
@@ -60,6 +64,14 @@ Every other byte must match, and the receipt/runtime checks repeat around verifi
 Only this process-bound enrollment lets validate return 500001 server slots (500000 usable).
 Client capacity stays 65000. Profile-only changes, serialized enrollment and 1m totals refuse.
 The process handle and profile must remain the same; an exited process invalidates enrollment.
+
+The job receipt must attest to sole-child ownership, frozen membership, original primary admission,
+all 42 committed edits, successful freeze and thaw, debugger absence, and gate release.
+Its process, thread, gate, and status fields have strict types and bounds.
+Receipt metadata does not replace the independent live count, helper, boot, and binding checks.
+The separate source/tests/job-enrollment/Build.ps1 checks this route with 82 owned cases.
+Fresh review passed. Its receipt metadata is synthesized; native serializer interoperability and
+actual BO3 activation remain separate required checks.
 
 Run source/tests/vm/Test-EnhancedSession.ps1 with -Python and a new external -OutputDirectory.
 It checks the receipt and runtime refusals, then samples an owned 500001-slot native pool using

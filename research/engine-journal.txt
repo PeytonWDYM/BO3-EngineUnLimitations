@@ -1355,3 +1355,21 @@ Review SHA-256: cbc9f4ea686465c6f8571aff69c413accb24e8a9753c7398b9838146ae69d9d0
 State result SHA-256: b2d72466af5e8561c74a4101dc103e58b1d542a079bad2544f3d8af7c483726c.
 Job result SHA-256: e9242a304d475b981c7e7521be7e57d0eea171487ebc09feb4f250d24a8ac3d3.
 Private evidence: release-enhancement/process-freeze-sol/process-state-final-03, job-final-03, and independent-final-03-review.json.
+
+October 8, 19:08 UTC, job receipt enrollment reviewed:
+
+The sampler now accepts the exact-process -job.json route for the debugger-free transaction.
+Strict field types and bounds require frozen sole-child membership, primary admission, successful freeze and thaw,
+42 committed edits, debugger absence, and gate release before expanded reads.
+Nineteen live capacity instructions, the exact helper, boot readiness, and bindings remain independent requirements.
+Eighty-two owned native cases pass. Seventy-eight refusal cases perform no expanded pool reads.
+The maximum individual refusal read is 116 bytes. The positive fixture contains 500,001 server records and 65,000 client records.
+Fresh review verifies 34 source, snapshot, binary, result, and build hashes with no mismatches or open findings.
+The test synthesizes its job receipt. A successful native serializer receipt must pass the consumer before combined promotion.
+The native transaction remains under development. Its inert fixture currently refuses an extra idle Windows worker before writes.
+The earlier actual BO3 debugger transaction observed only the primary and attach thread, supporting the narrower game admission target.
+Root prepared the next private overlay profile with stock capacity. No monitor, Steam edit, game launch, or audio change occurred.
+Automatic startup PSS snapshots will remain disabled for the next comparison.
+Enrollment result SHA-256: 29aeb9d03a1e5732a6ce6ce9daf1dc316330b6f3dec14402fc11c95a5e7a27dc.
+Enrollment review SHA-256: f314a46c34e66bdcd0832173fc63ef2ab7d8d2d6c5061a8fc4a8cb5a90c4a3d9.
+Private evidence: release-enhancement/job-enrollment-sol/owned-02 and fresh-review-01.

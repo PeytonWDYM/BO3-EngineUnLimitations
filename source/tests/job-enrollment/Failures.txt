@@ -1,0 +1,35 @@
+Job startup enrollment failures (written before implementation)
+
+Scope: exact-process receipt selection and read-only VM admission on owned targets.
+No game, Steam, UI, deployment, or production startup transaction.
+
+1. Missing exact FILETIME-PID-job.json preserves stock capacity. Stale names do not enroll.
+2. Any two legacy, late, or job files for one exact process refuse before runtime reads.
+   Invalid content cannot fall back to a different route or stock enrollment.
+3. Require exact schema1, candidate0.1.0-test.3, startupMethod late-crt-job-freeze,
+   PID/FILETIME/imageBase/helperBase/gateBase/generation1, totals500001/65000,
+   roots18/8, migration bytes33554432, and exactly42 edits.
+4. Require jobOwned, jobMembershipVerified, primaryOnlyAdmitted, frozenForTransaction,
+   thawed, committed, released, and debuggerAbsent true. Require attached, detached,
+   terminated, rollbackCompleted, and liveAllocationValidated false.
+5. Freeze/thaw statuses and debugRegisterWrites are integer0. threadsObserved is
+   integer1. primaryThreadId is a positive bounded DWORD. Reject bool-versus-int,
+   missing fields, refusal phases, malformed JSON and oversized receipts.
+6. Stock diagnostic/passive methods never authorize an expanded read.
+7. Real BO3 requires the fixed helper09b947... and exact capacity inventory.
+   Existing fixture-only exceptions must remain restricted to non-BO3 targets.
+8. A receipt does not prove live allocation. Verify all19 full count instructions,
+   exact loader-ready Boot24, StateBindings48 and callback bounds twice.
+9. Stock counts, damaged counts/opcode, bad Boot, wrong helper hash/base, changed
+   state bindings/callbacks or unreadable code refuse with zero expanded reads.
+10. Receipt content or route changes during enrollment/reverification refuse.
+    A second route appearing is ambiguous even when its content is malformed.
+11. Reused identity, different process handle, changed profile or exited process
+    cannot reuse enrollment authority. Serialized receipts cannot grant it.
+12. Preserve selected legacy and late positive enrollment, code normalization,
+    stock client capacity, and ordinary stock profile behavior.
+13. Retain native fixture/helper hashes, source snapshots, exact process identity,
+    all read sizes, real sampled pool counts and refusal reasons as private artifacts.
+
+The receipt fixture tests enrollment metadata. It does not claim a job-freeze
+startup transaction or real-game allocation. Native transaction proof is separate.
