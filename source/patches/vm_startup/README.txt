@@ -97,3 +97,13 @@ A Steam relaunch can create a game process outside this debugger's child ownersh
 Do not assume a running Steam client prevents that handoff.
 Normal Steam launch context, earliest allocation timing, and game debugger tolerance remain unverified.
 No game launch or normal installation change forms part of this fixture.
+
+Production helper entry
+
+source/launch/enhanced/Helper.cpp has no fixture inputs or exports.
+Its user DllMain restores temporary imports and publishes a 24-byte boot record.
+The boot record identifies loader readiness. Hook activation remains a separate paused transaction.
+Use Test-NativeComposition.ps1 -ProductionHelper for eleven owned Windows cases.
+These cover independent boot, bad-ABI/missing-ready refusal before writes, state/error exports and rollback.
+The separate owned consumer contains the fixture instrumentation.
+No complete stock-game launcher or deployable expansion is included.

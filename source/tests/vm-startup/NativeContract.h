@@ -2,7 +2,7 @@
 #include "Contract.h"
 #include "../../patches/vm_startup/NativePlan.h"
 
-enum class NativeScenario:DWORD { Roundtrip,DecodeError,StateError,LaterError,Rollback,EntryMismatch,FarRelay };
+enum class NativeScenario:DWORD { Roundtrip,DecodeError,StateError,LaterError,Rollback,EntryMismatch,FarRelay,BootInvalid,BootNotReady };
 struct NativeShared {
     Shared loader;
     NativeScenario scenario;

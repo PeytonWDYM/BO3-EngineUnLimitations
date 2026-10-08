@@ -953,3 +953,14 @@ Migration peer admission, buffer/compression bounds, Steam context, and game act
 No game was launched or controlled by an agent during these checkpoints.
 Read research/vm-pool-expansion.txt, research/vm-startup-integration.txt, and research/vm-migration-integration.txt.
 Raw captures, disassembly, streams, native fixture binaries, and private profiles remain outside Git.
+
+October 8, 04:35 UTC, production VM helper checkpoint:
+
+The production helper restores temporary imports and publishes a zero-POD boot record.
+It requires no fixture mapping or environment and contains no fixture exports.
+Eleven owned Windows cases pass, including boot without fixture inputs and two refusals before writes.
+Fresh review finds no defects and verifies all 65 recorded source/binary hashes.
+Both expanded capacities retain the reviewed state, error, unwind and rollback behavior.
+This closes the helper-entry task. It does not validate BO3 activation or Steam context.
+Migration admission and actor storage continue in separate GPT-6.1 Sol tasks.
+No game launch or working-installation change occurred.

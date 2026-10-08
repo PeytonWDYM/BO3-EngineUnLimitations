@@ -11,6 +11,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--bin', type=Path, required=True)
 parser.add_argument('--dumpbin', type=Path, required=True)
 parser.add_argument('--output', type=Path, required=True)
+parser.add_argument('--production', action='store_true')
 args = parser.parse_args()
 helper = args.bin / 'VmStartupHelper.dll'
 pe = pefile.PE(str(helper))
@@ -19,10 +20,16 @@ imports = [{'module': item.dll.decode(), 'names': [entry.name.decode() if entry.
 assert {row['module'].lower() for row in imports} == {'kernel32.dll'}, imports
 exports = {entry.name.decode(): entry.address for entry in pe.DIRECTORY_ENTRY_EXPORT.symbols if entry.name}
 required = ('Bo3VmStateBindings', 'ReadNativeState', 'WriteNativeState', 'InsertNativeStateKey',
-            'ClearNativeImportContext', 'FixtureBindingReader', 'FixtureBindingWriter',
+            'ClearNativeImportContext',
             'Bo3VmErrorBindings', 'ReadStateOrDrop', 'WriteStateOrDrop', 'VmErrorPrelude',
             'NativeOriginalReader', 'NativeOriginalWriter', 'NativeOriginalInsert', 'NativeOriginalError',
             'NativeOriginalInsertBody', 'VmErrorPreludeBody')
+if args.production:
+    required += ('Bo3EnhancedBoot',)
+    assert not any(name.startswith('Fixture') for name in exports)
+    assert not any(pe.get_data(exports['Bo3EnhancedBoot'], 24))
+else:
+    required += ('FixtureBindingReader', 'FixtureBindingWriter')
 assert all(name in exports for name in required)
 storage = pe.get_data(exports['Bo3VmStateBindings'], 48)
 assert not any(storage)

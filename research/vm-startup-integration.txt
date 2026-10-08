@@ -225,3 +225,29 @@ Its loader-inventory.json records the exact imports, TLS, prefixes, bindings and
 Private error-e2e-05/result.json records ten error groups including all eight returned errors.
 Exact live admission, native continuation unwind, actual engine match-drop, later AAE hook installation,
 and the eventual stock-game activation remain unvalidated. No BO3 launch or normal-file change occurred.
+
+Production helper checkpoint, October 8, 04:35 UTC
+
+source/launch/enhanced/Helper.cpp now contains the production helper entry.
+It restores Detours imports and publishes one 24-byte zero-POD boot record.
+It reads no fixture mapping or environment variable and exports no fixture hooks.
+The state and error bindings remain zero until the paused parent publishes the checked transaction.
+Hook installation, COM, file access and game execution do not occur in its user DllMain.
+Its linked Windows, CRT and Detours initialization remain part of its loader dependency surface.
+
+The owned production consumer observes helper readiness before its import completes.
+The parent reads the actual boot record while every target thread is stopped.
+A corrupted ABI and a missing ready flag each refuse before relay allocation or any patch write.
+A separate fixed owned child boots without the fixture mapping environment variable.
+Both 500k and 1m state exports, error recovery, later error chaining, unwind and rollback retain their contracts.
+
+Test-NativeComposition.ps1 -ProductionHelper records eleven passing objects.
+Private vm-startup/production-helper-02/ contains the receipts, exact helper inventory and 65 source/binary hashes.
+Fresh vm-review/production-helper-review.json records no findings and verifies all recorded hashes.
+The helper imports KERNEL32 only. It has 24 raw TLS bytes and no TLS callbacks.
+Its 24/48/32-byte boot, state and error disk records are zero.
+
+This implements the production helper entry, not a complete enhanced-game launcher.
+Boot ready identifies loader readiness. It does not identify installed hooks or a working game session.
+Steam context, native code admission, actual continuations, migration and live compatibility remain required.
+No BO3 process launched. No normal installation, profile, setting or Steam metadata changed.

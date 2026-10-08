@@ -3,6 +3,7 @@
 #include "../../patches/vm_startup/NearRelay.h"
 #include "../../patches/vm_startup/PausedPatch.h"
 #include "../../launch/preentry/Identity.h"
+#include "../../launch/enhanced/Boot.h"
 #include "BuildIdentity.h"
 #include <detours.h>
 #include <cstring>
@@ -14,6 +15,7 @@ namespace {
 NativeShared* shared;
 vm_startup::ImageRange helperImage;
 vm_startup::HelperOffsets offsets;
+[[maybe_unused]] DWORD bootOffset;
 std::unique_ptr<vm_startup::NearRelay> relay;
 std::vector<vm_startup::AddressEdit> prepared;
 DWORD Export(HMODULE module,const char* name) {
@@ -32,6 +34,13 @@ std::vector<vm_startup::AddressEdit> Prepare(HANDLE process,const vm_startup::Re
     Require(shared->loader.helperLoaded==1 && shared->loader.configZeroAtLoad==1 && shared->loader.helperAtImport==1,
         "Fixed native helper was not ready before the imported consumer.");
     helperImage.base=shared->loader.helperBase;
+#ifdef VM_STARTUP_PRODUCTION_HELPER
+    const auto bootBytes=vm_startup::ReadStopped(process,helperImage.base+bootOffset,sizeof(bo3::enhanced::BootRecord));
+    bo3::enhanced::BootRecord boot{};
+    std::memcpy(&boot,bootBytes.data(),sizeof(boot));
+    Require(boot.abi==bo3::enhanced::BootAbi && boot.bytes==sizeof(boot) && boot.module==helperImage.base
+        && boot.ready==1 && boot.reserved==0,"Production helper boot record was not admitted.");
+#endif
     const vm_startup::ImageRange image{shared->imageBase,shared->imageSize};
     relay=std::make_unique<vm_startup::NearRelay>(process,image,NativeEntries);
     shared->relay=relay->Address();
@@ -76,7 +85,7 @@ int wmain(int argc,wchar_t** argv) {
     try {
         Require(argc==4,"Use fixed native scenario, capacity and new private receipt.");
         const std::wstring requested=argv[1];
-        const std::array names{L"roundtrip",L"decode-error",L"state-error",L"later-error",L"rollback",L"entry-mismatch",L"far-relay"};
+        const std::array names{L"roundtrip",L"decode-error",L"state-error",L"later-error",L"rollback",L"entry-mismatch",L"far-relay",L"boot-invalid",L"boot-not-ready"};
         std::size_t scenario=0; for(;scenario<names.size() && requested!=names[scenario];++scenario) {}
         Require(scenario<names.size(),"Unknown owned native scenario.");
         const auto total=static_cast<DWORD>(std::stoul(argv[2]));
@@ -97,6 +106,11 @@ int wmain(int argc,wchar_t** argv) {
         const auto helperMapped=LoadLibraryExW(helper.c_str(),nullptr,DONT_RESOLVE_DLL_REFERENCES);
         Require(helperMapped!=nullptr,"Cannot inspect fixed native helper PE.");
         helperImage={0,ImageSize(helperMapped)};
+#ifdef VM_STARTUP_PRODUCTION_HELPER
+        bootOffset=Export(helperMapped,"Bo3EnhancedBoot");
+#else
+        Require(scenario<7,"Boot refusal checks require the production helper.");
+#endif
         offsets={Export(helperMapped,"Bo3VmStateBindings"),Export(helperMapped,"Bo3VmErrorBindings"),Export(helperMapped,"ReadNativeState"),Export(helperMapped,"WriteNativeState"),
             Export(helperMapped,"InsertNativeStateKey"),Export(helperMapped,"ReadStateOrDrop"),Export(helperMapped,"WriteStateOrDrop"),Export(helperMapped,"VmErrorPrelude"),
             Export(helperMapped,"NativeOriginalReader"),Export(helperMapped,"NativeOriginalWriter"),Export(helperMapped,"NativeOriginalInsert"),Export(helperMapped,"NativeOriginalError")};
@@ -107,6 +121,8 @@ int wmain(int argc,wchar_t** argv) {
         shared=static_cast<NativeShared*>(MapViewOfFile(mapping.value,FILE_MAP_WRITE,0,0,sizeof(NativeShared)));
         Require(shared!=nullptr,"Cannot map owned native trace."); ZeroMemory(shared,sizeof(*shared));
         shared->loader.scenario=Scenario::Entry; shared->loader.expectedTotal=total; shared->scenario=static_cast<NativeScenario>(scenario);
+        if(shared->scenario==NativeScenario::BootInvalid) shared->loader.scenario=Scenario::HelperDirty;
+        if(shared->scenario==NativeScenario::BootNotReady) shared->loader.scenario=Scenario::HelperNoReady;
         const auto mappingText=std::to_wstring(reinterpret_cast<std::uintptr_t>(mapping.value));
         Require(SetEnvironmentVariableW(L"OWNED_VM_STARTUP_MAPPING",mappingText.c_str())!=FALSE,"Cannot publish fixed native mapping.");
         SetErrorMode(SEM_FAILCRITICALERRORS|SEM_NOGPFAULTERRORBOX);
@@ -129,8 +145,9 @@ int wmain(int argc,wchar_t** argv) {
         }
         Require(WaitForSingleObject(child.info.hProcess,30000)==WAIT_OBJECT_0,"Owned native child did not stop."); child.done=true;
         DWORD exitCode=0; GetExitCodeProcess(child.info.hProcess,&exitCode);
-        const bool expectedRefusal=shared->scenario==NativeScenario::Rollback || shared->scenario==NativeScenario::EntryMismatch || shared->scenario==NativeScenario::FarRelay;
-        const bool passed=expectedRefusal ? refused && shared->rollbackOriginal && shared->relayFreed && shared->loader.calls==0 && shared->ready==0
+        const bool bootRefusal=shared->scenario==NativeScenario::BootInvalid || shared->scenario==NativeScenario::BootNotReady;
+        const bool expectedRefusal=shared->scenario==NativeScenario::Rollback || shared->scenario==NativeScenario::EntryMismatch || shared->scenario==NativeScenario::FarRelay || bootRefusal;
+        const bool passed=expectedRefusal ? refused && shared->rollbackOriginal && (bootRefusal ? shared->relay==0 : shared->relayFreed!=0) && shared->loader.calls==0 && shared->ready==0
                 && (shared->scenario==NativeScenario::Rollback ? receipt.rollbackCompleted && receipt.editsWritten==11 : receipt.editsWritten==0)
             : !refused && exitCode==0 && receipt.activated && shared->passed==1 && shared->clientReads==1 && shared->clientWrites==1;
         std::ofstream report(output);

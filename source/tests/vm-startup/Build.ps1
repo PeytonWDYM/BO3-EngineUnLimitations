@@ -1,4 +1,4 @@
-param([Parameter(Mandatory)][string]$OutputDirectory, [string]$DetoursRoot, [switch]$NativeComposition)
+param([Parameter(Mandatory)][string]$OutputDirectory, [string]$DetoursRoot, [switch]$NativeComposition, [switch]$ProductionHelper)
 $ErrorActionPreference = 'Stop'
 function PhysicalPath([string]$Path) {
     $full = [IO.Path]::GetFullPath($Path)
@@ -32,6 +32,10 @@ try {
     New-Item -ItemType Directory -Path $output | Out-Null
     $compiler = Join-Path $compilerRoot 'bin/Hostx64/x64/cl.exe'
     $flags = @('/nologo','/std:c++20','/EHsc','/W4','/WX','/MT','/O2',"/I$output")
+    if ($ProductionHelper) {
+        if (!$NativeComposition -or !$DetoursRoot) { throw 'Production helper checks require native composition and pinned Detours.' }
+        $flags += '/DVM_STARTUP_PRODUCTION_HELPER'
+    }
     $targetLibraries = @()
     $runnerLibraries = @()
     if ($DetoursRoot) {
@@ -42,10 +46,12 @@ try {
         $flags += @('/DVM_STARTUP_COMPOSED',"/I$DetoursRoot/include")
         $detoursLibrary = Join-Path $DetoursRoot 'lib.X64/detours.lib'
         if (!(Test-Path -LiteralPath $detoursLibrary)) { throw 'Use the existing pinned x64 Detours library.' }
-        & $compiler @flags /LD (Join-Path $PSScriptRoot 'Consumer.cpp') "/Fe:$output/VmStartupConsumer.dll" "/Fo:$output/Consumer.obj" /link /INCREMENTAL:NO
+        $consumerSource = if ($ProductionHelper) { 'ProductionConsumer.cpp' } else { 'Consumer.cpp' }
+        & $compiler @flags /LD (Join-Path $PSScriptRoot $consumerSource) "/Fe:$output/VmStartupConsumer.dll" "/Fo:$output/Consumer.obj" /link /INCREMENTAL:NO
         if ($LASTEXITCODE -ne 0) { throw 'Owned imported consumer compilation failed.' }
         $targetLibraries += "$output/VmStartupConsumer.lib"
-        $helperSources = @((Join-Path $PSScriptRoot 'Helper.cpp'),(Join-Path $repo 'source/patches/vm_pool/StateAdapter.cpp'),(Join-Path $repo 'source/patches/vm_pool/NativeStateBridge.cpp'))
+        $helperSource = if ($ProductionHelper) { Join-Path $repo 'source/launch/enhanced/Helper.cpp' } else { Join-Path $PSScriptRoot 'Helper.cpp' }
+        $helperSources = @($helperSource,(Join-Path $repo 'source/patches/vm_pool/StateAdapter.cpp'),(Join-Path $repo 'source/patches/vm_pool/NativeStateBridge.cpp'))
         $helperSources += (Join-Path $repo 'source/patches/vm_startup/StateErrors.cpp')
         $assembler=Join-Path $compilerRoot 'bin/Hostx64/x64/ml64.exe'
         $helperObjects=@()
@@ -93,6 +99,14 @@ try {
             (Join-Path $repo 'source/patches/vm_startup/NearRelay.cpp'),(Join-Path $repo 'source/launch/preentry/Identity.cpp'))
         & $compiler @flags @nativeSources $detoursLibrary "/Fo:$output/" "/Fe:$output/VmNativeFixture.exe" /link bcrypt.lib /INCREMENTAL:NO
         if($LASTEXITCODE -ne 0) { throw 'Owned native composition runner compilation failed.' }
+        if ($ProductionHelper) {
+            & $compiler @flags (Join-Path $PSScriptRoot 'ProductionBootTarget.cpp') "/Fo:$output/ProductionBootTarget.obj" "/Fe:$output/VmProductionBootTarget.exe" /link /INCREMENTAL:NO
+            if ($LASTEXITCODE -ne 0) { throw 'Owned production boot target compilation failed.' }
+            $bootHash = (Get-FileHash -LiteralPath (Join-Path $output 'VmProductionBootTarget.exe')).Hash.ToLowerInvariant()
+            "constexpr char kProductionBootTargetHash[]=`"$bootHash`";" | Add-Content -LiteralPath (Join-Path $output 'BuildIdentity.h') -Encoding ascii
+            & $compiler @flags (Join-Path $PSScriptRoot 'ProductionBootRunner.cpp') (Join-Path $repo 'source/launch/preentry/Identity.cpp') $detoursLibrary "/Fo:$output/" "/Fe:$output/VmProductionBootFixture.exe" /link bcrypt.lib /INCREMENTAL:NO
+            if ($LASTEXITCODE -ne 0) { throw 'Owned production boot runner compilation failed.' }
+        }
     }
     Get-FileHash -LiteralPath (Join-Path $output 'VmStartupTarget.exe'),(Join-Path $output 'VmStartupFixture.exe') | ConvertTo-Json |
         Set-Content -LiteralPath (Join-Path $output 'build-hashes.json') -Encoding utf8

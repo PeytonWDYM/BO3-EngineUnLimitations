@@ -76,6 +76,9 @@ The current server state adapter passes eleven owned E2E groups and a fresh boun
 Captured native scalar state restores all 500,000 slots and hash buckets in isolated replay.
 Native game-client allocation requests eighteen records. The original Zombies stream has eight client roots.
 The exact-build inventory remains audit-only. Migration, Steam launch, and live activation remain unfinished.
+The production helper has no fixture mapping or fixture exports.
+Eleven owned Windows cases and fresh review pass, including independent boot and two admission refusals before writes.
+Its boot record proves helper loader readiness only. Native game activation remains unvalidated.
 Peyton clarified that the enhancement targets Zombies. Use an optional enhanced launch and retain the separate stock launch.
 The enhanced serializer refuses other server modes before accessing its stream or state. Native mode switching remains unvalidated.
 VM means BO3's internal script interpreter. BO3 does not run in a virtual Windows computer.
