@@ -1330,3 +1330,28 @@ The new .gitattributes file keeps Python files at LF and preserves each reviewed
 A second fresh clone matches all eighteen reviewed file hashes. Its fixed passive recipe admits the cloned source.
 The check launched no game and edited no Steam configuration. Existing frozen deployment bytes remain unchanged.
 Repeatable artifacts: release-enhancement/portable-source-01/before-result.json and after-result.json.
+
+October 8, 18:51 UTC, debugger-free pause proof reviewed:
+
+The owned process-state API proof confirms that ordinary suspension misses bypass threads on Windows build 26200.9457.
+Existing and future bypass counters each advance 33 during a 516-millisecond admitted interval.
+A primary-only initial inventory does not prevent a future bypass worker. This mechanism cannot publish the native transaction.
+The separate pure-job mechanism uses NtSetInformationJobObject class 18 with the exact sixteen-byte freeze structure.
+Its parent-only noninheritable job uses KILL_ON_JOB_CLOSE and receives the suspended target before initial resume.
+The final proof holds a nonyielding user-mode worker and existing ordinary, hidden, waiting, churn, and bypass workers.
+The busy counter remains 12,044,478 across 1,188 milliseconds and advances after explicit thaw.
+Future ordinary and bypass Worker routines remain unentered until thaw. The marker does not observe the first native instruction.
+All sixteen abrupt controller-death repeats terminate the owned target with zero observed partial-marker reads and signaled process handles.
+The recorded raw job-kill exit code is zero. It is not a successful application shutdown.
+Thirty-five state-proof executions and twenty-one pure-job executions pass their declared bounded cases.
+Independent review verifies 114 source, snapshot, artifact, and native identity hashes with no mismatches.
+Review closed two findings: a missing tight worker and imprecise worker-entry wording.
+It records zero open bounded findings and productionReuseApproved false.
+Production requires frozen membership admission, safe primary instruction and return state, complete guards, and transaction cleanup under freeze.
+Actual Steam job ancestry, expanded allocation, AAE, migration, peers, and other Windows kernels remain unvalidated.
+The new native candidate, fixed Steam recipe, and process-bound enrollment have separate file owners.
+No game launch, normal file write, Steam configuration edit, desktop input, or audio change occurred during this proof.
+Review SHA-256: cbc9f4ea686465c6f8571aff69c413accb24e8a9753c7398b9838146ae69d9d0.
+State result SHA-256: b2d72466af5e8561c74a4101dc103e58b1d542a079bad2544f3d8af7c483726c.
+Job result SHA-256: e9242a304d475b981c7e7521be7e57d0eea171487ebc09feb4f250d24a8ac3d3.
+Private evidence: release-enhancement/process-freeze-sol/process-state-final-03, job-final-03, and independent-final-03-review.json.

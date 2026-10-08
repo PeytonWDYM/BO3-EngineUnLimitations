@@ -115,6 +115,14 @@ This validates the reported debugger-free launch path, not an expanded pool or a
 The root removed the temporary route through its frozen passive wrapper and restored the original absent Steam launch field.
 Normal Steam Play is now stock-capacity. Game files and existing fastfile fixes remain unchanged.
 The next work verifies debugger-free process freezing on owned targets before integrating the complete native transaction.
+The owned process-state API proof exposes existing and future bypass threads. Do not use it as an all-thread publication barrier.
+The separate pure-job proof holds tight-loop, ordinary, hidden, waiting, churn, and bypass workers on the pinned Windows kernel.
+Future ordinary and bypass Worker routines stay unentered until thaw. This does not observe their first native instruction.
+Sixteen controller-death repeats terminate the owned job members with zero observed partial-publication reads.
+Final proof review verifies 114 recorded hashes and has zero open bounded findings. It does not approve production reuse.
+The new job_startup candidate must recheck job membership inside freeze and admit only a verified primary helper-wait thread.
+Keep all native guards, writes, readback, rollback and relay cleanup inside that freeze. Preserve the absolute thirty-second gate deadline.
+No new actual game launch or 500,000-slot allocation occurred during this owned proof.
 Peyton authorizes future Steam shutdown through commands without computer use. Keep desktop controls and current audio untouched.
 Do not use the observation probe as a publication gate or advertise 500,000 active slots from its callback.
 The direct diagnostic sets the same child Steam IDs. It is not a replay of every inherited Steam launcher environment variable.

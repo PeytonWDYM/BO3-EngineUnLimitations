@@ -2,6 +2,7 @@
 *.py text eol=lf
 source/launch/enhanced/Steam*Profile.json text eol=lf
 source/launch/late_startup/SteamProfile.json text eol=lf
+source/launch/job_startup/SteamProfile.json text eol=lf
 # Preserve the exact bytes of the reviewed diagnostic recipes.
 source/launch/late_startup/SteamControlProfile.json text eol=crlf
 source/launch/late_startup/SteamPassiveControlProfile.json text eol=crlf
