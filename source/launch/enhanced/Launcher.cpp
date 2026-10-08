@@ -1,6 +1,7 @@
 #include "GameManifest.h"
 #include "MappedHelper.h"
 #include "SessionReceipt.h"
+#include "LaunchLease.h"
 #include "SteamContext.h"
 #include "../../patches/vm_startup/NearRelay.h"
 #include "../../patches/vm_startup/PausedPatch.h"
@@ -86,6 +87,7 @@ std::wstring QuoteArgument(std::wstring_view argument) {
 int wmain(int argc, wchar_t** argv) {
     try {
         Require(argc >= 2, "Use BO3-Enhanced-Zombies.exe <BlackOps3.exe> [game arguments].");
+        LaunchLease lease;
         const auto game = std::filesystem::canonical(argv[1]);
         std::array<wchar_t, 32768> ownPath{};
         const auto length = GetModuleFileNameW(nullptr, ownPath.data(), static_cast<DWORD>(ownPath.size()));

@@ -34,6 +34,22 @@ try {
         (Join-Path $repo 'source/patches/vm_startup/PausedPatch.cpp'))
     & $compiler @flags @sources (Join-Path $DetoursRoot 'lib.X64/detours.lib') "/Fo:$output/" "/Fe:$output/EnhancedOwnedFixture.exe" /link bcrypt.lib /INCREMENTAL:NO
     if ($LASTEXITCODE -ne 0) { throw 'Owned mapping runner compilation failed.' }
+    & $compiler @flags (Join-Path $PSScriptRoot 'LeaseProbe.cpp') (Join-Path $repo 'source/launch/preentry/Identity.cpp') "/Fo:$output/" "/Fe:$output/EnhancedLeaseProbe.exe" /link bcrypt.lib /INCREMENTAL:NO
+    if ($LASTEXITCODE -ne 0) { throw 'Owned native lease probe compilation failed.' }
+    $lease = Start-Process -FilePath "$output/EnhancedLeaseProbe.exe" -ArgumentList 'hold' -WindowStyle Hidden -PassThru -RedirectStandardOutput "$output/lease.stdout.txt" -RedirectStandardError "$output/lease.stderr.txt"
+    try {
+        $deadline = [datetime]::UtcNow.AddSeconds(5)
+        while (!(Test-Path -LiteralPath "$output/lease.stdout.txt") -or !(Get-Content -LiteralPath "$output/lease.stdout.txt" -Raw)) {
+            if ($lease.HasExited -or [datetime]::UtcNow -gt $deadline) { throw 'The owned lease owner did not become ready.' }
+            Start-Sleep -Milliseconds 50
+        }
+        $busy = & "$output/EnhancedLeaseProbe.exe" 2>&1
+        if ($LASTEXITCODE -ne 2 -or "$busy" -notmatch 'Another enhanced') { throw 'Concurrent native launch lease refusal failed.' }
+        $nativeBusy = & "$production/BO3-Enhanced-Zombies.exe" "$output/EnhancedOwnedTarget.exe" 2>&1
+        if ($LASTEXITCODE -ne 2 -or "$nativeBusy" -notmatch 'Another enhanced') { throw 'The production launcher did not retain its native lease.' }
+    } finally { if (!$lease.HasExited) { Stop-Process -InputObject $lease -Force }; $lease.WaitForExit() }
+    & "$output/EnhancedLeaseProbe.exe"
+    if ($LASTEXITCODE -ne 0) { throw 'The native lease remained after owner exit.' }
     $results = @()
     foreach ($case in @('mapped','boot-invalid','code-invalid','unwind-invalid')) {
         & "$output/EnhancedOwnedFixture.exe" $case "$output/$case.json"
@@ -43,7 +59,7 @@ try {
     # The production executable must reject this owned EXE before it creates any child.
     $refusal = & "$production/BO3-Enhanced-Zombies.exe" "$output/EnhancedOwnedTarget.exe" 2>&1
     if ($LASTEXITCODE -ne 2 -or "$refusal" -notmatch 'SHA256 differs') { throw 'Production identity refusal failed.' }
-    @{passed=$true;productionIdentityRefusal=$true;helperSha256=$receipt.helperSha256;cases=$results;
+    @{passed=$true;productionIdentityRefusal=$true;nativeLeaseRefusal=$true;nativeLeaseRelease=$true;helperSha256=$receipt.helperSha256;cases=$results;
         sourceHashes=@($sources + (Join-Path $PSScriptRoot 'Target.cpp') + $PSCommandPath | ForEach-Object { @{path=$_;sha256=(Get-FileHash -LiteralPath $_).Hash} })} |
         ConvertTo-Json -Depth 5 | Set-Content -LiteralPath "$output/result.json" -Encoding utf8
 } finally { $env:INCLUDE = $savedInclude; $env:LIB = $savedLib }

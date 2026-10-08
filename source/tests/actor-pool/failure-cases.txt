@@ -30,3 +30,23 @@ FOLLOW-UP FAILURE CASES BEFORE DOWNSTREAM REPLAY
 The next bounded replay checks two leaf consumers with separated owner and table storage.
 It checks the shared handle allocator through its normal exhausted branch.
 It does not prove the complete pointer graph, handle demand, or live activation.
+
+EXTERNAL TABLE IMPLEMENTATION FAILURES BEFORE CODE
+
+18. The address mapper accepts a misaligned or out-of-pool owner or target.
+19. The replacement accessor changes RCX, R8, R9, or a nonvolatile register.
+20. The replacement accessor computes the wrong row at indices 0, 103, 104, 199, or 239.
+21. A reset writes native sentient trailing fields through the old embedded-table alias.
+22. Native allocation reuses an external owner row without clearing its old entries.
+23. Target deletion leaves references in other external rows.
+24. A load-time reset clears only the original 104 columns.
+25. A captured guard, RIP-relative relocation, or register contract differs from the plan.
+26. Constructor and destructor registrations use different arrays or counts.
+27. A trampoline changes stack layout without a correct registered unwind record.
+28. An installer activates the known rewrites while consumer coverage remains incomplete.
+
+The owned implementation will refuse deployment while coverage or activation remains incomplete.
+It must exercise actual captured accessor and reset instructions with separated native records and table storage.
+
+29. An unsupported capacity, address wrap, or overlapping native/table allocation enters the exact 240-sentient plan.
+30. An instruction rewrite inserts REX around an unadmitted legacy high-byte register.

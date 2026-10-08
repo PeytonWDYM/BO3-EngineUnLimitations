@@ -1,7 +1,6 @@
 """Capture bounded, read-only script-variable diagnostics from a verified process."""
 
 import argparse
-import hashlib
 from datetime import datetime, timezone
 import json
 from pathlib import Path
@@ -11,6 +10,7 @@ import time
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from windows_process import ACCESS_MASK, VerifiedProcess
 from profile import validate
+from enhanced_session import resolve_enhanced_session, verify_code_evidence
 from snapshot import sample
 from latest_state import LatestState
 
@@ -48,12 +48,9 @@ def main():
         instances = validate(profile)
         expected_start = args.expected_start_ticks if args.expected_start_ticks is not None else profile.get("expectedProcessStartTicks")
         with VerifiedProcess(args.pid, profile, expected_start) as process:
-            for evidence in profile.get("codeEvidence", []):
-                start, end = int(evidence["startRva"], 0), int(evidence["endRva"], 0)
-                if not 0 <= start < end <= process.module.size:
-                    raise ValueError("Invalid native code evidence range.")
-                if hashlib.sha256(process.read(process.module.baseaddress + start, end - start)).hexdigest() != evidence["sha256"]:
-                    raise ValueError("The live native code differs from the reviewed profile.")
+            enrollment = resolve_enhanced_session(process, profile)
+            verify_code_evidence(process, profile, enrollment)
+            instances = validate(profile, enhanced_session=enrollment)
             output.parent.mkdir(parents=True, exist_ok=True)
             if latest_path:
                 latest_path.parent.mkdir(parents=True, exist_ok=True)
@@ -70,6 +67,8 @@ def main():
                      moduleBase=hex(process.module.baseaddress), imageSize=process.module.size,
                      timestamp=process.module.timestamp, profile=str(args.profile.resolve()),
                      accessMask=hex(ACCESS_MASK), rate=args.rate, attempts=args.attempts,
+                     enhancedSession=str(enrollment.receipt_path) if enrollment else None,
+                     serverCapacity=next((item.capacity for item in instances if item.index == 0), None),
                      gameValidation=profile["status"],
                      validationScope=profile.get("liveValidation", "Owned fixture only."),
                      consistency="Repeated equal metadata, pools, and error text are not an atomic snapshot.",

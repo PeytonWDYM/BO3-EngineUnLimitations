@@ -19,7 +19,7 @@ def integer(value, name, minimum, maximum):
     return value
 
 
-def validate(profile: dict) -> list[Instance]:
+def validate(profile: dict, *, enhanced_session=None) -> list[Instance]:
     if profile["status"] not in ("fixture-only", "game-validated"):
         raise ValueError("The VM profile is disabled. Separate game validation is required.")
     # These fields use full native DWORD comparisons, without packed type masks.
@@ -52,4 +52,16 @@ def validate(profile: dict) -> list[Instance]:
         result.append(Instance(index, capacity, *addresses))
     if len({instance.index for instance in result}) != len(result):
         raise ValueError("VM instance indices must be unique.")
+    if enhanced_session is not None:
+        from enhanced_session import EnhancedSession
+        if type(enhanced_session) is not EnhancedSession:
+            raise ValueError("Expanded capacity requires runtime session enrollment.")
+        enhanced_session.authorize(profile)
+        if not any(instance.index == 0 and instance.capacity == 130000 for instance in result):
+            raise ValueError("Enhanced enrollment requires the stock server layout.")
+        if any(instance.index == 1 and instance.capacity != 65000 for instance in result):
+            raise ValueError("Enhanced enrollment preserves the stock client capacity.")
+        result = [Instance(instance.index, 500001 if instance.index == 0 else instance.capacity,
+                           instance.pool_rva, instance.deferred_rva, instance.error_rva, instance.depth_rva)
+                  for instance in result]
     return result

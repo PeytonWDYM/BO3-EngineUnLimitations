@@ -1,0 +1,137 @@
+{
+  "status": "admission_contract_only_not_implemented",
+  "wireVersionAssigned": false,
+  "families": [
+    {
+      "family": "stock_v3",
+      "actors": 64,
+      "sentients": 104,
+      "secondaryActors": 64
+    },
+    {
+      "family": "vm_only_enhanced",
+      "actors": 64,
+      "sentients": 104,
+      "secondaryActors": 64
+    },
+    {
+      "family": "combined_actor_200",
+      "actors": 200,
+      "sentients": 240,
+      "secondaryActors": 200
+    }
+  ],
+  "recordFormats": {
+    "actor": {
+      "stride": 8464,
+      "prefixBytes": 4,
+      "activeRawBytes": 8448,
+      "additionalCodec": "Native descriptors plus C9DC0/B61D1 variable attachments remain unchanged."
+    },
+    "sentient": {
+      "stride": 12424,
+      "prefixBytes": 1,
+      "activeRawBytes": 12424,
+      "additionalCodec": "Native pointer/field descriptors remain unchanged."
+    },
+    "secondary": {
+      "stride": 2816,
+      "codecReadRva": "0xc4620",
+      "codecWriteRva": "0xd20e0",
+      "recordCountIsImplicit": true,
+      "taggedStart": 38,
+      "taggedEnd": 39
+    }
+  },
+  "transientTables": {
+    "table72": "C45B0..C45D4 clears every active native row after loading.",
+    "indexedWords": "C45D6..C45E5 clears the104-word embedded row after loading.",
+    "externalEncodingRequired": false,
+    "preserveBehavior": "Clear both external240-column rows, then retain native record and descriptor framing."
+  },
+  "requiredImplementation": [
+    "Root outer header must admit a distinct combined format before any load mutates pools; do not reuse the VM-only version.",
+    "Bind an immutable per-load shape to validated header identity and thread/context. Actor B631C, sentient C45F1 and secondary FA1A7/12E10A read those admitted counts.",
+    "Legacy and VM-only imports consume64/104/64 records; construct200 actors and initialize all expanded unused records/heads/tables before reading.",
+    "Combined writes emit200/240/200 at C9FE1/D20A6/112FC0/132028 and mark only the combined outer format.",
+    "Retain native conditional prefixes, raw record widths, descriptors, variable attachments, secondary tags26/27 and the following section position.",
+    "Validate the shape before native load callbacks and prevent format switching or reentrant competing load contexts.",
+    "Complete streaming/migration budget and header integrity checks with root VM changes; prove legacy import and combined host transfer using exact native loops.",
+    "Removal leaves combined saves distinguishable and refuses stock loading of combined data; conversion back to stock requires an explicit proven downgrade codec."
+  ],
+  "guards": [
+    {
+      "name": "actor_read_count",
+      "rva": "0xb631c",
+      "size": 7,
+      "sha256": "f23c46f70b2cc1e329212d2db500585e377085ff2168f59e19bcbccc39a6992a"
+    },
+    {
+      "name": "actor_write_count",
+      "rva": "0xc9fe1",
+      "size": 7,
+      "sha256": "f23c46f70b2cc1e329212d2db500585e377085ff2168f59e19bcbccc39a6992a"
+    },
+    {
+      "name": "sentient_read_count",
+      "rva": "0xc45f1",
+      "size": 7,
+      "sha256": "be65eeb5e45ee1b31bdd670d2baab2b2d9ee8965983567c564001f279baa99f2"
+    },
+    {
+      "name": "sentient_write_count",
+      "rva": "0xd20a6",
+      "size": 7,
+      "sha256": "be65eeb5e45ee1b31bdd670d2baab2b2d9ee8965983567c564001f279baa99f2"
+    },
+    {
+      "name": "secondary_read_count",
+      "rva": "0xfa1a7",
+      "size": 5,
+      "sha256": "9a6b52a1b94729eaea3e1fcafd16843d274cb4e88e1d5c8d41bd40b4df24e832"
+    },
+    {
+      "name": "secondary_write_count",
+      "rva": "0x112fc0",
+      "size": 5,
+      "sha256": "9a6b52a1b94729eaea3e1fcafd16843d274cb4e88e1d5c8d41bd40b4df24e832"
+    },
+    {
+      "name": "tagged_secondary_read_count",
+      "rva": "0x12e10a",
+      "size": 5,
+      "sha256": "9a6b52a1b94729eaea3e1fcafd16843d274cb4e88e1d5c8d41bd40b4df24e832"
+    },
+    {
+      "name": "tagged_secondary_write_count",
+      "rva": "0x132028",
+      "size": 5,
+      "sha256": "9a6b52a1b94729eaea3e1fcafd16843d274cb4e88e1d5c8d41bd40b4df24e832"
+    },
+    {
+      "name": "tagged_secondary_header_read",
+      "rva": "0x12e0cb",
+      "size": 23,
+      "sha256": "a438eed0e6566f864ddc919474cc983319ab8850618e5bc9c9d2fa5441a4ccf4"
+    },
+    {
+      "name": "tagged_secondary_header_write",
+      "rva": "0x13202d",
+      "size": 36,
+      "sha256": "2e66ac361b9463dccb1eca608566ccc749365a9f2081d9b7c75b83bc1bcb4a32"
+    },
+    {
+      "name": "tagged_secondary_footer_read",
+      "rva": "0x12e139",
+      "size": 23,
+      "sha256": "5878a1b28a582512c4568e1b2053ecd4f82069eb1211c19d73d62dbdaecd4d1f"
+    },
+    {
+      "name": "tagged_secondary_footer_write",
+      "rva": "0x1320ab",
+      "size": 48,
+      "sha256": "c5cadedf76f1a77dcca851c66acfcad7027008f6a8158a03730c7c69ddcfd5b5"
+    }
+  ],
+  "limits": "This contract does not establish outer header admission, game save roundtrip, migration, network actor fields, AAE or peer compatibility."
+}

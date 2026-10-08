@@ -12,6 +12,8 @@ Enhanced launcher failures, declared before implementation
 10. Keep the debugger attached to handle only its owned traps and forward other exceptions.
 11. Never replace the game executable, add an app-ID file or change Steam launch options.
 12. Preserve the normal Steam launch. Enhanced sessions target ordinary Zombies.
+13. Refuse concurrent enhanced launches, including two requests before either game appears.
+    Keep that lease through the owned game exit and release it after refusal or normal exit.
 
 Owned component tests do not prove a successful BO3 launch, mod loading, host/join or gameplay.
 The first candidate remains experimental until the manual game tests and removal checks pass.

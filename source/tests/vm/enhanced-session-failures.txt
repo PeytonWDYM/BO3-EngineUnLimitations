@@ -1,0 +1,19 @@
+Enhanced 500k overlay: focused failures before implementation
+
+Use owned native processes and private session files only. No game or normal install launch.
+
+1. Stock launches without the exact process receipt retain stock capacities. A profile-only
+   server capacity change to 500001 must fail before any expanded pool read.
+2. Ready receipt enrollment must bind PID, process creation FILETIME, main image and helper,
+   candidate/schema, full activation/edit count and fixed server/client/migration configuration.
+3. Missing, stale, non-ready, malformed, truncated or wrong-identity receipts must never
+   enroll a process. An unrelated PID or reused PID cannot borrow another process's receipt.
+4. Runtime attestation must verify every required expanded capacity instruction and required
+   helper configuration. A missing/mismatched/unreadable check refuses expansion before pool access.
+5. Successful owned enrollment must let the existing sampler and latest-state publisher show
+   500001 total/500000 usable server slots, preserving the 65000-slot client capacity.
+6. Ownership evidence must remain bound to the verified process/profile. Expired/dead/wrong
+   process identity and unsupported 1m/client expansion must fail without oversized reads.
+
+Retain process identities, session/profile inputs, code/config hashes and actual sample/latest
+output with a repeatable report. Fixture success does not validate a BO3 session or matching peers.
