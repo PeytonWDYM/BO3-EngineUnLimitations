@@ -14,6 +14,9 @@ public:
 #endif
     ~PrivateReceipt();
     void Write(const Receipt&);
+#ifdef BO3_LATE_STOCK_CONTROL
+    void Write(const ControlReceipt&);
+#endif
     const std::filesystem::path& Path() const {return path_;}
     PrivateReceipt(const PrivateReceipt&)=delete;
     PrivateReceipt& operator=(const PrivateReceipt&)=delete;

@@ -67,10 +67,18 @@ void SetOwnedFailure(Failure failure){ownedFailure=failure;}
 void SetOwnedStoppedObserver(std::function<void(HANDLE,bool)> observer){ownedObserver=std::move(observer);}
 void SetOwnedEventObserver(std::function<void(HANDLE,const DEBUG_EVENT&)> observer){ownedEventObserver=std::move(observer);}
 #endif
+#ifdef BO3_LATE_STOCK_CONTROL
+void CoordinateControl(OwnedChild& child,MappedGate& gate,const AdmitControl& admit,const CaptureControl& capture,
+    const CheckControlBindings& checkBindings,ControlReceipt& receipt) {
+#else
 void Coordinate(OwnedChild& child,MappedGate& gate,const PreparePlan& prepare,Receipt& receipt) {
+#endif
     const auto deadline=GetTickCount64()+child.payload.deadlineMs;
     receipt.processId=child.process.dwProcessId;receipt.primaryThreadId=child.process.dwThreadId;
     receipt.created=child.payload.processCreatedFileTime;
+#ifdef BO3_LATE_STOCK_CONTROL
+    receipt.gateDeadlineMs=child.payload.deadlineMs;
+#endif
     bool pending=false,attached=false;DEBUG_EVENT event{};
     DebugHandles handles;
     try {
@@ -79,6 +87,9 @@ void Coordinate(OwnedChild& child,MappedGate& gate,const PreparePlan& prepare,Re
         gate.VerifyWaiting(child.process.hProcess,child.payload,receipt.generation);
         BOOL already=FALSE;
         Require(CheckRemoteDebuggerPresent(child.process.hProcess,&already)!=FALSE && !already,"The owned child already has a debugger.");
+#ifdef BO3_LATE_STOCK_CONTROL
+        capture(child.process.hProcess,receipt);
+#endif
         const auto entries=SystemEntries(child.process.hProcess);
         receipt.attachBreakpoint=entries.breakpoint;receipt.attachThreadEntry=entries.threadEntry;
         Require(DebugActiveProcess(child.process.dwProcessId)!=FALSE,"Cannot attach to the waiting owned child.");
@@ -118,6 +129,9 @@ void Coordinate(OwnedChild& child,MappedGate& gate,const PreparePlan& prepare,Re
                 if(event.u.LoadDll.hFile)CloseHandle(event.u.LoadDll.hFile);
             } else if(event.dwDebugEventCode==EXIT_PROCESS_DEBUG_EVENT) {
                 receipt.patch.exited=true;receipt.patch.exitCode=event.u.ExitProcess.dwExitCode;
+#ifdef BO3_LATE_STOCK_CONTROL
+                receipt.exitDebugEventObserved=true;
+#endif
                 Require(ContinueDebugEvent(event.dwProcessId,event.dwThreadId,DBG_CONTINUE)!=FALSE,"Cannot finish owned exit event.");
                 handles.ExitedProcess();
                 pending=false;attached=false;throw std::runtime_error("The owned child exited during late attach.");
@@ -130,6 +144,12 @@ void Coordinate(OwnedChild& child,MappedGate& gate,const PreparePlan& prepare,Re
                 else {
                     gate.Admit(child.process.hProcess);gate.VerifyWaiting(child.process.hProcess,child.payload,receipt.generation);
                     receipt.writeEventThread=event.dwThreadId;receipt.patch.stoppedThread=event.dwThreadId;
+#ifdef BO3_LATE_STOCK_CONTROL
+                    admit(child.process.hProcess,receipt.patch.imageBase,receipt);
+                    receipt.admitted=true;
+                    gate.VerifyWaiting(child.process.hProcess,child.payload,receipt.generation);
+                    Require(GetTickCount64()<deadline,"The stopped control exceeded its gate deadline.");
+#else
                     auto plan=prepare(child.process.hProcess,receipt.patch.imageBase,receipt.patch);
                     Require(plan.edits.size()==42 && plan.relay!=nullptr,"The complete fixed native transaction is required.");
                     receipt.helperBase=plan.helperBase;
@@ -150,6 +170,7 @@ void Coordinate(OwnedChild& child,MappedGate& gate,const PreparePlan& prepare,Re
 #endif
                         throw;
                     }
+#endif
                     DWORD continueThread=event.dwThreadId;
 #ifdef BO3_LATE_OWNED_TEST
                     if(ownedFailure==Failure::Continue)continueThread=0;
@@ -164,6 +185,9 @@ void Coordinate(OwnedChild& child,MappedGate& gate,const PreparePlan& prepare,Re
                     BOOL debugger=TRUE;
                     Require(CheckRemoteDebuggerPresent(child.process.hProcess,&debugger)!=FALSE && !debugger,
                         "The child still has a debugger after detach.");receipt.debuggerAbsent=true;
+#ifdef BO3_LATE_STOCK_CONTROL
+                    checkBindings(child.process.hProcess);receipt.bindingsUnchanged=true;
+#endif
                     Require(!child.Exited(),"The owned child exited before gate release.");
                     gate.VerifyWaiting(child.process.hProcess,child.payload,receipt.generation);
                     Require(GetTickCount64()<deadline,"Detach exceeded the cooperative gate deadline.");
@@ -179,11 +203,24 @@ void Coordinate(OwnedChild& child,MappedGate& gate,const PreparePlan& prepare,Re
         const auto original=std::current_exception();
         // PausedPatch and uncommitted relays have already unwound while the event remained pending.
         // Cleanup must still drain a pending event if the child has already started exit.
+#ifdef BO3_LATE_STOCK_CONTROL
+        if(WaitForSingleObject(child.process.hProcess,0)!=WAIT_OBJECT_0)
+            receipt.terminated=TerminateProcess(child.process.hProcess,97)!=FALSE;
+#else
         if(WaitForSingleObject(child.process.hProcess,0)!=WAIT_OBJECT_0)TerminateProcess(child.process.hProcess,97);
         receipt.terminated=true;
+#endif
         if(pending)ContinueDebugEvent(event.dwProcessId,event.dwThreadId,DBG_CONTINUE);
         if(attached)DebugActiveProcessStop(child.process.dwProcessId);
-        WaitForSingleObject(child.process.hProcess,5000);std::rethrow_exception(original);
+        WaitForSingleObject(child.process.hProcess,5000);
+#ifdef BO3_LATE_STOCK_CONTROL
+        if(WaitForSingleObject(child.process.hProcess,0)==WAIT_OBJECT_0
+            && GetExitCodeProcess(child.process.hProcess,&receipt.observedExitCode)) {
+            receipt.patch.exited=true;receipt.patch.exitCode=receipt.observedExitCode;
+            receipt.observedExited=true;
+        }
+#endif
+        std::rethrow_exception(original);
     }
 }
 void WriteReceipt(std::ostream& stream,const Receipt& receipt) {

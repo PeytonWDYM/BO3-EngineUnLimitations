@@ -54,8 +54,15 @@ bool Load(const std::filesystem::path& path) {
 int wmain(int argc,wchar_t** argv) {
     if(argc!=4 || !Load(argv[2]))return 1;
     const std::wstring scenario=argv[1];
+#ifdef BO3_LATE_STOCK_CONTROL_TARGET
+    if(scenario==L"pre-gate-exit")return 23;
+#endif
     if(scenario==L"guard")*reinterpret_cast<unsigned char*>(OwnedImage+0x12dba10)^=1;
     if(scenario==L"allocated")*reinterpret_cast<std::uintptr_t*>(OwnedImage+0x5124580)=1;
+#ifdef BO3_LATE_STOCK_CONTROL_TARGET
+    if(scenario==L"call")*reinterpret_cast<unsigned char*>(OwnedImage+0x22b1559)^=1;
+    if(scenario==L"target")*reinterpret_cast<unsigned char*>(OwnedImage+0x227a3a0)^=1;
+#endif
     const auto module=GetModuleHandleW(L"Bo3StartupGate.dll");
     const auto state=reinterpret_cast<const bo3::startup_gate::State*>(GetProcAddress(module,"Bo3StartupGateState"));
     HANDLE workers[4]{};
@@ -65,7 +72,11 @@ int wmain(int argc,wchar_t** argv) {
     bool counts=true;
     for(const auto& count:bo3::enhanced::GameCounts) {
         std::uint32_t value{};std::memcpy(&value,reinterpret_cast<void*>(OwnedImage+count.rva+count.immediateOffset),4);
+#ifdef BO3_LATE_STOCK_CONTROL_TARGET
+        counts=counts && value==130000;
+#else
         counts=counts && value==500001;
+#endif
     }
     const bool debugger=IsDebuggerPresent()!=FALSE;
     InterlockedExchange(&done,1);WaitForMultipleObjects(4,workers,TRUE,5000);
@@ -78,5 +89,9 @@ int wmain(int argc,wchar_t** argv) {
         <<",\"all19Counts\":"<<(counts?"true":"false")<<",\"apiResult\":"<<shown<<",\"lastError\":"<<error
         <<",\"workerTicks\":"<<WorkerTicks<<",\"foreignBreakHandled\":"<<ForeignBreakHandled<<",\"gatePhase\":"<<(state?state->phase:-1)<<"}";
     proof.flush();Sleep(500);
+#ifdef BO3_LATE_STOCK_CONTROL_TARGET
+    if(scenario==L"early-exit")return passed?17:2;
+    if(scenario==L"timeout")Sleep(INFINITE);
+#endif
     return passed?0:2;
 }

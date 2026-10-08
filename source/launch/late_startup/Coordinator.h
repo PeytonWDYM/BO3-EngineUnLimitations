@@ -25,6 +25,21 @@ using PreparePlan=std::function<PreparedPlan(HANDLE,std::uintptr_t,vm_startup::R
 // The production caller binds the fixed recipe. Owned fixtures bind an inert address image.
 void Coordinate(OwnedChild&,MappedGate&,const PreparePlan&,Receipt&);
 void WriteReceipt(std::ostream&,const Receipt&);
+#ifdef BO3_LATE_STOCK_CONTROL
+struct ControlReceipt : Receipt {
+    std::vector<unsigned char> preAttachCallBytes,preAttachTargetBytes,callBytes,targetBytes;
+    bool admitted=false,bindingsUnchanged=false,observationTimedOut=false;
+    bool observedExited=false,exitDebugEventObserved=false;
+    DWORD observedExitCode{};
+    DWORD gateDeadlineMs{30000},observationLimitMs{120000};
+    ULONGLONG observationMs{};
+};
+using AdmitControl=std::function<void(HANDLE,std::uintptr_t,ControlReceipt&)>;
+using CaptureControl=std::function<void(HANDLE,ControlReceipt&)>;
+using CheckControlBindings=std::function<void(HANDLE)>;
+void CoordinateControl(OwnedChild&,MappedGate&,const AdmitControl&,const CaptureControl&,const CheckControlBindings&,ControlReceipt&);
+void WriteControlReceipt(std::ostream&,const ControlReceipt&);
+#endif
 #ifdef BO3_LATE_OWNED_TEST
 enum class Failure {None,AfterApply,Continue,Detach};
 void SetOwnedFailure(Failure);

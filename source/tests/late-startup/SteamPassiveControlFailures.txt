@@ -1,0 +1,14 @@
+Passive stock-control Steam failures declared before implementation:
+1. Admit one fixed passive recipe and pinned shared sources. Refuse changed recipe, helper, gate, license, control or game bytes.
+2. The native recipe has no debugger attachment, no VM or migration edits, no relay, stock capacity, and fixed gate/observation deadlines.
+   Its native checks are sequential reads. They do not prove that all threads stopped or provide an atomic native snapshot.
+3. Install only the quoted private native passive control, %command%, and original plain arguments. Preserve inherited Steam IDs and every game argument.
+4. Use the existing canonical Steam Play receipt. Refuse an enabled stock or enhanced route. Restore its original absent field before passive setup.
+5. Passive removal restores absent, empty and raw launch fields. Preserve unrelated later configuration bytes. Retain ownership when the installed field changes.
+6. Refuse setup and removal while the passive controller runs. Retain the existing Steam, BO3, controller, transaction and cache checks.
+7. Use a distinct passive recipe receipt key. Never claim expanded slots or admit enhanced VM enrollment.
+8. Expose no runtime profile, capacity, debugger or deadline override. Setup launches nothing. Owned tests execute only the inert argv recorder.
+The shared transport mechanics remain unchanged. Four focused groups cover the new recipe, argv, canonical restoration and passive-process refusal.
+Bounded comparison contract: Use the reviewed frozen SteamPassiveControl.py for passive setup and removal after Steam, BO3 and controls close.
+Older route scripts do not recognize the passive parent before its BO3 child exists. Use them only before passive setup.
+The public release must unify the controller inventory before packaging.

@@ -1,0 +1,23 @@
+Stock-capacity late control failures declared before code, 2026-10-08:
+- The control uses the same frozen helper and CRT gate. Wrong hashes refuse before launch.
+- The control does not prepare a native patch or allocate a relay.
+- All 82 guards, 19 complete count instructions, entry prefixes and zero storage prerequisites must match.
+- All seven helper binding records must remain zero at admission and after detach.
+- Capture the exact native CALL at RVA 22b1559 and target bytes at RVA 227a3a0 while all threads stop.
+- Treat the extra CALL and target ranges as observations. Their protected bytes can change across startup phases.
+- Never use later startup plaintext as a new gate-phase guard. Never alter either observed range.
+- Preserve qualified attachment breakpoint identity, thread enumeration and zero hardware-register writes.
+- Continue or detach failure prevents release and closes only the owned child.
+- Release requires a live child, debugger absence and the exact waiting gate state.
+- Distinct late-crt-control receipts cannot enroll an expanded-pool sampler.
+- Receipts record zero edits, zero relay allocations and stock capacities even after a successful release.
+- The fixed 120-second observation deadline closes only the owned child. Native early exits retain their exit code.
+- The existing 30-second gate deadline stays fixed. No user capacity or deadline override exists.
+- Owned success proves unchanged code, helper bindings and storage, gate return, detach and lifetime ownership.
+- Owned guard corruption and allocated storage refuse before release with unchanged native bytes.
+- Owned changed CALL and target prefix remain unchanged and appear in both observation records.
+- Owned continuation and detach injections refuse without release or native writes.
+- Owned early exit and observation timeout retain a repeatable process-bound receipt.
+- A native exit before gate readiness preserves its raw code and never issues another termination request.
+- Check helper bindings after detach, before release. A fast native exit after release must not race a memory read.
+- Fixture processes use VmStartupControlTarget.exe. Do not start a BlackOps3-named stand-in.

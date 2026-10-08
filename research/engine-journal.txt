@@ -1236,3 +1236,75 @@ Coordinator review SHA-256: 1cd62db26f28ad936e5b4663da09c284ad61fae13bf4586c4ebe
 Steam transport review SHA-256: 3892f25620b62f12ef004ac8ba28cb18ae84bab86604340e1f3c7bfd9772bb1d.
 Enrollment review SHA-256: d2ca8371b048f68853afcb47c6899debafd85595f92fcbd521cf39eea31b3ea1.
 Private evidence: release-enhancement/manual-late-startup-02, startup-gate/gate-07, late-startup, and late-enrollment/late-02.
+
+October 8, 17:55 UTC, reviewed stock-capacity late comparison prepared:
+
+The actual dump binds PID 18824 and its main thread. All VM and migration storage remains zero.
+The stock code reference contains a CALL at RVA 22b1559 to RVA 227a3a0.
+A saved continuation word matches that call. It is not an unwound native frame.
+The fault address is the reference target plus 40000000. The actual CALL and target code pages are absent from the Windows dump.
+No fixed-plan edit overlaps the referenced CALL or target. The initiating instruction and cause remain unverified.
+A separate fixed control reuses the same cooperative gate and qualified late debugger lifecycle with stock capacities.
+Its compile branch omits the entire native plan, count edits, migration edits, and relay allocation.
+It observes the CALL and target before attachment and at the qualified stopped event. These are not new plaintext guards.
+The control retains the original thirty-second gate deadline and a fixed 120-second observation deadline.
+Ten owned native cases passed. They cover admission, zero writes, unchanged bindings, refusals, early native exit, and timeout.
+Sixteen control Steam groups and eleven production transport groups passed. Fresh native and transport reviews have no open findings.
+Review corrected early-exit receipt handling and moved binding checks before release to avoid a fast-exit read race.
+After Peyton closed Steam, the canonical remover restored the original absent field. The fixed control setup then installed its temporary route.
+The root compared both configuration byte streams and verified that only BO3 LaunchOptions changed.
+Steam restarted silently. No desktop input, audio change, or root game launch occurred.
+The recorder and a process-bound automatic read-only snapshot waiter await Peyton's manual Play-button test.
+Steam's successful Cloud retry changes the context. A successful control alone cannot attribute the earlier crash to the 42 edits.
+Control launcher SHA-256: 37cf3602b0d8232e15a5476f97adf42b8060c13da435241512eaed15facf6d62.
+Native review SHA-256: e738d1543bd414875b1e736e6c8fb960c6340371edc51777cbd671f9f31bb03d.
+Transport review SHA-256: b4000bbc8dec0f48ebc4e97338a88a1244663691bd931a9127e2555dd4bad449.
+Private evidence: release-enhancement/late-startup-crash-sol, late-control-steam-01, and manual-late-control-03.
+
+October 8, 18:10 UTC, stock late control reproduces the native startup fault:
+
+Peyton reports only the launcher appeared. Steam returned its button to Play without showing a BO3 window.
+The process-bound receipt identifies PID 61712, creation FILETIME 134359557149857962.
+It records zero native edits, zero relays, successful late debugger attachment and detach, debugger absence, and gate release.
+The process exited after 8,547 milliseconds with c0000005. The controller did not terminate it.
+Steam Cloud and stats sync succeeded before this launch. All sixteen matching Cloud profile files remained unchanged.
+Windows captured the same execution fault at 0x7ff7d2a9a3a0 as the earlier expanded candidate.
+Both dumps contain zero VM/migration storage and matching saved game-address words at the same stack offsets.
+These words are not an unwound call stack. The initiating instruction remains unverified.
+The CALL and target bytes match before and after debugger attachment in the control's recorded observations.
+This failure does not require the 42 native edits, relay allocation, or the earlier Cloud failure.
+It does not yet isolate the debugger from the shared two-helper gate path.
+The snapshot waiter read the empty receipt before its writer finished and missed the full read-only snapshot.
+The root corrected this operational race after recording its failure cases. Incomplete JSON and empty receipts now retry within five seconds.
+The retained Windows dump is 393,443,849 bytes, SHA-256 f709cabd7eb7dd3f4307cf3d6a896179bbeba3f04ecc6666e810bf8eff60010d.
+All 92 profiles, the executable, and four installed fastfiles match the fresh baseline. Only Steam's app manifest changed.
+
+The next separate diagnostic omits all debugger attachment, event, detach, and thread-context calls.
+It retains the same frozen helper and gate, stock capacities, sequential admission reads, and fixed 120-second observation limit.
+Its link excludes the paused transaction. Binary import inspection confirms the absent debugger calls.
+Eight failure-first native cases and four focused transport groups passed. Fresh independent reviews have no open findings.
+The passive receipt records allThreadsStopped false and cannot enroll expanded monitoring or publish a native transaction.
+The root froze nineteen deployment files and checked all forty-three recorded native build hashes.
+While Steam was closed, the canonical remover restored the original absent field before installing the passive route.
+A byte comparison confirms that only BO3 LaunchOptions changed. The original field remains absent in the canonical receipt.
+Steam restarted silently. No desktop input, audio change, or root game launch occurred.
+Read-only capture and the corrected process-bound waiter await Peyton's manual Steam Play test.
+Peyton authorizes future Steam shutdown through its command. Computer use remains unnecessary for this transport.
+Passive launcher SHA-256: 6e11001386a191af72001572fc1a2d9140ef5541db8fc5b98ccd5abf7f18cd0b.
+Native review SHA-256: 7a700089a6243b71f9a507b23a53090c4d6fa22a5133a6e20632dc5307df98fa.
+Transport review SHA-256: 6c3c1ebd80a98f09cbbcb899d8deaa1bc6f1479cebe8d9ff6ddd395c79ce5012.
+Private evidence: release-enhancement/manual-passive-control-04, passive-control-steam-01, and late-startup-crash-sol/passive-01.
+
+October 8, 18:11 UTC, passive control opens a window and exits with code zero:
+
+The actual manual Steam launch created PID 65632, creation FILETIME 134359566204490609.
+Its receipt records sequential checks passed, debugger absent, gate released, and zero engine edits.
+Peyton saw a game window. He confirms that it disappeared on its own before the startup video.
+The process exited with code zero after 29,968 milliseconds. The controller did not terminate it or reach its deadline.
+Windows recorded AppHangTransient at exit. No matching execution-access-violation dump appeared.
+The corrected waiter requested a PSS clone snapshot at 18:10:23 UTC. The dump completed at 18:10:24 UTC.
+The snapshot contains 585,248,768 memory bytes in a complete 585,457,206-byte file.
+Its SHA-256 is 80cdba63531333fbd243cd94d50015abc683da2ae427a2799514fe36c7f9e5ef.
+All 92 profiles, the executable, and four fastfiles match the fresh baseline. Only Steam's app manifest changed.
+This comparison removes debugger attachment but adds a successful snapshot capture. The normal exit cause remains unresolved.
+The saved native startup state is under inspection. This result does not validate completed startup, AAE, or expanded allocation.

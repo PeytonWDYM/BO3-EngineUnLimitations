@@ -36,7 +36,14 @@ void PrivateReceipt::Create(const std::filesystem::path& root,const OwnedChild& 
                 "Cannot create the private receipt directory.");
             directories_.push_back(LockDirectory(directory));
         }
-        path_=directory/(std::to_wstring(child.payload.processCreatedFileTime)+L"-"+std::to_wstring(child.process.dwProcessId)+L"-late.json");
+#if defined(BO3_LATE_PASSIVE_CONTROL)
+        constexpr auto suffix=L"-late-passive-control.json";
+#elif defined(BO3_LATE_STOCK_CONTROL)
+        constexpr auto suffix=L"-late-control.json";
+#else
+        constexpr auto suffix=L"-late.json";
+#endif
+        path_=directory/(std::to_wstring(child.payload.processCreatedFileTime)+L"-"+std::to_wstring(child.process.dwProcessId)+suffix);
         file_=CreateFileW(path_.c_str(),GENERIC_WRITE,FILE_SHARE_READ,nullptr,CREATE_NEW,FILE_ATTRIBUTE_NORMAL,nullptr);
         Require(file_!=INVALID_HANDLE_VALUE,"The private receipt path already exists or cannot be created.");
     }catch(...){for(const auto handle:directories_)CloseHandle(handle);directories_.clear();throw;}
@@ -50,8 +57,14 @@ PrivateReceipt::PrivateReceipt(const OwnedChild& child) {
 PrivateReceipt::PrivateReceipt(const std::filesystem::path& directory,const OwnedChild& child){Create(directory,child);}
 #endif
 PrivateReceipt::~PrivateReceipt(){if(file_!=INVALID_HANDLE_VALUE)CloseHandle(file_);for(const auto handle:directories_)CloseHandle(handle);}
+#ifdef BO3_LATE_STOCK_CONTROL
+void PrivateReceipt::Write(const ControlReceipt& receipt) {
+    std::ostringstream stream;WriteControlReceipt(stream,receipt);
+#else
 void PrivateReceipt::Write(const Receipt& receipt) {
-    std::ostringstream stream;WriteReceipt(stream,receipt);stream<<'\n';const auto bytes=stream.str();
+    std::ostringstream stream;WriteReceipt(stream,receipt);
+#endif
+    stream<<'\n';const auto bytes=stream.str();
     LARGE_INTEGER begin{};Require(SetFilePointerEx(file_,begin,nullptr,FILE_BEGIN)!=FALSE,"Cannot rewind the owned receipt.");
     DWORD written{};
     Require(WriteFile(file_,bytes.data(),static_cast<DWORD>(bytes.size()),&written,nullptr)!=FALSE && written==bytes.size()

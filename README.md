@@ -104,6 +104,15 @@ The cooperative runtime loader cannot patch stock BO3 yet.
 The startup API probe reads provisional storage at one verified caller. It does not publish larger pools.
 The observation probe was removed before installing the reviewed late CRT candidate through reversible Steam launch options.
 That candidate commits its native transaction, but the actual game crashes during startup. It is not ready for release.
+The separate stock-capacity late control isolates the launcher path from the expanded-pool edits.
+It records the same startup code ranges and performs no VM, migration, count, or relay writes.
+Its actual Steam launch crashed at the same address after 8.5 seconds, with zero engine edits and successful Steam Cloud sync.
+This failure does not require expanded-pool edits or relays. Its shared startup path remains under investigation.
+The next stock-capacity comparison retains the same two helpers and removes debugger attachment.
+Eight native cases, four focused Steam groups, and fresh independent reviews passed.
+Its sequential reads do not establish an all-thread stop. It cannot activate expanded pools.
+Its actual test opened a game window, then exited on its own with code zero after thirty seconds.
+A complete read-only snapshot is retained. The earlier access violation did not recur, but completed startup remains unresolved.
 The silent-audio prototypes do not establish quiet game startup.
 Their source and limits remain documented with the investigation.
 

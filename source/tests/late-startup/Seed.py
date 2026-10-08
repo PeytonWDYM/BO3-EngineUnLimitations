@@ -6,6 +6,7 @@ p.add_argument('--dump',type=Path,required=True)
 p.add_argument('--inventory',type=Path,required=True)
 p.add_argument('--dependencies',type=Path,required=True)
 p.add_argument('--output',type=Path,required=True)
+p.add_argument('--control',action='store_true')
 a=p.parse_args()
 sys.path.insert(0,str(a.dependencies))
 sys.path.insert(0,str(Path(__file__).resolve().parents[2]/'reverse'))
@@ -19,6 +20,9 @@ memory=DumpMemory(a.dump)
 try:
     module=verify_identity(memory,profile,identity)
     records=[(0,memory.read(module.baseaddress,4096))]
+    if a.control:
+        for rva,size in [(0x22b1559,5),(0x227a3a0,64)]:
+            records.append((rva,memory.read(module.baseaddress+rva,size)))
     for guard in inventory['codeGuards']:
         raw=memory.read(module.baseaddress+guard['rva'],guard['size'])
         assert hashlib.sha256(raw).hexdigest()==guard['sha256']

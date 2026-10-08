@@ -84,6 +84,32 @@ Peyton is using his desktop again. Do not use desktop controls. Work through fil
 The desktop's current audio is unmuted at volume 100. Leave the user's current audio setting alone.
 The capture stopped with this child. Rearm read-only capture before the next manual test.
 Diagnose the captured native fault before another actual launch. Do not claim that 500,000 live slots have been verified.
+The reviewed stock-capacity late CRT comparison is now installed temporarily through the same canonical Steam receipt.
+It changes no VM, migration, count or relay state. Ten native cases, sixteen control Steam groups and eleven production groups pass.
+Fresh native and transport reviews have no open findings. Early native exits retain their raw code without another termination request.
+The root verified that only BO3 LaunchOptions changed and that the canonical original field remains absent.
+Peyton closed Steam for setup. Steam restarted silently, without desktop controls or a game launch.
+Read-only capture and an automatic snapshot waiter are armed in release-enhancement/manual-late-control-03/.
+The next test is manual Steam Play. Its control has a fixed 120-second observation limit and closes only its owned child.
+The extra CALL and target ranges are observations, not unverified plaintext admission guards.
+Peyton's actual stock-capacity test at 17:55 UTC created PID 61712 and exited after 8.5 seconds with c0000005.
+Its receipt records zero native edits and relay allocations, successful detach, debugger absence, and gate release.
+The two Windows dumps contain the same execution fault address, zero VM/migration storage, and matching saved game-address stack words.
+The second launch had successful Steam Cloud and stats sync. This failure does not require the 42 edits, relays, or Cloud failure.
+The exact initiating instruction remains unresolved. Saved stack words are not unwound native frames.
+The automatic snapshot waiter parsed an empty receipt too early and missed the full snapshot. The Windows crash dump is retained.
+The corrected waiter retries incomplete receipts and checks exact process creation time, executable path, and recorder identity.
+A separate passive stock-capacity comparison is now installed. It retains the same two helpers and omits debugger attachment entirely.
+Eight native cases and four focused Steam groups passed. Fresh native and transport reviews have no open findings.
+Its reads are sequential. It records allThreadsStopped false and cannot enroll expanded-pool monitoring or publish native edits.
+Only BO3 LaunchOptions changed. The canonical original field remains absent. Use the frozen passive wrapper for its removal.
+Peyton's passive test created PID 65632, reached a game window, and exited on its own with code zero after thirty seconds.
+The controller did not terminate it. Windows recorded AppHangTransient, with no matching execution-access-violation dump.
+The corrected waiter captured a complete 585,457,206-byte read-only snapshot before exit.
+This test omitted debugger attachment, but included a PSS clone capture. Do not isolate the exit cause without another comparison.
+All 92 profiles, the executable, and four installed fastfiles still match. Only Steam's app manifest changed.
+Private evidence is in release-enhancement/manual-passive-control-04/. This result does not validate a completed startup or expanded pool.
+Peyton authorizes future Steam shutdown through commands without computer use. Keep desktop controls and current audio untouched.
 Do not use the observation probe as a publication gate or advertise 500,000 active slots from its callback.
 The direct diagnostic sets the same child Steam IDs. It is not a replay of every inherited Steam launcher environment variable.
 Do not lengthen the gate timeout or change protected startup behavior without evidence.

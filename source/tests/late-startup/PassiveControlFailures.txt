@@ -1,0 +1,20 @@
+Passive stock control failures declared before implementation, 2026-10-08:
+- Use the same frozen VM helper and CRT gate. Retain the existing Detours DLL and payload injection.
+- Do not link or call debugger attachment, debug-event, debugger detach or thread-context APIs.
+- Check debugger absence before and after sequential admission reads, and before gate release.
+- No VM, migration, count, relay or hardware-register write occurs. No relay allocation occurs.
+- Read all 82 code guards, 19 complete stock count instructions, exact entries and unallocated storage prerequisites.
+- Read the seven unpublished helper binding records. Changed storage or code refuses before release.
+- Read CALL and target bytes before and after admission. Retain both observations without a new plaintext guard.
+- Describe all reads as sequential. The cooperative main-thread wait does not stop all child threads.
+- Use a distinct late-crt-passive-control method and -late-passive-control.json receipt suffix.
+- Never claim an all-thread stop, native transaction commit or expanded-pool activation.
+- Preserve the fixed 30-second gate deadline and 120-second owned observation limit.
+- A native exit before readiness retains the raw code and does not request termination again.
+- A fast native exit after release uses the process handle. Do not race it with memory reads.
+- Deadline closure affects only the owned child. Keep timeout and successful termination-request metadata separate.
+- Owned success retains stock counts, native bytes, helper bindings, worker progress and gate/API behavior.
+- Owned code corruption and allocated storage refuse before release without native edits.
+- Owned changed CALL/target observations remain unchanged by the control.
+- Owned early exit, pre-gate exit and observation timeout retain repeatable process-bound receipts.
+- Fixture processes use VmStartupControlTarget.exe. Do not launch BO3 or a BlackOps3-named stand-in.
