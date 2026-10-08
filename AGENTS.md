@@ -55,6 +55,23 @@ Mute the game rather than the system audio.
 
 ## Reported failure and current evidence
 
+The approved full-AAE cleanup candidate remains installed in core_mod.ff for manual testing.
+Peyton confirmed two marked solo volleys with the Dystopic Demolisher on Der Eisendrache.
+Provisional readings remained around 72,000 to 87,000 allocated server slots. This does not validate the fix or unlimited play.
+That process exited at 00:19:56 UTC on October 8 after a separate native fatal exception.
+The first crash archive records a null global-context write in AAE's custom-key raw Lua callback.
+Immediately before the archive, the provisional server row retained 45,547 reusable slots and no first script error.
+The recursive native exceptions differ from the earlier exhausted-server failure. The UI-state lifecycle remains unresolved.
+Two stopped overlays overlapped and mixed old error text with current counters. Both were closed after process identity checks.
+A private native input guard passes seven instruction-emulation cases and six Windows unwind checks.
+Windows maps it without executing its imports or entry. This does not prove BO3 initialization or live Lua lifecycle safety.
+Native apply/removal passed on a private target. A verified original is staged for removal.
+Fresh independent review covers sixteen topics with no must-fix or should-fix findings.
+The native candidate has not been deployed to the normal game. Separate explicit authorization is required.
+The recorder and one separately bound VM sampler/overlay waiter await the next manual full-AAE launch.
+The new recorder started at 00:48:57 UTC on October 8. No agent game launch occurred.
+Read research/native-input-crash.txt for the captured cause, limits, and private evidence location.
+
 Long AAE Zombies matches can display Connection Interrupted after repeated Pack-a-Punched War Machine volleys.
 Peyton reports this in solo and co-op, with failures more common in co-op.
 Peyton clarified that BO3 remains open when this happens. Treat it as a match or hosting failure, not a confirmed application crash.

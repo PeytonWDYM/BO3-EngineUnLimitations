@@ -885,3 +885,22 @@ The fresh reviewer verified the fixes and current artifact hashes.
 Private workspace lab/evidence/agent-patch-loader/review-green/result.json records the current native result.
 Do not treat a native fixture result as evidence of game stability or compatibility with friends.
 Release requires a verified cause, a safe game integration point, repeated failure tests, and successful patch removal.
+
+October 8, 00:47 UTC, separate native input crash:
+
+Peyton confirmed two solo Dystopic Demolisher volleys on Der Eisendrache. Provisional counts retained headroom.
+The process exited at 00:19:56 UTC after a fatal archive at 00:19:29 UTC.
+The exact native key-dispatch callback reaches raw Lua execution and writes through a missing global context.
+The original instructions reproduce the saved invalid write in an isolated emulator.
+A private guard passes seven emulated cases and six actual Windows unwind positions.
+Windows maps the candidate without imports or entry execution. Private apply/removal preserves the original hash.
+The initial helper used unconditional transfers and failed two unwind positions. Conditional transfers correct the native unwind checks.
+The current native module remains unchanged. A verified original backup and guarded deployment record are staged privately.
+The cleanup script candidate remains installed. Neither candidate has complete game or friend validation.
+Two stopped diagnostic windows overlapped and mixed prior Invalid opcode text with current counters. Both were closed after identity checks.
+The current session accepted rows record no first server script error.
+Read research/native-input-crash.txt. Raw evidence and inspected profiles remain private.
+Fresh independent review rebuilt the exact candidate and passed the replay, native unwind, admission and private deployment checks.
+Sixteen review topics contain no must-fix or should-fix findings. Live game initialization remains unverified.
+The next recorder started at 00:48:57 UTC. One separately bound sampler/overlay waiter awaits the next manual full-AAE launch.
+The native candidate remains staged pending separate explicit deployment authorization.

@@ -98,6 +98,31 @@
         "reviewedDeploymentItems": 12,
         "openReviewFindings": 0
       }
+    },
+    "nativeInputCandidate": {
+      "status": "reviewed_private_candidate_awaiting_deployment_authorization",
+      "event": "Full-AAE native fatal exception on 2026-10-08 at 00:19:29 UTC",
+      "cause": "Custom-key raw Lua callback writes through a null global context. The preceding UI lifecycle remains unresolved.",
+      "currentServerRow": {
+        "allocated": 84452,
+        "reusable": 45547,
+        "firstScriptError": null,
+        "scope": "Provisional accepted row immediately before the crash archive."
+      },
+      "candidateSha256": "a4834cc251cfcba413bd80d783eec854c0c3f31d14651703a8d7a9e718e1576c",
+      "emulatedCases": 7,
+      "windowsUnwindCases": 6,
+      "freshReview": {
+        "reviewedTopics": 16,
+        "mustFix": 0,
+        "shouldFix": 0,
+        "scope": "Independent rebuild, image preservation, replay, Windows unwind, admission refusals, and private apply/removal. No game initialization."
+      },
+      "importsOrEntryExecuted": false,
+      "normalDeployment": "Not applied. Exact original is privately backed up and verified.",
+      "gameValidated": false,
+      "friendsValidated": false,
+      "documentation": "research/native-input-crash.txt"
     }
   },
   "labStatus": {
@@ -110,7 +135,7 @@
       "players": 2,
       "weapon": "Pack-a-Punched War Machine, Dystopic Demolisher, Fire Works",
       "bothPlayersInterrupted": true,
-      "hostRole": "Not explicitly confirmed by Peyton. Local server VM and entity pool are initialized.",
+      "hostRole": "Host, explicitly confirmed by Peyton.",
       "serverVmAllocated": 129999,
       "serverVmReusable": 0,
       "clientVmReusable": 25168,
@@ -211,7 +236,8 @@
     }
   ],
   "nextSteps": [
-    "Verify the candidate loads in Peyton's next manual full-AAE match. The original is backed up and normal deployment has explicit approval.",
+    "Get separate deployment authorization for the reviewed native input guard. Its exact original is backed up. Keep the game closed until deployment finishes.",
+    "Verify both candidates load in Peyton's next manual full-AAE match. Only the cleanup candidate currently has normal deployment approval.",
     "Verify next-process native identities and candidate script loading. Rebind external monitoring and cross-check saved snapshots.",
     "Validate waiter growth and recovery during controlled original and candidate volleys. Record map, round, host role, player count, weapon upgrade history and exact identities.",
     "After Peyton's manual session, verify the reviewed contained DirectSound rule in a separately bounded silent physical run if still needed. Its memory checkpoint does not prove the genuine positive Windows provider path.",

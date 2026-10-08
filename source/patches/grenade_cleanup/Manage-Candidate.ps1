@@ -2,11 +2,14 @@ param(
     [Parameter(Mandatory)][ValidateSet('Stage', 'Apply', 'Remove')][string]$Action,
     [Parameter(Mandatory)][string]$Directory,
     [string]$Target,
-    [string]$Candidate
+    [string]$Candidate,
+    [ValidateSet('GrenadeCleanup', 'NativeLuaGuard')][string]$Patch = 'GrenadeCleanup'
 )
 $ErrorActionPreference = 'Stop'
-$originalHash = '30532F605E8B3C9914DCD1169B23F9D46CD83949FDFE5B5E0FBE2DDF361D1D88'
-$candidateHash = 'AC4604A44D5CAF093DF917EB4A2A14C8979BFAB0088209122125FE09304C53F8'
+$originalHash = if ($Patch -eq 'NativeLuaGuard') { 'DBAED33F51853FFDF2BE390DACC50E8AF442506F603F331DF15F4381CA775261' }
+    else { '30532F605E8B3C9914DCD1169B23F9D46CD83949FDFE5B5E0FBE2DDF361D1D88' }
+$candidateHash = if ($Patch -eq 'NativeLuaGuard') { 'A4834CC251CFCBA413BD80D783EEC854C0C3F31D14651703A8D7A9E718E1576C' }
+    else { 'AC4604A44D5CAF093DF917EB4A2A14C8979BFAB0088209122125FE09304C53F8' }
 function Assert-PlainTarget {
     param([Parameter(Mandatory)][string]$Path)
     $file = [IO.FileInfo]::new($Path)

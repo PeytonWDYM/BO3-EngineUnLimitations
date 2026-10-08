@@ -1,0 +1,58 @@
+type: bug-investigation
+context: Full-AAE native fatal exception during the approved manual cleanup-candidate test.
+
+Reproduce
+Peyton reports returning to the game and possibly firing another volley.
+The recorder attached PID 25908 at 23:58:57 UTC and observed exit at 00:19:56 UTC on October 8.
+The game archived a fatal exception at 00:19:29 UTC. Its minidump identifies the same process and build.
+The map is zm_castle. Peyton confirmed the earlier volleys used the Dystopic Demolisher on Der Eisendrache.
+The active round and whether a friend joined remain unconfirmed.
+Two marked volleys showed provisional slot use around 72,000 to 87,000 and no accepted server script error.
+The last active-match row before the fatal archive had 84,452 allocated and 45,547 reusable server slots.
+Later rows show VM shutdown. They do not establish continued healthy gameplay.
+
+Isolate
+The first saved access violation is a null-pointer write inside full-AAE T7Overcharged.ff.
+The key-dispatch chain formats a CoD.Mod.CallCustomFunction invocation and enters the raw Lua execution helper.
+The captured fault instruction writes the bytecode sharing mode through the UI Lua state's global-context pointer.
+The saved register value for that pointer is zero. Exception information records a write to that null field.
+All repeated exceptions initially hit the same instruction. A later stack-overflow record follows the recursive failures.
+The native module matches the deployment's original disk hash. The approved cleanup candidate changed only core_mod.ff.
+A 64-byte fault-code range in the new minidump matches the previous captured native image.
+The private unpacked disk image agrees with that captured fault code.
+
+Hypothesize
+1. Missing Lua global context during custom-key dispatch causes the saved native exception.
+   Falsification: execute the exact original native helper with a present outer state and missing global context.
+2. Server script-variable exhaustion caused this new fatal exception.
+   Falsification: examine the saved native fault and immediately preceding provisional server measurements.
+3. The cleanup script changes directly corrupted the native input handler.
+   Falsification: compare the native fault bytes and unchanged module identity.
+The evidence supports hypothesis 1 and does not show exhaustion for this event.
+It does not explain the preceding UI-state lifecycle or exclude an indirect interaction with the script candidate.
+
+Verify
+The original instructions reproduce the same null-field write in isolated native instruction emulation.
+The new guard bypasses Lua execution for a missing global context and releases the existing lock.
+Seven emulator cases cover absent, unavailable and ready contexts, nested lock depth, error return and a rebased image.
+Ready-context results match the original code. The external calls are mocks, not the actual game APIs.
+Windows maps the candidate without executing its imports or entry point.
+Six native RtlVirtualUnwind positions restore the original return address, stack, and saved registers.
+An initial unconditional helper transfer failed two unwind positions. Conditional transfers corrected that failure.
+The candidate remains private. BO3 launch, Lua state recreation, input features and friends require manual validation.
+Fresh independent review rebuilt the exact candidate and verified seven replay cases and six Windows unwind positions.
+It checked sixteen topics and found no must-fix or should-fix defects.
+Five builder refusals and private apply/removal checks passed for the native and existing cleanup candidates.
+The review confirms the offline scope. It does not establish real locking, Lua ownership or game initialization.
+
+Diagnostics correction
+Two external overlays overlapped on the desktop. The older stopped window retained the previous match's Invalid opcode text.
+The current session's accepted rows contain no first server script error. Both stopped overlays were closed after identity checks.
+The screenshot's combined counters and old error text must not be interpreted as one current sample.
+
+Private evidence
+lab/evidence/failure-20261007T222120Z/fatal-20261008T001929Z/
+Crash archive, extracted minidump, inspected profiles, original images, replay results and Windows image checks remain private.
+No game launch, game control, profile edit, audio change or new normal-install binary deployment occurred during this investigation.
+The exact packed original, guard candidate and guarded deployment record are staged in normal-native-deployment.
+The recorder and one sampler/overlay waiter await the next manual full-AAE launch.
