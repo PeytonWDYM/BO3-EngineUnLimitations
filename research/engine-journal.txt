@@ -1321,3 +1321,12 @@ The root used Steam's graceful shutdown command, removed the temporary route thr
 The canonical receipt now records the original absent launch field as restored. Desktop controls and audio remained untouched.
 The next owned-only task tests a debugger-free process-state freeze before any native transaction integration.
 Private evidence: release-enhancement/manual-passive-no-dump-05.
+
+October 8, 18:20 UTC, Windows source checkout preserves fixed recipe hashes:
+
+A fresh owned clone with core.autocrlf true changed sixteen of eighteen reviewed Python and recipe files.
+Those newline changes invalidated raw source hashes used by the startup recipe, without changing Python behavior.
+The new .gitattributes file keeps Python files at LF and preserves each reviewed recipe's exact newline format.
+A second fresh clone matches all eighteen reviewed file hashes. Its fixed passive recipe admits the cloned source.
+The check launched no game and edited no Steam configuration. Existing frozen deployment bytes remain unchanged.
+Repeatable artifacts: release-enhancement/portable-source-01/before-result.json and after-result.json.
