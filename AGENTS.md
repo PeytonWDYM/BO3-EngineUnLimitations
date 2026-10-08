@@ -14,7 +14,8 @@ Faster firing, sprint retention, spawn pacing, tornado count, and peer compatibi
 The 500,000-slot startup helper and migration adapter have owned fixture and independent review evidence.
 Actual BO3 startup, full AAE loading, compressed whole state, and multiplayer remain unvalidated.
 One million slots remains disabled. The 200-actor storage prototype also remains disabled.
-The next manual recorder and waiting overlay are armed. Do not launch another game or a BlackOps3-named stand-in while they wait.
+The waiting overlay remains armed. Startup recorders stopped with their captured children; rearm capture before the next manual test.
+Do not launch another game or a BlackOps3-named stand-in while monitoring waits.
 Enhanced VM monitoring requires an exact process-bound startup receipt and live helper/count verification.
 Invalid enrollment refuses before expanded pool reads. Moving-match measurements remain provisional.
 
@@ -28,8 +29,21 @@ Steam retained the command after a background restart. All ninety-nine protected
 Deployment used no desktop input and launched no game. Peyton's first manual Steam Play test created the owned BO3 child.
 That child remained on one busy thread and timed out before a game window or the first VM allocation gate.
 Its refusal receipt records zero edits. No expanded pool became active.
-The helper module loaded, but boot readiness and the stopped instruction pointer still need capture.
-The next manual startup has a read-only snapshot scheduled eight seconds after process creation.
+The repeated manual startup produced a complete read-only snapshot eight seconds after process creation.
+The helper boot record is ready and both server VM pointers remain zero.
+The only thread is in protected pre-window code. It queried NtGetContextThread and obtained the armed hardware breakpoint.
+This supports a gate compatibility conflict. The exact loop-causing branch remains unverified.
+The separate stock-capacity diagnostic does not write hardware registers or activate 500k slots.
+Its follow-up build has fifteen passing owned native cases and a fresh review with no open findings.
+Its final build uses the exact deployed helper hash 09b947ba384837853d5f4061a8fc3e2b61dee6b2663a751d6e7a2fb974c803c1.
+BO3 Startup Test on Peyton's desktop points to that reviewed control. It closes only its owned game after thirty seconds.
+That manual control exited before its window with a captured Windows c0000005 execution fault.
+Its eight-second snapshot refused the already-exited child. The debugger received no process-exit event.
+The follow-up control uses a signaled process handle to retain early native exit codes without another termination request.
+It enforces the deadline even during continuous debug events. Its optional --no-debugger mode omits debugger attachment.
+BO3 Startup Test now selects that reviewed mode. A new read-only recorder is armed without a scheduled early snapshot.
+That manual comparison remains pending. Do not launch a game or BlackOps3-named fixture yourself.
+The direct diagnostic sets the same child Steam IDs. It is not a replay of every inherited Steam launcher environment variable.
 Do not lengthen the gate timeout or change protected startup behavior without evidence.
 Keep the startup helper outside the game and Workshop folders. Do not replace BlackOps3.exe.
 Use GPT-6.1 Sol for coding and review. Peyton explicitly stopped the expensive Astra VM agents.

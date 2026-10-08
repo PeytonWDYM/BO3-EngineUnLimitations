@@ -103,6 +103,43 @@
     "manualFirstAllocationGateReached": false,
     "manualPoolEditsWritten": 0,
     "manualGameWindowAppeared": false,
+    "startupFailureEvidence": {
+      "completeReadOnlySnapshotCaptured": true,
+      "helperBootReady": true,
+      "serverPoolAndHashUnallocated": true,
+      "targetQueriedArmedHardwareGate": true,
+      "exactLoopCausingBranchVerified": false,
+      "protectedFilesUnchangedAfterManualTests": 98,
+      "profilesPreservedAfterManualTests": 92,
+      "changedBaselineFile": "Steam app manifest",
+      "noHardwareManualControl": {
+        "userLeftUntouched": true,
+        "gameWindowAppeared": false,
+        "nativeExecutionFault": "c0000005",
+        "poolEditsWritten": 0,
+        "debugProcessExitEventReceived": false,
+        "diagnosticExitFallbackRequired": true,
+        "hardwareGateOnlyCauseEstablished": false,
+        "protectedFilesUnchangedSincePriorManualTest": 99
+      },
+      "followUpDiagnostic": {
+        "status": "frozen_reviewed_and_waiting_for_manual_no_debugger_test",
+        "artifactSha256": "77d14e80606cee63c20b7809fa732731d472451d6497e957782a9dbd729ac460",
+        "helperSha256": "09b947ba384837853d5f4061a8fc3e2b61dee6b2663a751d6e7a2fb974c803c1",
+        "ownedCasesPassed": 15,
+        "independentReviewOpenFindings": 0,
+        "processHandleExitFallback": true,
+        "continuousEventsDeadlineChecked": true,
+        "debuggerAttachedForNextManualTest": false,
+        "poolEditsWritten": 0,
+        "earlySnapshotScheduled": false,
+        "desktopShortcutUpdated": true,
+        "readOnlyRecorderArmed": true,
+        "productionLauncherChanged": false,
+        "steamConfigChanged": false
+      },
+      "nextStep": "Same-helper manual startup comparison without debugger attachment; no pool edits or protection changes"
+    },
     "gameplayValidated": false,
     "friendsValidated": false
   },

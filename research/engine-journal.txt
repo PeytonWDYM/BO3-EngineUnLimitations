@@ -1045,3 +1045,74 @@ No expanded VM pool or migration changes became active in the captured attempt.
 Do not treat the console's Steam reminder as the refusal reason or increase the timeout without locating the stall.
 An existing read-only recorder and clone-based snapshot are armed for Peyton's next manual launch.
 The snapshot is scheduled eight seconds after the recorded process creation. No native source or installed payload changed.
+
+October 8, 06:35 UTC, repeated manual startup snapshot:
+
+The existing recorder captured a complete 552,539,500-byte clone snapshot eight seconds after process creation.
+The repeated launch reached the same thirty-second refusal, with zero pool edits and no game window.
+The helper boot ABI, size, module base, ready flag, and reserved field are valid. Its adapter configuration remains zero.
+Both server VM pointers remain zero. The only thread is inside protected stack-dispatch code before the game window.
+A captured AMD64 CONTEXT contains the armed allocation-entry breakpoint and DEBUG_REGISTERS context flag.
+Its saved current-thread syscall stub exactly matches captured ntdll NtGetContextThread bytes.
+This proves the target queried the hardware gate. It supports a startup compatibility conflict but does not decode the loop-causing branch.
+Allocator and all nineteen capacity instructions are encrypted on disk and plaintext in the snapshot.
+The early native CRT GetStartupInfoW return site is verified before its WinMain call and matches the mature capture.
+Earlier TLS or constructor allocation remains unresolved. Any future cooperative admission must require all storage unallocated.
+No protection check, timeout, production source, or installed payload changed for this capture.
+Ninety-eight protected baseline files still match, including all ninety-two profiles, the executable, and four patched fastfiles.
+Only Steam's app manifest differs after the manual launches. The private report retains its new hash.
+A separate no-hardware stock-capacity control is being prepared to isolate the gate from other startup factors.
+Checkpoint 0217c53 retains the reviewed Steam setup and first startup refusal on GitHub.
+
+October 8, 07:08 UTC, reviewed no-hardware startup control:
+
+A separate authored native diagnostic retains the debugger, file locks, child Steam IDs, and pre-import helper.
+It never sets thread context, arms hardware registers, calls activation callbacks, or writes VM/codec state.
+Its passive JSONL timeline records debugger events, helper boot state, and provisional server pointers.
+It closes only the owned child at the unchanged thirty-second deadline and drains its exit event.
+Nine owned native cases cover context-query results, quoted arguments, exception forwarding, deadline cleanup, and admission refusals.
+The owned target queried real NtGetContextThread and observed zero hardware debug registers with the debugger and helper active.
+Independent review caught an older helper in the first build. The final build and repeated cases use the exact failed-run helper.
+Final production diagnostic SHA-256: 39fff0c779ce086ed16b6aecba87c69601c712f8998bbea7bc5d3131b01caad0.
+Final helper SHA-256: 09b947ba384837853d5f4061a8fc3e2b61dee6b2663a751d6e7a2fb974c803c1.
+The final review verifies seventeen source hashes, five unchanged native binaries, and nineteen production inputs, with no open findings.
+Source is retained under source/launch/enhanced and source/tests/vm-startup. Private evidence is in vm-startup/startup-control-04.
+A desktop shortcut and read-only recorder are prepared for Peyton's manual control. No agent launched BO3.
+The direct diagnostic preserves its incoming environment and overrides the same child Steam IDs.
+It does not replay every variable inherited from Steam's original launcher. Keep that limit in causal conclusions.
+No production launcher, normal Steam launch field, executable, or Workshop file changed for this diagnostic.
+This control does not activate 500,000 slots or establish a fix. Its actual game outcome remains pending.
+
+October 8, 07:09 UTC, manual no-hardware control failed before its window:
+
+Peyton left the diagnostic untouched. Its BO3 child exited approximately five seconds after creation.
+The recorder stopped with that child; the eight-second snapshot correctly refused an exited process.
+Windows recorded an access violation, code c0000005, at an unknown executable address before a game window.
+The Windows Error Reporting entry classifies the access as execution. This does not identify the initiating cause.
+The helper boot was readable in forty-three samples and ready in twenty. The last readable sample was at 5,094 milliseconds.
+The debugger received no process-exit event. The diagnostic kept polling unreadable memory until its deadline.
+That missing process-handle fallback is a diagnostic lifecycle bug. It does not explain the native game crash.
+No activation or VM edits occurred. The control does not support a hardware-breakpoint-only cause.
+A narrow follow-up control will preserve the same helper, direct invocation, Steam IDs, and file locks while omitting debugger attachment.
+Its failure cases also require an independently signaled process exit to retain the actual exit code without blind termination.
+Do not alter game protection checks or interpret unreadable pointers as zero initialized state.
+
+October 8, 07:30 UTC, reviewed startup control with optional debugger removal:
+
+The follow-up diagnostic retains native exit codes through its signaled child handle when debug exit events disappear.
+Failure cleanup does not terminate or detach an already-exited child. Continuous debug events cannot postpone the deadline.
+The --no-debugger mode removes DEBUG_ONLY_THIS_PROCESS while retaining the pinned target, helper, arguments, and child Steam IDs.
+It observes modules and memory without debug-event or thread-context calls. It does not activate VM or migration changes.
+Fifteen focused owned native cases pass. They cover missing debug exits, passive native exceptions and exits, and both timeout paths.
+The detached debug fixture exits with code 23 at 437 milliseconds. The streamed-event fixture stops at 30,000 milliseconds.
+Passive fixtures report debugger false, successful native context queries, and zero hardware registers.
+Fresh review verifies twenty source hashes, five native binaries, and twenty-two production inputs with no open findings.
+Final diagnostic SHA-256: 77d14e80606cee63c20b7809fa732731d472451d6497e957782a9dbd729ac460.
+The exact deployed helper remains 09b947ba384837853d5f4061a8fc3e2b61dee6b2663a751d6e7a2fb974c803c1.
+Private repeatable evidence resides in vm-startup/startup-control-07 and vm-review/startup-control-followup-review.json.
+
+All ninety-nine protected files match the prior post-Steam-test baseline after the manual no-hardware test.
+This includes all ninety-two profiles, the game executable, and four patched fastfiles. The original app-manifest difference remains historical.
+BO3 Startup Test now points to the frozen control with --no-debugger. A new read-only recorder waits for Peyton's manual launch.
+No early snapshot is scheduled for this comparison. No agent launched BO3 or changed the production launcher or Steam configuration.
+Actual no-debugger startup, the native crash cause, and 500,000 live slots remain unvalidated.

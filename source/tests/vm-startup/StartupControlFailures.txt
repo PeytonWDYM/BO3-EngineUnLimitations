@@ -1,0 +1,40 @@
+No-hardware startup control: failures declared before implementation
+
+Use a fixed owned native EXE and the unchanged production helper. Never launch BO3 in the harness.
+
+1. Target/helper hash mismatch, unsupported target name, existing/private-path alias, or active
+   launch lease must refuse before creating a child. Hold exact file locks through child exit.
+2. The native child must receive unchanged argument quoting and child-only Steam IDs311210,
+   a debugger and the preimported helper; parent environment and every source binary remain unchanged.
+3. No path may set thread context, debug registers, target bytes, hooks or VM/codec bindings.
+   Target-side NtGetContextThread must observe zero DR0..DR3 and no enabled hardware breakpoints.
+4. Preserve nonowned first-chance exception handling, including owned TLS and later breakpoints.
+   Record process/thread/module/exception
+   chronology and passive helper boot/pool state; no event or observation grants enhanced readiness.
+5. A running owned child must be terminated at the unchanged 30-second deadline and drained to
+   a verified process exit. Normal early exit and handled exceptions retain their native outcomes.
+6. The fixture identity is compiled into its separate diagnostic binary. The production binary
+   accepts only the exact supported BlackOps3.exe hash; no runtime arbitrary override exists.
+
+Follow-up failures, declared before no-debugger implementation:
+
+7. A debugged child that detaches its own debugger and exits must still finish promptly with its
+   actual exit code via the signaled process handle, even without EXIT_PROCESS_DEBUG_EVENT.
+   A failed TerminateProcess on an already-exited child must not lose the outcome.
+8. --no-debugger must omit DEBUG_ONLY_THIS_PROCESS only; preserve the same pinned EXE/helper,
+   Detours import, child Steam environment, arguments and private 30-second cleanup contract.
+   It must never call debug-event/context APIs or claim enhanced readiness.
+9. Owned nondebug entry and handled-exception cases must retain their native exit codes,
+   NtGetContextThread success/zero hardware registers, and debugger=false. Passive observations
+   may miss a fast-exiting helper; missing/read-failed inventory is evidence, not an exit veto.
+10. Owned nondebug timeout must terminate at 30 seconds and retain the signaled child's exit code.
+
+11. A continuous owned debug-event stream must not postpone the 30-second deadline.
+    Terminate and drain the owned child even when WaitForDebugEvent never times out.
+
+12. Failure cleanup must check the child handle before termination. If the child has already
+    exited, close owned handles without another TerminateProcess or debugger detach request.
+
+Retain repeatable native E2E receipts, actual target context-query output, private debug timeline,
+identity hashes and before/after file hashes. A passing control does not activate 500k slots or
+prove game startup, mod loading, license context, peer compatibility or protection tolerance.
