@@ -123,3 +123,18 @@ Verify the native compression, bounds, deadlines, and receiver path.
 Resolve a supported Steam launch route and validate debugger tolerance without protection bypasses.
 Then test full AAE, ordinary maps, host/join, matching peers, removal, and repeated volleys.
 The VM expansion and 200-actor expansion remain unavailable for normal deployment.
+
+Buffer allocation replay follow-up
+
+source/tests/vm-pool/NativeMigrationBuffers.py executes the captured initializer with owned allocator and clear callbacks.
+Four stock-mode cases and two expanded-buffer cases pass.
+Modes zero and one request two zero-size local buffers and one 2.5 MiB server buffer.
+Mode two requests two 2.5 MiB local buffers and two 4.5 MiB server buffers.
+Invalid mode three publishes no returned buffer pointers.
+The experimental count instruction requests 32 MiB and publishes the same server capacity.
+That instruction serves both zero and one. Enhanced sessions must remain restricted to Zombies.
+The replay verifies pointer publication and all local sizes. It does not allocate through the actual game arena.
+The proposed server buffer fits the reviewed positive block-index range.
+Native compression, variable payload bounds, sender/receiver behavior, deadlines, and peer admission remain unresolved.
+Private buffer-replay-20261008/result.json contains all six cases and source identity.
+No expanded buffer was applied to the working game or a native game process.

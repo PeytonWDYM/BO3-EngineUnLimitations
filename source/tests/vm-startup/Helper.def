@@ -1,0 +1,10 @@
+LIBRARY VmStartupHelper
+EXPORTS
+    VmStartupOrdinal @1 NONAME
+    VmErrorPrelude
+    NativeOriginalReader
+    NativeOriginalWriter
+    NativeOriginalInsert
+    NativeOriginalError
+    NativeOriginalInsertBody
+    VmErrorPreludeBody

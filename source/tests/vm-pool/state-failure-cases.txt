@@ -37,3 +37,13 @@ Optional enhanced Zombies launch policy, before implementation:
 - Preserve the existing Any policy in owned fixtures. Production launch admission selects ZombiesOnly.
 - Verify owned mode values 1, 2, 3, and 15 are refused without writing expanded persistent state.
 This preserves the separate stock launch. It does not implement a native mode-selection guard or prove live gameplay.
+
+Migration buffer allocation cases, before replay implementation:
+- Refuse changed executable identity, exported-range hashes, buffer initializer bytes, or the selected count instruction.
+- Stock native modes zero and one must request no local buffer bytes and 2.5 MiB for the server.
+- Stock native mode two must request two 2.5 MiB local buffers and two 4.5 MiB server buffers.
+- Stock invalid mode three must publish no allocator-return pointers.
+- The experimental shared zero/one branch must request 32 MiB and publish that same capacity.
+- Keep all local allocation sizes and returned pointers coherent with the original native path.
+- Record that only mode-zero enhanced sessions are admitted. The shared instruction also affects mode one.
+- Do not call a passing allocation replay proof of compression, sender/receiver, peer admission, or migration compatibility.
