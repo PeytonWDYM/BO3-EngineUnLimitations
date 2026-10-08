@@ -36,7 +36,9 @@ void PrivateReceipt::Create(const std::filesystem::path& root,const OwnedChild& 
                 "Cannot create the private receipt directory.");
             directories_.push_back(LockDirectory(directory));
         }
-#if defined(BO3_JOB_STARTUP)
+#if defined(BO3_JOB_CONTROL)
+        constexpr auto suffix=L"-job-control.json";
+#elif defined(BO3_JOB_STARTUP)
         constexpr auto suffix=L"-job.json";
 #elif defined(BO3_LATE_PASSIVE_CONTROL)
         constexpr auto suffix=L"-late-passive-control.json";
@@ -59,7 +61,10 @@ PrivateReceipt::PrivateReceipt(const OwnedChild& child) {
 PrivateReceipt::PrivateReceipt(const std::filesystem::path& directory,const OwnedChild& child){Create(directory,child);}
 #endif
 PrivateReceipt::~PrivateReceipt(){if(file_!=INVALID_HANDLE_VALUE)CloseHandle(file_);for(const auto handle:directories_)CloseHandle(handle);}
-#ifdef BO3_JOB_STARTUP
+#ifdef BO3_JOB_CONTROL
+void PrivateReceipt::Write(const job_control::Receipt& receipt) {
+    std::ostringstream stream;job_control::WriteReceipt(stream,receipt);
+#elif defined(BO3_JOB_STARTUP)
 void PrivateReceipt::Write(const job_startup::Receipt& receipt) {
     std::ostringstream stream;job_startup::WriteReceipt(stream,receipt);
 #elif defined(BO3_LATE_STOCK_CONTROL)

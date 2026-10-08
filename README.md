@@ -99,6 +99,7 @@ Private captures, game assets, profiles, downloaded tools, and build output rema
 | `source/launch/startup_probe/` | Separate stock-capacity API observation and owned native tests |
 | `source/launch/startup_gate/` and `source/launch/late_startup/` | Cooperative CRT gate, paused native transaction, and reversible Steam transport |
 | `source/launch/job_startup/` | Debugger-free job transaction and its fixed Steam recipe |
+| `source/launch/job_control/` | Stock-capacity comparison using the same job freeze and runtime unwind |
 | `source/tests/` | Repeatable fixture E2E harnesses |
 
 The cooperative runtime loader cannot patch stock BO3 yet.
@@ -128,6 +129,12 @@ The serializer check covers metadata. It does not establish live game enrollment
 The fixture's serial-loader setting is confined to its owned target. The production launcher preserves loader settings.
 Death before job assignment can leave a suspended child; public release still requires cleanup for that creation boundary.
 Read `source/launch/job_startup/README.txt` for the build, Steam setup, removal, and validation limits.
+The reviewed job control passed 13 native cases and four Steam transport groups.
+It retains stock capacities and leaves the expansion inactive. It adds bounded read-only code observations and keeps the game until its own exit.
+Its manual Steam test reached the menu and initialized stock pools, then hit a separate null read while loading full AAE.
+The diagnostic route was removed. Normal Steam Play reproduced the same AAE-loading null read with the engine helper and gate absent.
+Its native asset-loading diagnostic and missing upstream state are under investigation.
+Automatic startup snapshots remain disabled. Expanded allocation, AAE compatibility, and friends remain unvalidated.
 The silent-audio prototypes do not establish quiet game startup.
 Their source and limits remain documented with the investigation.
 

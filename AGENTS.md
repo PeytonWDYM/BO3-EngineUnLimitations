@@ -14,8 +14,11 @@ Faster firing, sprint retention, spawn pacing, tornado count, and peer compatibi
 The 500,000-slot startup helper and migration adapter have owned fixture and independent review evidence.
 Actual expanded-pool startup, full AAE loading, compressed whole state, and multiplayer remain unvalidated.
 One million slots remains disabled. The 200-actor storage prototype also remains disabled.
-The corrected job-startup test crashed after release. Its recorder and waiting overlay are stopped. Keep automatic startup PSS disabled.
-Normal Steam Play uses stock capacity after canonical removal of the failed test route. Existing gameplay fixes remain installed.
+The corrected job-startup test crashed after release. Keep automatic startup PSS disabled.
+The reviewed same-job stock control reached the menu, then failed during full-AAE loading. Its route and exited-session overlay are removed.
+Normal Steam Play launches directly. Its full-AAE comparison reproduced the same null read, with helper and gate absent.
+Both actual captures and their exited-session overlays are stopped. No next game test is armed.
+Existing gameplay fixes remain installed. No 500k game allocation is validated.
 Peyton subsequently authorized unattended game launches and computer use, then explicitly requested that work continue.
 This authorization supersedes the historical manual-only launch holds below. Only the root agent owns actual game tests.
 Do not run BlackOps3-named stand-ins while monitoring waits.
@@ -176,8 +179,36 @@ The full dump is verified privately, SHA-256 db0ebda2978300ac48cacd769ea61ff6c50
 The crash comparison preserves all ninety-two profiles, the executable, four fastfiles, and app Cloud cache. Only Steam's app manifest changed.
 The root removed the failed route through its frozen corrected wrapper and restarted Steam silently. The original launch field remains absent.
 Private reports are in release-enhancement/job-crash-deep-sol-01 and job-startup-sol/actual-abi-audit-01.
-A same-job, same-unwind zero-edit comparison is under design. It must not allocate relays or publish engine edits.
-Root owns actual game tests. No next comparison has been deployed. Do not bypass protection code, cookie checks, or the native startup deadline.
+A same-job, same-unwind stock control passed thirteen native cases and four Steam transport groups, with fresh independent reviews.
+It preserves forty original spans, allocates no relay, and publishes no engine edits. It retains the child until its actual exit.
+Bounded sequential code observations cannot identify the transfer producer or establish continuous immutability.
+The root installed its frozen seventeen-file recipe at 21:20 UTC. Only BO3's launch field changed; all ninety-nine protected files match.
+Steam restarted silently and retained the route. No desktop controls, audio change, profile write, or game launch occurred.
+Capture 20261008T212118Z-64a29295 retained PID 61296, creation FILETIME 134359681080072658, original primary TID 59584.
+It reached the menu with zero native edits and initialized stock server/client storage. This does not identify the omitted activation step that caused the earlier crash.
+Full-AAE loading then caused a null read at game RVA 0x13e9dc0 on auxiliary TID 58192.
+Captured bytes 486301 decode movsxd rax,dword ptr[rcx]; exception context RCX and read address are zero.
+Use the exception-stream context: the same thread's thread-list context records later dump-writing execution.
+The native controller retained the child until natural c0000005 exit. This differs from the earlier out-of-image execution fault.
+The stock overlay recorded twenty-nine accepted provisional rows before exit; no gameplay or expanded-pool validation is claimed.
+The four fastfiles, executable, and non-log profiles match. Two player logs and Steam/Cloud metadata changed.
+Root removed the control through its frozen wrapper and restored the original absent launch field, preserving unrelated Steam bytes.
+The normal Steam comparison, PID 64884 with creation FILETIME 134359684545476166, reproduced the same fault on auxiliary TID 61424.
+Its dump and recorder inventories contain no engine helper or gate. Both dumps match at the fault instruction and null operands.
+The normal overlay retained twenty-five accepted provisional rows; all samplers and exited-session overlays are now stopped.
+The native caller's reference code reaches an asset-override overflow diagnostic, but both dumps omit the counter and current list entry.
+Do not call this a proven asset-limit overflow or repair only the secondary null dereference. The diagnostic's entry condition still needs current evidence.
+Use release-enhancement/manual-job-control-03/freeze-01/source/launch/job_control/SteamSetup.py for control setup or removal.
+Its recipe SHA-256 is d440224113b0907dab699c5bbbbdd75a60e82cdd5cf9260e16ea5c48d137d87a.
+Its launcher SHA-256 is 1501dbf74405bd2252424b41b0d404d35518d8c0d11fa63edb28674d80483d6a.
+Native review SHA-256 is 53d836753a372807f674b757d424e0cf5d06abcfcab1256a45f69bc1ef41ab91.
+Transport review SHA-256 is 5cee20ccda07f795af205598ee414cbc31f379eceef29145ebe7f92b8bf54633.
+One nonblocking native README timing follow-up was corrected and independently closed after deployment; frozen native artifacts remain unchanged.
+The separate deep input report retains three captured TEB/PEB identities, zero debug flags and consistent cookie pairs.
+It establishes no PEB-key cause. Private evidence: job-crash-deep-sol-02 and manual-job-control-03.
+Public BO3 integrity-check research provides a descriptive lead, not proof of this build's failing predicate.
+Both requested UnknownCheats threads remain inaccessible. No historical offsets or bypass tools were adopted.
+Root owns actual game tests. Do not bypass protection code, cookie checks, or the native startup deadline.
 Game allocation, migration, friend compatibility, one million slots, and 200 actors remain unvalidated or disabled.
 
 ## End goal

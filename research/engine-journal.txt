@@ -1463,3 +1463,62 @@ No desktop controls, audio changes, profile restoration, or root game launch occ
 Existing gameplay fixes remain installed. Normal Steam Play uses stock capacity.
 Private evidence: release-enhancement/manual-job-startup-02, job-crash-deep-sol-01,
 and job-startup-sol/actual-abi-audit-01.
+
+October 8, public reversal research and same-job stock comparison:
+
+Peyton supplied UnknownCheats threads 162113 and 162065 as reversal leads.
+Both direct thread opens failed. A bounded page-two request returned 403; three capped archive queries failed.
+The indexed forum archive at https://archive.ph/OySje provides thread metadata only, not recovered reversal posts.
+No forum offsets, attachments, or bypass tools were adopted. The Universal Modder knowledge search returned no BO3 entry.
+Maurice Heumann's firsthand November 17, 2022 article describes runtime integrity checks and code-edit-dependent failures:
+https://momo5502.com/posts/2022-11-17-reverse-engineering-integrity-checks-in-black-ops-3/
+It supplies a descriptive lead for startup research. Its executable is not bound to our target, and parts of its causal model are assumptions.
+It does not document our one-GiB target error. No linked bypass source or tools were followed.
+The original community document https://github.com/oJumpy/Black-Ops-3-Zombies-Info reports nominal GSC/CSC capacities of 130,000/65,000.
+Its grenade helper cancellation account corroborates the direction of our captured leak investigation.
+Its publication and executable identity are unestablished. It provides no validated 500k startup or save/migration implementation.
+Queries, access failures, sources, and credibility remain private in unknowncheats-research-sol-01.
+
+The same-job stock control passed thirteen owned native cases and four focused Steam transport groups.
+Fresh independent reviews verify native artifact pins and unchanged shared transport, with no correctness blockers.
+One fixture-timing README follow-up was corrected and independently closed after deployment. Frozen artifacts remain unchanged.
+Native review SHA-256: 53d836753a372807f674b757d424e0cf5d06abcfcab1256a45f69bc1ef41ab91.
+Transport review SHA-256: 5cee20ccda07f795af205598ee414cbc31f379eceef29145ebe7f92b8bf54633.
+Documentation closure SHA-256: d10c8ff018e1314a09c6b83b2325392fe047c6b98fd982624e42f57fe002a66b.
+Root froze seventeen deployment files, gracefully stopped Steam, and installed the control at 21:20 UTC.
+Only BO3's launch field changed. All ninety-nine protected files matched. Steam restarted silently and retained the route.
+No game launch, desktop input, audio change, or profile write occurred during setup. Automatic startup PSS stayed disabled.
+Peyton pressed Steam Play. PID 61296 has creation FILETIME 134359681080072658 and original primary TID 59584.
+The receipt retains sole-primary admission, runtime metadata mask three, successful job freeze/thaw and gate release.
+It records forty stock original spans, zero edits, zero relays, seven unpublished helper bindings, and no debugger.
+Peyton confirmed that BO3 reached the menu. The trace records initialized stock client storage, followed by server storage.
+This establishes successful startup in this run with the activation bundle omitted. It does not isolate an individual edit or integrity predicate.
+Peyton then loaded full AAE and reported a different fatal error. The archive reports a null read at game RVA 0x13e9dc0 on auxiliary TID 58192.
+The controller retained BO3 until natural exit c0000005 at 21:23:19 UTC. It did not terminate the game.
+The archived 5,448,371-byte minidump has SHA-256 a48627b7dae316f83eab4e4e19196fb0a5419cd5523d230ae05193199f54ee41.
+Final native trace SHA-256: 507ac246659ed3006278f7616df8c3b61d0da44fc7cd8afc9ba61c1b8bd60f81.
+The overlay enrolled the exact stock process and retained twenty-nine accepted provisional rows with no rejected rows before exit.
+This frontend observation is not a match, expanded-pool, or multiplayer validation.
+Ninety-five of ninety-nine protected files match. Two player logs, the Steam app manifest, and app Cloud cache changed.
+The executable, four patched fastfiles, and non-log profiles remain unchanged. No settings or saves were restored from an older baseline.
+Root closed the exited session's overlay, removed the control through its frozen canonical wrapper, and restarted Steam silently.
+Independent byte comparison confirms original absent LaunchOptions and preservation of unrelated Steam bytes.
+Normal Steam Play now launches directly. A separate read-only capture and stock overlay waiter await a normal full-AAE comparison.
+That comparison has no engine launcher/helper/gate and can test whether the new fault requires their presence.
+Actual expanded-pool allocation, full migration, friend compatibility, one million slots, and 200 actors remain unvalidated or disabled.
+Private evidence: manual-job-control-03, job-control-sol, job-control-steam-sol, job-control-native-review-sol-01,
+job-control-steam-review-sol-01, and manual-normal-aae-04.
+
+The direct Steam comparison created PID 64884, creation FILETIME 134359684545476166, at 21:27:34 UTC.
+Full-AAE loading reproduced the same null read at game RVA 0x13e9dc0, now on auxiliary thread 61424.
+The verified minidump and recorder module inventories contain no engine helper or startup gate.
+The fault bytes and zero RCX/read-address operands match the stock control. Engine publication and its helpers are unnecessary for this failure.
+The native caller's healthy reference code walks an asset list while reporting too many overrides to DB_LoadXAssets.
+Both actual dumps omit the counter and current list entry. A genuine overflow, corrupted state, or incorrect diagnostic entry remain unresolved.
+Do not treat an error string in reference code as a message actually printed in this session or patch only the secondary null read.
+The direct minidump SHA-256 is cf17b304039f3de8af907dbe6700d1781a71bd922e0df3b18080255644a586a7.
+Its paired offline report is normal-aae-crash-sol-01/report.md, SHA-256 719046fa4cb4c9f54bcbfb969cd43e63441781ed71a836f1a342e4355332a8e1.
+The recorder stopped after natural exit at 21:28:54 UTC. The stock sampler retained twenty-five accepted provisional rows.
+Ninety-six of ninety-nine files match the immediate prelaunch baseline. Only a player crash log and Steam/Cloud metadata changed.
+The executable, four fastfiles, and non-log profiles remain unchanged. Root removed the exited-session overlay.
+Normal Steam Play remains direct. No next test is armed, and no new binary fix has been selected from this incomplete diagnostic state.
