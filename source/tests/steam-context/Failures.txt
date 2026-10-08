@@ -1,0 +1,18 @@
+Child Steam context: focused failures before implementation
+
+The launcher may copy its process environment and override only SteamAppId and SteamGameId
+to 311210 in the owned child. Never change parent variables, normal files, launch options
+or invoke the actual SteamAPI_RestartAppIfNecessary function.
+
+1. The actual Unicode child environment must contain both exact IDs and preserve every unrelated
+   entry, including Unicode values, case-insensitive names and hidden drive-current-directory variables.
+2. Existing or missing ID variables must be replaced without duplicates; the complete parent
+   environment must be identical before construction and after the child exits.
+3. Exact installed SDK identity, export RVA, import slot, 32-byte call buffer and fast-path
+   branches must be verified read-only. Owned callbacks must yield native false for 311210.
+4. Empty, zero-valued and overlength callback inputs must leave the fast path rather than
+   being reported as confirmed false. No file, Steam relaunch or later SDK branch may execute.
+
+Four bounded groups: inherited-child E2E, synthetic-child E2E, exact fast-path positive replay,
+and bounded negative replay. Produce repeatable receipts and source/binary/code-range hashes.
+These results do not prove SteamAPI_Init, license admission, BO3 startup or live Steam context.

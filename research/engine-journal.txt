@@ -938,7 +938,7 @@ The native game-client allocation requests eighteen records of stride 0x171f0.
 Saved instruction replay links its allocation request, encrypted publication, recovery, and full clear.
 The eighteen-record positive case passes. The seventeen-record negative case rejects the oversized clear.
 The stock Zombies stream contains eight player script roots. Expanded networking remains unvalidated.
-The public exact-build VM inventory has nineteen count sites, four original entry records, and forty-five code guards.
+The earlier public VM inventory had nineteen count sites, four original entry records, and forty-five code guards.
 It is explicitly audit-only. No VM code or capacity changes reached the working game.
 
 The bounded actor audit adds thirty accessor uses, seven helper paths, and fifty-six exact guards.
@@ -964,3 +964,28 @@ Both expanded capacities retain the reviewed state, error, unwind and rollback b
 This closes the helper-entry task. It does not validate BO3 activation or Steam context.
 Migration admission and actor storage continue in separate GPT-6.1 Sol tasks.
 No game launch or working-installation change occurred.
+
+October 8, enhanced Zombies startup integration checkpoint:
+
+The optional launcher now builds the actual combined VM and migration helper.
+It locks the supported game/helper identities and changes only the child's Steam environment.
+Its first-allocation callback requires the sixty VM guards and twenty-two migration guards, with duplicate ranges removed.
+All VM and migration storage must remain unallocated, including the receive pointer and capacity.
+The paused transaction publishes nineteen count edits plus twenty-three helper/migration edits.
+The selected candidate uses 500,000 usable server slots, eighteen roots, and a 32 MiB migration buffer.
+The existing one-million-slot allocation fixtures do not authorize a one-million-slot game candidate.
+Migration admission preserves legacy imports and refuses enhanced blocks without a matching version acknowledgement.
+The migration-only compressed flush prevents the native four-byte prefix from exceeding its remaining output budget.
+Thirty-seven captured-code cases and eleven owned Windows migration groups pass fresh review.
+The complete composed plan restores bytes, memory protections, and its original snapshot hash.
+
+The production launcher verifies the relocated helper code, unwind tables, and read-only metadata.
+Fresh review found the initial admission omitted the read-only unwind records. The corrected check covers those records.
+It excludes only the loader-resolved IAT bytes from the read-only comparison.
+Four owned child cases pass: actual mapping, damaged boot, damaged code, and damaged unwind refusal.
+The real CLI also refuses an unsupported executable before creating any child.
+The child receives Steam app ID 311210. Parent variables remain unchanged.
+No Steam SDK API or BO3 instruction runs in these owned tests.
+The final private build and receipts reside in release-enhancement/vm-startup/enhanced-build-03 and enhanced-owned-02.
+Actual game startup, AAE loading, whole compressed state, deadline behavior, and matching-peer gameplay remain unvalidated.
+The 200-actor prototype remains separate and refuses activation until its storage, codec, unwind, and startup gates close.

@@ -6,6 +6,7 @@
   "allocationEntryRva": 19788336,
   "poolPointerRva": 85083520,
   "hashPointerRva": 85083392,
+  "allocationEntryPrefix": "48895c2408",
   "modeGetterRva": 34516080,
   "modeWordRva": 377940084,
   "enhancedModeValue": 0,
@@ -153,6 +154,24 @@
   ],
   "codeGuards": [
     {
+      "ownerRva": 862320,
+      "rva": 862320,
+      "size": 98,
+      "sha256": "84f3d6110173a3530bd61d94c394cb354f188fc4e232fb7302307c74d157c5fc"
+    },
+    {
+      "ownerRva": 1446336,
+      "rva": 1446336,
+      "size": 224,
+      "sha256": "f14aedee9574a08e26980675c65c604fe256dd574a793b893275ed7bf072e363"
+    },
+    {
+      "ownerRva": 1446672,
+      "rva": 1446672,
+      "size": 323,
+      "sha256": "6fa974b621de93bf5265871d147f8af7b27922268514ca27f43eb5ae61b2e067"
+    },
+    {
       "ownerRva": 19740192,
       "rva": 19740192,
       "size": 149,
@@ -195,10 +214,40 @@
       "sha256": "3c8f8d42360abcfc52274862532886331846ea5df5389dfed24880ec31a323e0"
     },
     {
+      "ownerRva": 19748240,
+      "rva": 19748240,
+      "size": 533,
+      "sha256": "f86a3a1c7b6c2d9d1752c72bb4381676d29a00d66cc3796dcaf87228c1208882"
+    },
+    {
       "ownerRva": 19750688,
       "rva": 19750688,
       "size": 1427,
       "sha256": "00f554fa81eb545aff8ada293017132a1bfdbe5aa99ef2b1fe2ae4ad5741d3ac"
+    },
+    {
+      "ownerRva": 19752128,
+      "rva": 19752128,
+      "size": 171,
+      "sha256": "513eb5df2796eeb59d88eda3a061a3df87b6353c55d4f04eaccf1739584bca83"
+    },
+    {
+      "ownerRva": 19752128,
+      "rva": 19752299,
+      "size": 662,
+      "sha256": "349b672183315470cddf286a7a8cfe3944e620946e18e35d38ef904fc37e23f2"
+    },
+    {
+      "ownerRva": 19752128,
+      "rva": 19752961,
+      "size": 51,
+      "sha256": "43afd483ec11f4901e512f9920c625553ac7ff1631a55038f832ed8efa737d22"
+    },
+    {
+      "ownerRva": 19752128,
+      "rva": 19753012,
+      "size": 24,
+      "sha256": "fdb8a10a5c488d7ef6cdacaf88c68fb3a34b6bdfcd5ef7f6f92416ef660473bc"
     },
     {
       "ownerRva": 19764256,
@@ -417,12 +466,62 @@
       "sha256": "4615f8d265286d803e34b65491ed68ef7a16e56db36e938e2096ffc001cd19dd"
     },
     {
+      "ownerRva": 36141232,
+      "rva": 36141232,
+      "size": 45,
+      "sha256": "33cdf5de42952ed97f502fecf06572eb9ce36b744c8d0082129ba09e79709dd3"
+    },
+    {
+      "ownerRva": 36141232,
+      "rva": 36141277,
+      "size": 15,
+      "sha256": "591813c6261dc6ac2638933cb5b7cfec5bf1cf9e100952cf60fda18663ba6671"
+    },
+    {
+      "ownerRva": 36141232,
+      "rva": 36141292,
+      "size": 139,
+      "sha256": "bdb6befed181ca86cf8cecc0c22b060440eeb01cff1336d1bf34de6cbe26de78"
+    },
+    {
+      "ownerRva": 36141232,
+      "rva": 36141431,
+      "size": 5,
+      "sha256": "48f947ffd48757ec2583113465692d9ce20e44b6055152d0fcd478d92246e555"
+    },
+    {
+      "ownerRva": 36141232,
+      "rva": 36141436,
+      "size": 10,
+      "sha256": "5973f9bdf88479643cb70b36c8a9a564ebad9b9f57513c1d7f4981378507619b"
+    },
+    {
+      "ownerRva": 36141232,
+      "rva": 36141446,
+      "size": 37,
+      "sha256": "68a12de1cc83f4464c105fc342f44e0574d98667d77c57bba339aafb6099035f"
+    },
+    {
+      "ownerRva": 36141232,
+      "rva": 36141483,
+      "size": 85,
+      "sha256": "f300548582cbcd9382710bfb8ea5d917e10d0fe8bcb44c815cac4d28400623d7"
+    },
+    {
       "ownerRva": 34516080,
       "rva": 34516080,
       "size": 13,
       "sha256": "566c0c650a6591bb6e935045e386283942e12b4f5341c7a7d5e46067bd0c3fb4"
     }
   ],
+  "nativeStateDependencies": {
+    "readSlot": 19748240,
+    "writeSlot": 19752128,
+    "readBytes": 36141232,
+    "write32": 862320,
+    "readAssociations": 1446336,
+    "writeAssociations": 1446672
+  },
   "clients": {
     "pointerRva": 169543472,
     "stride": 94704,

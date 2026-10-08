@@ -138,3 +138,54 @@ The proposed server buffer fits the reviewed positive block-index range.
 Native compression, variable payload bounds, sender/receiver behavior, deadlines, and peer admission remain unresolved.
 Private buffer-replay-20261008/result.json contains all six cases and source identity.
 No expanded buffer was applied to the working game or a native game process.
+
+Migration admission and checked plan follow-up
+
+source/patches/vm_migration now supplies the native admission bridge and pure typed MigrationPlan builder.
+The plan admits only 500,001 total server slots, eighteen roots, and a 32 MiB buffer.
+It returns sixteen checked edits with 168 POD bytes and eight nearby indirect relays.
+Six native entry hooks cover mhead, mdata, mhack, header sending, full load and migration-only compressed flush.
+The remaining hooks replace the qualified mhead ACK call and the loader's version comparison.
+The buffer instruction and emitted header version also change in the same stopped transaction.
+The exact inventory records original bytes, continuation addresses, helper layouts and native code hashes.
+
+The native mhead handler at 13619e0 copies twenty-four header bytes after publishing its existing buffer capacity.
+It does not allocate from the supplied header size. It returns an empty mhack at CALL 1361a50.
+The native mhack handler at 21f9aa0 ignores message payload and tails into mdata startup only after peer and phase checks.
+The new handler requires an exact enhanced-format DWORD before invoking those original checks.
+Thus a selected stock receiver cannot authorize expanded blocks with its empty acknowledgement.
+The patched receiver retains stock version-three import and its original empty acknowledgement.
+The full-loader wrapper checks header size and format before native MemFile initialization.
+The comparison thunk accepts legacy three or the configured enhanced format, preserving all integer registers and stack.
+
+The captured compressed flush at 2277a60 checks written bytes against total capacity.
+It then reserves four prefix bytes without first checking that four remain.
+A replay with three remaining bytes and an owned compressor that writes nothing still changes one byte beyond declared capacity.
+The migration-only guard rejects that case before prefix or compressor writes.
+It sets the existing overflow flag at object offset 2d and clears the buffered count at offset 18.
+The native migration start path uses that same global write object and checks its overflow flag at 21fa3e5.
+Its overflow branch reaches native abort 21f9dd0 before migration header dispatch.
+This prevents the captured boundary overrun. It does not establish successful migration for every expanded state.
+
+Thirty-seven compiled/captured replay cases pass.
+They retain native selected-peer checks and signed block-index, payload-length and capacity checks.
+Four cases execute the actual native compressor with repetitive or literal data and sufficient or insufficient output capacity.
+The initial exploratory probe incorrectly cleared EAX in its owned security-cookie return stub.
+Preserving EAX fixed that fixture. Actual successful compressed sizes are eleven and 122 bytes for the two 120-byte inputs.
+These small cases validate bounded compressor behavior, not full script-state compression or a worst-case migration size.
+
+Eight owned native admission groups and three composed-plan groups also pass.
+Windows RtlVirtualUnwind checks cover modified-stack reentries, including their branch instructions and ACK epilogues.
+The composed fixture combines the core native plan with migration in one real PausedPatch transaction.
+It verifies preflight refusal, exact rollback, restored memory protections and reversible removal.
+Private vm-migration-sol/migration-plan-protection-receipt contains before/applied/restored snapshots and the hashed receipt.
+Its plan-addresses file records each original and restored memory protection.
+Private vm-migration-sol/native-admission-final contains all thirty-seven replay traces and source identities.
+
+The codec's 500k scalar stream contains 23,500,000 bytes before compression.
+The native compressor's conservative block bound is input plus floor(input/255) plus sixteen bytes.
+Each compressed memory-file block also has a four-byte length prefix.
+Strings, suspended stacks and whole-state tails add data. No complete bound or whole-state compressed roundtrip exists yet.
+The one-million-slot scalar stream contains 47,000,000 raw bytes. The checked migration plan refuses that capacity.
+Native transfer deadlines and stock-peer selection/retry behavior still require evidence.
+No game, network session, installation, profile or Steam configuration changed during this work.

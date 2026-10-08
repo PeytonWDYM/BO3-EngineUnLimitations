@@ -1,0 +1,13 @@
+Exact game admission failures, declared before implementation
+
+Use captured instruction bytes as data in an owned process. Never execute a captured instruction.
+
+1. Build all nineteen complete count edits with matching enclosing checks.
+2. Refuse unsupported capacities and inconsistent exact-build metadata before any process write.
+3. Verify complete guarded code ranges, including state codecs and their native tails.
+4. Refuse a changed guarded byte before the caller can publish hooks.
+5. Refuse activation after any migration buffer has been allocated.
+6. Verify the native PE identity, with bounded header reads.
+7. Keep guard storage read-only and produce an exact-source receipt.
+
+These checks admit code and allocation state. They do not validate native execution or a BO3 launch.
