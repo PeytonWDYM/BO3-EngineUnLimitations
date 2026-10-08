@@ -903,4 +903,8 @@ Read research/native-input-crash.txt. Raw evidence and inspected profiles remain
 Fresh independent review rebuilt the exact candidate and passed the replay, native unwind, admission and private deployment checks.
 Sixteen review topics contain no must-fix or should-fix findings. Live game initialization remains unverified.
 The next recorder started at 00:48:57 UTC. One separately bound sampler/overlay waiter awaits the next manual full-AAE launch.
-The native candidate remains staged pending separate explicit deployment authorization.
+Peyton explicitly approved the reversible native guard after review.
+At 00:56:04 UTC, the guarded manager applied only full-AAE T7Overcharged.ff.
+The candidate hash is a4834cc251cfcba413bd80d783eec854c0c3f31d14651703a8d7a9e718e1576c.
+The post-deployment check preserves all 165 other baseline files and both Steam/Cloud metadata files.
+The exact packed original remains verified in private normal-native-deployment. Game validation is pending.

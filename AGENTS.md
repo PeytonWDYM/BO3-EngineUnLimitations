@@ -67,7 +67,11 @@ A private native input guard passes seven instruction-emulation cases and six Wi
 Windows maps it without executing its imports or entry. This does not prove BO3 initialization or live Lua lifecycle safety.
 Native apply/removal passed on a private target. A verified original is staged for removal.
 Fresh independent review covers sixteen topics with no must-fix or should-fix findings.
-The native candidate has not been deployed to the normal game. Separate explicit authorization is required.
+Peyton explicitly approved the reversible native guard. It was applied at 00:56:04 UTC on October 8.
+Only full-AAE T7Overcharged.ff changed to candidate a4834cc251cfcba413bd80d783eec854c0c3f31d14651703a8d7a9e718e1576c.
+The deployment check preserved all 91 profiles, 68 other AAE files, six game-root files and two Steam/Cloud metadata files.
+The exact packed original remains privately backed up. Removal uses Manage-Candidate.ps1 with -Patch NativeLuaGuard.
+Native loading, input features, Lua lifecycle and multiplayer remain unvalidated in the game.
 The recorder and one separately bound VM sampler/overlay waiter await the next manual full-AAE launch.
 The new recorder started at 00:48:57 UTC on October 8. No agent game launch occurred.
 Read research/native-input-crash.txt for the captured cause, limits, and private evidence location.

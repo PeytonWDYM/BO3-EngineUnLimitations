@@ -39,7 +39,7 @@ Ready-context results match the original code. The external calls are mocks, not
 Windows maps the candidate without executing its imports or entry point.
 Six native RtlVirtualUnwind positions restore the original return address, stack, and saved registers.
 An initial unconditional helper transfer failed two unwind positions. Conditional transfers corrected that failure.
-The candidate remains private. BO3 launch, Lua state recreation, input features and friends require manual validation.
+BO3 launch, Lua state recreation, input features and friends require manual validation.
 Fresh independent review rebuilt the exact candidate and verified seven replay cases and six Windows unwind positions.
 It checked sixteen topics and found no must-fix or should-fix defects.
 Five builder refusals and private apply/removal checks passed for the native and existing cleanup candidates.
@@ -53,6 +53,9 @@ The screenshot's combined counters and old error text must not be interpreted as
 Private evidence
 lab/evidence/failure-20261007T222120Z/fatal-20261008T001929Z/
 Crash archive, extracted minidump, inspected profiles, original images, replay results and Windows image checks remain private.
-No game launch, game control, profile edit, audio change or new normal-install binary deployment occurred during this investigation.
-The exact packed original, guard candidate and guarded deployment record are staged in normal-native-deployment.
+No game launch, game control, profile edit or audio change occurred during this investigation.
+Peyton explicitly approved the reversible native guard after fresh review.
+At 00:56:04 UTC on October 8, only full-AAE T7Overcharged.ff changed to the reviewed candidate.
+All 165 other baseline files and both Steam/Cloud metadata files remained equal. The exact packed original remains verified.
+The packed original, guard candidate, deployment record and preservation checks remain in normal-native-deployment.
 The recorder and one sampler/overlay waiter await the next manual full-AAE launch.

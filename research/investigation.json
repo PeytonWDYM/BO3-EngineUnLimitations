@@ -100,7 +100,7 @@
       }
     },
     "nativeInputCandidate": {
-      "status": "reviewed_private_candidate_awaiting_deployment_authorization",
+      "status": "approved_candidate_deployed_for_manual_test",
       "event": "Full-AAE native fatal exception on 2026-10-08 at 00:19:29 UTC",
       "cause": "Custom-key raw Lua callback writes through a null global context. The preceding UI lifecycle remains unresolved.",
       "currentServerRow": {
@@ -119,7 +119,7 @@
         "scope": "Independent rebuild, image preservation, replay, Windows unwind, admission refusals, and private apply/removal. No game initialization."
       },
       "importsOrEntryExecuted": false,
-      "normalDeployment": "Not applied. Exact original is privately backed up and verified.",
+      "normalDeployment": "Peyton explicitly approved Apply the reversible native guard. At 00:56:04 UTC on October 8, only full-AAE T7Overcharged.ff changed. All 165 other baseline files and both Steam/Cloud metadata files remained equal. The exact packed original is privately backed up and verified.",
       "gameValidated": false,
       "friendsValidated": false,
       "documentation": "research/native-input-crash.txt"
@@ -236,8 +236,8 @@
     }
   ],
   "nextSteps": [
-    "Get separate deployment authorization for the reviewed native input guard. Its exact original is backed up. Keep the game closed until deployment finishes.",
-    "Verify both candidates load in Peyton's next manual full-AAE match. Only the cleanup candidate currently has normal deployment approval.",
+    "Verify both approved candidates load in Peyton's next manual full-AAE match. Their exact originals are backed up. Normal apply checks passed without an agent game launch.",
+    "Test the native input guard with normal mod loading and custom keys, including return to the game, before volley tests. Real Lua lifetime and synchronization remain unresolved.",
     "Verify next-process native identities and candidate script loading. Rebind external monitoring and cross-check saved snapshots.",
     "Validate waiter growth and recovery during controlled original and candidate volleys. Record map, round, host role, player count, weapon upgrade history and exact identities.",
     "After Peyton's manual session, verify the reviewed contained DirectSound rule in a separately bounded silent physical run if still needed. Its memory checkpoint does not prove the genuine positive Windows provider path.",
