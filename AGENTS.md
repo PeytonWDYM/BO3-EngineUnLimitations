@@ -46,8 +46,28 @@ Ninety-eight of ninety-nine protected paths match. Only Steam's app manifest cha
 No game, Workshop asset, profile, Cloud-cache, audio, or desktop input changed during this comparison.
 Gameplay-only patcher 0.1.0-test.4 passed sixty owned groups, three packaged checks, and two private real-file cases.
 Fresh review verifies its embedded manifest and eleven code modules. No engine launcher or game assets are bundled.
-The failed native candidate remains separate. A helper-publication diagnostic is in development, not ready for deployment.
-Automatic PSS remains disabled. No 500k game allocation is validated.
+The failed native candidate remains separate. The reviewed helper-publication diagnostic completed its manual Steam test.
+It publishes seven helper records and two relay blocks in one allocation while retaining all 33 stock game instruction spans.
+Its game capacity remains 129,999 usable server slots. Helper configuration does not establish expanded game capacity.
+Thirteen owned native cases, four transport groups and separate fresh reviews passed. One relay-metadata finding was corrected.
+The native review's 225 pins matched at its checkpoint. Only its incidental noncompiled Test-Steam.py input changed afterward.
+The separate transport review records that exception; compiled native sources and artifacts remain unchanged.
+The exact recipe is 6b8c76789804e4933e8583e9f125422f34d6c0d708876cb9a5e0d141ab5374bb.
+Root froze 17 runtime files, verified byte-exact removal projection and preserved all 99 protected paths during setup.
+Steam retained the command after a hidden restart. Root used no desktop or audio controls and launched no game.
+Manual capture in manual-bindings-control-08 stopped with its captured child. No overlay waiter or automatic PSS ran.
+The diagnostic closes only its owned game after 120 seconds. The production gate remains 30 seconds.
+Peyton reports the menu loaded and confirms he closed the game afterward.
+PID 35820 / creation FILETIME 134359743896813000 has a final receipt with nine publications and all 33 stock pairs matching.
+It exited with code zero after 77,140 milliseconds, before the diagnostic deadline.
+The read-only live inspection refused identity admission after exit; no post-startup memory read completed.
+A small custom crash archive records an access violation just before exit. Its attribution remains under separate investigation.
+Do not call this session crash-free or infer full-AAE, match, migration or peer compatibility from menu startup.
+Root removed the route canonically, restored the original absent launch field and restarted Steam silently.
+Ninety-six of ninety-nine protected paths match. Only the crash log and Steam/Cloud metadata changed.
+Normal Steam Play is direct again. No 500k game allocation is validated.
+The existing replacefunc selector is unavailable in captured full AAE. Loaded stock script ownership and six target guards are verified.
+No safe callback, VM serialization or asset-lifetime gate supports a native runtime extension. No such candidate was implemented.
 Peyton subsequently authorized unattended game launches and computer use, then explicitly requested that work continue.
 This authorization supersedes the historical manual-only launch holds below. Only the root agent owns actual game tests.
 Do not run BlackOps3-named stand-ins while monitoring waits.

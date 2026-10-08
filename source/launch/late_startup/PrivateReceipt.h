@@ -1,5 +1,7 @@
 #pragma once
-#ifdef BO3_JOB_CONTROL
+#ifdef BO3_BINDINGS_CONTROL
+#include "../bindings_control/Coordinator.h"
+#elif defined(BO3_JOB_CONTROL)
 #include "../job_control/Receipt.h"
 #elif defined(BO3_JOB_STARTUP)
 #include "../job_startup/Coordinator.h"
@@ -19,7 +21,9 @@ public:
     PrivateReceipt(const std::filesystem::path& directory,const OwnedChild&);
 #endif
     ~PrivateReceipt();
-#ifdef BO3_JOB_CONTROL
+#ifdef BO3_BINDINGS_CONTROL
+    void Write(const bindings_control::Receipt&);
+#elif defined(BO3_JOB_CONTROL)
     void Write(const job_control::Receipt&);
 #elif defined(BO3_JOB_STARTUP)
     void Write(const job_startup::Receipt&);

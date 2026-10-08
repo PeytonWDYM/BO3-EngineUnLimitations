@@ -39,6 +39,10 @@ The repository contains no game executable, Workshop asset, or downgrade downloa
 | 500,000 to 1,000,000 server script-variable slots | The corrected Steam test committed 42 edits, then crashed before allocation was verified. The restored-stock-file comparison also failed, with a different handler-reference-count exception. The producer remains unknown. Normal Steam Play is restored. Allocation, AAE, migration, and friends remain unvalidated. One million remains disabled. |
 
 The Workshop changes from `0.1.0-test.2` remain installed for manual testing.
+The separate private startup control now tests seven helper records and two relay blocks while retaining all 33 stock game instruction spans.
+Its thirteen owned native cases, four Steam transaction groups and fresh reviews passed. Peyton's manual test reached the menu.
+He closed the game, and its final receipt records a normal exit. A small access-violation archive appeared around shutdown and remains under investigation.
+It retains 129,999 usable server slots and a fixed two-minute observation deadline. It is separate from the gameplay-only package.
 The two stock fastfile candidates were restored to their verified originals after the full-AAE loading failure.
 Their six decoded script changes retained the original file signatures while changing compressed bodies.
 A targeted capture found an asset counter of 16,400 and only 348 non-null list entries.

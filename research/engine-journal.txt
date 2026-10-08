@@ -1667,3 +1667,72 @@ Prototype report SHA-256: 895e3bbf1007b6462df8f4adf9bc3bac93248b411de7ff78a92edf
 Private evidence: manual-signed-job-startup-07, signed-job-crash-validation-sol-01, signed-job-causal-audit-sol-01,
 patcher/build-0.1.0-test.4, frozen-real-assets-test4, signed-stock-patcher-review-sol-01,
 and mod-script-delivery-prototype-sol-01.
+
+October 8, helper-publication isolation and bounded coverage:
+
+The crash dump omits full-memory and memory-region streams despite the configured per-user DumpType value.
+Missing handler-node, counter, game-code, and relay ranges therefore have unknown page state.
+Captured ntdll overwrites the callback frame slot's low DWORD and replaces RAX before the fast-fail.
+The remaining high DWORD and nonvolatile register values cannot establish callback ownership.
+Callback-retention report SHA-256: 74cc89ad6baf35b787f3fb569f887ff9dc55b150e83036b143b89a34be63f056.
+No registry setting, integrity predicate, or original crash report changed.
+
+The separate bindings control publishes exactly seven helper records and two relay blocks, totaling 440 bytes.
+It retains stock capacity and verifies all thirty-three withheld game instruction spans before and after publication.
+It uses the same frozen helper, gate, complete plan and sole-primary job-freeze admission as the failed candidate.
+No game hook or expanded-pool enrollment is active. The helper's intended 500001/18-root/32-MiB data is not game capacity.
+Its fixed observation deadline is 120 seconds; the production gate remains 30 seconds.
+Distinct receipts retain raw publication readbacks, stock hashes, helper Boot bytes and final owned-child exit.
+All thirteen owned cases passed, including refusal, rollback, failed-rollback containment, natural exit and parent death.
+The real deadline case records 120000 milliseconds and owned exit code 97.
+Production launcher SHA-256: f5de99f5326f7a0e25d3c2edc680f4d0e6e309b9e842d9a1e322bc99b9b45e79.
+Owned-result SHA-256: c784fa84e728fa72fd79646235cb4ff8729d4f9fa2059da8d2fde0b26e8885b2.
+Fresh native review verifies 225 source/input/artifact pins, six saved PE parses and all thirteen cases with no open findings.
+Review SHA-256: 71e2cbd6a31ecfaf59e05e08576288d0d731115edc1a4c91211cc5c4fda46ef5.
+This approves a bounded exact-host private diagnostic, not actual BO3 startup or a released expansion.
+The separate Steam transport passed its four prewritten groups. Fresh review has no open findings.
+One metadata finding was corrected failure-first: one relay allocation contains two published blocks.
+Final recipe SHA-256: 6b8c76789804e4933e8583e9f125422f34d6c0d708876cb9a5e0d141ab5374bb.
+Final transport-result SHA-256: ed4b29cd19f672b3eafeb7e40c2737192ae5625cbf2aae9290d4552fe21eeb25.
+Transport review SHA-256: aaf3ce4e0f121617f856c19f065d86ccb2ed834ab330f46f25f1cc226baa0905.
+The native review's 225 comparisons matched at its frozen checkpoint. The transport correction changes one incidental noncompiled test pin.
+The separate review documents that historical Test-Steam.py exception without repinning native results or their review.
+All compiled native inputs and artifacts remain unchanged.
+Root froze seventeen runtime source/payload files and applied the canonical recipe while Steam and BO3 were closed.
+The original launch field was absent. Its removal projection restores every original configuration byte.
+All four cached files match the exact recipe. All ninety-nine protected paths match after setup.
+Steam retained the command after hidden restart. Root used no desktop or audio controls and launched no game.
+Read-only manual capture is armed in manual-bindings-control-08. No overlay waiter, debugger or automatic PSS is active.
+Peyton launched once and reports the menu loaded. He explicitly confirms that he closed the game afterward.
+PID 35820 has creation FILETIME 134359743896813000 and image base 0x7ff613890000. Its controller was PID 68900.
+The final distinct receipt records nine committed publications, all thirty-three stock span pairs matching, and no game instruction edits.
+The owned game exited with code zero after 77140 milliseconds, before the diagnostic deadline, with cleanupFailed false.
+The recorder stopped with that child. Its available Windows event list is empty.
+The read-only live inspection refused during identity admission after the game exited. No post-startup memory read completed.
+Do not claim a live pool measurement or full-AAE, match, migration or peer validation from this menu result.
+
+A 247,791-byte custom game archive appeared at 23:07:47 UTC, just before process exit at 23:07:49 UTC.
+Its exception stream reports c0000005 on TID 67020 at 0x7ff5f6053d5c. Native exit code zero does not erase this captured exception.
+Its crash-log header disagrees with the current image base. Exact module/context attribution remains under separate analysis.
+ZIP SHA-256: e5ed835b46050aadb7cb097c1c45ee252325ba80d0e0edf6d282bb590d7d8be8.
+Extracted dump SHA-256: 67f0ee96723b94c4ab5b6495ecd516eb529d14ce41e50bf2d9e56f0c86e243d5.
+Menu startup supports narrowing the pre-menu failure to the game-edit bundle, while shutdown remains a separate result.
+Do not describe the control as crash-free or fully compatible.
+Root verified controller and game exit, removed the route canonically with Steam closed, and restarted Steam silently.
+The original absent launch field is restored. Removal preserved all current unrelated Steam configuration bytes.
+Ninety-six of ninety-nine protected paths match. Only the newly written crash log, app manifest and Cloud cache changed.
+All saves, settings, executable, restored stock fastfiles and Workshop candidates match the fresh baseline.
+Normal Steam Play is direct again. No expanded pool became active.
+
+The existing AAE replacefunc wrapper has no registered selector in the saved native dispatch map.
+The loaded-script research independently binds both type-54 descriptors to their executed stock script buffers.
+All six original target bytes still match after linking. Whole prelink script hashes do not match loaded views.
+The native asset lookup can wait during loading and releases its dictionary lock before returning a buffer.
+No evidenced server map-init caller, VM serialization barrier or asset-lifetime hold supports the proposed extension.
+That proposal stops before implementation. The stock fastfiles remain exact; no runtime script candidate was produced.
+Gate report SHA-256: 3a381af5e6899def086a99ca0825a3812c5ce79740f5f474fd336e98a0ef1d79.
+The test.4 documentation closure preserves its unchanged executable, manifest and original review.
+Closure SHA-256: 30b2d472d85aebde17052e6027af939188b711e86f1efa1fa542e6c78ba71f80.
+Private evidence: bindings-control-sol-01, bindings-control-native-review-sol-01,
+signed-job-crash-validation-sol-01/callback-target-followup-01, aae-runtime-script-contract-sol-01,
+and aae-loaded-script-patch-gate-sol-01.

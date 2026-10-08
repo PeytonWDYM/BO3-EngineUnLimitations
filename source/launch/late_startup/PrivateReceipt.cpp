@@ -36,7 +36,9 @@ void PrivateReceipt::Create(const std::filesystem::path& root,const OwnedChild& 
                 "Cannot create the private receipt directory.");
             directories_.push_back(LockDirectory(directory));
         }
-#if defined(BO3_JOB_CONTROL)
+#if defined(BO3_BINDINGS_CONTROL)
+        constexpr auto suffix=L"-bindings-control.json";
+#elif defined(BO3_JOB_CONTROL)
         constexpr auto suffix=L"-job-control.json";
 #elif defined(BO3_JOB_STARTUP)
         constexpr auto suffix=L"-job.json";
@@ -61,7 +63,10 @@ PrivateReceipt::PrivateReceipt(const OwnedChild& child) {
 PrivateReceipt::PrivateReceipt(const std::filesystem::path& directory,const OwnedChild& child){Create(directory,child);}
 #endif
 PrivateReceipt::~PrivateReceipt(){if(file_!=INVALID_HANDLE_VALUE)CloseHandle(file_);for(const auto handle:directories_)CloseHandle(handle);}
-#ifdef BO3_JOB_CONTROL
+#ifdef BO3_BINDINGS_CONTROL
+void PrivateReceipt::Write(const bindings_control::Receipt& receipt) {
+    std::ostringstream stream;bindings_control::WriteReceipt(stream,receipt);
+#elif defined(BO3_JOB_CONTROL)
 void PrivateReceipt::Write(const job_control::Receipt& receipt) {
     std::ostringstream stream;job_control::WriteReceipt(stream,receipt);
 #elif defined(BO3_JOB_STARTUP)
