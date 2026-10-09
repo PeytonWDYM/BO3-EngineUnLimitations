@@ -88,6 +88,19 @@ An isolated Proton startup test with the original logo video present reached the
 and verified the complete live pool with this option. Do not run two BO3 copies on
 the same Steam account at once; that interrupts the game's sign-in session.
 
+An optional Linux startup clip can play fullscreen with audio before Proton starts.
+Install `ffplay`, keep the clip in a local file, and prefix the existing launch command
+with `scripts/proton/Play-Intro.sh <local-video>`. For the private wrapper, for example:
+
+```text
+BO3_500K_SKIP_INTRO=1 "/absolute/Play-Intro.sh" "/absolute/intro.webm" "/absolute/Launch-Private.sh" "/absolute/private-root" %command%
+```
+
+The player finishes or closes before the game launches, and the engine skip suppresses
+the original logo. Missing media or playback failure still allows the game to start.
+Use a format supported by the player inside Steam's sandbox; VP9/Opus WebM was checked
+with Flatpak Steam. Clips are local user files and are not included in this repository.
+
 AAE's Lua loader resolves `../../workshop/content/311210/<mod-ID>/T7Overcharged.ff` from the game directory and requests `quit` if its helper cannot load.
 A flat private game directory breaks that relationship. Preserve the layout above for both stock and patched comparisons.
 Do not replace missing mod dependencies by removing version checks or native code guards.
