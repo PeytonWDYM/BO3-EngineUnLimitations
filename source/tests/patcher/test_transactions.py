@@ -33,7 +33,7 @@ def features():
 class Transactions(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
-        self.base = Path(self.temp.name)
+        self.base = Path(self.temp.name).resolve()
         self.root = self.base / "install"
         fixtures(self.root)
         self.engine = Engine({"workshop": self.root}, self.base / "state", features(), self.base, lambda: False, coordination_root=self.base / "coordination")

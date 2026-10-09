@@ -22,7 +22,7 @@ class EnhancedEndToEnd(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory(prefix="bo3-owned-enhanced-")
         self.addCleanup(self.temp.cleanup)
-        self.root = Path(self.temp.name)
+        self.root = Path(self.temp.name).resolve()
         self.resources = self.root / "resources"
         self.bundle = self.resources / "enhanced"
         self.bundle.mkdir(parents=True)
