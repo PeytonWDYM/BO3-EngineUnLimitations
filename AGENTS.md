@@ -74,6 +74,30 @@ Do not run BlackOps3-named stand-ins while monitoring waits.
 Enhanced VM monitoring requires an exact process-bound startup receipt and live helper/count verification.
 Invalid enrollment refuses before expanded pool reads. Moving-match measurements remain provisional.
 
+Peyton now requires explicit game-code integrity handling before publishing native engine edits.
+Other BO3 clients may be researched as references. The deliverable must remain an optional patch for stock Steam BO3.
+This authorizes exact-build game-code checksum handling, superseding the historical prohibition for those checks only.
+Preserve unrelated cookie checks, debugger checks, Steam authentication, native guards, and the thirty-second startup deadline.
+The current launcher has no early game-code checksum handling. Do not repeat its unchanged expanded-startup test.
+The verified healthy runtime contains 259 XOR, 259 NEG/ADD, and 847 comparison pattern matches.
+Twelve XOR matches feed checksum calculations. Keep those input transforms unchanged.
+The remaining 1,353 comparison sites require separate context and instruction-semantics admission.
+Both executable code regions are required. The captured runtime PE header omits the second region.
+Pattern matches establish code presence, not the cause of a captured crash or complete live execution coverage.
+Require exact-build admission, verified evaluator semantics, atomic publication, readback, rollback, and fresh independent review.
+Do not copy client loaders, networking replacements, unchecked offsets, or live reapplication loops into the stock helper.
+No integrity-aware startup or 500,000-slot allocation has been validated yet.
+Full AAE already corrects computed checksums after its native module loads.
+Captured T7Overcharged.ff handler code corrects both the local computed value and the chained image value.
+The comparison-only prototype preserves matched register results but leaves wrong local and chained image checksums.
+Keep that prototype disabled for real BO3. Its owned transaction tests do not validate checksum correctness.
+AAE's installer requires original store/decrement bytes at all 1,069 fixed sites.
+Replacing those stores would conflict with full-AAE installation.
+The read-only audit found a preceding seven-byte LEA for every site: 998 adjacent and 71 in transported predecessor blocks.
+The proposed earlier correction must preserve those original AAE installation sites and prove every transported continuation.
+The implementation agent was blocked by automatic account security review. No correction hook was implemented or deployed.
+Preserve this checkpoint. Do not route around the security gate with another agent.
+
 Peyton authorized reversible Steam Play integration. The original BO3 LaunchOptions field is absent.
 Use the reviewed file-based setup while Steam is closed. Preserve the original field and unrelated Steam configuration bytes.
 Use file-based deployment for this setup. Peyton later authorized desktop controls for game testing while he sleeps.

@@ -1736,3 +1736,66 @@ Closure SHA-256: 30b2d472d85aebde17052e6027af939188b711e86f1efa1fa542e6c78ba71f8
 Private evidence: bindings-control-sol-01, bindings-control-native-review-sol-01,
 signed-job-crash-validation-sol-01/callback-target-followup-01, aae-runtime-script-contract-sol-01,
 and aae-loaded-script-patch-gate-sol-01.
+
+October 8, exact-build game-code integrity investigation:
+
+Peyton requires explicit code-integrity handling before another expanded startup comparison.
+He permits researching other BO3 clients while retaining stock Steam BO3 as the deliverable.
+The previous native startup recipe has no game-code checksum handling.
+The original article describes intertwined checksum inputs and comparison endpoints:
+https://momo5502.com/posts/2022-11-17-reverse-engineering-integrity-checks-in-black-ops-3/
+Maintained primary source provides three pattern families for the supported executable timestamp and image size:
+https://github.com/Scroptss/T7Patch-src/blob/16b9b50662c68149526039cdf2ebdad348b9ca70/Arxan.cpp
+Its pattern counts match the independently captured healthy runtime: 259 XOR, 259 NEG/ADD and 847 CMP matches.
+The signed disk image describes two executable regions. The captured runtime PE header omits the second.
+Scanning that runtime header alone would retain only 34 of the 1,365 matches.
+All matches are in captured game-image executable pages and are separate from the existing engine edits and code guards.
+Twelve XOR matches feed multi-table checksum calculations and must remain unchanged.
+Local flag consumers distinguish the remaining 1,353 comparison sites; broader context admission remains under review.
+The profile normalizes 2,006 exact image-relative MOVABS fields inside 76,878 bytes of nearby guards.
+Frozen profile SHA-256: 27308fe01a929bcaebfe549fcc24bf678c973d657abdc313942db14822321e3d.
+Presence of these sites does not prove that a checksum check caused any captured failure.
+The proposed route combines verified integrity edits and the original 42-edit plan under the existing job freeze.
+It retains the exact helper, gate, native guards and thirty-second startup deadline.
+No replacement client, live reapplication loop, Steam authentication change or unrelated protection change is authorized by this design.
+The code module and combined route remain in development. No new actual game launch or 500,000-slot allocation is validated.
+Private evidence: client-integrity-research-sol-01, integrity-input-audit-sol-03, bindings-shutdown-attribution-sol-02.
+
+October 8, checksum chaining and existing full-AAE handling:
+
+The comparison-only prototype is retired as a real-game candidate.
+Independent symbolic traces map all 1,353 endpoints to 1,069 distinct one-word local/image checksum contexts.
+The 284 secondary CMP sites execute on equal-input paths and cannot simply be omitted.
+The prototype reaches matched return-register results but retains unequal local checksums and one unequal chained image write per routine.
+This is a concrete missing semantic operation, not proof of the captured crash's initiating instruction.
+All 1,069 computed-store blocks differ in the full-AAE co-op snapshot because AAE has installed integrity hooks there.
+Expected DWORDs, count fields and normalized pointer targets match. Those code differences are not changing expected data.
+The captured hooks comprise 1,000 PUSH/CALL sites and 69 CALL sites through 70 wrappers.
+Every wrapper calls the captured T7Overcharged.ff handler at module RVA 0x1166d0.
+Its accepted path reads the current expected DWORD, corrects the local computed DWORD, and returns that same value.
+The wrapper publishes the corrected value into the original chained image cell and preserves the index operation.
+Captured-handler proof SHA-256: 2285a1cfd0d403d738d5d1c22b35cd8367a6f5503f0baa29dd421232882b76bf.
+One independently decoded routine hashes 571 fixed game-image spans and 82 normalized image QWORD cells.
+Those spans do not intersect the 33 engine edits. Causal coverage of those edits remains unresolved.
+The installer uses fixed tables for all 1,069 sites. Its intact path checks original ADD bytes after each store.
+Its split path scans the following 64 bytes for the original RIP-relative LEA transport.
+A same-store early hook would conflict with that installer and is rejected.
+Every routine has one preceding seven-byte chain-destination LEA: 998 immediately before the store and 71 in transported blocks.
+An upstream correction was proposed to preserve AAE's installation sites. Its transported continuations still need proof.
+No correction relay was implemented, installed, or tested in BO3.
+
+The historical comparison transaction passed 18 combined owned groups and 20 existing job groups, repeated independently.
+Its 1,395 edits commit/read back together and roll back under the existing job freeze.
+The read-only enrollment prototype passed 50 owned cases, including restoration refusal before expanded reads.
+Real BO3 enrollment for the retired comparison route remains refused. Fixture evidence is not game validation.
+The implementation agent then failed automatic account security review for possible cybersecurity risk.
+The reported gate requires additional account security enrollment. No alternate agent was used to bypass it.
+The unfinished authored sources are preserved separately from this verified research checkpoint.
+The later resource-commit callback postdates the independently repeated 18+20 cases.
+Five owner-run resource cases passed; they have no independent repeat or checksum-correction proof.
+Input/installer report SHA-256: bdeb7651df7003b26f8664e59a54afacb340fae678d507b568baeee1bd5d45d4.
+Chaining follow-up SHA-256: 50c36a2c98f1d43e33b370223151c8cb2681252efe81a66d97f40d185c8bb1f8.
+Read-only transaction limits SHA-256: 1eb61357bb49aa9a5e9586366254e94b7afa6cfde5ba59f80700f7862ef671c6.
+Normal Steam Play remains direct. No game, Steam, profile, Workshop, desktop or audio change occurred during this work.
+Root's final read-only preservation check matches all 99 paths from the previous test's final protected-file baseline.
+The early integrity correction, live 500,000-slot allocation, full-AAE startup, migration and friends remain unvalidated.
