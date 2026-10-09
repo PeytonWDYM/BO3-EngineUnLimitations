@@ -38,5 +38,9 @@ the helper boot/configuration and nineteen capacity instructions before it reads
 Owned native enrollment and earlier job enrollment passed fresh review.
 
 Receipts distinguish patch publication from allocation and gameplay validation.
-Actual Steam startup, full AAE loading, live allocation, complete host migration, hosting and joining remain unvalidated.
+The October 8 manual Steam launch reached full AAE and Zombies with 500,000 usable server slots.
+Its receipt committed all 1,121 publications. The read-only monitor passed runtime enrollment and accepted expanded-pool samples.
+That process later had a paused-match interruption and a separate native fatal exception through AAE's custom-key Lua path.
+The last accepted sample before the fatal event retained 399,061 free slots. The interruption's cause remains unknown.
+The native crash's upstream cause, complete host migration, hosting and joining remain unresolved.
 Do not describe this candidate as unlimited play or a finished compatibility result.

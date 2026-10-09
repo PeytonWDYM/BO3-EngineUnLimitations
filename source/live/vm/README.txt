@@ -10,6 +10,13 @@ The default rate is 10 samples per second. The default duration is 30 seconds.
 Use --duration 0 to capture until interruption or process exit.
 Use --expected-start-ticks to require a previously recorded process instance.
 
+An optional --latest file supplies the external overlay. Windows access or sharing errors during
+status publication do not stop the JSONL capture. Each failure adds an overlay-publication-failed
+row and a stderr warning. The next sample attempts publication again. The overlay can remain stale
+while the file stays blocked. Initial file creation and other I/O errors still refuse capture.
+Run source/tests/vm/Verify-StatusPublication.py with --fixture and a new external --output directory
+to repeat three full-CLI cases with real Windows file-sharing locks and an owned native VM process.
+
 The profile uses the existing private VM layout fields. It must have status fixture-only or game-validated.
 The current game profile remains disabled. Native fixture results do not validate game capture.
 The profile accepts one or two instances and at most 130000 slots per instance.

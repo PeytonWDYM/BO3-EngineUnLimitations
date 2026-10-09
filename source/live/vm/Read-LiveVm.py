@@ -61,7 +61,17 @@ def main():
                     stream.write(json.dumps(row, ensure_ascii=True) + "\n")
                     stream.flush()
                     if latest:
-                        latest.publish(row)
+                        try:
+                            latest.publish(row)
+                        except OSError as error:
+                            if error.winerror not in (5, 32, 33):
+                                raise
+                            # A blocked overlay file must not stop the primary capture.
+                            failure = {"event": "overlay-publication-failed", "utc": row["utc"],
+                                       "winError": error.winerror, "error": str(error)}
+                            stream.write(json.dumps(failure, ensure_ascii=True) + "\n")
+                            stream.flush()
+                            print(f"VM sampler overlay: {error}", file=sys.stderr)
                 emit("attached", pid=process.pid, path=str(process.path), processStartTicks=process.started_ticks,
                      processStartUtc=process.started_utc, sha256=process.sha256,
                      moduleBase=hex(process.module.baseaddress), imageSize=process.module.size,

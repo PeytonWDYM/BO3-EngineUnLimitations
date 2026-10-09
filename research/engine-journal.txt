@@ -2016,3 +2016,41 @@ Primary references:
 https://github.com/Ezz-lol/boiii-free/blob/main/src/client/component/arxan.cpp
 https://momo5502.com/posts/2022-11-17-reverse-engineering-integrity-checks-in-black-ops-3/
 Source inspection is research. No alternate client, third-party loader or new normal-game DLL was installed.
+
+October 8, successful manual 500K launch and captured gameplay failures:
+
+Peyton manually launched PID 66200 through Steam at 02:34:30.4429266 UTC on October 9, local October 8.
+The exact creation FILETIME is 134359868704429266. Its receipt commits all 1,121 publications and records successful thaw.
+Full AAE loaded and Peyton reached Zombies. Read-only runtime enrollment and expanded-pool reads passed.
+This establishes one successful activation and manual game entry. It does not establish stable play or multiplayer compatibility.
+Peyton reported a server interruption while paused and then started another match in the same process.
+The screenshot's 96,586-slot reading was 470 seconds old. The sampler had stopped on a Windows status-file replacement error.
+No fault-time snapshot of that interruption exists. Its cause remains unresolved.
+
+A separate native fatal archive at 03:03:53 UTC and a complete clone snapshot preserve the later failure.
+The execute access violation follows AAE's custom-key raw Lua path into an invalid native callback.
+Windows RtlVirtualUnwind confirms eleven frames against the original crash stack and captured metadata.
+The approved null-context guard is loaded. The captured non-null Lua state passes its narrow check.
+The last accepted pre-archive row retains 399,061 free slots at 03:03:44.948757 UTC, with no first server script error.
+That headroom and the native call path do not show slot exhaustion for this fatal event.
+The initiating state corruption and any interaction with the expansion remain unresolved. Read research/native-input-crash.txt.
+
+The external monitor's primary log now continues when Windows blocks its optional overlay-status file.
+Three full-CLI Windows cases reproduce the failure before the fix and pass after it using actual sharing locks.
+They retain commands, fixture identities, sample logs, stderr, native checksums and source hashes outside the repository.
+Initial file creation and unrelated I/O failures still fail. Status publication retries on the next captured event.
+Private evidence: release-enhancement/status-publication-red-02 and status-publication-green-02.
+These diagnostics changes do not modify the installed launcher, game, Workshop assets, profiles or Steam configuration.
+No agent game launch or input control occurred.
+
+The actual loaded AAE Dvar table maps player_sustainAmmo to hash 0x32ECB49A.
+The captured game registers that hash and its native ammo-consumption path returns before subtraction when it is enabled.
+AAE's documented /d command and captured script handler set the requested Dvar name and value.
+Use /d player_sustainAmmo 1 with Advanced Features enabled. Value 0 disables it.
+The command was verified from saved native code and the documented setter. No agent executed it in Peyton's game.
+
+Fresh independent GPT-6.1 Sol review found no must-fix or should-fix issues in this diagnostics checkpoint.
+Its three focused Windows CLI cases passed independently. The review preserves the capture and gameplay limits.
+Private review: release-enhancement/status-publication-review-01/review.json, SHA-256 95816728b623fef170a55d07030b028ba423ade4be7d1f026eadb1748e6baa99.
+One external waiter excludes captured fatal PID 66200 until that exact process exits, then verifies the next full-AAE process.
+It uses the corrected sampler and existing exact-code enrollment. It does not launch or control BO3.
