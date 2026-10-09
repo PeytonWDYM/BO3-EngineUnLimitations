@@ -115,6 +115,16 @@ Independent replay matches both outputs and observes no native or owned-copy wri
 This proves representative scalar compression. Complete native load, variable state, AAE and actual peer delivery remain unvalidated.
 Private evidence: 500k-large-compression-sol-01 and 500k-large-compression-review-sol-01.
 
+The latest crash dump uses mask 0x200121 and omits full memory and memory-region records.
+The current token is not administrative. HKLM has no BO3-specific LocalDumps policy.
+HKCU requests DumpType 2. That setting and dump file size do not prove full-memory collection.
+Microsoft documents LocalDumps configuration through HKLM with administrator privileges.
+The recorder retrieves Windows crash events after exit. Their timestamps do not establish a live capture window.
+Its existing manual snapshot route uses PSS. Keep automatic startup PSS disabled.
+No reliable permitted collection path for the missing handler/count memory was established.
+Private evidence: passive-crash-coverage-sol-01 and passive-crash-coverage-root-01.
+No registry, game, Steam, profile, desktop or audio change occurred. The startup cause remains unresolved.
+
 Peyton authorized reversible Steam Play integration. The original BO3 LaunchOptions field is absent.
 Use the reviewed file-based setup while Steam is closed. Preserve the original field and unrelated Steam configuration bytes.
 Use file-based deployment for this setup. Peyton later authorized desktop controls for game testing while he sleeps.

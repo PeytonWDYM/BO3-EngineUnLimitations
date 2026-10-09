@@ -1879,3 +1879,25 @@ Compression review pins SHA-256: 49bc8d18080104daef59b5d937d1c848557fa639a4843c8
 No game launch, installation write, Steam change, desktop input or audio change occurred.
 Root's final read-only comparison still matches all 99 protected paths from the prior game's final baseline.
 The integrity-hook implementation remains blocked. No expanded-pool BO3 startup or friends compatibility is validated.
+
+October 8, passive startup-crash capture coverage:
+
+Peyton requested the working fix again. Root and a Sol agent checked whether permitted capture can retain the missing handler/count.
+The exact retained PID 41376 dump uses mask 0x200121, with MemoryList and no FullMemory or MemoryInfoList.
+The active handler and indirect count remain absent. Missing bytes do not establish freed pages or ownership.
+Fresh read-only configuration records a non-administrative token and no HKLM BO3-specific LocalDumps key.
+The existing HKCU BO3 key requests DumpType 2 and DumpCount 10. No registry value was changed.
+Microsoft documents automatic LocalDumps configuration under HKLM and requires administrator privileges.
+The HKCU request does not establish a supported full-memory capture policy for this session.
+Applications with custom crash reporting are excluded by that documentation. This audit does not establish BO3's status under that exclusion.
+The recorder's existing dump path uses manual ProcDump -r -ma. Automatic startup PSS remains disabled.
+Windows events are read in the recorder's final cleanup, after observed exit.
+Event 1000 TimeCreated precedes observed exit by about 3.24 seconds, but delivery latency and memory-readability timing are unmeasured.
+An external MiniDumpWriteDump call is conditionally possible with documented rights. The existing reader requests narrower process rights.
+Neither API capability nor stored event timestamps establish a permitted complete crash-time collection window.
+No reliable capture path was established under the current constraints. No speculative watcher or new game test was implemented.
+Private evidence: passive-crash-coverage-sol-01 and passive-crash-coverage-root-01.
+Passive coverage report SHA-256: 28123470137f54b2bcd14621c52cf3e62c7d97f0aef5993dc820e0df9650f982.
+Passive coverage pins SHA-256: 2b40a4b83fbdabe52e16e0413f96fe784e4ab6b5f384173d525863191bc3c9a3.
+No game, Steam, profile, Workshop, desktop, audio or registry modification occurred.
+The 500,000-slot startup failure remains unresolved. The integrity-hook account-security rejection remains in force.
