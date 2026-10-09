@@ -98,6 +98,17 @@ The proposed earlier correction must preserve those original AAE installation si
 The implementation agent was blocked by automatic account security review. No correction hook was implemented or deployed.
 Preserve this checkpoint. Do not route around the security gate with another agent.
 
+The separate ordinary 500k audit passed 28 captured-native allocation, collision-deletion, release/reuse and typed-key cases.
+The selected IDs span 65,535 through 500,000. These paths retain DWORD slot IDs and complete QWORD keys.
+Two focused native codec probes retain high scalar fields and a three-record type-one/type-21 reference topology.
+Fresh independent replay matches all 28 cases and both serialized streams.
+These are owned emulator tests. They do not validate live game allocation, reference lifetime or complete state load.
+The field named Slot.refs at offset 0x20 is type-dependent data. Native packed references occupy flags at offset 0x10.
+Type-24 association WORDs, variable codecs, map/mod resets, complete compression and actual peer migration remain unresolved.
+Private evidence: 500k-allocation-audit-sol-01, 500k-state-audit-sol-01 and 500k-boundary-review-sol-01.
+All 99 protected paths match the last test baseline. No game, Steam, input or audio change occurred.
+The blocked integrity prototype remains disabled. No new real-game 500k candidate is prepared from these probes.
+
 Peyton authorized reversible Steam Play integration. The original BO3 LaunchOptions field is absent.
 Use the reviewed file-based setup while Steam is closed. Preserve the original field and unrelated Steam configuration bytes.
 Use file-based deployment for this setup. Peyton later authorized desktop controls for game testing while he sleeps.

@@ -1799,3 +1799,43 @@ Read-only transaction limits SHA-256: 1eb61357bb49aa9a5e9586366254e94b7afa6cfde5
 Normal Steam Play remains direct. No game, Steam, profile, Workshop, desktop or audio change occurred during this work.
 Root's final read-only preservation check matches all 99 paths from the previous test's final protected-file baseline.
 The early integrity correction, live 500,000-slot allocation, full-AAE startup, migration and friends remain unvalidated.
+
+October 8, separate 500k allocation and state boundary audit:
+
+Peyton requested continued work without completing the account security setup.
+The blocked integrity implementation remains stopped. This audit covers ordinary allocation and serialization only.
+New failure cases preceded each private captured-code replay. No game process or installation write was involved.
+Twenty-eight focused cases cover collision deletion, childless object release/reuse, and category-one/category-four typed allocation.
+The selected IDs are 65,535, 65,536, 129,999, 130,000, 262,143, 262,144 and 500,000.
+Those paths retain complete DWORD IDs. Category-one keys retain QWORD values above 32 bits.
+The native hash selector uses 16 bits for buckets. It does not truncate the linked slot IDs or complete key comparisons.
+This result covers authored chains and childless objects. Complex graph cleanup, entity associations and map/mod resets remain untested.
+The type-24 release branch reads two WORDs from slot offset 0x20 into a separate entity-association lookup.
+Those words are not established VM slot IDs and do not prove a 16-bit pool ceiling.
+The helper's Slot.refs name at offset 0x20 describes type-dependent data, not the native packed reference count.
+The native packed reference count occupies the upper 24 bits of slot flags at offset 0x10.
+
+The earlier sparse/dense 500k state replay uses scalar type seven, with zero sibling links and offset-0x20 data.
+A new focused replay serializes four selected records with high DWORD links, parent IDs and type-dependent fields.
+It retains a 188-byte stream, four native hash insertions and exact rebuilt hash buckets.
+The other free records stay in owned memory. This is not another whole-pool or whole-state round trip.
+The authored scalar records do not establish a valid runtime object graph or reference ownership.
+A second replay preserves a type-21 parent at 262,144, its type-one child at 129,999, and target object at 500,000.
+That probe retains a 149-byte stream, one native hash insertion, and matching child head/tail and reference payload.
+It adds no callbacks. Authored packed reference counts are retained, but no reference-lifetime operation or root consumer executes.
+String, vector, suspended-stack, native association, complete tail and compressed whole-state coverage remain open.
+The dense scalar slot stream requires 23,500,000 bytes before compression, less than the configured 32 MiB budget.
+That size excludes variable codecs and outer state. Complete-state budget and peer delivery remain unproved.
+Private evidence: 500k-allocation-audit-sol-01 and 500k-state-audit-sol-01.
+Fresh independent replay matches all 28 allocation cases and both byte-exact serialized streams.
+Fresh bounded review verifies 2,077 author pin entries, with one closed fixture finding and no evidenced production defect.
+No new real-game candidate is prepared from these tests.
+Review found that typed-allocation fixture heads lacked the native free type. The corrected prerequisite sets type 27 and next zero.
+All 28 focused cases still pass. Earlier artifacts remain preserved as history. This correction establishes no production defect.
+Allocation report SHA-256: 9c1eeef36c07a211b87c078b016cfae8dbf021aaabf64450093c34ffb8bdb8cb.
+Allocation pins SHA-256: 589f34af9eba14cdc6ec2bc40103da21bc175768ba0920ea2c52f3af278bfe36.
+State pins SHA-256: 30990ff94107a01c3ee018a314ab6938d6247061f6807e5c3aa529508bc08505.
+Boundary review SHA-256: 9139b2b868f86a06deaf2702096a4362f511808a26f746db8d15e1e8409e576d.
+Boundary review pins SHA-256: 9df46db3e1cc128506d6dab4b62408602abc160fdba0f0c61de649b29e9af68a.
+Root's read-only protected-file comparison matches all 99 paths from manual-bindings-control-08's final baseline.
+These results do not explain the earlier startup fault. Its twelve observed VM/migration fields were zero.
