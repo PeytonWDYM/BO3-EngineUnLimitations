@@ -1,0 +1,16 @@
+PRIVATE STEAM WRAPPER: FAILURE CASES BEFORE IMPLEMENTATION
+
+The first private Proton harness used a flat game directory. The stock test inherited
+Steam's real game working directory, while the native launcher set the private game
+directory. Full AAE resolves its native helper through ../../workshop/content/311210.
+That path was absent in the flat private layout; its Lua loader requested quit.
+
+1. Both stock and patched launches must use the same private working directory.
+2. Keep the Steam layout: steamapps/common/BlackOps3 and steamapps/workshop/content.
+   Relative Workshop helper paths must resolve inside the private root.
+3. Preserve Steam's command and game arguments; replace exactly one BlackOps3.exe.
+4. Refuse missing private files, invalid modes, and ambiguous executable arguments
+   before running Steam's command. Never silently fall back to the working install.
+5. Use a private Proton prefix. Do not print the user's environment into the log.
+6. The native launcher still checks executable identity and native code before writes.
+   Wrapper tests do not prove native admission, live capacity, saves, or peer behavior.

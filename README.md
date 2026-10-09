@@ -39,11 +39,46 @@ When Wine returns `STATUS_NOT_IMPLEMENTED` for job freezing, the launcher suspen
 The job still owns exactly one game process and kills it on refusal or launcher exit.
 Windows retains job freezing. Wine also gets a checked loader-lock query and admission for executable copy-on-write image pages; all existing native code guards remain required.
 
-A private test on Proton Experimental `experimental-11.0-20261001-x86_64` committed all 1,121 startup edits and reached a vanilla Shadows of Evil solo match.
+A private test on Proton Experimental `experimental-11.0-20261001-x86_64` committed all 1,121 startup edits and reached both a vanilla Shadows of Evil solo match and a full All-around Enhancement match.
 A read-only check verified all 19 server-count instructions, the complete 32,000,064-byte server pool, its 2,000,004-byte hash allocation, and the free-slot chain through slot 500,000.
 This verifies startup and live allocation in that session, not full compatibility.
-The session reported UI Error 46507 when opening the pause menu. Full All-around Enhancement loaded a map and opened its pause menu on the same downgraded executable without 500K, but loading it with 500K quit the game. Its compatibility with this patch is unresolved. Save data, matching peers, host migration, and other Proton versions remain unverified.
+The player confirmed that the full AAE map and pause menu loaded successfully after correcting the private folder layout.
+An earlier flat-folder test reported UI Error 46507 in vanilla; vanilla pause has not been retested in the corrected layout.
+Save data, matching peers, host migration, and other Proton versions remain unverified.
 Use a private game copy and prefix for further tests. The Windows setup executable still refuses Wine.
+
+### Private Proton launch
+
+Build the native candidate from source, then copy its three native files into `launcher` below.
+Use the profiled executable and private copies of player and Workshop files. Keep the normal Steam directory relationships:
+
+```text
+private-root/
+  Launch-Private.sh
+  launcher/
+    BO3-500K-Zombies.exe
+    Bo3EnhancedHelper.dll
+    Bo3StartupGate.dll
+  steamapps/
+    common/BlackOps3/        # private game, including players
+    workshop/content/311210/ # copied subscribed mod folders, preserving their IDs
+```
+
+Copy `scripts/proton/Launch-Private.sh` into this root and make it executable.
+Set the game's Steam launch option to:
+
+```text
+"/absolute/private-root/Launch-Private.sh" "/absolute/private-root" %command%
+```
+
+Both paths must be accessible to Steam, including its Flatpak sandbox when applicable.
+The wrapper sets the private working directory and creates a separate Proton prefix in `compatdata`.
+It defaults to patched mode. Put `stock` or `patch` in `private-root/mode` to select an unpatched or patched private run.
+Keep the launcher console open while playing. Restore your previous Steam launch option to remove this wrapper.
+
+AAE's Lua loader resolves `../../workshop/content/311210/<mod-ID>/T7Overcharged.ff` from the game directory and requests `quit` if its helper cannot load.
+A flat private game directory breaks that relationship. Preserve the layout above for both stock and patched comparisons.
+Do not replace missing mod dependencies by removing version checks or native code guards.
 
 ## Build and contribute
 
@@ -102,6 +137,7 @@ The Proton startup fixtures exercise stopped worker threads, changed thread inve
 WINEPREFIX=~/private/wineprefix pwsh -NoProfile -File source/tests/process-freeze/Test-ProcessSuspend.ps1 -OutputDirectory ~/private/suspend-tests
 WINEPREFIX=~/private/wineprefix pwsh -NoProfile -File source/tests/startup-loader/Test-LoaderSafety.ps1 -OutputDirectory ~/private/loader-tests
 WINEPREFIX=~/private/wineprefix pwsh -NoProfile -File source/tests/image-memory/Test-ImageMemory.ps1 -OutputDirectory ~/private/image-tests
+python3 -B source/tests/proton/Test-SteamWrapper.py --output ~/private/wrapper-tests
 python3 -B source/tests/game-identity/Check-ProtonPool.py --pid <host-game-pid> --game <private-BlackOps3.exe> --receipt <committed-session.json> --output ~/private/live-pool.json
 ```
 
