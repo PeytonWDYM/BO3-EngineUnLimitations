@@ -9,6 +9,8 @@ game=$root/steamapps/common/BlackOps3
 mode=${BO3_500K_MODE:-patch}
 if [[ -z ${BO3_500K_MODE:-} && -f $root/mode ]]; then mode=$(cat -- "$root/mode"); fi
 [[ $mode == patch || $mode == stock ]] || fail 'Private mode must be patch or stock.'
+skip_intro=${BO3_500K_SKIP_INTRO:-0}
+[[ $skip_intro == 0 || $skip_intro == 1 ]] || fail 'BO3_500K_SKIP_INTRO must be 0 or 1.'
 [[ -f $game/BlackOps3.exe && -d $game/players ]] || fail 'The private game or players directory is absent.'
 if [[ $mode == patch ]]; then
     for name in BO3-500K-Zombies.exe Bo3EnhancedHelper.dll Bo3StartupGate.dll; do
@@ -23,6 +25,7 @@ for arg in "$@"; do
             matched=$((matched + 1))
             if [[ $mode == patch ]]; then
                 args+=("$root/launcher/BO3-500K-Zombies.exe" "Z:${game//\//\\}\\BlackOps3.exe")
+                if [[ $skip_intro == 1 ]]; then args+=("--skip-intro"); fi
             else
                 args+=("$game/BlackOps3.exe")
             fi ;;

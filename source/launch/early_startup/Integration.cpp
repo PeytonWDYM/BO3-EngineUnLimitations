@@ -9,10 +9,11 @@ void SetOwnedPrepareChecksum(PrepareChecksum prepare){ownedPrepare=std::move(pre
 #endif
 void Coordinate(late_startup::OwnedChild& child,job_startup::OwnedJob& job,late_startup::MappedGate& gate,
     const late_startup::PreparePlan& prepare,Receipt& receipt) {
+    const auto nativeEdits=kNativeEdits+(receipt.skipStartupIntro?1u:0u);
     const auto combined=[&](HANDLE process,std::uintptr_t image,vm_startup::Receipt& patchReceipt) {
         auto plan=prepare(process,image,patchReceipt);
-        Require(plan.edits.size()==kNativeEdits && plan.relay && !plan.commitResources,
-            "The original complete 42-edit native recipe is required.");
+        Require(plan.edits.size()==nativeEdits && plan.relay && !plan.commitResources,
+            "The complete native recipe and requested startup intro edit are required.");
         auto checksum=[&] {
             try {
 #ifdef BO3_EARLY_OWNED_TEST
@@ -34,7 +35,7 @@ void Coordinate(late_startup::OwnedChild& child,job_startup::OwnedJob& job,late_
         receipt.checksumAdmitted=true;
         return plan;
     };
-    job_startup::Coordinate(child,job,gate,combined,receipt.job,kNativeEdits+early_integrity::kPublicationCount);
+    job_startup::Coordinate(child,job,gate,combined,receipt.job,nativeEdits+early_integrity::kPublicationCount);
 }
 void WriteReceipt(std::ostream& out,const Receipt& receipt) {
     std::ostringstream original;job_startup::WriteReceipt(original,receipt.job,kStartupMethod);
@@ -46,8 +47,9 @@ void WriteReceipt(std::ostream& out,const Receipt& receipt) {
        <<",\"checksumEditsPrepared\":"<<receipt.checksumEdits
        <<",\"checksumArena\":"<<receipt.checksumArena<<",\"checksumArenaBytes\":"<<receipt.checksumArenaBytes
        <<",\"checksumCaptureBytes\":"<<receipt.checksumCapture.size()
-       <<",\"nativeEditsRequired\":"<<kNativeEdits
-       <<",\"combinedEditsRequired\":"<<kNativeEdits+early_integrity::kPublicationCount
+       <<",\"nativeEditsRequired\":"<<kNativeEdits+(receipt.skipStartupIntro?1u:0u)
+       <<",\"combinedEditsRequired\":"<<kNativeEdits+(receipt.skipStartupIntro?1u:0u)+early_integrity::kPublicationCount
+       <<",\"startupIntroSkipped\":"<<(receipt.skipStartupIntro && receipt.job.committed?"true":"false")
        <<",\"checksumReapplication\":false,\"aaeStoreSitesPreserved\":"<<(receipt.checksumAdmitted?"true":"false")<<'}';
     Require(out.good(),"Cannot write the early checksum receipt.");
 }

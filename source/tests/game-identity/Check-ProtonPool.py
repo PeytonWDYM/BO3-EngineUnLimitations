@@ -23,7 +23,10 @@ if output.is_relative_to(repo) or output.exists():
 inventory = json.loads((repo / 'source/patches/vm_pool/exact_build_inventory.json').read_text())
 receipt = json.loads(args.receipt.read_text())
 assert receipt['committed'] and receipt['released'] and receipt['checksumAdmitted'], 'Startup was not admitted and released.'
-assert receipt['editsWritten'] == receipt['combinedEditsRequired'] == 1121, 'Incomplete startup transaction.'
+intro_skipped = receipt.get('startupIntroSkipped', False)
+assert type(intro_skipped) is bool, 'Invalid startup intro receipt.'
+assert receipt['nativeEditsRequired'] == 42 + int(intro_skipped), 'Incomplete native transaction.'
+assert receipt['editsWritten'] == receipt['combinedEditsRequired'] == 1121 + int(intro_skipped), 'Incomplete startup transaction.'
 with args.game.open('rb') as game:
     digest = hashlib.file_digest(game, 'sha256').hexdigest()
 assert digest == receipt['executableSha256'], 'Private executable differs from the launch receipt.'
@@ -51,6 +54,8 @@ with proc.joinpath('mem').open('rb', buffering=0) as memory:
     assert struct.unpack_from('<I', header, 8)[0] == inventory['timestamp']
     assert struct.unpack_from('<H', header, 24)[0] == 0x20b
     assert struct.unpack_from('<I', header, 80)[0] == inventory['imageSize']
+    if intro_skipped:
+        assert read(base + 0x20f00a1, 5) == bytes.fromhex('33c0909090'), 'Startup intro edit differs.'
     counts = []
     for instruction in inventory['serverCountInstructions']:
         original = bytes.fromhex(instruction['bytes'])
@@ -84,6 +89,7 @@ result = {
     'serverPoolBytesReadable': len(slots), 'serverHashBytesReadable': len(hashes),
     'freeSlots': len(seen), 'expandedFreeSlots': sum(index >= 130000 for index in seen),
     'highestFreeSlot': max(seen, default=0), 'poolAddress': pool, 'hashAddress': buckets,
+    'startupIntroSkipped': intro_skipped,
     'scope': 'Read-only live allocation and free-chain snapshot. No game memory or files changed. No save or peer validation.',
 }
 with output.open('x') as target:

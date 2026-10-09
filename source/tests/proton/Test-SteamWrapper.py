@@ -40,9 +40,10 @@ Path(os.environ['WRAPPER_RESULT']).write_text(json.dumps({
 script = repo / 'scripts/proton/Launch-Private.sh'
 cases = []
 arguments = ['+set', 'literal value $(touch should-not-exist)', '+set', 'fs_game', '2631943123']
-for mode in ('stock', 'patch'):
-    result_file = output / f'{mode}.json'
-    env = dict(os.environ, BO3_500K_MODE=mode, WRAPPER_RESULT=str(result_file), PRIVATE_TEST_SECRET='do-not-log-environment')
+for mode, skip_intro in (('stock', False), ('patch', False), ('patch', True)):
+    name = mode + ('-intro-skip' if skip_intro else '')
+    result_file = output / f'{name}.json'
+    env = dict(os.environ, BO3_500K_MODE=mode, BO3_500K_SKIP_INTRO=str(int(skip_intro)), WRAPPER_RESULT=str(result_file), PRIVATE_TEST_SECRET='do-not-log-environment')
     command = ['bash', str(script), str(root), sys.executable, str(runtime), '/original/BlackOps3.exe', *arguments]
     result = subprocess.run(command, env=env, capture_output=True, text=True, timeout=30)
     assert result.returncode == 0, result.stderr
@@ -51,9 +52,11 @@ for mode in ('stock', 'patch'):
     assert actual['prefix'] == str(root / 'compatdata')
     assert actual['helper'] == 'MZ private workshop fixture'
     expected = [str(game / 'BlackOps3.exe')] if mode == 'stock' else [str(launcher / 'BO3-500K-Zombies.exe'), 'Z:' + str(game / 'BlackOps3.exe').replace('/', '\\')]
+    if skip_intro:
+        expected.append('--skip-intro')
     assert actual['arguments'] == expected + arguments
     assert not (game / 'should-not-exist').exists()
-    cases.append({'name': f'{mode}-private-cwd-prefix-workshop-and-arguments', 'passed': True})
+    cases.append({'name': f'{name}-private-cwd-prefix-workshop-and-arguments', 'passed': True})
 for name, mode, executable_args in (
     ('invalid-mode', 'unknown', ['/original/BlackOps3.exe']),
     ('missing-executable-argument', 'patch', []),
@@ -61,9 +64,14 @@ for name, mode, executable_args in (
 ):
     result_file = output / f'{name}.json'
     result = subprocess.run(['bash', str(script), str(root), sys.executable, str(runtime), *executable_args],
-                            env=dict(os.environ, BO3_500K_MODE=mode, WRAPPER_RESULT=str(result_file)), capture_output=True, timeout=30)
+                            env=dict(os.environ, BO3_500K_MODE=mode, BO3_500K_SKIP_INTRO='0', WRAPPER_RESULT=str(result_file)), capture_output=True, timeout=30)
     assert result.returncode == 2 and not result_file.exists(), name
     cases.append({'name': name, 'passed': True})
+result_file = output / 'invalid-intro-flag.json'
+result = subprocess.run(['bash', str(script), str(root), sys.executable, str(runtime), '/original/BlackOps3.exe'],
+                        env=dict(os.environ, BO3_500K_MODE='patch', BO3_500K_SKIP_INTRO='unknown', WRAPPER_RESULT=str(result_file)), capture_output=True, timeout=30)
+assert result.returncode == 2 and not result_file.exists()
+cases.append({'name': 'invalid-intro-flag', 'passed': True})
 for log in (root / 'logs').glob('*.log'):
     assert 'do-not-log-environment' not in log.read_text()
 (output / 'result.json').write_text(json.dumps({'passed': True, 'cases': cases,

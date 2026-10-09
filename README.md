@@ -19,6 +19,11 @@ Keep the launcher window open while playing. Closing it ends its game process.
 To remove the patch, close Steam and the game, start the installer, and click **Remove**.
 Removal restores your previous Steam launch options.
 
+Source-built launchers also accept `--skip-intro` after the game executable path.
+It skips the startup logo through a guarded engine instruction edit in the same
+stopped transaction as 500K. Game video files and other cinematic calls remain intact.
+Without the flag, the startup logo retains its original behavior.
+
 ## Compatibility
 
 This is a test release. One manual Windows session reached Zombies and verified 500,000 usable server slots.
@@ -75,6 +80,13 @@ Both paths must be accessible to Steam, including its Flatpak sandbox when appli
 The wrapper sets the private working directory and creates a separate Proton prefix in `compatdata`.
 It defaults to patched mode. Put `stock` or `patch` in `private-root/mode` to select an unpatched or patched private run.
 Keep the launcher console open while playing. Restore your previous Steam launch option to remove this wrapper.
+
+To enable the optional engine intro skip in patched mode, prefix that launch option with
+`BO3_500K_SKIP_INTRO=1`. Its receipt records `startupIntroSkipped: true` and requires
+all 1,122 edits. The live checker verifies the intro instruction along with the 500K pool.
+An isolated Proton startup test with the original logo video present reached the menu
+and verified the complete live pool with this option. Do not run two BO3 copies on
+the same Steam account at once; that interrupts the game's sign-in session.
 
 AAE's Lua loader resolves `../../workshop/content/311210/<mod-ID>/T7Overcharged.ff` from the game directory and requests `quit` if its helper cannot load.
 A flat private game directory breaks that relationship. Preserve the layout above for both stock and patched comparisons.
@@ -137,6 +149,7 @@ The Proton startup fixtures exercise stopped worker threads, changed thread inve
 WINEPREFIX=~/private/wineprefix pwsh -NoProfile -File source/tests/process-freeze/Test-ProcessSuspend.ps1 -OutputDirectory ~/private/suspend-tests
 WINEPREFIX=~/private/wineprefix pwsh -NoProfile -File source/tests/startup-loader/Test-LoaderSafety.ps1 -OutputDirectory ~/private/loader-tests
 WINEPREFIX=~/private/wineprefix pwsh -NoProfile -File source/tests/image-memory/Test-ImageMemory.ps1 -OutputDirectory ~/private/image-tests
+WINEPREFIX=~/private/wineprefix pwsh -NoProfile -File source/tests/startup-intro/Test-Intro.ps1 -OutputDirectory ~/private/intro-tests
 python3 -B source/tests/proton/Test-SteamWrapper.py --output ~/private/wrapper-tests
 python3 -B source/tests/game-identity/Check-ProtonPool.py --pid <host-game-pid> --game <private-BlackOps3.exe> --receipt <committed-session.json> --output ~/private/live-pool.json
 ```

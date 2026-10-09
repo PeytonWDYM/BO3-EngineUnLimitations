@@ -32,17 +32,23 @@ int wmain(int argc,wchar_t** argv) {
         VerifyFile(gateFile,kGateHash,locks.values);
         bo3::enhanced::MappedHelper helper(helperFile);bo3::late_startup::MappedGate gate(gateFile);
         auto command=bo3::late_startup::QuoteArgument(game.wstring());
-        for(int i=2;i<argc;++i)command+=L" "+bo3::late_startup::QuoteArgument(argv[i]);
+        bool skipStartupIntro=false;
+        for(int i=2;i<argc;++i) {
+            if(std::wstring_view(argv[i])==L"--skip-intro")skipStartupIntro=true;
+            else command+=L" "+bo3::late_startup::QuoteArgument(argv[i]);
+        }
         const std::array<std::filesystem::path,2> helpers{helperFile,gateFile};
         bo3::job_startup::OwnedJob job;bo3::late_startup::OwnedChild child(game,std::move(command),helpers);job.Assign(child);
         bo3::late_startup::PrivateReceipt report(child);bo3::early_startup::Receipt receipt;
         receipt.job.gameSha256=gameSha256;
+        receipt.skipStartupIntro=skipStartupIntro;
         const auto prepare=[&](HANDLE process,std::uintptr_t image,vm_startup::Receipt&) {
-            return bo3::late_startup::PrepareFixedPlan(process,image,helper,helperFile);
+            return bo3::late_startup::PrepareFixedPlan(process,image,helper,helperFile,skipStartupIntro);
         };
         try {bo3::early_startup::Coordinate(child,job,gate,prepare,receipt);report.Write(receipt);}
         catch(...) {report.Write(receipt);throw;}
-        std::wcout<<L"500K startup patch committed. Load full AAE and select Zombies. Receipt: "<<report.Path().wstring()<<L'\n';
+        std::wcout<<L"500K startup patch committed. Load full AAE and select Zombies. Receipt: "<<report.Path().wstring()<<std::endl;
+        if(skipStartupIntro)std::wcout<<L"Startup intro skipped in the engine."<<std::endl;
         Require(WaitForSingleObject(child.process.hProcess,INFINITE)==WAIT_OBJECT_0,"Cannot retain the owned game lifetime.");
         DWORD exit{};Require(GetExitCodeProcess(child.process.hProcess,&exit),"Cannot read the owned game exit code.");
         return static_cast<int>(exit);

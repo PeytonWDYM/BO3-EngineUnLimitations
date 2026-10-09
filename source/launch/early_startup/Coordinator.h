@@ -8,6 +8,7 @@ inline constexpr std::string_view kStartupMethod="late-crt-job-freeze-early-chec
 struct Receipt {
     job_startup::Receipt job;
     bool checksumAdmitted=false;
+    bool skipStartupIntro=false;
     std::uintptr_t checksumArena{};
     std::size_t checksumArenaBytes{},checksumEdits{};
     std::vector<unsigned char> checksumCapture;

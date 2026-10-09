@@ -1,0 +1,20 @@
+STARTUP INTRO SKIP: FAILURE CASES BEFORE PATCH LOGIC
+
+The startup logo has one direct Cinematic_StartPlayback call at RVA 0x20f00a1
+in the admitted 1765634846 / 494186496 build. Its result is stored as the logo
+playback ID. The engine already continues when that ID is zero.
+
+1. Preserve the existing 42 native edits unless --skip-intro is requested.
+2. Admit the complete surrounding startup instruction sequence, the exact logo
+   name including its terminator, and the cinematic entry prefix before writes.
+3. Refuse changed call displacement, argument setup, result store, logo name,
+   cinematic entry, short reads, and overflowing/out-of-image addresses.
+4. Replace only the startup call with xor eax,eax and three nops. Preserve all
+   other cinematic callers, loading movies, callbacks, and game video files.
+5. Include this edit in the stopped startup transaction and checksum preparation;
+   any refusal rolls back with the existing transaction. No late live writes.
+6. Receipts must identify the optional edit and require 1,122 complete edits when
+   enabled; the read-only checker must verify the actual five patched bytes.
+7. Test a private copy with the original logo file present, verify menu startup,
+   live 500K allocations, and the zero logo playback ID before main installation.
+   Existing exact build/code admission remains mandatory.

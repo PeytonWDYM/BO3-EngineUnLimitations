@@ -1,11 +1,12 @@
 #include "FixedPlan.h"
 #include "../preentry/Identity.h"
 #include "GameManifest.h"
+#include "../../patches/startup_intro/Plan.h"
 #include <algorithm>
 
 namespace bo3::late_startup {
 PreparedPlan PrepareFixedPlan(HANDLE process,std::uintptr_t image,
-    enhanced::MappedHelper& helper,const std::filesystem::path& helperFile) {
+    enhanced::MappedHelper& helper,const std::filesystem::path& helperFile,bool skipStartupIntro) {
     constexpr std::uint32_t total=500001;
     const auto& manifest=enhanced::ExactGameManifest;
     Require(manifest.guards.size()==82 && manifest.counts.size()==19,"The fixed complete inventory is required.");
@@ -37,6 +38,13 @@ PreparedPlan PrepareFixedPlan(HANDLE process,std::uintptr_t image,
         result.relay->Address()+64,total,18,32*1024*1024});
     result.edits.insert(result.edits.end(),std::make_move_iterator(migration.begin()),std::make_move_iterator(migration.end()));
     for(const auto& edit:profile.edits)result.edits.push_back({image+edit.rva,edit.original,edit.replacement});
-    Require(result.edits.size()==42,"The fixed native recipe must have 42 edits.");return result;
+    Require(result.edits.size()==42,"The fixed native recipe must have 42 edits.");
+    if(skipStartupIntro) {
+        const auto context=vm_startup::ReadStopped(process,image+startup_intro::kContextRva,startup_intro::kContext.size());
+        const auto name=vm_startup::ReadStopped(process,image+startup_intro::kNameRva,sizeof(startup_intro::kName));
+        const auto cinematic=vm_startup::ReadStopped(process,image+startup_intro::kCinematicRva,startup_intro::kCinematicEntry.size());
+        result.edits.push_back(startup_intro::BuildPlan(imageRange,context,name,cinematic));
+    }
+    return result;
 }
 }
