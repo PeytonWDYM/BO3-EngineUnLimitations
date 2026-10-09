@@ -1,0 +1,12 @@
+Stock late-startup Steam control failures declared before implementation:
+1. Admit one fixed stock diagnostic recipe. Refuse a changed recipe, shared source, executable, helper, gate, license or game.
+2. Use the same canonical Steam Play receipt as the existing enhanced route. Refuse another enabled route before cache or configuration writes.
+3. Install only the quoted private native control followed by %command% and the original plain arguments. Preserve inherited Steam IDs and all arguments.
+4. Restore original launch-field absence, empty value and raw value. Preserve unrelated Steam bytes, including later changes.
+5. Refuse setup and removal while Steam, BO3 or any known enhanced, late or stock controller runs. Recheck before configuration replacement.
+6. Refuse redirected tools, state and cache paths. Refuse changed or incomplete caches. Keep the shared cache and transaction locks.
+7. Preserve the receipt and configuration when a user changes the installed launch field. Recover interrupted owned transactions through SteamPlay.
+8. Use a distinct diagnostic recipe receipt key and late-crt-control startup method. Never claim expanded slots or permit enhanced VM enrollment.
+9. Encode the native 30-second gate and 120-second observation deadlines in the fixed recipe. Expose no runtime profile or capacity override.
+10. Keep the production recipe, launch command and notice unchanged. Its existing owned Steam E2E must pass.
+11. Setup launches no process. The owned E2E invokes only an inert argv recorder. It never launches Steam, BO3, the helper or the gate.

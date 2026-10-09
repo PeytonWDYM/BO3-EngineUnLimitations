@@ -1,0 +1,12 @@
+Written before extending the first live refusal diagnostic.
+
+The first actual launch refused in checksum preparation before any patch write.
+A context refusal must record its exact RVA, expected and observed hashes and normalized bytes.
+The existing 512-character private receipt bound must retain the whole diagnostic.
+Identity, memory ownership, pointer and code guards must still refuse unchanged.
+These diagnostic bytes remain private; public source contains no captured game bytes.
+
+The context refusal also captures every existing guard span while the child remains frozen.
+The sidecar must bind the fixed profile, image identity and base, with exact bounded record lengths.
+It must preserve raw bytes and memory state/type/protection without changing the process.
+The launcher must retain this capture through its zero-write refusal and save it privately.

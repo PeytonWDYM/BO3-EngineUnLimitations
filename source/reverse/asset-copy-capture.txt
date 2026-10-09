@@ -1,0 +1,23 @@
+Asset-copy failure capture
+
+Capture-AssetCopyInfo.py reads one identified BO3 process through the existing read-only Windows process API.
+It accepts the fixed private recipe that passed independent review. The recipe contains exact-build code guards and bounded read sizes.
+Use the recorded PID and full process creation FILETIME. Keep the fatal-error dialog open until capture completes.
+
+python source/reverse/Capture-AssetCopyInfo.py --profile C:/private/asset-capture-profile.json --pid PID --created-ticks FILETIME --output C:/Users/USERNAME/.codex/labs/bo3-engine/evidence/NEW-DIRECTORY
+
+The command reads the fixed counter, 15,360-pointer list, and previous-case descriptor address.
+It checks seven native code ranges before and after those reads. It refuses a different process, executable, recipe, or code guard.
+Raw bytes, SHA-256 hashes, read times, process identity, and refusal stages remain in the private output directory.
+The command changes no game memory, register, file, launch option, or setting.
+
+These are later sequential observations. They do not provide an atomic snapshot or the original fault-time state.
+The previous-case descriptor remains historical until the new exception context independently matches its address.
+The list can retain old pointers after its counter resets. A counter value alone does not measure current asset copies.
+Two captured native file-verification paths add 0x4000 to the counter on failure.
+Their presence does not prove execution. Do not change the counter or skip the null diagnostic as a root fix.
+
+The October 8 fatal-dialog capture passed all seven code guards and retained both counter reads at 16,400.
+Its list had 348 non-null entries. The independently validated crash context records the diagnostic's null read at index 348.
+Four separately captured native ranges matched the reference signature-check and counter-writer code.
+Full-AAE loading, the triggering file, mod asset precedence, and the 500k engine activation remain separate validation requirements.

@@ -1,0 +1,52 @@
+Silent-only owned driver probe: failure cases
+2026-10-07. Written before guard E2E and probe implementation.
+
+Scope
+Create only the probe's own streams and secondary buffers through the reviewed activation Boundary.
+Use the current default render route. Do not change defaults, endpoint volume, or another application's audio.
+Submit format-correct zero-valued samples only. PCM8 uses 0x80 bytes. Signed PCM and float use zero bytes.
+Reject unsupported formats before Start or Play.
+Do not add physical nonzero baselines, hooks, DLL injection, game launches, or game settings.
+Build and run memory-provider guards before any physical driver probe.
+Send the exact call sequence and zero-output guard evidence to root before a physical run.
+
+Failure cases
+1. The default executable mode opens hardware before the explicit physical-silent mode is selected.
+2. A factory, Activate, Initialize, GetService, Buffer8 query, or initial clear fails and Start/Play still runs.
+3. A failed preparation publishes a raw fallback or reaches the native-style unsafe null-output branch.
+4. PCM8 zero bytes are mistaken for zero-valued samples instead of using unsigned midpoint 0x80.
+5. PCM16 or float32 filling leaves a nonzero sample in the submitted frame range.
+6. An unsupported or malformed format reaches Initialize/Start, or its alignment causes an incorrect write size.
+7. The first buffer is uninitialized, a split DirectSound region remains unwritten, or recreation bypasses the quiet leaves.
+8. DirectSound uses a null, foreign, visible, or invalid cooperative window instead of a hidden owned window.
+9. Volume/default setters, exclusive WASAPI, primary buffers, or device-selection changes affect another application.
+10. A session or endpoint callback survives unregister, changes identity, or references destroyed probe state.
+11. Error cleanup leaves a started stream/buffer running or releases callback state before unregister.
+12. A callback or adapter remains live when the probe reports complete cleanup.
+13. A failed Stop or Unregister is hidden by a successful final result.
+14. A read-only before/after snapshot omits current default IDs, mute, or channel volume values.
+15. An unrelated default-device change is mislabeled as proof of preserved routing.
+16. The adapter's extra interface queries or initial whole-buffer clear fail on the real driver.
+17. A raw SDK call happens under loader lock instead of the probe's normal entry.
+18. Output paths or junction aliases write private device metadata inside the repository.
+19. A fixture abort exception is presented as safe stock-game or arbitrary Windows COM recovery.
+20. A real-device pass is described as global audio coverage, pre-entry interception, quiet BO3, or an engine patch.
+
+Guard evidence requirements
+Write owned memory-provider E2E scenarios before the shared probe consumer.
+Verify format-correct payloads and Start/Play gates through the complete reviewed factory chains.
+Verify unsupported-format and factory/preparation failures cause no start/play and release all owned interfaces.
+Keep the existing nonzero baselines in memory fixtures only.
+Verify a real probe mode needs explicit selection and artifact paths remain physically outside the repository.
+The first physical run requires root inspection of this sequence and the guard artifacts.
+
+Driver evidence requirements
+Record actual formats, IID identity relationships, HRESULTs, silent starts, recreation, and cleanup.
+Record current default render IDs and read-only endpoint master/channel volume and mute before and after.
+Save source, dependency, and executable SHA256 hashes.
+Treat incompatibility as a failed result. Do not loosen the activation contract or return raw outputs.
+
+References
+https://learn.microsoft.com/en-us/windows/win32/api/audioclient/nf-audioclient-iaudioclient-initialize
+https://learn.microsoft.com/en-us/windows/win32/api/audiopolicy/nf-audiopolicy-iaudiosessioncontrol-registeraudiosessionnotification
+https://learn.microsoft.com/en-us/windows/win32/api/audioclient/nf-audioclient-iaudiorenderclient-releasebuffer

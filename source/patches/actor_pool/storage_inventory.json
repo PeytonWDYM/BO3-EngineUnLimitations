@@ -1,0 +1,160 @@
+{
+  "status": "guarded_owned_replay_only",
+  "sites": [
+    {
+      "rva": "0xb631c",
+      "size": 7,
+      "sha256": "f23c46f70b2cc1e329212d2db500585e377085ff2168f59e19bcbccc39a6992a",
+      "role": "actor_record_extent",
+      "value": 1692800
+    },
+    {
+      "rva": "0xc7ffb",
+      "size": 7,
+      "sha256": "c3b13a535e53b82c325ffb76b7925c5a96782324ad3b48c9a6e318389429ed60",
+      "role": "actor_record_extent",
+      "value": 1692800
+    },
+    {
+      "rva": "0xc9fe1",
+      "size": 7,
+      "sha256": "f23c46f70b2cc1e329212d2db500585e377085ff2168f59e19bcbccc39a6992a",
+      "role": "actor_record_extent",
+      "value": 1692800
+    },
+    {
+      "rva": "0x1bfe009",
+      "size": 7,
+      "sha256": "64b0c1c5eaa4dc99484006da8580c890c12005893522b0903d6b84ada883cac7",
+      "role": "actor_record_extent",
+      "value": 1692800
+    },
+    {
+      "rva": "0x1bfe0a9",
+      "size": 7,
+      "sha256": "64b0c1c5eaa4dc99484006da8580c890c12005893522b0903d6b84ada883cac7",
+      "role": "actor_record_extent",
+      "value": 1692800
+    },
+    {
+      "rva": "0x24ae750",
+      "size": 7,
+      "sha256": "c3b13a535e53b82c325ffb76b7925c5a96782324ad3b48c9a6e318389429ed60",
+      "role": "actor_record_extent",
+      "value": 1692800
+    },
+    {
+      "rva": "0x24b13a8",
+      "size": 7,
+      "sha256": "a624ae27bc2309d1c8cf16ce0f18d8c57ea51c2f2b0d9f464d15292fecda1ee9",
+      "role": "actor_record_extent",
+      "value": 1692800
+    },
+    {
+      "rva": "0x24b5f50",
+      "size": 7,
+      "sha256": "c3b13a535e53b82c325ffb76b7925c5a96782324ad3b48c9a6e318389429ed60",
+      "role": "actor_record_extent",
+      "value": 1692800
+    },
+    {
+      "rva": "0x27c191a",
+      "size": 7,
+      "sha256": "c3b13a535e53b82c325ffb76b7925c5a96782324ad3b48c9a6e318389429ed60",
+      "role": "actor_record_extent",
+      "value": 1692800
+    },
+    {
+      "rva": "0x27c1a87",
+      "size": 7,
+      "sha256": "c3b13a535e53b82c325ffb76b7925c5a96782324ad3b48c9a6e318389429ed60",
+      "role": "actor_record_extent",
+      "value": 1692800
+    },
+    {
+      "rva": "0x19dd4bc",
+      "size": 7,
+      "sha256": "8fee9f4a769b873389eda77b3d2774b23e93727d8c5ecbf425644320ef429a94",
+      "role": "actor_pool_binding",
+      "value": 0
+    },
+    {
+      "rva": "0x19e0df8",
+      "size": 7,
+      "sha256": "0cf2ee9472fc960db2c4e8b0debc2fc94d9ea7aa5619e8dbf0fd7e76211179d1",
+      "role": "sentient_record_extent",
+      "value": 2981760
+    },
+    {
+      "rva": "0xd20a6",
+      "size": 7,
+      "sha256": "be65eeb5e45ee1b31bdd670d2baab2b2d9ee8965983567c564001f279baa99f2",
+      "role": "sentient_save_extent",
+      "value": 2981760
+    },
+    {
+      "rva": "0x24b15f0",
+      "size": 3,
+      "sha256": "eb06399d0ab34cd8b7422765409535992dd9dbf4c261f40e043152e41837799a",
+      "role": "actor_four_record_groups",
+      "value": 50
+    },
+    {
+      "rva": "0x24b158a",
+      "size": 7,
+      "sha256": "ac2d935a22754ddcc94853d965f692629ba2d11ded29aefd4a93e65fa41be84b",
+      "role": "sentient_eligibility_count",
+      "value": 240
+    },
+    {
+      "rva": "0x24ab034",
+      "size": 6,
+      "sha256": "80b9a59e70970dc435cb23f2dc87de1d0d0be81c410e99b8f5687e41e2e75925",
+      "role": "signed_count_branch",
+      "value": 200,
+      "register": "rax",
+      "condition": 140,
+      "targetRva": "0x24ab025"
+    },
+    {
+      "rva": "0x2505d22",
+      "size": 6,
+      "sha256": "5de944e68d4392833a65d27928b0a5405fa3cad681417b3a9dac76b2a77f812d",
+      "role": "signed_count_branch",
+      "value": 240,
+      "register": "rax",
+      "condition": 140,
+      "targetRva": "0x2505d10"
+    },
+    {
+      "rva": "0x24ae5c5",
+      "size": 6,
+      "sha256": "6a186866428f4c428f28fdf2f293e1892ca1257997771cceda5f65219b9214da",
+      "role": "signed_count_branch",
+      "value": 200,
+      "register": "r8",
+      "condition": 140,
+      "targetRva": "0x24ae5a3"
+    },
+    {
+      "rva": "0x24b152d",
+      "size": 6,
+      "sha256": "8403051f8ee034136f8cee205d9b02de3efdaf2346a589d4f4c0db9a5ddd57d5",
+      "role": "signed_count_branch",
+      "value": 200,
+      "register": "r8",
+      "condition": 141,
+      "targetRva": "0x24b156f"
+    },
+    {
+      "rva": "0x24b1569",
+      "size": 6,
+      "sha256": "bb3a43a2361e6022a1c7172b8a523da2e2e1a6c53383fa68c040c116fdedead5",
+      "role": "signed_count_branch",
+      "value": 200,
+      "register": "r8",
+      "condition": 140,
+      "targetRva": "0x24b1544"
+    }
+  ]
+}

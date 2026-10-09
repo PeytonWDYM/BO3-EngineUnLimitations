@@ -1,0 +1,49 @@
+VM STATE ADAPTER: FAILURE CASES BEFORE IMPLEMENTATION
+
+1. Reject an unknown format version, unsupported capacity, or invalid free head before clearing runtime state.
+2. Reject expanded input with a different runtime capacity before reading its records.
+3. Read exactly 129,999 stock records, without consuming the following native root fields.
+4. Preserve all stock slot IDs and root IDs. Add every extra free slot to one reachable free chain.
+5. Translate only the verified category-one special keys before native hash insertion.
+6. Keep category-two names, category-three strings, and category-four slot keys unchanged.
+7. Reject a cyclic, out-of-range, or occupied stock free-chain link before extending the chain.
+8. Preserve the client serializer and its 64,999 records.
+9. Keep stock campaign output at the stock count. Refuse it if higher runtime slots are occupied.
+10. Refuse stock output when a root, association, or typed value needs a higher slot ID.
+11. Round-trip sparse and dense 500k state through the captured native per-slot reader and writer.
+12. Check native higher-ID collision chains and all native root fields after a round trip.
+13. Report the exact serialized byte count. Do not infer a worst-case budget from slot bytes alone.
+14. Reject truncation and retain the consumed-record count and stream offset as evidence.
+15. End the import context on every successful return. Native failure uses the engine's fatal/error path.
+
+Scope: source-level adapter and owned native-code replay. No game launch or installation write is authorized here.
+The adapter requires exact-build function binding and verified activation before it can become a game candidate.
+
+POD publication and C ABI cases, before adding exports:
+- Require standard-layout, trivially-copyable binding storage with a fixed x64 size and offsets.
+- Keep the exported binding data zero-initialized without a dynamic initializer.
+- Keep each thread's import context constant-initialized and separate.
+- Inspect the actual exports and verify that the C names and data size match the published contract.
+- The owned fixture must publish bindings through the exported data, without calling a remote initializer.
+- Read/write entrypoints return a StateError. The actual game detour must handle it before native continuation.
+- Clear import context on the native error path before its non-local exit. No generic engine error ABI is assumed.
+
+Optional enhanced Zombies launch policy, before implementation:
+- Keep the native binding ABI at 48 bytes and use its former padding DWORD at offset 20.
+- In ZombiesOnly policy, read the verified native mode getter at RVA 20eac70 with UINT32(void) ABI.
+- Admit server serialization only when it returns zero, matching the saved Zombies mode.
+- Refuse server reads and writes in every other mode before touching the stream, pool, hashes, or tail.
+- Preserve the original client codec in every mode.
+- Preserve the existing Any policy in owned fixtures. Production launch admission selects ZombiesOnly.
+- Verify owned mode values 1, 2, 3, and 15 are refused without writing expanded persistent state.
+This preserves the separate stock launch. It does not implement a native mode-selection guard or prove live gameplay.
+
+Migration buffer allocation cases, before replay implementation:
+- Refuse changed executable identity, exported-range hashes, buffer initializer bytes, or the selected count instruction.
+- Stock native modes zero and one must request no local buffer bytes and 2.5 MiB for the server.
+- Stock native mode two must request two 2.5 MiB local buffers and two 4.5 MiB server buffers.
+- Stock invalid mode three must publish no allocator-return pointers.
+- The experimental shared zero/one branch must request 32 MiB and publish that same capacity.
+- Keep all local allocation sizes and returned pointers coherent with the original native path.
+- Record that only mode-zero enhanced sessions are admitted. The shared instruction also affects mode one.
+- Do not call a passing allocation replay proof of compression, sender/receiver, peer admission, or migration compatibility.

@@ -1,0 +1,195 @@
+{
+  "status": "implementation_and_review",
+  "scope": "Normal Zombies with full AAE. Friends may install matching patches. No separate custom game mode.",
+  "manualPriorFixResult": {
+    "userReport": "Repeated grenade firing is fully fixed in Peyton's game test.",
+    "acceptedProvisionalSamples": 1408,
+    "rejectedSamples": 219,
+    "peakAllocated": 111883,
+    "minimumReusableInAcceptedRows": 18116,
+    "acceptedFirstScriptErrors": 0,
+    "volleyMarkers": false,
+    "peerRoleVerified": false
+  },
+  "requestedFeatures": [
+    {
+      "id": "war-machine-speed",
+      "status": "offline_candidate",
+      "change": "500/250 ms timers become 250/125 ms."
+    },
+    {
+      "id": "sprint-retention",
+      "status": "reviewed_offline_candidate",
+      "change": "Ordinary Stamin-Up ownership enters the existing sprint-fire and unlimited-sprint branch across supported guns. Both grant/removal wrappers remain intact.",
+      "requirement": "Keep sprint active while firing Death Machine and War Machine, including with Stamin-Up already owned.",
+      "liveValidated": false
+    },
+    {
+      "id": "server-slots",
+      "status": "manual_startup_timeout_before_activation_under_investigation",
+      "target": "500k to 1m usable server slots",
+      "candidateUsableSlots": 500000,
+      "oneMillionEnabled": false,
+      "gameplayValidated": false,
+      "peerPatchesAllowed": true
+    },
+    {
+      "id": "200-zombies",
+      "status": "reviewed_storage_prototype_activation_disabled",
+      "reason": "Pre-constructor activation, chained unwind, combined state format, and complete consumer coverage remain unresolved."
+    },
+    {
+      "id": "zero-spawn-delay",
+      "status": "reviewed_offline_candidate",
+      "change": "Zero pacing after both successful ordinary-spawn counter branches. Pre-spawn capacity and missing-location waits remain.",
+      "schedulerYieldPreserved": true
+    },
+    {
+      "id": "multiple-storm-tornadoes",
+      "status": "offline_candidate",
+      "maximumPerPlayer": 3
+    },
+    {
+      "id": "extra-grenades",
+      "status": "offline_candidate",
+      "baseChildren": 3,
+      "upgradedChildren": 11,
+      "rounding": "ceil of 1.5 times the original integer count"
+    },
+    {
+      "id": "shareable-patcher",
+      "status": "built_independently_reviewed_and_deployed_for_manual_test",
+      "ownedTransactionCases": 25,
+      "priorFrozenActualAssetCases": 2,
+      "includesPriorFixes": true,
+      "finalFrozenActualAssetCases": 2
+    },
+    {
+      "id": "release-readiness",
+      "status": "blocked_on_remaining_features_and_game_validation"
+    },
+    {
+      "id": "source-and-ignore-rules",
+      "status": "source_retained_generated_assets_ignored"
+    },
+    {
+      "id": "pr-review-merge-main",
+      "status": "authorized_pending_completion"
+    },
+    {
+      "id": "obsolete-branches",
+      "status": "authorized_after_verified_merge"
+    }
+  ],
+  "workingInstallationChangedForNewFeatures": true,
+  "gameLaunchedByAgent": true,
+  "steamPlayDeployment": {
+    "version": "0.1.0-test.3",
+    "artifactSha256": "1009fc8a58159ee55df21e2a5cb815e196fd4e7824f78a14a96c75696cb38a0b",
+    "authorized": true,
+    "status": "production_route_temporarily_restored_for_reviewed_stock_diagnostic",
+    "changedSetting": "Current Steam account's direct BO3 LaunchOptions field",
+    "originalFieldAbsent": true,
+    "actualRemovalRestoredEveryConfigurationByte": true,
+    "commandRetainedAfterSteamRestart": true,
+    "protectedFilesUnchanged": 99,
+    "profilesPreserved": 92,
+    "ownedCasesPassed": 56,
+    "positiveFrozenEnableAndRemovePassed": true,
+    "independentReviewOpenFindings": 0,
+    "desktopControlsUsedForDeployment": false,
+    "nativePayloadUnchanged": true,
+    "manualChildCreated": true,
+    "manualFirstAllocationGateReached": false,
+    "manualPoolEditsWritten": 0,
+    "manualGameWindowAppeared": false,
+    "startupFailureEvidence": {
+      "completeReadOnlySnapshotCaptured": true,
+      "helperBootReady": true,
+      "serverPoolAndHashUnallocated": true,
+      "targetQueriedArmedHardwareGate": true,
+      "exactLoopCausingBranchVerified": false,
+      "protectedFilesUnchangedAfterManualTests": 98,
+      "profilesPreservedAfterManualTests": 92,
+      "changedBaselineFile": "Steam app manifest",
+      "noHardwareManualControl": {
+        "userLeftUntouched": true,
+        "gameWindowAppeared": false,
+        "nativeExecutionFault": "c0000005",
+        "poolEditsWritten": 0,
+        "debugProcessExitEventReceived": false,
+        "diagnosticExitFallbackRequired": true,
+        "hardwareGateOnlyCauseEstablished": false,
+        "protectedFilesUnchangedSincePriorManualTest": 99
+      },
+      "followUpDiagnostic": {
+        "status": "manual_no_debugger_game_window_opened_with_steam_error",
+        "artifactSha256": "77d14e80606cee63c20b7809fa732731d472451d6497e957782a9dbd729ac460",
+        "helperSha256": "09b947ba384837853d5f4061a8fc3e2b61dee6b2663a751d6e7a2fb974c803c1",
+        "ownedCasesPassed": 15,
+        "independentReviewOpenFindings": 0,
+        "processHandleExitFallback": true,
+        "continuousEventsDeadlineChecked": true,
+        "debuggerAttachedForNextManualTest": false,
+        "poolEditsWritten": 0,
+        "earlySnapshotScheduled": false,
+        "desktopShortcutUpdated": true,
+        "manualGameWindowAppeared": true,
+        "manualSteamWasRunning": true,
+        "manualSteamMessageReported": true,
+        "manualExitCode": 97,
+        "manualTimeoutMs": 30078,
+        "manualReadyHelperObservations": 91,
+        "manualServerPoolAndHashUnallocated": true,
+        "readOnlyRecorderArmed": false,
+        "productionLauncherChanged": false,
+        "steamConfigChanged": false
+      },
+      "stockSteamComparison": {
+        "status": "online_main_menu_reached_stock_pool_initialized_then_native_exit_zero",
+        "ownedSetupGroupsPassed": 17,
+        "ownedNativeCasesPassed": 25,
+        "independentReviewOpenFindings": 0,
+        "debuggerAttached": false,
+        "capacity": "stock",
+        "poolEditsWritten": 0,
+        "gameLaunchedByAgent": true,
+        "safeModeChoice": "No",
+        "observationLimitSeconds": 120,
+        "nextStartupScreenObserved": true,
+        "onlineMainMenuObserved": true,
+        "stockServerStorageInitialized": true,
+        "fullAAELoadingVerified": false,
+        "nativeExitCode": 0,
+        "nativeExitElapsedMs": 77000,
+        "timedOut": false,
+        "completeReadOnlySnapshotCaptured": true,
+        "snapshotThreadCount": 11,
+        "snapshotHardwareDebugRegistersZero": true,
+        "snapshotServerStorageUnallocated": true,
+        "protectedFilesUnchanged": 96,
+        "profileFilesUnchanged": 91,
+        "changedBaselineFiles": ["Steam app manifest", "Steam Cloud cache", "user_settings_0.cgp"],
+        "currentSettingsMatchOctober7DowngradeBackup": true
+      },
+      "nextStep": "Owned observation-only probe at verified CRT GetStartupInfoW caller; production hardware-gate timeout unchanged"
+    },
+    "gameplayValidated": false,
+    "friendsValidated": false
+  },
+  "normalDeployment": {
+    "version": "0.1.0-test.2",
+    "authorized": true,
+    "changedFiles": [
+      "full-AAE/core_mod.ff",
+      "zone/zm_patch.ff",
+      "zone/zm_castle_patch.ff"
+    ],
+    "unchangedBaselineFiles": 167,
+    "profilesPreserved": 91,
+    "nativeGuardPreserved": true,
+    "canonicalOriginalsVerified": true,
+    "defaultGuiRemovalBackupsVerified": true,
+    "gameplayValidated": false
+  }
+}

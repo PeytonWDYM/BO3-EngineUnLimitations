@@ -1,0 +1,96 @@
+Full-AAE weapon tuning
+2026-10-08
+
+Implemented offline transform
+The exact full-AAE original has SHA-256
+30532f605e8b3c9914dcd1169b23f9d46cd83949fdfe5b5e0fbe2ddf361d1d88.
+The transform changes two War Machine definitions in core_mod.ff.
+Their names are launcher_warmachinemp_zm and launcher_warmachinemp_upgraded_zm.
+Both firing timers change from 500/250 milliseconds to 250/125 milliseconds.
+This halves the ordinary and final-shot timers. Live firing behavior remains untested.
+Base split children change from two to three.
+Upgraded split children change from seven to eleven.
+The rule rounds 1.5 times the original integer count upward.
+Eleven divided by seven is about 1.571. The upgraded count is not exactly 1.5 times seven.
+
+Verification
+Failure cases and the candidate E2E harness preceded implementation.
+The private E2E rebuilt and decoded the fastfile, then verified all six field edits.
+Eight decoded bytes changed. Every unrelated decoded byte remained identical.
+The harness rejected repeated application, truncated records, and a changed record.
+Restoring the six original fields reproduced every original decoded byte.
+The composer must also verify the complete fastfile identity before this transform.
+Per-record hashes permit composition with separate script edits, including the cleanup candidate.
+This transform does not modify the native Lua guard or normal game files.
+Candidate SHA-256:
+1a664568a24f13e415e3d9a6cd39ee2e01616c15499010b9868e8f8a7215661d.
+
+Native and asset evidence
+HydraX documents a 768-byte weapon header and a separate 5,616-byte settings record.
+Its reconstructed offsets include the header. Native settings offsets exclude that header.
+The serialized names, header hashes, settings hashes, and field baselines identify both records.
+The actual failing-match snapshot independently agrees with all inspected numeric fields.
+The downgraded native accessor masks the weapon index to nine bits, reads its table,
+and returns the weapon header's settings pointer at offset 0x18.
+The captured split routine reads settings+0x1140 and loops over that integer count.
+The firing-timer helper reads settings+0xa1c and multiplies it by attachment modifiers.
+The final-shot path reads settings+0xa20 when its last-shot predicate applies.
+Halving both timers preserves that distinction and the existing attachment modifiers.
+
+Sprint-fire eligibility candidate
+The requested AAE Death Machine variants are lmg_death__machine_zm and
+lmg_death__machine_upgraded_zm. The native stock minigun definition is unchanged.
+The four AAE weapon records have zero firing movement scalars and a false movement-freeze flag.
+Native consumers treat zero scalars as the default speed multiplier of one.
+Changing those zeros to one would not fix the requested active-sprint cancellation.
+
+The captured native sprint-fire helper reads the current weapon and rejects weapon type seven,
+then checks player perk85. The native name table identifies85 as specialty_sprintfire.
+Both failing-match players have this bit clear and ordinary Stamin-Up native perk91 set.
+Their current weapon index141 identifies the PAP War Machine.
+The sprint-cancellation predicate considers the attack input only when this helper returns false.
+The active sprint update clears player-state flag0x20 after a cancellation result.
+AAE's existing update hook adjusts forward input for movement direction and restores it after the call.
+It does not replace the attack/perk gate.
+
+The actual AAE eligibility query uses the perk-upgrade predicate in _zm_zcmachine.gsc.
+That predicate requires ordinary perk ownership plus a true per-player upgrade-registry flag.
+Thus normal Stamin-Up ownership does not satisfy the original sprintfire branch.
+The saved level child graph has no upgrade-registry field0x0729a539; no pool key matches it.
+The original predicate therefore fails before the player GUID lookup.
+The loaded native hasperk call resolves to the captured native method, which reads the entity client
+pointer at0x250 and calls the same verified native perk-bit accessor.
+The candidate replaces only that query import with the existing native hasperk method prototype.
+Its function hash, namespace and resolution flags match the original native hasperk import.
+Its parameter count remains one. The isolated import owns only call0xf51e.
+Nine import-table bytes change; code, string fixups, exports and table lengths remain unchanged.
+The later upgraded-Stamin-Up movement bonuses retain their original upgrade query.
+Beast-mode and shock-hands eligibility, grant/removal wrappers and custom-perk protections remain unchanged.
+Ordinary Stamin-Up now enters the existing unlimitedsprint and sprintfire grant branch across weapons.
+Losing Stamin-Up enters the existing removal branch unless another existing eligibility condition applies.
+This changes ordinary Stamin-Up behavior across supported guns. It is not unconditional weapon permission.
+
+A discarded direct-setperk experiment remains private and is excluded from the implemented transform.
+It could have changed custom-perk removal lifecycle, and the captured custom-perk registry has no sprintfire entry.
+The actual registry contains ten standard custom perks, so its guard does not explain the saved absent native bit.
+
+Eight restricted eligibility-bytecode cases verify ordinary ownership, upgraded ownership, absence,
+perk loss, beast-mode, shock hands and another gun through the actual branch deltas/import target.
+Seven captured native predicate replays verify attack cancellation with the bit clear/set for weapon types two/zero,
+and preserve type-seven rejection, forward release and attack release.
+The native replay supplies explicit fixture returns for unrelated movement-mode and dvar-thread checks.
+The complete fastfile rebuild, decode, refusal, restoration and independent ACTS disassembly pass.
+These are offline proofs. The complete VM, live active sprint, animations, client prediction and multiplayer remain unvalidated.
+
+
+Private evidence
+Evidence remains under the private BO3 lab:
+evidence/release-enhancement/weapon-tuning/.
+It includes record metadata, loaded weapon fields, native consumers, and e2e/verification.json.
+No extracted assets or decompiled game code were added to the public repository.
+No game launch, process control, or normal-installation change occurred.
+Gameplay, hosting, joining, and compatibility with unpatched friends remain untested.
+
+Primary layout source
+https://github.com/Scobalula/HydraX/blob/master/src/HydraX.Library/Games/BlackOps3/AssetPools/Weapon.cs
+The exact downloaded source is retained privately. Captured native consumers verify the relevant offsets.

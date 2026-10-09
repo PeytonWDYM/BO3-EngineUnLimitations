@@ -1,0 +1,20 @@
+Job-startup Steam failures declared before implementation:
+1. Admit one fixed reviewed recipe and exact supported game. Reject changed recipe or shared-source hashes and each changed native payload.
+2. The recipe selects BO3-Job-Zombies.exe, late-crt-job-freeze, 500,000 usable server slots, eighteen client roots and a 32 MiB migration buffer.
+   Native admission requires the sole primary thread. The client pool retains its stock 65,000 total slots.
+3. Keep the fixed startup gate deadline. Successful native ownership lasts until the child exits. Expose no diagnostic lifetime, runtime profile or capacity override.
+4. Install the quoted private native launcher followed by %command% and original plain arguments. Preserve all game arguments and inherited Steam IDs.
+5. Use the existing canonical Steam Play receipt and jobStartupRecipeSha256. Refuse an enabled route before private payload publication.
+6. Restore original absent, empty and raw launch fields. Preserve unrelated later configuration bytes. Retain the receipt if another process changes the installed field.
+7. Refuse a changed or incomplete job cache. Refuse an existing %command% wrapper. Keep the shared cache and transaction mechanics unchanged.
+8. Refuse setup and removal while any known job, passive, control, late or enhanced parent runs, before its BO3 child exists.
+9. Preserve Steam and BO3 process refusals and the final pre-write process check. Recover interrupted owned transactions through canonical removal.
+10. The notice says experimental intended 500K. Activation, game loading, AAE and friends remain unvalidated. Setup launches nothing.
+11. Keep new Python and JSON bytes LF. The fixed profile binds final native build, owned result and native-only review without a review hash cycle.
+12. Keep experimental status and an explicit exact-host bounded diagnostic scope. Bind corrected runtime metadata through final native receipts.
+    Native success requires both pinned runtime CRT records. The required runtime metadata read mask is three.
+Owned E2E executes only an inert argv recorder. It edits only fixture VDF, receipts and cache files.
+After job setup, the root uses the frozen job wrapper for every setup and removal operation.
+Older route scripts do not recognize the new job parent before BO3 child creation. Do not use them during job validation.
+Job assignment follows child creation. This bounded comparison does not prove atomic creation and job assignment.
+Public release must address controller death before job assignment.

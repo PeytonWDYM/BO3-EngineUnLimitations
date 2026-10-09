@@ -1,0 +1,40 @@
+MIGRATION ADMISSION: FAILURE CASES BEFORE IMPLEMENTATION
+
+1. Admit stock version-three imports within the bound receive buffer, retaining the original empty acknowledgement.
+2. Reject different server capacities and client-root counts before native continuation.
+3. Reject unknown patch-format revisions, incorrect magic, empty state, and state larger than the bound buffer.
+4. Reject truncated and overflowed packets without changing their native cursor or flags.
+5. Read a valid header split across both native message segments without changing either segment.
+6. Reject stock empty mhack and wrong-version echoes before the native sender changes phase or emits mdata.
+7. Preserve native peer-index and migration-phase checks after matching header acknowledgement.
+8. Send the exact version DWORD for an enhanced header in the qualified native mhead acknowledgement call site. Preserve the original payload for a legacy header.
+9. Reject mdata before a valid legacy or matching enhanced header. Preserve native short-index, length, CRC, and capacity checks.
+10. Reject sender header emission when its written state is empty or exceeds the declared migration budget.
+11. Keep client indices, addresses, payloads, and native callback arguments unchanged on accepted paths.
+12. Preserve the 24-byte native header and unchanged positive short-index limit.
+13. Keep binding storage zero-initialized POD. Do not initialize COM, allocate heap memory, or resolve modules while publishing it.
+14. Retain exact callback order and bytes as repeatable owned-process evidence.
+15. Reject malformed, empty, oversized, or unknown-version legacy headers before native continuation.
+16. Refuse full-load initialization before a valid legacy or matching enhanced header and bounded size.
+17. Preserve the full-loader version-three path while admitting only the configured enhanced tag; branch without changing registers or stack.
+18. Route refused full loads through the existing native error chain before invoking the original loader; pass both original arguments unchanged on accepted loads.
+19. Execute compiled C ABI guards with captured mhead/mhack instructions: a stock empty ACK must never reach native mdata startup, even after its stock-size buffer and header are published.
+20. Preserve the captured entry prefixes and original continuations. Modified-stack reentries require Windows x64 unwind metadata.
+21. Verify compiled dual-version gate register/stack preservation with both native accepted and rejected continuations.
+22. Replay native mdata rejection for signed-negative indices, empty/oversized payload lengths, and capacity overrun. Accept a last-byte boundary block only through unchanged native CRC and ACK logic.
+23. For the migration object only, refuse compressed flushes with fewer than four output bytes remaining before the native length prefix or compressor writes.
+24. Publish the existing native overflow flag and clear the buffered count on that refusal; subsequent flushes must retain native overflow behavior.
+25. Preserve unrelated memory-file flushes and compressed flushes with four or more bytes remaining. Verify native failed compression marks overflow within the supplied buffer.
+26. Execute the actual captured compressor for repetitive and literal payloads with sufficient and insufficient capacity; preserve a sentinel immediately after the declared output bound.
+    Four actual captured-compressor cases now pass. The initial probe's owned security-cookie stub incorrectly cleared EAX; preserving EAX fixed the fixture.
+27. Prepare a pure migration plan only for 500,001 total slots, eighteen roots and a 32 MiB buffer.
+28. Reject helper exports, image offsets and near relays that overflow their admitted ranges or signed-relative reach.
+29. Reject overlapping binding destinations before returning the plan.
+30. Preserve eight 16-byte RIP-indirect relays, E8 for the qualified ACK call, and padded E9 entry replacements.
+31. Preflight every original instruction and zero-POD byte before any owned snapshot write.
+32. Apply the composed core/migration plan to an owned snapshot, then roll back every byte and memory protection without commit.
+33. Commit the owned plan, reverse it through the same checked transaction, and restore the original snapshot exactly.
+
+The adapter requires exact native code guards and sender/full-loader version instructions changed together.
+The header acknowledgement proves matching wire format, not a signed client identity or game stability.
+The fixture does not launch BO3 or establish network delivery, compression budget, or timeout behavior.

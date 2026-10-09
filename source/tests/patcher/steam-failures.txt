@@ -1,0 +1,16 @@
+Steam Play failures declared before implementation:
+1. Missing optional payload, unsupported game, or corrupt helper refuses enable without a config edit.
+2. Steam, BO3, or the enhanced launcher running refuses every config edit; recheck before replacement.
+3. No active account, ambiguous MostRecent accounts, or missing selected userdata refuses selection.
+4. Malformed VDF, duplicate scoped keys, missing BO3 node, or non-string LaunchOptions refuses.
+5. Existing %command% wrappers refuse enable without changing their options.
+6. Enable/remove preserves unrelated VDF bytes, UTF-8, comments, CRLF, nested cloud data, and other apps.
+7. Empty and absent launch fields restore exactly; plain existing arguments retain their order and contents.
+8. Repeated enable/remove is safe; modified installed options refuse restoration.
+9. Interrupted enable/remove before and after replacement recovers on retry without replacing unrelated later changes.
+10. External launch-field changes while a transaction is pending retain its receipt and refuse recovery.
+11. Config/state junctions and hard links refuse before any write; unsupported receipts refuse.
+12. Changed config bytes or processes at the last admission gate refuse before replacement.
+13. Preparation extracts verified launcher/helper without starting a process; direct Play retains prior admission rules.
+14. With ActiveUser cleared, exact AutoLoginUser/AccountName matching must select one account; missing or duplicate matches refuse.
+15. A corrupt inserted-field receipt must never delete another VDF field or comment; validate the exact owned key/value scope before restoration.

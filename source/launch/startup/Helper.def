@@ -1,0 +1,8 @@
+LIBRARY StartupHelper64
+EXPORTS
+    DetoursOwnedOrdinal @1 NONAME
+    InitializeOwnedRuntime
+    RunOwnedConsumers
+    RunRetainedConsumers
+    ReleaseOwnedConsumers
+    StopOwnedRuntime

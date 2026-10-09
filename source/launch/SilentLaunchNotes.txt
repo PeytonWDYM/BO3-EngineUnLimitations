@@ -1,0 +1,109 @@
+Silent session channel probe
+
+Status
+
+This tool tests standard Windows shared-mode session volume controls.
+It does not launch BO3 or provide a verified silent BO3 launcher.
+The earlier stereo fixture passed 11 checks across nine active render endpoints.
+The exact lab-path probe and matching surround fixtures failed channel persistence.
+Do not use this method as a verified silent BO3 launcher.
+
+Why use channel controls
+
+Windows multiplies session channel volume by session master volume and other volume factors.
+A zero channel volume keeps that channel silent when an application resets its master volume.
+These session controls leave the endpoint volume and other applications' sessions unchanged.
+The Windows volume mixer shows the master volume. It does not show the channel multiplier.
+
+The first probe seeded volume before stream activation. Its first endpoint lost the saved settings.
+The corrected stereo probe reapplied the settings after 300 milliseconds of silent activation.
+Its native restarts retained zero channels after a master-volume and mute reset.
+The same operation failed when the Realtek Speakers session exposed eight channels.
+All eight channels returned to one. Master volume zero and mute true persisted.
+Direct PowerShell invocation and Start-Process both reproduced this failure.
+Individual channel setters also failed. An extra post-exit delay is not a verified fix.
+A separate stereo-format seed also failed the eight-channel probe at the exact private lab executable path.
+After master volume one and unmute, the probe retained zero on two channels. The other six channels stayed at one.
+The seed and probe session identifiers matched. Their grouping GUIDs differed on successful and failed endpoints alike.
+Those grouping differences alone do not explain the surround failure.
+The probe submitted only silent buffers. Endpoint volume and mute stayed unchanged, and the original lab executable was restored.
+Do not repeat stereo seeding as a complete quiet-start solution.
+
+Commands
+
+seed-default
+  Create this executable's default session on each active render endpoint.
+  Set all session channels and master volume to zero. Enable the session mute.
+  Activate silent streams, reapply the settings, and print the resulting values.
+
+probe-default
+  Print the inherited settings for this executable's default session.
+  Set only master volume to one and disable mute.
+  Print channel values before activation, at activation, and after 40 milliseconds.
+  Submit only silent buffers. It does not emit audible test samples.
+
+reset-default
+  Return this executable's default channels and master volume to one. Disable mute.
+  Use this command to remove the fixture's seeded settings.
+
+inspect PID
+  Read sessions and all channel values for the selected process.
+  Print endpoint IDs, session IDs, instance IDs, volume, mute, and channel values.
+  Do not change the target session.
+
+endpoint-snapshot
+  Read endpoint master volume and mute for comparison. Do not change endpoint settings.
+
+E2E
+
+Run source/tests/Test-SilentLaunchChannels.ps1 with a new private OutputDirectory.
+Keep that directory outside the repository. The entry point rejects repository destinations before compilation.
+Set ExecutableName to BlackOps3.exe to reproduce the matching filename case.
+Select Invocation Direct or StartProcess to compare the two launch methods.
+The test compiles the native probe and creates a second copy under another directory.
+Both copies use the same filename to check that Windows separates their settings by path.
+The report records commands, PIDs, the executable hash, channel values, and endpoint controls.
+The test restores the fixture session settings before it exits.
+The test fails if any restarted session loses zero channels. Preserve that failed report.
+
+Lab use limits
+
+Seeding the helper's path affects only the helper. It does not seed another executable's session.
+A separate lab-only deployment must run the helper at the exact lab executable path.
+Preserve the lab executable first. Restore it before running BO3.
+Never replace the regular installed executable for this operation.
+Do not launch BO3 if the same-path native probe fails to inherit zero channels.
+
+The game must use the same default shared-mode session and keep its session channels at zero.
+A different session GUID, exclusive-mode playback, or a channel reset can bypass this method.
+New endpoints also require seeding and validation.
+External session callbacks and polling cannot provide a pre-render silence guarantee.
+
+Current stock backend evidence
+
+Stock directly initializes a shared-mode WASAPI render stream with EVENTCALLBACK and NOPERSIST.
+It uses the default render/eConsole endpoint, its mix format, a 25-millisecond buffer, and a null session GUID.
+NOPERSIST disables session volume and mute persistence across application restarts.
+This helper uses different stream flags. Its fixture does not reproduce the game's exact initialization behavior.
+That mismatch does not establish the cause of this helper's separate eight-channel persistence failure.
+An independent private fixture now reproduces the native flags on the current default stereo endpoint at the exact lab executable path.
+Its prior seed has master zero, mute enabled, and both channels zero.
+The native-flags restart begins with master one, mute disabled, and both channels one before any deliberate reset.
+Endpoint, session identifier, and complete format match. Its render event signals and all endpoint controls remain unchanged.
+The fixture submits only silent buffers and restores the verified stock executable in finally.
+This rejects prior session seeding for that native initialization. BO3 itself did not execute.
+The saved menu stream is stereo. It does not prove that future launches use stereo.
+Native retry can recreate the client. Initial silence does not cover later submitted audio.
+Stock also plays voice samples through a separate DirectSound buffer.
+Its reviewed volume clamp does not establish a mute. The VoiceChat startup gate and film audio routing remain unresolved.
+A DirectSound-only wrapper cannot cover the direct WASAPI path.
+WASAPI-only coverage also does not establish complete silence.
+No audio wrapper or game audio patch is implemented or verified.
+
+Sources
+
+https://learn.microsoft.com/en-us/windows/win32/api/audioclient/nn-audioclient-ichannelaudiovolume
+https://learn.microsoft.com/en-us/windows/win32/coreaudio/session-volume-controls
+https://learn.microsoft.com/en-us/windows/win32/coreaudio/audio-sessions
+https://learn.microsoft.com/en-us/windows/win32/api/audiopolicy/nf-audiopolicy-iaudiosessionnotification-onsessioncreated
+https://learn.microsoft.com/en-us/windows/win32/coreaudio/audclnt-streamflags-xxx-constants

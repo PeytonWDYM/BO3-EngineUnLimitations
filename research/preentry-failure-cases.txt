@@ -1,0 +1,30 @@
+Owned pre-entry instrumentation failure cases
+
+Define the native probes and these cases before the launcher and helper implementation.
+Use an owned memory sink. Never open an audio endpoint or launch a game.
+
+1. The baseline must observe nonzero dummy output at imported-DLL initialization, target TLS, and entrypoint.
+   These calls must report unprotected output. Process creation alone must not count as readiness.
+2. Protected probes must observe committed interception before imported-DLL initialization, TLS, and entrypoint.
+   Every probe must record its stage, readiness, output, and sequence number.
+3. A deliberate factory call inside a helper dependency can precede helper initialization.
+   Report any such unprotected call as a failed coverage boundary, even if later probes succeed.
+4. Denied helper readiness must stop startup before the consumer DLL, target TLS, or entrypoint proceeds.
+5. Removal with a live owned reference must fail. The reference must still execute protected code afterward.
+   An actual balanced FreeLibrary attempt must leave the helper mapped while the owned reference remains live.
+   Hold an explicit module reference for each live owned reference. Release all references before successful removal.
+6. Clean removal must detach interception and permit normal dummy output afterward.
+   Native removal-red evidence shows the restored import DLL remains in Windows loader bookkeeping.
+   Record its residency after balanced FreeLibrary. Verify final helper detach at process exit.
+   Do not force DLL unload or equate restored PE import bytes with removal of loader dependency references.
+   Retain process exit and before/after disk hashes for all fixture binaries.
+7. Missing or wrong helpers and replaced fixture targets must reject before process creation.
+   Fixed build hashes define ownership. Do not accept a user target path or arbitrary command line.
+8. Repository output paths and existing output files must reject before artifact creation or process creation.
+   Resolve directory junctions before the build guard. Reject a private path that resolves into the repository.
+
+The helper uses minimal Detours setup and memory trace writes under the loader lock.
+Do not initialize COM or audio, load extra DLLs, wait, or start threads in DllMain.
+Restore the temporary in-memory import change with DetourRestoreAfterWith.
+Retain the pinned official Detours commit, license, source hashes, binary hashes, commands, and JSON traces privately.
+These results establish owned-fixture timing only. They do not establish quiet stock startup or an engine stability fix.

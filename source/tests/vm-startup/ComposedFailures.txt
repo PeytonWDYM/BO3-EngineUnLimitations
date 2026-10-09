@@ -1,0 +1,20 @@
+Pre-imported VM helper: failure cases before implementation
+
+Use the fixed owned child and pinned Microsoft Detours only.
+Do not accept a game path, a process ID, or a helper path at runtime.
+
+1. The helper must load before the owned imported consumer, TLS count, and first allocation gate.
+2. The helper must import Windows modules only and retain no target or consumer dependency.
+3. Bindings must start as zero POD storage. The helper must have no dynamic C++ initialization table.
+4. Before the gate continues, both count edits, reader/writer hooks, and all binding fields must match.
+5. The parent must publish bindings without a remote thread, LoadLibrary, COM, or target initialization call.
+6. Changed helper bindings or missing helper readiness must refuse before any edit.
+7. Changed reader/writer instructions must refuse before any edit.
+8. A readiness refusal after edits must restore count instructions, reader/writer instructions, and binding storage.
+9. Concurrent callers must observe the complete configured hook/count pair.
+10. Wrong helper file identity must refuse before creating a child.
+
+Record exact helper imports, TLS/CRT inventory, source hashes, and binary hashes.
+Record loader readiness separately from configured-patch readiness.
+This fixture tests binding publication and owned callback hooks only.
+It does not execute the captured game serializer or prove engine error handling.

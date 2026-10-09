@@ -1,0 +1,70 @@
+Runtime patch-loader failure cases and E2E contract
+Written before the loader implementation.
+
+Scope
+The first loader supports an owned native fixture with cooperative safe-point events.
+The fixture stops all access to patch locations before it signals the ready event.
+Stock BO3 does not provide these events. This loader cannot apply a stock game patch.
+Inspect reads identity and bytes without requesting process write access.
+No command changes an executable file or injects a DLL.
+
+Failures to reject before mutation
+- A missing, malformed, duplicated, or unknown profile field.
+- A profile with too many records, oversized records, unequal lengths, or invalid hex.
+- A process that exited, a reused PID, or a different executable path.
+- A different executable SHA256, PE timestamp, image size, or machine type.
+- A missing module, changed module header, or invalid ASLR base.
+- A patch outside the image, arithmetic overflow, or overlapping records.
+- Original bytes that do not match, including an already applied patch.
+- A page outside the selected image or an unreadable memory range.
+- A missing cooperative contract or a safe-point timeout.
+
+Failures during mutation or removal
+- A later record cannot change protection after an earlier record changed bytes.
+  Roll back the earlier record while the fixture stays at its safe point.
+- A short write, failed readback, failed cache flush, or failed protection restore.
+  Report the failed operation. Attempt rollback of bytes owned by this session.
+- Removal finds different bytes. Do not overwrite another writer's bytes.
+  Report incomplete removal and return failure.
+- The process exits during the session. Its runtime changes no longer exist.
+- A target exits during a write. Report the failure and any rollback limitation.
+
+Repeatable native E2E expectations
+1. Build the fixture and loader with the x64 Visual Studio compiler.
+2. Start the fixture in a hidden window and record its exact executable hash.
+3. Inspect the unpatched fixture. Its data and native instruction return 41.
+4. Apply data and instruction records at a cooperative safe point.
+5. Observe data and native instruction return 42 while the fixture runs.
+6. Remove both records at a new safe point. Observe both return 41.
+7. Confirm the fixture executable hash did not change.
+8. Repeat identity, bounds, overlap, malformed-byte, and original-byte failures.
+9. Build a separate E2E executable with a compile-time failure after its first write.
+   Change real fixture data, then raise the injected failure.
+   Confirm the loader restores the data and original page protection.
+   The release executable does not contain this failure path.
+10. Let a separate fixture mode change patched data to 99.
+    Confirm removal reports the conflict and preserves 99.
+11. Stop a fixture before inspection and confirm inspection reports failure.
+12. Use a fixture without safe-point events. Confirm the loader changes no bytes.
+13. Use a fixture that ignores safe-point requests. Confirm timeout changes no bytes.
+14. Let a fixture exit after it observes replacement bytes. Confirm the session reports exit.
+15. Compare fixture page protections before application and after removal.
+16. Save logs, hashes, profiles, and a machine-readable result in a private artifact.
+
+Focused review failures, specified before the protocol fix
+- A timeout can leave a resume event that releases a later safe point.
+  Delay the first cooperative request beyond the timeout, then retry on the same PID.
+  Pause the E2E loader between two real writes. The fixture must observe no mixed pair.
+- Two loaders can change the same handshake events.
+  Hold one session open and reject a second session on the same PID.
+- A two-record removal conflict can leave an instruction replacement present.
+  Change the data replacement to 99 while code still returns 42.
+  Removal must preserve 99 and keep the target parked without another resume.
+- A protection ledger allocation can fail after VirtualProtectEx changes a page.
+  Allocate the complete ledger capacity before the first protection change.
+
+Limits
+Fixture success proves loader identity checks, memory changes, rollback, and removal.
+It does not prove game stability, mod loading, Steam behavior, or friend compatibility.
+Cooperative safe points remain a required target contract.
+Do not assume byte writes to instructions in a running process are atomic.

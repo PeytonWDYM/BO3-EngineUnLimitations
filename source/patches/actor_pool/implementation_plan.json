@@ -1,0 +1,1368 @@
+{
+  "schemaVersion": 2,
+  "status": "emitted_owned_replay_only_not_applicable",
+  "supportedExecutableSha256": "0b874dcc250848b7313ec13a0c76468dacc2009b5efa2bff4c587e169a9f77e0",
+  "implementationVersion": "owned-table-prototype-2",
+  "capacity200Implemented": false,
+  "coverageComplete": false,
+  "replacementBytesProvided": false,
+  "nativeSentientBytes": 12424,
+  "sentientCapacityHypothesis": 240,
+  "actorCount": 200,
+  "tableDimensions": [
+    240,
+    240
+  ],
+  "tableEntryBytes": 72,
+  "tableBytes": 4147200,
+  "indexedWordOffset": "0x112c",
+  "indexedWordEntryBytes": 2,
+  "indexedWordTableBytes": 115200,
+  "sharedHandleNodesUnchanged": 2047,
+  "sharedHandleDemandAt200Validated": false,
+  "directConsumerStubs": 75,
+  "rewriteCount": 141,
+  "ownedEvidence": {
+    "scenarioGroups": 91,
+    "directInstructionStates": 375,
+    "accessorPairs": 25,
+    "actorConstructionCount": 200,
+    "actorCleanupCount": 200,
+    "actorAllocatorCapacity": 200,
+    "sentientAllocatorCapacity": 240,
+    "artifact": "native-replay-handoff-01.json"
+  },
+  "rewrites": [
+    {
+      "name": "external_table_accessor",
+      "rva": "0x2505bb0",
+      "size": 7,
+      "sha256": "0e41b4822ab10d0adc8b532e4cca4e92f44f2abaf3eae817e172a9f1f17eaf5b",
+      "ownerRegister": "rcx",
+      "emitterImplemented": true,
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x1514895",
+      "size": 8,
+      "sha256": "ecd8782bebdddd5f517064d10d71470697cc4a7cecb0ef3e7624abd4ba011ce2",
+      "ownerRegister": "rax",
+      "emitterImplemented": true,
+      "nativeOwnerRootRva": "0x15147a0",
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x151931e",
+      "size": 7,
+      "sha256": "8f1fa35aff6003372e77677fae6e3eafd53ef5fcbe95984ef6536e0d1166ffc8",
+      "ownerRegister": "rbx",
+      "emitterImplemented": true,
+      "nativeOwnerRootRva": "0x15192a0",
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x1519327",
+      "size": 7,
+      "sha256": "d77e028aa45e9fb7c5b4ebde4c435ed2fc9c2369964856c87958b65edd8603ac",
+      "ownerRegister": "rbx",
+      "emitterImplemented": true,
+      "nativeOwnerRootRva": "0x15192a0",
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x1519331",
+      "size": 7,
+      "sha256": "c230cce8fd31ef866dc35114813a7f980e1e716856d2748ef8e771f59ab002a5",
+      "ownerRegister": "rbx",
+      "emitterImplemented": true,
+      "nativeOwnerRootRva": "0x15192a0",
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x1646bb2",
+      "size": 8,
+      "sha256": "1f795470a5137d32823cd7f384468126356de4c6100322a9a7e594740ca3e517",
+      "ownerRegister": "rdi",
+      "emitterImplemented": true,
+      "nativeOwnerRootRva": "0x1646ab0",
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x1648f1a",
+      "size": 8,
+      "sha256": "8c3d87603e4cdd098cfd270b4cb8796b325a69ae89bcab6bd93a18e5a17a9ab8",
+      "ownerRegister": "rdx",
+      "emitterImplemented": true,
+      "nativeOwnerRootRva": "0x16471a0",
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x1648f22",
+      "size": 8,
+      "sha256": "5f7592bd0b7f3948b4dc96f49bdc09be54ea5e517dce32213f68a38907651a17",
+      "ownerRegister": "rdx",
+      "emitterImplemented": true,
+      "nativeOwnerRootRva": "0x16471a0",
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x1648f2a",
+      "size": 8,
+      "sha256": "5b09e63e63722a39005286bb459c63abc2a10b6a08d3ad8cf4987cdcd9bec069",
+      "ownerRegister": "rdx",
+      "emitterImplemented": true,
+      "nativeOwnerRootRva": "0x16471a0",
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x164b407",
+      "size": 6,
+      "sha256": "76d163796ddeccd845efde350a91ad3fa46a964214bc00aeef2c8a0fa2c74cd1",
+      "ownerRegister": "r10",
+      "emitterImplemented": true,
+      "nativeOwnerRootRva": "0x164b390",
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x164b40f",
+      "size": 10,
+      "sha256": "1437a40627f6a7701297f69b5b557c3aee3deb434f01db855d4ce98b128ca9d5",
+      "ownerRegister": "r10",
+      "emitterImplemented": true,
+      "nativeOwnerRootRva": "0x164b390",
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x164d1bf",
+      "size": 10,
+      "sha256": "6e15b154369a65df369cab3c3a872341a53222407c5064d9d9d38a46254d5989",
+      "ownerRegister": "r9",
+      "emitterImplemented": true,
+      "nativeOwnerRootRva": "0x164d160",
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x164d1c9",
+      "size": 10,
+      "sha256": "1974e4c835625d49a459f2e3b533fef09e82f148f4a4c1f85ef3c7f9b1a16a06",
+      "ownerRegister": "r9",
+      "emitterImplemented": true,
+      "nativeOwnerRootRva": "0x164d160",
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x164d1d3",
+      "size": 10,
+      "sha256": "3a9582fb801a32d5923ba440fd058161f6e62811bcceaa39ceff80738124d3f7",
+      "ownerRegister": "r9",
+      "emitterImplemented": true,
+      "nativeOwnerRootRva": "0x164d160",
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x164d265",
+      "size": 8,
+      "sha256": "ad468905f0278e81aa0f362abb10936aba2ee82ef2b18a36e9efc04b46c265ff",
+      "ownerRegister": "r9",
+      "emitterImplemented": true,
+      "nativeOwnerRootRva": "0x164d160",
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x1ba0382",
+      "size": 11,
+      "sha256": "61bf17a3818bb6d5cdec2664bf78a9bf6d941e6d0b00fe1d353bca9906c8c71c",
+      "ownerRegister": "rax",
+      "emitterImplemented": true,
+      "nativeOwnerRootRva": "0x1ba0300",
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x1c3e353",
+      "size": 7,
+      "sha256": "b4107655cdb58a7d6a4c860fed3b27d64cd50fb88ecdf641a3447850fdaf68fd",
+      "ownerRegister": "rax",
+      "emitterImplemented": true,
+      "nativeOwnerRootRva": "0x1c3e150",
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x1c3e45b",
+      "size": 7,
+      "sha256": "d3deb458c192e14fb3fd825271a09d72210cbebe6b468c60fdee66ea5250e351",
+      "ownerRegister": "rdi",
+      "emitterImplemented": true,
+      "nativeOwnerRootRva": "0x1c3e150",
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x1c3e674",
+      "size": 7,
+      "sha256": "be16b6d4c71cc8fa5ef8482c2f064b6a3a37fbc30e63037d7f93423b574cc493",
+      "ownerRegister": "rbx",
+      "emitterImplemented": true,
+      "nativeOwnerRootRva": "0x1c3e620",
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x1c3e6e2",
+      "size": 8,
+      "sha256": "410496759245729b269cd0710ddf9407dfb43f9ea0554f50afea7e179f70d53f",
+      "ownerRegister": "rbx",
+      "emitterImplemented": true,
+      "nativeOwnerRootRva": "0x1c3e620",
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x1c3e768",
+      "size": 7,
+      "sha256": "1e8942a2a2e9f45317b6b33818ce2f7bfa53a3892b550aaf8f93b9d1c56fb6ea",
+      "ownerRegister": "rbx",
+      "emitterImplemented": true,
+      "nativeOwnerRootRva": "0x1c3e620",
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x1c3eeec",
+      "size": 8,
+      "sha256": "d1ff4e1e37e14c14d4c163bc7fb8f098fc7fb20824c6448f7a716b3cf30bb684",
+      "ownerRegister": "rax",
+      "emitterImplemented": true,
+      "nativeOwnerRootRva": "0x1c3e860",
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x24b0f9a",
+      "size": 7,
+      "sha256": "18e8152a5d997c39ff3a143f56b4f3f99e0fe2f1be513012130edd498cad3c42",
+      "ownerRegister": "rdx",
+      "emitterImplemented": true,
+      "nativeOwnerRootRva": "0x24b0f20",
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x24b1003",
+      "size": 7,
+      "sha256": "cbbc322fe64a0b433e77fa166b75926ff11663fe08c3e05749bd1fca4d91de2b",
+      "ownerRegister": "rdx",
+      "emitterImplemented": true,
+      "nativeOwnerRootRva": "0x24b0f20",
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x24b1040",
+      "size": 9,
+      "sha256": "6aa2577461a659dd0c4fb75237ec0e9c1dc857e2cd7d344e29cfe6dcdd49503b",
+      "ownerRegister": "rdx",
+      "emitterImplemented": true,
+      "nativeOwnerRootRva": "0x24b0f20",
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x24b1053",
+      "size": 9,
+      "sha256": "f39a5e290326abb71a4fae92906a13ed318c2e73af396fce11e5eb3c256350f2",
+      "ownerRegister": "rdx",
+      "emitterImplemented": true,
+      "nativeOwnerRootRva": "0x24b0f20",
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x24b105c",
+      "size": 9,
+      "sha256": "f7f0e00fe25e0e26989051ff0d8abbb206119ef6804f891466b1bc0a5286a045",
+      "ownerRegister": "rdx",
+      "emitterImplemented": true,
+      "nativeOwnerRootRva": "0x24b0f20",
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x24d3092",
+      "size": 8,
+      "sha256": "45630a16ac74b406657aa05eee9adadbaa5c15cb7ea03ba0dec09cbb7aafb69c",
+      "ownerRegister": "rcx",
+      "emitterImplemented": true,
+      "nativeOwnerRootRva": "0x24d2fc0",
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x24d309c",
+      "size": 7,
+      "sha256": "1cdfff429532de3cf8b40ade1f387f5e3961488e974c2f69acca410a14f4022a",
+      "ownerRegister": "rcx",
+      "emitterImplemented": true,
+      "nativeOwnerRootRva": "0x24d2fc0",
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x24d8caf",
+      "size": 7,
+      "sha256": "50222003a2c15f9d1de4455c21e550b98f7238ea898ea324614d7a2d24a71365",
+      "ownerRegister": "rax",
+      "emitterImplemented": true,
+      "nativeOwnerRootRva": "0x24d8c50",
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x24e7b72",
+      "size": 7,
+      "sha256": "560b1cc4b550627e1f22dc321d507aab68404a80bdbbe744ee63fd59922f9092",
+      "ownerRegister": "rdi",
+      "emitterImplemented": true,
+      "nativeOwnerRootRva": "0x24e7b30",
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x24e7b88",
+      "size": 8,
+      "sha256": "aa961943b8acb4f3e7f5c19101c862916b58cc81fe292af802237371ae504074",
+      "ownerRegister": "rdi",
+      "emitterImplemented": true,
+      "nativeOwnerRootRva": "0x24e7b30",
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x24ea602",
+      "size": 8,
+      "sha256": "c1ce1f13b82fc8d516218c7327ef228e30e254c8f773e858d5569183c02071b0",
+      "ownerRegister": "rdi",
+      "emitterImplemented": true,
+      "nativeOwnerRootRva": "0x24ea5c0",
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x24ea61b",
+      "size": 8,
+      "sha256": "98ad43f42c9e72f5ea95606bdd9001e0bc407925c99ee45b301dedab487136d6",
+      "ownerRegister": "rdi",
+      "emitterImplemented": true,
+      "nativeOwnerRootRva": "0x24ea5c0",
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x24eca53",
+      "size": 7,
+      "sha256": "b4107655cdb58a7d6a4c860fed3b27d64cd50fb88ecdf641a3447850fdaf68fd",
+      "ownerRegister": "rax",
+      "emitterImplemented": true,
+      "nativeOwnerRootRva": "0x24ec870",
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x24ef539",
+      "size": 7,
+      "sha256": "02f95b3cfe4df35c19882ab9a598166d3aa1f9e582b734a40b2eb959972845ae",
+      "ownerRegister": "rbx",
+      "emitterImplemented": true,
+      "nativeOwnerRootRva": "0x24ef500",
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x24ef54f",
+      "size": 8,
+      "sha256": "028127e54b4de812f16f72871f2e886e55edd1351c148704e1ae51ff2210bfe9",
+      "ownerRegister": "rbx",
+      "emitterImplemented": true,
+      "nativeOwnerRootRva": "0x24ef500",
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x24f00b1",
+      "size": 8,
+      "sha256": "d1ff4e1e37e14c14d4c163bc7fb8f098fc7fb20824c6448f7a716b3cf30bb684",
+      "ownerRegister": "rax",
+      "emitterImplemented": true,
+      "nativeOwnerRootRva": "0x24f0050",
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x24f09b5",
+      "size": 7,
+      "sha256": "be16b6d4c71cc8fa5ef8482c2f064b6a3a37fbc30e63037d7f93423b574cc493",
+      "ownerRegister": "rbx",
+      "emitterImplemented": true,
+      "nativeOwnerRootRva": "0x24f0960",
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x24f0a15",
+      "size": 8,
+      "sha256": "410496759245729b269cd0710ddf9407dfb43f9ea0554f50afea7e179f70d53f",
+      "ownerRegister": "rbx",
+      "emitterImplemented": true,
+      "nativeOwnerRootRva": "0x24f0960",
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x24f0a9b",
+      "size": 7,
+      "sha256": "1e8942a2a2e9f45317b6b33818ce2f7bfa53a3892b550aaf8f93b9d1c56fb6ea",
+      "ownerRegister": "rbx",
+      "emitterImplemented": true,
+      "nativeOwnerRootRva": "0x24f0960",
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x24f1081",
+      "size": 8,
+      "sha256": "efe84e84918593349e17d0a7459b8639d18c9e1789b39bed1cc4ef3553126a18",
+      "ownerRegister": "rax",
+      "emitterImplemented": true,
+      "nativeOwnerRootRva": "0x24f0be0",
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x24f11b7",
+      "size": 8,
+      "sha256": "d1ff4e1e37e14c14d4c163bc7fb8f098fc7fb20824c6448f7a716b3cf30bb684",
+      "ownerRegister": "rax",
+      "emitterImplemented": true,
+      "nativeOwnerRootRva": "0x24f10c0",
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x2506437",
+      "size": 8,
+      "sha256": "3038e43d0865ebb323cbd694cd6d076b6feecd30f38068f8e40cb5e8b3819276",
+      "ownerRegister": "rdi",
+      "emitterImplemented": true,
+      "nativeOwnerRootRva": "0x25063f0",
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x250643f",
+      "size": 8,
+      "sha256": "3f766290cd9a3c3788895f3a7159828b20eb935d33a28d700f6eb2de46ed2dd0",
+      "ownerRegister": "rdi",
+      "emitterImplemented": true,
+      "nativeOwnerRootRva": "0x25063f0",
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x2506447",
+      "size": 8,
+      "sha256": "2c9bee247408e51fd08235fbf33988e061f2330ff854e51604804cfa5d4cae1d",
+      "ownerRegister": "rdi",
+      "emitterImplemented": true,
+      "nativeOwnerRootRva": "0x25063f0",
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x250644f",
+      "size": 8,
+      "sha256": "6afadc41bb80ba835ea9a9d00009a188d679308b2b1364ec90c3bb56e27b8bd1",
+      "ownerRegister": "rdi",
+      "emitterImplemented": true,
+      "nativeOwnerRootRva": "0x25063f0",
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x2506457",
+      "size": 8,
+      "sha256": "7d5e76924d36f1cf866dcc04f99759bce65dc0ddf4215e127ba214bd3af4ebed",
+      "ownerRegister": "rdi",
+      "emitterImplemented": true,
+      "nativeOwnerRootRva": "0x25063f0",
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x250645f",
+      "size": 8,
+      "sha256": "7124cfcd3d5fd8f7a6c512762f9ce70525916c6923cdbedc1a59fddd1a3c5110",
+      "ownerRegister": "rdi",
+      "emitterImplemented": true,
+      "nativeOwnerRootRva": "0x25063f0",
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x2506467",
+      "size": 8,
+      "sha256": "637b635bef6f4b898c7b89d7192b7337561b54a454505e4f09c0aa12aebb52d3",
+      "ownerRegister": "rdi",
+      "emitterImplemented": true,
+      "nativeOwnerRootRva": "0x25063f0",
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x250646f",
+      "size": 8,
+      "sha256": "1a008f6d2655d9b3fb23048ee83da1c9e4973e9ba475d2cfdccd96dfca114e21",
+      "ownerRegister": "rdi",
+      "emitterImplemented": true,
+      "nativeOwnerRootRva": "0x25063f0",
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x2506477",
+      "size": 8,
+      "sha256": "1b1df9b33ca3dc5f32be02d41ede7b9127375f591a3bad22a99463119d76907a",
+      "ownerRegister": "rdi",
+      "emitterImplemented": true,
+      "nativeOwnerRootRva": "0x25063f0",
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x25076c0",
+      "size": 8,
+      "sha256": "45630a16ac74b406657aa05eee9adadbaa5c15cb7ea03ba0dec09cbb7aafb69c",
+      "ownerRegister": "rcx",
+      "emitterImplemented": true,
+      "nativeOwnerRootRva": "0x25074f0",
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x25076ca",
+      "size": 8,
+      "sha256": "b2c2c7912467124741d78a853ad13e00a02f8ffefa4dcc3e49c51eff70424315",
+      "ownerRegister": "rcx",
+      "emitterImplemented": true,
+      "nativeOwnerRootRva": "0x25074f0",
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x250961a",
+      "size": 8,
+      "sha256": "d4d64d94f5ecfd1146ac1931750ebdc1a2141801ddd5da55c78ba21fbba1155e",
+      "ownerRegister": "rbx",
+      "emitterImplemented": true,
+      "nativeOwnerRootRva": "0x25095d0",
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x2509624",
+      "size": 7,
+      "sha256": "4e973041e4af9d09386e657d36c61bffce6c4f0cb89950a90965d605d5c41396",
+      "ownerRegister": "rbx",
+      "emitterImplemented": true,
+      "nativeOwnerRootRva": "0x25095d0",
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x164d040",
+      "size": 6,
+      "sha256": "d3afff42b053ba008eed0e5ab799e5f19ae424ba5c22d1f33987c3a36b092c8b",
+      "ownerRegister": "rcx",
+      "emitterImplemented": true,
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x164d048",
+      "size": 6,
+      "sha256": "74d2763e991367b3926a18a1edb87f0e2706b15773b8ccecda22c4a3aea7f29b",
+      "ownerRegister": "rcx",
+      "emitterImplemented": true,
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x164d41c",
+      "size": 7,
+      "sha256": "daf427c8f559e3c3ef50266349a1f9b27ddae057a8c5db58737abffba12004ec",
+      "ownerRegister": "rcx",
+      "emitterImplemented": true,
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x164d5f0",
+      "size": 6,
+      "sha256": "d3afff42b053ba008eed0e5ab799e5f19ae424ba5c22d1f33987c3a36b092c8b",
+      "ownerRegister": "rcx",
+      "emitterImplemented": true,
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x164d5f8",
+      "size": 6,
+      "sha256": "74d2763e991367b3926a18a1edb87f0e2706b15773b8ccecda22c4a3aea7f29b",
+      "ownerRegister": "rcx",
+      "emitterImplemented": true,
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x1c369f6",
+      "size": 7,
+      "sha256": "d5a7a55772e2a91241a4bdb2f4d949c7730bff9952f3e700813061f880a3cef0",
+      "ownerRegister": "rax",
+      "emitterImplemented": true,
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x1c36a0c",
+      "size": 8,
+      "sha256": "4df5871aadb588c4ff02103922e28a11a0399c254885cdf5ef605465e2b55d76",
+      "ownerRegister": "rax",
+      "emitterImplemented": true,
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x1c3de36",
+      "size": 11,
+      "sha256": "3b51128364c0937e91d9e65ddc4f8302660566df4d8ceb013a774df7aeb8febc",
+      "ownerRegister": "rax",
+      "emitterImplemented": true,
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x2505b9b",
+      "size": 5,
+      "sha256": "240e27d7208d5e956c0924b6530ff7f7f5fa35c5246640d9decf12f143792ca9",
+      "ownerRegister": "r8",
+      "emitterImplemented": true,
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x25061be",
+      "size": 7,
+      "sha256": "ecaa50216e5a9d6940a326144e2df436a9bb1eb9aa73c81974b6e3be561fd894",
+      "ownerRegister": "r8",
+      "emitterImplemented": true,
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x25074c6",
+      "size": 7,
+      "sha256": "f14815145a9426c2a97774bc3d53ddf8e46a81aaff039e093a9ff27e4ce6afe2",
+      "ownerRegister": "rcx",
+      "emitterImplemented": true,
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x25077ee",
+      "size": 7,
+      "sha256": "b22839927e844adb96c55bd3ad9f391e108edf1e4d9c5da25959ef7fca0ada14",
+      "ownerRegister": "r9",
+      "emitterImplemented": true,
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x1c32eab",
+      "size": 8,
+      "sha256": "ece46913e1cc877d830ef6a55e8fc4c5c49ff275ba0fc6ba6bec82e8477cb3b8",
+      "ownerRegister": "r11",
+      "emitterImplemented": true,
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x1c36814",
+      "size": 9,
+      "sha256": "cf1d5ba5b320b3321d98bc4b6220c1b5813d66d186a6f3fb71f44e9c15c0b127",
+      "ownerRegister": "r11",
+      "emitterImplemented": true,
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x24e7779",
+      "size": 8,
+      "sha256": "27f05305a19dda5e2fe8fd562cb039ee4aabc865e366b35ba091f455006951c2",
+      "ownerRegister": "rcx",
+      "emitterImplemented": true,
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x24e787e",
+      "size": 11,
+      "sha256": "0552b77f73d761f8afd2452fd943620e70f15dbb051f1a437b9f410840142c7f",
+      "ownerRegister": "rcx",
+      "emitterImplemented": true,
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x24ec3c2",
+      "size": 8,
+      "sha256": "5f46f81bd6d1eb70831fc9e1aed5dd1fee743a8d5ede4f2125112d7a7fb754b9",
+      "ownerRegister": "rax",
+      "emitterImplemented": true,
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x24ec5cc",
+      "size": 8,
+      "sha256": "5ffe8a6a3c2e5b832f6443d1806a24646729d3b0b9ea5f997be5eed1344e8acc",
+      "ownerRegister": "rcx",
+      "emitterImplemented": true,
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x24ef26e",
+      "size": 9,
+      "sha256": "5f6db36991d89d5f472fb572bb8121400a330b3855a90730552558ce6f394d9c",
+      "ownerRegister": "r14",
+      "emitterImplemented": true,
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "external_table_member",
+      "rva": "0x24ef471",
+      "size": 9,
+      "sha256": "85d73c89b8e2ac09add52ea35e63ced32aa120fb19f302a11dcd4d2dde4c7f67",
+      "ownerRegister": "r14",
+      "emitterImplemented": true,
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "indexed_word_owner_clear",
+      "rva": "0x24b670e",
+      "size": 7,
+      "sha256": "d304e49c7130ea1e4f02d81e8598ff80c2240f9bf0118fa476681793b35812dd",
+      "ownerRegister": "rcx",
+      "emitterImplemented": true,
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "indexed_word_owner_clear",
+      "rva": "0xc45d6",
+      "size": 7,
+      "sha256": "aea7f28bd20f42a2066487c9313aae2d7a7bb6da969d981a7e2984e459ed8dd5",
+      "ownerRegister": "rbp",
+      "emitterImplemented": true,
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "map_table_clear",
+      "rva": "0x2505b24",
+      "size": 12,
+      "sha256": "83e332abf8453f5f83a7474bdcfa8dd308e242d8b63fc2043695706d771be61f",
+      "ownerRegister": null,
+      "emitterImplemented": true,
+      "nativeOwnerRootRva": "0x2505b20",
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "allocation_owner_row_clear",
+      "rva": "0x2505d4a",
+      "size": 7,
+      "sha256": "598c8f9772fb2930b2455658dfb9b2bdca05fb3d1aa79e82032082528d1f0943",
+      "ownerRegister": "rdi",
+      "emitterImplemented": true,
+      "nativeOwnerRootRva": "0x2505cf0",
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "load_entry_clear",
+      "rva": "0xc45b0",
+      "size": 27,
+      "sha256": "c69e57565fd01824b6e5a1979e9d354c1a364a337765f9c5c494a2b8abe71308",
+      "ownerRegister": "rbp",
+      "emitterImplemented": true,
+      "nativeOwnerRootRva": "0xc44c0",
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "load_row_column_count",
+      "rva": "0xc45d0",
+      "size": 6,
+      "sha256": "02cd0daf207d7918f7f81931c09634b15ae9be904f7ea9d8abdcc3e2235f62ef",
+      "ownerRegister": null,
+      "emitterImplemented": true,
+      "nativeOwnerRootRva": "0xc44c0",
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "sentient_free_owner_count",
+      "rva": "0x25062f3",
+      "size": 6,
+      "sha256": "3662001f68a056ebdd0cbd0b86914bcfdac655e98290745801bd8f9ee06192f9",
+      "ownerRegister": null,
+      "emitterImplemented": true,
+      "nativeOwnerRootRva": "0x2506270",
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "sentient_free_owner_count",
+      "rva": "0x250635d",
+      "size": 6,
+      "sha256": "71ed78e829af8ea0b8e6e09c6d7e0925645ebb315ae1cf6a48f1c7ec58ea6fe8",
+      "ownerRegister": null,
+      "emitterImplemented": true,
+      "nativeOwnerRootRva": "0x2506270",
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "sentient_free_owner_count",
+      "rva": "0x25063b2",
+      "size": 6,
+      "sha256": "bb4bb98b7f2d980fc3f69511b12058be28bf870b95f3262dbf3eb13f821973e2",
+      "ownerRegister": null,
+      "emitterImplemented": true,
+      "nativeOwnerRootRva": "0x2506270",
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "sentient_map_record_count",
+      "rva": "0x2505b45",
+      "size": 6,
+      "sha256": "a958e56024aa11f3805fffecc7a4d9ac2d873b4780e64a4a72e0dce59ad23e7d",
+      "ownerRegister": null,
+      "emitterImplemented": true,
+      "nativeOwnerRootRva": "0x2505b20"
+    },
+    {
+      "name": "sentient_load_record_count",
+      "rva": "0xc45f1",
+      "size": 7,
+      "sha256": "be65eeb5e45ee1b31bdd670d2baab2b2d9ee8965983567c564001f279baa99f2",
+      "ownerRegister": null,
+      "emitterImplemented": true,
+      "nativeOwnerRootRva": "0xc44c0"
+    },
+    {
+      "name": "actor_lifetime_array",
+      "rva": "0x2dd10d2",
+      "size": 7,
+      "sha256": "b41c5af6bda4edbf079867b0ac7d8cf06739a371ec14ccfaa5f89edcc59ff6b9",
+      "ownerRegister": null,
+      "emitterImplemented": true
+    },
+    {
+      "name": "actor_lifetime_array",
+      "rva": "0x2efa3d7",
+      "size": 7,
+      "sha256": "8506a80dbd55fe64962f65b6b0aa3065f8ed9295862db067ebd312af74c1bfe0",
+      "ownerRegister": null,
+      "emitterImplemented": true
+    },
+    {
+      "name": "actor_lifetime_count_200",
+      "rva": "0x2dd10de",
+      "size": 6,
+      "sha256": "9285ee6d6d7e64c54bca099a40165550afdbdea7f7f8b41189bd89c3cd1873cd",
+      "ownerRegister": null,
+      "emitterImplemented": true
+    },
+    {
+      "name": "actor_lifetime_count_200",
+      "rva": "0x2efa3e3",
+      "size": 6,
+      "sha256": "9285ee6d6d7e64c54bca099a40165550afdbdea7f7f8b41189bd89c3cd1873cd",
+      "ownerRegister": null,
+      "emitterImplemented": true
+    },
+    {
+      "name": "sentient_static_storage",
+      "rva": "0xcf97a",
+      "size": 7,
+      "sha256": "b8343f015611b629dbd01c8bc9caf3242f89af221590faf161a02927082fbd7d",
+      "ownerRegister": null,
+      "emitterImplemented": true
+    },
+    {
+      "name": "sentient_static_storage",
+      "rva": "0x159a2ce",
+      "size": 7,
+      "sha256": "fac1b27858656af88bd92aed4de405c6875dd37f0875bf5ca13add07914b9b38",
+      "ownerRegister": null,
+      "emitterImplemented": true
+    },
+    {
+      "name": "sentient_static_storage",
+      "rva": "0x16662d6",
+      "size": 7,
+      "sha256": "dcb84f8931a87a6afebec428c7b24e8b5f5cae618742230d5401d69c649b4e13",
+      "ownerRegister": null,
+      "emitterImplemented": true
+    },
+    {
+      "name": "sentient_static_storage",
+      "rva": "0x19dd4ae",
+      "size": 7,
+      "sha256": "648ee04986e4036bc2f5d83868a9382b62a5779ced49e6e42412f8ea149a6727",
+      "ownerRegister": null,
+      "emitterImplemented": true
+    },
+    {
+      "name": "sentient_static_storage",
+      "rva": "0x1c3eda1",
+      "size": 7,
+      "sha256": "3d7e5395f154504856c30923ef11ce56c90ea922c36a4dc76c621eb8e4945874",
+      "ownerRegister": null,
+      "emitterImplemented": true
+    },
+    {
+      "name": "sentient_static_storage",
+      "rva": "0x1c3ef25",
+      "size": 7,
+      "sha256": "a6b94496289f0e14497444f49f529265c65372fc5f328f6e95d21170b9c03ab3",
+      "ownerRegister": null,
+      "emitterImplemented": true
+    },
+    {
+      "name": "sentient_static_storage",
+      "rva": "0x24ea6ef",
+      "size": 7,
+      "sha256": "4fda334a00dd35e2e57f90e9ff8549a98e8c5971fc1363bf85cae0d27e196b64",
+      "ownerRegister": null,
+      "emitterImplemented": true
+    },
+    {
+      "name": "sentient_static_storage",
+      "rva": "0x24f10e4",
+      "size": 7,
+      "sha256": "dc214d9ccf25af6f8955ea25919641af3b16b7fa1914c909d214db7d01ac4a7f",
+      "ownerRegister": null,
+      "emitterImplemented": true
+    },
+    {
+      "name": "sentient_static_storage",
+      "rva": "0x24ffc10",
+      "size": 7,
+      "sha256": "cbe32061db7a55ab56a7ebe1437ca33d1634cbe563bc103c7a443f30b0045b87",
+      "ownerRegister": null,
+      "emitterImplemented": true
+    },
+    {
+      "name": "sentient_static_storage",
+      "rva": "0x25002c2",
+      "size": 7,
+      "sha256": "3045e983f284b64f9f66b9b75596e697af0ac816009e652e7317f84b7d7ed2a7",
+      "ownerRegister": null,
+      "emitterImplemented": true
+    },
+    {
+      "name": "sentient_static_storage",
+      "rva": "0x250067f",
+      "size": 7,
+      "sha256": "bf0e41d0c39cd72971bc189d95867606ce8ecc0bb3e2b835eef1ff5ede853005",
+      "ownerRegister": null,
+      "emitterImplemented": true
+    },
+    {
+      "name": "sentient_static_storage",
+      "rva": "0x25033ae",
+      "size": 7,
+      "sha256": "6fb58cd36fee10528d52386ddd2318bd942983ad10ae0e1d1eae6558f831cf09",
+      "ownerRegister": null,
+      "emitterImplemented": true
+    },
+    {
+      "name": "secondary_actor_storage",
+      "rva": "0xfa1a0",
+      "size": 7,
+      "sha256": "1a43820bed90d9a7f193f8ed4491e6335ac949360a3e3e32aa50b666752f59cb",
+      "ownerRegister": null,
+      "emitterImplemented": true
+    },
+    {
+      "name": "secondary_actor_storage",
+      "rva": "0x112fb9",
+      "size": 7,
+      "sha256": "cdcdddf78e2d432eda30e5b68510b659dafac685258aac58c269abf8aef3ab3b",
+      "ownerRegister": null,
+      "emitterImplemented": true
+    },
+    {
+      "name": "secondary_actor_storage",
+      "rva": "0x12e103",
+      "size": 7,
+      "sha256": "58333a29dcb10a6f38ce658f3f542d63053acc71e814a5c360f6ae9543c6cbb4",
+      "ownerRegister": null,
+      "emitterImplemented": true
+    },
+    {
+      "name": "secondary_actor_storage",
+      "rva": "0x132021",
+      "size": 7,
+      "sha256": "7dffe866c13c9a1d3d9eb2fd8ecb7fdd87802fdbd20b88b7ddcc49333084f24e",
+      "ownerRegister": null,
+      "emitterImplemented": true
+    },
+    {
+      "name": "secondary_actor_storage",
+      "rva": "0x19e0e01",
+      "size": 7,
+      "sha256": "f2a3e68d207b22005528d44e371bf05c6910b7c060f3cef2007eeb5bf1f2e5ec",
+      "ownerRegister": null,
+      "emitterImplemented": true
+    },
+    {
+      "name": "secondary_actor_storage",
+      "rva": "0x24ac8c0",
+      "size": 7,
+      "sha256": "55468538c44cf321658d828c6c940d147f610389877efeacb9c3c47c198bfc30",
+      "ownerRegister": null,
+      "emitterImplemented": true
+    },
+    {
+      "name": "secondary_actor_storage",
+      "rva": "0x24b29c2",
+      "size": 7,
+      "sha256": "740847875cee3e7e1e27514a819baec4fb3085aec97a0da4f690607d4973dbfe",
+      "ownerRegister": null,
+      "emitterImplemented": true
+    },
+    {
+      "name": "sentient_static_storage",
+      "rva": "0x1595210",
+      "size": 7,
+      "sha256": "ad6555915add99bced9b123aae10a3ea468aa86cb87d9082fe98f14b8aabcfdc",
+      "ownerRegister": null,
+      "emitterImplemented": true
+    },
+    {
+      "name": "sentient_static_storage",
+      "rva": "0x24ffdbe",
+      "size": 7,
+      "sha256": "207e365a26366d2a1f79947448c75487d118231cce92e2698c973f4983202a99",
+      "ownerRegister": null,
+      "emitterImplemented": true
+    },
+    {
+      "name": "sentient_handle_heads",
+      "rva": "0x1595160",
+      "size": 7,
+      "sha256": "b147da59be237da8b5e184725fde4dc569b22f7c3b24baa578568e4d0093d657",
+      "ownerRegister": null,
+      "emitterImplemented": true
+    },
+    {
+      "name": "sentient_handle_heads",
+      "rva": "0x1595235",
+      "size": 7,
+      "sha256": "f203cfcd92009ba9f8682f96481ef41e418e17218453fdd453d6929e7cdb1bec",
+      "ownerRegister": null,
+      "emitterImplemented": true
+    },
+    {
+      "name": "sentient_handle_heads",
+      "rva": "0x159a2df",
+      "size": 7,
+      "sha256": "dbf049b4f913f7d9bffc644f3b48cc8105e2d7df61be1b1e848d94da9f0893c6",
+      "ownerRegister": null,
+      "emitterImplemented": true
+    },
+    {
+      "name": "sentient_handle_heads_clear_extent",
+      "rva": "0x1595169",
+      "size": 6,
+      "sha256": "4f0da20549160427db793bffc5c7c0c50db0c764a1ebca2fba52c0f5d5a568b7",
+      "ownerRegister": null,
+      "emitterImplemented": true
+    },
+    {
+      "name": "secondary_actor_codec_count",
+      "rva": "0xfa1a7",
+      "size": 5,
+      "sha256": "9a6b52a1b94729eaea3e1fcafd16843d274cb4e88e1d5c8d41bd40b4df24e832",
+      "ownerRegister": null,
+      "emitterImplemented": true
+    },
+    {
+      "name": "secondary_actor_codec_count",
+      "rva": "0x112fc0",
+      "size": 5,
+      "sha256": "9a6b52a1b94729eaea3e1fcafd16843d274cb4e88e1d5c8d41bd40b4df24e832",
+      "ownerRegister": null,
+      "emitterImplemented": true
+    },
+    {
+      "name": "secondary_actor_codec_count",
+      "rva": "0x12e10a",
+      "size": 5,
+      "sha256": "9a6b52a1b94729eaea3e1fcafd16843d274cb4e88e1d5c8d41bd40b4df24e832",
+      "ownerRegister": null,
+      "emitterImplemented": true
+    },
+    {
+      "name": "secondary_actor_codec_count",
+      "rva": "0x132028",
+      "size": 5,
+      "sha256": "9a6b52a1b94729eaea3e1fcafd16843d274cb4e88e1d5c8d41bd40b4df24e832",
+      "ownerRegister": null,
+      "emitterImplemented": true
+    },
+    {
+      "name": "secondary_actor_clear_extent",
+      "rva": "0x19e0e0a",
+      "size": 6,
+      "sha256": "3163c9472f2a3883c6c78004ec547afba69b117c153517f172e320bd796f94b8",
+      "ownerRegister": null,
+      "emitterImplemented": true
+    },
+    {
+      "name": "actor_record_extent",
+      "rva": "0xb631c",
+      "size": 7,
+      "sha256": "f23c46f70b2cc1e329212d2db500585e377085ff2168f59e19bcbccc39a6992a",
+      "ownerRegister": null,
+      "emitterImplemented": true
+    },
+    {
+      "name": "actor_record_extent",
+      "rva": "0xc7ffb",
+      "size": 7,
+      "sha256": "c3b13a535e53b82c325ffb76b7925c5a96782324ad3b48c9a6e318389429ed60",
+      "ownerRegister": null,
+      "emitterImplemented": true
+    },
+    {
+      "name": "actor_record_extent",
+      "rva": "0xc9fe1",
+      "size": 7,
+      "sha256": "f23c46f70b2cc1e329212d2db500585e377085ff2168f59e19bcbccc39a6992a",
+      "ownerRegister": null,
+      "emitterImplemented": true
+    },
+    {
+      "name": "actor_record_extent",
+      "rva": "0x1bfe009",
+      "size": 7,
+      "sha256": "64b0c1c5eaa4dc99484006da8580c890c12005893522b0903d6b84ada883cac7",
+      "ownerRegister": null,
+      "emitterImplemented": true
+    },
+    {
+      "name": "actor_record_extent",
+      "rva": "0x1bfe0a9",
+      "size": 7,
+      "sha256": "64b0c1c5eaa4dc99484006da8580c890c12005893522b0903d6b84ada883cac7",
+      "ownerRegister": null,
+      "emitterImplemented": true
+    },
+    {
+      "name": "actor_record_extent",
+      "rva": "0x24ae750",
+      "size": 7,
+      "sha256": "c3b13a535e53b82c325ffb76b7925c5a96782324ad3b48c9a6e318389429ed60",
+      "ownerRegister": null,
+      "emitterImplemented": true
+    },
+    {
+      "name": "actor_record_extent",
+      "rva": "0x24b13a8",
+      "size": 7,
+      "sha256": "a624ae27bc2309d1c8cf16ce0f18d8c57ea51c2f2b0d9f464d15292fecda1ee9",
+      "ownerRegister": null,
+      "emitterImplemented": true
+    },
+    {
+      "name": "actor_record_extent",
+      "rva": "0x24b5f50",
+      "size": 7,
+      "sha256": "c3b13a535e53b82c325ffb76b7925c5a96782324ad3b48c9a6e318389429ed60",
+      "ownerRegister": null,
+      "emitterImplemented": true
+    },
+    {
+      "name": "actor_record_extent",
+      "rva": "0x27c191a",
+      "size": 7,
+      "sha256": "c3b13a535e53b82c325ffb76b7925c5a96782324ad3b48c9a6e318389429ed60",
+      "ownerRegister": null,
+      "emitterImplemented": true
+    },
+    {
+      "name": "actor_record_extent",
+      "rva": "0x27c1a87",
+      "size": 7,
+      "sha256": "c3b13a535e53b82c325ffb76b7925c5a96782324ad3b48c9a6e318389429ed60",
+      "ownerRegister": null,
+      "emitterImplemented": true
+    },
+    {
+      "name": "actor_pool_binding",
+      "rva": "0x19dd4bc",
+      "size": 7,
+      "sha256": "8fee9f4a769b873389eda77b3d2774b23e93727d8c5ecbf425644320ef429a94",
+      "ownerRegister": null,
+      "emitterImplemented": true
+    },
+    {
+      "name": "sentient_record_extent",
+      "rva": "0x19e0df8",
+      "size": 7,
+      "sha256": "0cf2ee9472fc960db2c4e8b0debc2fc94d9ea7aa5619e8dbf0fd7e76211179d1",
+      "ownerRegister": null,
+      "emitterImplemented": true
+    },
+    {
+      "name": "sentient_save_extent",
+      "rva": "0xd20a6",
+      "size": 7,
+      "sha256": "be65eeb5e45ee1b31bdd670d2baab2b2d9ee8965983567c564001f279baa99f2",
+      "ownerRegister": null,
+      "emitterImplemented": true
+    },
+    {
+      "name": "actor_four_record_groups",
+      "rva": "0x24b15f0",
+      "size": 3,
+      "sha256": "eb06399d0ab34cd8b7422765409535992dd9dbf4c261f40e043152e41837799a",
+      "ownerRegister": null,
+      "emitterImplemented": true
+    },
+    {
+      "name": "sentient_eligibility_count",
+      "rva": "0x24b158a",
+      "size": 7,
+      "sha256": "ac2d935a22754ddcc94853d965f692629ba2d11ded29aefd4a93e65fa41be84b",
+      "ownerRegister": null,
+      "emitterImplemented": true,
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "signed_count_branch",
+      "rva": "0x24ab034",
+      "size": 6,
+      "sha256": "80b9a59e70970dc435cb23f2dc87de1d0d0be81c410e99b8f5687e41e2e75925",
+      "ownerRegister": null,
+      "emitterImplemented": true,
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "signed_count_branch",
+      "rva": "0x2505d22",
+      "size": 6,
+      "sha256": "5de944e68d4392833a65d27928b0a5405fa3cad681417b3a9dac76b2a77f812d",
+      "ownerRegister": null,
+      "emitterImplemented": true,
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "signed_count_branch",
+      "rva": "0x24ae5c5",
+      "size": 6,
+      "sha256": "6a186866428f4c428f28fdf2f293e1892ca1257997771cceda5f65219b9214da",
+      "ownerRegister": null,
+      "emitterImplemented": true,
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "signed_count_branch",
+      "rva": "0x24b152d",
+      "size": 6,
+      "sha256": "8403051f8ee034136f8cee205d9b02de3efdaf2346a589d4f4c0db9a5ddd57d5",
+      "ownerRegister": null,
+      "emitterImplemented": true,
+      "nativeUnwindRegistrationRequired": true
+    },
+    {
+      "name": "signed_count_branch",
+      "rva": "0x24b1569",
+      "size": 6,
+      "sha256": "bb3a43a2361e6022a1c7172b8a523da2e2e1a6c53383fa68c040c116fdedead5",
+      "ownerRegister": null,
+      "emitterImplemented": true,
+      "nativeUnwindRegistrationRequired": true
+    }
+  ],
+  "knownExactSitesImplemented": {
+    "additionalFoldedAndLeafConsumers": "omitted_consumers.json",
+    "indexedWordConsumersAndResets": "indexed_words.json",
+    "nativeStorageAndBounds": "storage_inventory.json",
+    "poolBindings": [
+      "0x19dd4ae",
+      "0x19dd4bc"
+    ],
+    "handleHeads": [
+      "0x1595160",
+      "0x1595235",
+      "0x159a2df"
+    ],
+    "wideAllocatorCounts": [
+      "0x24ab034",
+      "0x2505d22"
+    ]
+  },
+  "remainingExactGates": {
+    "preConstructorActivation": "0x2dd10c0",
+    "outerSaveFormatAdmission": "codec_contract.json",
+    "readCountSites": [
+      "0xb631c",
+      "0xc45f1",
+      "0xfa1a7",
+      "0x12e10a"
+    ],
+    "writeCountSites": [
+      "0xc9fe1",
+      "0xd20a6",
+      "0x112fc0",
+      "0x132028"
+    ],
+    "nativeUnwindRegistered": false,
+    "completeConsumerCoverage": false,
+    "aaeAndPeerValidation": false
+  },
+  "stockSaveFramingVerified": false,
+  "unwindRequirements": {
+    "accessor": "Register ALLOC_SMALL 16 for its four-byte prolog.",
+    "memberAndLifecycleStubs": "Register stack operations and chain the exact native owner unwind record. Native-frame continuation cannot use a leaf unwind record."
+  },
+  "activationGates": [
+    "Exclude remaining unclassified folded/leaf consumers and actor-indexed arrays/fields.",
+    "Admit stock-save framing and host migration before expanded load counts.",
+    "Verify AAE consumers, retained references and pre-constructor activation.",
+    "Implement and verify native unwind registration and atomic rollback."
+  ]
+}

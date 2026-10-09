@@ -1,0 +1,269 @@
+{
+  "status": "Checked integration inputs. No actual game, whole-state compressed roundtrip, deadline, or matching-peer game validation.",
+  "executableSha256": "0b874dcc250848b7313ec13a0c76468dacc2009b5efa2bff4c587e169a9f77e0",
+  "imageSize": 494186496,
+  "enhancedModeValue": 0,
+  "bufferBytes": 33554432,
+  "maxProtocolBytes": 39321600,
+  "wireVersionEncoding": "0xc6000000 | (clientRootCount << 20) | serverTotal",
+  "defaultServerTotal": 500001,
+  "clientRootCount": 18,
+  "legacyVersion": 3,
+  "legacyClientRootCount": 8,
+  "entryHooks": [
+    {
+      "rva": 20322784,
+      "original": "4889742410",
+      "wrapper": "ReceiveMigrationHeader",
+      "reentry": "MigrationHeaderReentry",
+      "continuationRva": 20322789
+    },
+    {
+      "rva": 20322288,
+      "original": "4053554156",
+      "wrapper": "ReceiveMigrationData",
+      "reentry": "MigrationDataReentry",
+      "continuationRva": 20322293
+    },
+    {
+      "rva": 35625632,
+      "original": "3b0d02d555157521",
+      "wrapper": "ReceiveMigrationHeaderAck",
+      "reentry": "MigrationHeaderAckReentry",
+      "continuationRva": 35625640
+    },
+    {
+      "rva": 35628880,
+      "original": "48895c2410",
+      "wrapper": "SendMigrationHeader",
+      "reentry": "MigrationSendHeaderReentry",
+      "continuationRva": 35628885
+    },
+    {
+      "rva": 1237440,
+      "original": "48895c2408",
+      "wrapper": "LoadMigrationState",
+      "reentry": "MigrationLoadReentry",
+      "continuationRva": 1237445
+    },
+    {
+      "rva": 36141664,
+      "original": "40574883ec20",
+      "wrapper": "FlushMigrationState",
+      "reentry": "MigrationFlushReentry",
+      "continuationRva": 36141670
+    }
+  ],
+  "callHooks": [
+    {
+      "rva": 20322896,
+      "original": "e8db080000",
+      "wrapper": "SendHeaderAck",
+      "originalTargetRva": 20325168
+    }
+  ],
+  "branchHooks": [
+    {
+      "rva": 1237542,
+      "original": "83f803741f",
+      "wrapper": "MigrationVersionGate",
+      "acceptedRva": 1237578,
+      "rejectedRva": 1237547
+    }
+  ],
+  "immediateEdits": [
+    {
+      "rva": 730431,
+      "original": "bf00002800",
+      "immediateOffset": 1,
+      "stockValue": 2621440,
+      "replacementValue": 33554432
+    },
+    {
+      "rva": 35628974,
+      "original": "c744245c03000000",
+      "immediateOffset": 4,
+      "stockValue": 3,
+      "replacement": "configured wireVersion"
+    }
+  ],
+  "nativeGetters": {
+    "nativeHeader": 34588624,
+    "nativeWriteState": 34588608
+  },
+  "selectedPeerGlobalRva": 393572264,
+  "headerAckRejectedRva": 35625673,
+  "unallocatedPointerRvas": [
+    65818328,
+    65818336,
+    65818344,
+    65818352,
+    383497784
+  ],
+  "unallocatedCapacityRvas": [
+    65818360,
+    65818364,
+    383497792
+  ],
+  "bindingRecords": {
+    "Bo3MigrationBindings": {
+      "bytes": 64,
+      "fields": {
+        "wireVersion": 0,
+        "bufferBytes": 4,
+        "originalHeader": 8,
+        "originalData": 16,
+        "originalHeaderAck": 24,
+        "originalSendHeader": 32,
+        "originalAckSend": 40,
+        "nativeHeader": 48,
+        "nativeWriteState": 56
+      }
+    },
+    "Bo3MigrationVersionBranches": {
+      "bytes": 16,
+      "fields": {
+        "accepted": 0,
+        "rejected": 8
+      }
+    },
+    "Bo3MigrationLoadBindings": {
+      "bytes": 16,
+      "fields": {
+        "original": 0,
+        "error": 8
+      }
+    },
+    "Bo3MigrationReentries": {
+      "bytes": 56,
+      "fields": {
+        "header": 0,
+        "data": 8,
+        "headerAckAccepted": 16,
+        "selectedPeer": 24,
+        "sendHeader": 32,
+        "load": 40,
+        "headerAckRejected": 48
+      }
+    },
+    "Bo3MigrationFlushBindings": {
+      "bytes": 16,
+      "fields": {
+        "original": 0,
+        "continuation": 8
+      }
+    }
+  },
+  "codeGuards": [
+    {
+      "rva": 730304,
+      "size": 357,
+      "sha256": "6f36668965994c5971dd0cff91d7dc6bb81a8f80a0d402bb09d23aef8e52421e"
+    },
+    {
+      "rva": 20322784,
+      "size": 133,
+      "sha256": "a7a1e8a9f9f7cbce53ac6c90e1b0b415a8bf8ae109983fcf187b26909d19e331"
+    },
+    {
+      "rva": 20322288,
+      "size": 294,
+      "sha256": "2a4e2d3bffff89b301bb0c58abba2fb1da0f3f1a6fc67ddae76200bb35a71c56"
+    },
+    {
+      "rva": 35625632,
+      "size": 43,
+      "sha256": "c86d0a6cb6121120c74d4b77e93a1780c27ad6e008935a6577d0e466498bf294"
+    },
+    {
+      "rva": 35628880,
+      "size": 220,
+      "sha256": "e2d64ed61feb939123e43febabddf7c59de5155dbf599de528a6bed18dde43ca"
+    },
+    {
+      "rva": 1237440,
+      "size": 307,
+      "sha256": "2e080208a522c4623e42b108f4f3317ccc5a6b7a9dc921ab4b3ac2ad5c6115e2"
+    },
+    {
+      "rva": 20325168,
+      "size": 304,
+      "sha256": "624f0643e83861e3efe4add0b39398270c604a4dedb1e6c2d94e24ca90aa4b53"
+    },
+    {
+      "rva": 34588576,
+      "size": 8,
+      "sha256": "b10e100e7bbd11889f9eee726c75692361b1b81a827e4d7f434d7ed2aaa07d14"
+    },
+    {
+      "rva": 34588592,
+      "size": 7,
+      "sha256": "fff2483cfafc8ec821a24217a07ca0e2a8338680270f284aa36450c5e9457494"
+    },
+    {
+      "rva": 34588608,
+      "size": 8,
+      "sha256": "640bf22f98f78a257569289775b22cb59c36410b642909f8a47cb7a0e4479ee2"
+    },
+    {
+      "rva": 34588624,
+      "size": 8,
+      "sha256": "ca1a1c1762d45bc055294c7853a36350064a56d74420547d0b54211e438f9b63"
+    },
+    {
+      "rva": 34588640,
+      "size": 32,
+      "sha256": "5755694a68712678607aaa566e042807dee945cd5eab5706524c54272494f5d8"
+    },
+    {
+      "rva": 34590896,
+      "size": 193,
+      "sha256": "307b1871dfdc520f1d561cb959cf482245b9c47c73c7fddc4a384c81f544a1a8"
+    },
+    {
+      "rva": 34597680,
+      "size": 155,
+      "sha256": "3e17490015ec0a74fae3f3b6b4ca4d4a7cf5d755136aeb6f276bd9623d1c8e6c"
+    },
+    {
+      "rva": 34596112,
+      "size": 176,
+      "sha256": "bf926b98481e7d3fc8186d1531315571e9b0a435ad35737d4e9127a7b80ea49f"
+    },
+    {
+      "rva": 36141664,
+      "size": 276,
+      "sha256": "dc50b19dfff5cc75d84e8c2367829326478d5d55f312e3df9dfabea8642af3a8"
+    },
+    {
+      "rva": 35627917,
+      "size": 108,
+      "sha256": "3e19dc66efed26e51cbd6b5845ddafafd5767822a804861dc0d1a736bc9cfd1a"
+    },
+    {
+      "rva": 36013984,
+      "size": 14,
+      "sha256": "83058942707f6f9c3dbe2890b4b2f2e5c3f08e9c665f2efbba80360fae2a9524"
+    },
+    {
+      "rva": 27456,
+      "size": 22,
+      "sha256": "cecfc04adc010279e926ff8fa01d3f5afafcff170cb9e7152c034db5dc26835a"
+    },
+    {
+      "rva": 27488,
+      "size": 90,
+      "sha256": "1a6729dccb781352ecae136c4de1621211cb79e8952cfa2e560385ee8896e88f"
+    },
+    {
+      "rva": 27584,
+      "size": 247,
+      "sha256": "7f63a5deac23bfc28a280c00777e73a170ab65f8b1ff42a00416ff402d70d697"
+    },
+    {
+      "rva": 25072,
+      "size": 2254,
+      "sha256": "d7e5f809f88ba2ee936a577da1370f3346b6a12db17ba63e23e55ed58bafece5"
+    }
+  ]
+}

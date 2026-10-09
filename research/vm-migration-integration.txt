@@ -1,0 +1,191 @@
+VM state integration audit, October 8, 2026
+
+Scope and ownership
+
+This audit uses the saved failing-match executable and process snapshot.
+All six exported executable ranges passed their recorded SHA-256 checks.
+No game launched. No installation, settings, or profile files changed.
+Private disassembly and snapshot reads remain outside Git.
+The native state bridge and startup gate remain separate, incomplete implementations.
+
+Captured mode and client roots
+
+The native mode predicate at RVA 20eb2b0 compares the signed low nibble of the word at RVA 1686e874.
+The failing Zombies capture records 0x4080, whose low nibble is zero.
+Do not infer campaign, multiplayer, or Zombies labels from these numeric values.
+
+The native whole-state reader at RVA 12d52f0 selects eight client roots when that predicate accepts zero.
+It selects eighteen roots for one and four roots otherwise.
+Thus this captured state uses eight legacy client roots. A four-root owned fixture does not bind this game.
+The client backing pointer is at RVA A1B0730, not A1B0728.
+Each root lies at client pointer + index * 171F0 + 16B08.
+The later allocation replay below resolves the backing record count.
+A requested ten-player count alone does not establish compatible networking or gameplay.
+
+Migration controls
+
+RVA 2262400 is a generic native dvar integer getter.
+Its callers supply different dvar objects. It is not a dedicated maximum-client getter.
+In the migration start function at RVA 21fa270, the captured dvar names resolve through object offset eight:
+
+  site 21fa28a, global 17756bc0: migration_soak
+  site 21fa29a, global 17756ba8: migration_limit
+  site 21fa2cb, global 17756b90: migration_minclientcount
+  site 21fa30f, global 1686e8d0: com_maxclients
+  site 21fa467, global 17756b98: migration_blocksperframe
+
+The captured com_maxclients current integer is four.
+That setting does not prove the client backing allocation size.
+The migration start loop uses that getter result to traverse server clients with stride E5170.
+This server-client structure differs from the 171F0 game-client structure used by script roots.
+
+Protocol budget
+
+The native sender at RVA 21fa560 writes block index and payload length through the short writer.
+Each payload contains at most 1,200 bytes. The acknowledgement reader sign-extends the short index.
+The current positive index range covers 32,768 blocks, or 39,321,600 bytes.
+The acknowledgement window contains thirty-two twelve-byte entries.
+The block counter and accumulated byte count use four-byte integers.
+
+The buffer initializer at RVA B24C0 uses 2.5 MiB for numeric modes zero and one.
+It uses 4.5 MiB for numeric mode two and allocates two additional 2.5 MiB buffers in that branch.
+These statements identify numeric branches only. Mode labels remain unverified.
+The capture records the 2.5 MiB server buffer.
+
+An expanded script pool needs a compatible serializer, sufficient migration buffers, and shared format admission.
+Strings and suspended stacks add variable data to native slot records.
+A simple scalar-record size is not a bound for every possible script state.
+Do not select a larger migration buffer from pool-count arithmetic alone.
+
+Private artifacts
+
+release-enhancement/vm-migration/mode-client-observations.json records native range hashes and captured dvar metadata.
+Adjacent inspect_mode_clients.py reproduces those snapshot reads.
+client-reference-candidates.json records a bounded direct-reference search for A1B0730.
+Its overlapping decode candidates require verification against complete native instruction boundaries.
+That candidate search does not establish allocator coverage or a safe client bound.
+
+Client allocation follow-up
+
+The native allocation site at RVA 19ce211 requests 0x1a02e0 bytes through allocator RVA 2bc54fc.
+This equals eighteen records at stride 0x171f0.
+The native function encrypts the returned pointer and stores it at RVA A4EF1B0.
+The later initialization path decodes that pointer, clears all eighteen records, and publishes it at A1B0730.
+The exact encrypted global is A4EF1B0. The earlier A4EEFB0 transcription was incorrect.
+
+The replay executes the saved request, encryption, publication, and recovery instructions.
+An owned heap stub returns a separate writable region. An owned clear stub checks its declared bounds.
+The eighteen-record case recovers the owned pointer and clears exactly 1,704,672 bytes.
+The seventeen-record negative case rejects the same clear before changing the owned region.
+Both cases pass. No Windows game allocator or live game executes in this replay.
+The fixed eighteen-record backing bound can support eighteen serialized script roots.
+The original Zombies stream still contains eight roots. Ten-player networking remains unvalidated.
+
+Error-chain follow-up
+
+The captured Com_Error entry at RVA 20ec0b0 already jumps through AAE's MinHook relay.
+Its saved trampoline recovers the original five bytes, 4c894c2420, which store R9 in its home slot.
+AAE formats and logs the error. Its callback suppresses messages containing VCRedist.
+Other messages forward through the original trampoline with the same file, line, and error code.
+The new error prelude must preserve this later chain and clear import TLS before native error recovery.
+The owned error fixture checks this policy. It does not establish actual AAE hook coexistence.
+
+Public exact-build inventory
+
+source/patches/vm_pool/exact_build_inventory.json contains nineteen stock server-count instructions,
+four original entry records, forty-five code-range hashes, and the verified client backing layout.
+It is an audit inventory. It contains no deployable profile or activation permission.
+Only the Com_Error entry's five bytes are reconstructed from the captured original trampoline.
+The recorded code guards otherwise use the hash-verified exported executable ranges.
+
+Mode names and Steam context
+
+The saved failing Zombies match uses numeric mode zero.
+The upstream t7x eModes declaration names zero Zombies, one multiplayer, two campaign, and three invalid.
+Those symbolic names agree with the captured Zombies mode. Its executable addresses target a different build.
+Use that source as a naming inference. Verify lifecycle and dispatch against this exact executable.
+Reference: https://raw.githubusercontent.com/joseupp/t7x/main/src/client/game/structs.hpp
+
+Valve documents that SteamAPI_RestartAppIfNecessary can relaunch the installed game outside a debugger.
+A Steam launch supplies application context. A running Steam process alone does not prove that context.
+Valve also documents steam_appid.txt for development, but no such file or launch setting was added here.
+Reference: https://partner.steamgames.com/doc/sdk/api
+
+Remaining integration
+
+Peyton clarified that he plays Zombies. Use an optional enhanced launcher and retain the stock launch.
+The native bridge now admits server state only in Zombies when its ZombiesOnly policy is selected.
+Other modes are refused before pool or stream access. The client codec remains unchanged.
+Eleven owned E2E groups pass, including signed nonzero mode values and unchanged refused state.
+This guards this serializer. Native mode selection and earlier persistent-file creation remain unvalidated.
+Bind larger migration buffers and peer admission before allowing an expanded state transfer.
+Verify the native compression, bounds, deadlines, and receiver path.
+Resolve a supported Steam launch route and validate debugger tolerance without protection bypasses.
+Then test full AAE, ordinary maps, host/join, matching peers, removal, and repeated volleys.
+The VM expansion and 200-actor expansion remain unavailable for normal deployment.
+
+Buffer allocation replay follow-up
+
+source/tests/vm-pool/NativeMigrationBuffers.py executes the captured initializer with owned allocator and clear callbacks.
+Four stock-mode cases and two expanded-buffer cases pass.
+Modes zero and one request two zero-size local buffers and one 2.5 MiB server buffer.
+Mode two requests two 2.5 MiB local buffers and two 4.5 MiB server buffers.
+Invalid mode three publishes no returned buffer pointers.
+The experimental count instruction requests 32 MiB and publishes the same server capacity.
+That instruction serves both zero and one. Enhanced sessions must remain restricted to Zombies.
+The replay verifies pointer publication and all local sizes. It does not allocate through the actual game arena.
+The proposed server buffer fits the reviewed positive block-index range.
+Native compression, variable payload bounds, sender/receiver behavior, deadlines, and peer admission remain unresolved.
+Private buffer-replay-20261008/result.json contains all six cases and source identity.
+No expanded buffer was applied to the working game or a native game process.
+
+Migration admission and checked plan follow-up
+
+source/patches/vm_migration now supplies the native admission bridge and pure typed MigrationPlan builder.
+The plan admits only 500,001 total server slots, eighteen roots, and a 32 MiB buffer.
+It returns sixteen checked edits with 168 POD bytes and eight nearby indirect relays.
+Six native entry hooks cover mhead, mdata, mhack, header sending, full load and migration-only compressed flush.
+The remaining hooks replace the qualified mhead ACK call and the loader's version comparison.
+The buffer instruction and emitted header version also change in the same stopped transaction.
+The exact inventory records original bytes, continuation addresses, helper layouts and native code hashes.
+
+The native mhead handler at 13619e0 copies twenty-four header bytes after publishing its existing buffer capacity.
+It does not allocate from the supplied header size. It returns an empty mhack at CALL 1361a50.
+The native mhack handler at 21f9aa0 ignores message payload and tails into mdata startup only after peer and phase checks.
+The new handler requires an exact enhanced-format DWORD before invoking those original checks.
+Thus a selected stock receiver cannot authorize expanded blocks with its empty acknowledgement.
+The patched receiver retains stock version-three import and its original empty acknowledgement.
+The full-loader wrapper checks header size and format before native MemFile initialization.
+The comparison thunk accepts legacy three or the configured enhanced format, preserving all integer registers and stack.
+
+The captured compressed flush at 2277a60 checks written bytes against total capacity.
+It then reserves four prefix bytes without first checking that four remain.
+A replay with three remaining bytes and an owned compressor that writes nothing still changes one byte beyond declared capacity.
+The migration-only guard rejects that case before prefix or compressor writes.
+It sets the existing overflow flag at object offset 2d and clears the buffered count at offset 18.
+The native migration start path uses that same global write object and checks its overflow flag at 21fa3e5.
+Its overflow branch reaches native abort 21f9dd0 before migration header dispatch.
+This prevents the captured boundary overrun. It does not establish successful migration for every expanded state.
+
+Thirty-seven compiled/captured replay cases pass.
+They retain native selected-peer checks and signed block-index, payload-length and capacity checks.
+Four cases execute the actual native compressor with repetitive or literal data and sufficient or insufficient output capacity.
+The initial exploratory probe incorrectly cleared EAX in its owned security-cookie return stub.
+Preserving EAX fixed that fixture. Actual successful compressed sizes are eleven and 122 bytes for the two 120-byte inputs.
+These small cases validate bounded compressor behavior, not full script-state compression or a worst-case migration size.
+
+Eight owned native admission groups and three composed-plan groups also pass.
+Windows RtlVirtualUnwind checks cover modified-stack reentries, including their branch instructions and ACK epilogues.
+The composed fixture combines the core native plan with migration in one real PausedPatch transaction.
+It verifies preflight refusal, exact rollback, restored memory protections and reversible removal.
+Private vm-migration-sol/migration-plan-protection-receipt contains before/applied/restored snapshots and the hashed receipt.
+Its plan-addresses file records each original and restored memory protection.
+Private vm-migration-sol/native-admission-final contains all thirty-seven replay traces and source identities.
+
+The codec's 500k scalar stream contains 23,500,000 bytes before compression.
+The native compressor's conservative block bound is input plus floor(input/255) plus sixteen bytes.
+Each compressed memory-file block also has a four-byte length prefix.
+Strings, suspended stacks and whole-state tails add data. No complete bound or whole-state compressed roundtrip exists yet.
+The one-million-slot scalar stream contains 47,000,000 raw bytes. The checked migration plan refuses that capacity.
+Native transfer deadlines and stock-peer selection/retry behavior still require evidence.
+No game, network session, installation, profile or Steam configuration changed during this work.

@@ -1,0 +1,61 @@
+Quiet activation plumbing: failure cases and bounded contract
+2026-10-07. Written before the native fixture and production adapters.
+
+Scope
+Use Windows SDK interfaces with owned memory providers only.
+Cover MMDeviceEnumerator to default Device to AudioClient to render and session services.
+Cover DirectSound8 to a secondary base buffer to private Buffer8 QueryInterface and the existing quiet leaf.
+Do not call hardware factories, change volume, intercept DLLs, inject, or launch BO3.
+Do not implement loader timing in this task.
+Keep new outputs outside the repository before compiler discovery and directory creation.
+
+Failure cases
+1. The first factory result reaches the consumer before its adapter exists.
+2. GetService publishes a raw render service or CreateSoundBuffer publishes a raw buffer before clearing it.
+3. Repeated root, default-device, service, or QueryInterface calls create inconsistent COM identities.
+4. A render or session service shares the AudioClient identity and receives an unrelated wrapper identity.
+5. Separate render and session objects are forced into the AudioClient identity.
+6. The DirectSound factory reinterprets a base buffer as Buffer8 instead of using QueryInterface.
+7. A failed root factory, Activate, Initialize, or GetService changes its HRESULT or publishes a stale pointer.
+8. A failed Buffer8 QueryInterface or initial ring clear returns into the verified native-style null-Release branch.
+9. Unknown audio interfaces, primary/effect buffers, or duplicates escape as raw audible objects.
+10. A callback receives a changed identity, registration count, HRESULT, or thread.
+11. Callback reentrancy deadlocks a registry lock, duplicates preparation, or returns a partly built object.
+12. Native-style teardown registration is silently changed to Unregister.
+13. Endpoint change creates an unprotected client generation or changes notification ownership.
+14. A service dies when its parent client releases, despite an outstanding service reference.
+15. A live adapter or callback-owned adapter allows an unload decision.
+16. Allocation failure publishes a raw fallback or leaks an adapter, provider, or callback.
+17. A reused or already adapted object is cleared again while it plays.
+18. An object-creation race or circular creation publishes an incomplete interface family.
+19. Non-audio COM creation changes, including the known video decoder class.
+20. Restore exposes recreated DirectSound samples before a quiet leaf permits Play.
+21. Event traces omit generation IDs or hide a raw output-interface publication.
+22. The fixture sends nonzero samples to a real endpoint or writes evidence inside the public repository.
+23. An outside directory junction targets the repository and bypasses a lexical output-path check.
+
+Physical output guard follow-up
+The focused whole-harness reproduction confirmed case 23 before this guard change.
+The private repository alias passed the old check and reached compiler discovery.
+The child process used a private empty compiler root, so no compiler or repository output ran.
+Resolve existing path components and directory links before comparing repository and output paths.
+Use the resolved output path for all artifact writes.
+Rerun only focused output rejection checks after this change.
+Do not repeat the unchanged twelve native activation scenarios.
+
+Native E2E plan
+Write owned providers and consumer scenarios before production adapters.
+Run an unprotected baseline that shows nonzero first render packets and DirectSound output.
+Then test the same consumers through the activation boundary and existing quiet leaves.
+Record deterministic events, generation IDs, publication checks, callback lifetimes, errors, and object lifetimes.
+Represent the unsafe native-style cleanup path, but require controlled abort before that branch executes.
+Keep one canonical adapter family per provider IUnknown identity.
+Treat shared and separate AudioClient/service identities as distinct tested provider layouts.
+Do not claim Windows driver compatibility, real interception, game silence, or safe stock failure recovery.
+
+References
+https://learn.microsoft.com/en-us/windows/win32/api/audioclient/nf-audioclient-iaudioclient-getservice
+https://learn.microsoft.com/en-us/windows/win32/api/mmdeviceapi/nf-mmdeviceapi-immdevice-activate
+https://learn.microsoft.com/en-us/windows/win32/com/rules-for-implementing-queryinterface
+https://learn.microsoft.com/en-us/previous-versions/windows/desktop/ee418039(v=vs.85)
+https://learn.microsoft.com/en-us/previous-versions/windows/desktop/ee416841(v=vs.85)

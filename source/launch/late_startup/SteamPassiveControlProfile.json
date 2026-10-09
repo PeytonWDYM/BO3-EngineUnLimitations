@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "status": "diagnostic",
+  "startupMethod": "late-crt-passive-control",
+  "gateDeadlineMs": 30000,
+  "diagnosticDeadlineMs": 120000,
+  "successfulGameLifetime": "owned-120-second-observation",
+  "serverUsableSlots": 129999,
+  "vmMigrationEdits": 0,
+  "relayAllocations": 0,
+  "debugRegisterWrites": 0,
+  "debuggerAttachment": false,
+  "readsSequential": true,
+  "allThreadsStopped": false,
+  "expandedPoolEnrollment": false,
+  "transactionEntryPoint": "SteamPassiveControl.py",
+  "gameSha256": "0b874dcc250848b7313ec13a0c76468dacc2009b5efa2bff4c587e169a9f77e0",
+  "nativeBuildReceiptSha256": "7146095cf74dcbe5816315bad5d5a1a659a751a02b752ade8b3585c574c7a727",
+  "nativeResultSha256": "fe5a5e58925f9f78cf267b08b52eea9a700785c1ab4e1f040c42518391435f78",
+  "nativeImportsSha256": "a1adfc5e24c61196b86716326bcb3f59dd3577beafe9ec661bbe619baf2e1d83",
+  "nativeReviewSha256": "7a700089a6243b71f9a507b23a53090c4d6fa22a5133a6e20632dc5307df98fa",
+  "sharedSetupSha256": "03ecc84ace7e1d682b949c6407d46ee6ab0227f5f2fed131ef39478db12fcf61",
+  "sharedSources": {
+    "steam_launch.py": "24b6d9696bba2427e93039f2d0b564fb0bd30b980427243ae477f22e83425674",
+    "coordination.py": "bb3ff29faa487a9de8e15b7d76524ff37161e92561fba5e1ac44d7fe3090bb69",
+    "vdf_span.py": "921cd34d5e1ca0fbcfd53a88b889fb52129c3cc90d983357ad9ee393aaf87cd5",
+    "paths.py": "cff3d7de09698c8796fbf74e661a3522367233abadc84a7776ec1e6825d42e7e",
+    "storage.py": "3acfa29ae028fbf79ce694e73a21e6b54596f5edfa57099d12a2a1d1f4c232bd",
+    "windows.py": "a02c1fb10262e2804574b225e351079eb0291867c9e69e552246c55e176cf52f",
+    "engine.py": "370c2b2ba089eaf79a78f7058f5af6145f651d61270a6f6709ac9dd7cd4a3656",
+    "errors.py": "8ac70f88558ca98d0dc2112507d8fdfae449bb50165292d2dcd1857fb04f0272",
+    "enhanced_launch.py": "15f84e89722a2d609db25572986f1a2812eafd4c12b58f0d4c20032555f99c17",
+    "__init__.py": "32ac31305ed720e3f1b299fb7f64f39cc104a31fea4350d8901144ea44359980"
+  },
+  "files": {
+    "BO3-Late-Passive-Control.exe": "6e11001386a191af72001572fc1a2d9140ef5541db8fc5b98ccd5abf7f18cd0b",
+    "Bo3EnhancedHelper.dll": "09b947ba384837853d5f4061a8fc3e2b61dee6b2663a751d6e7a2fb974c803c1",
+    "Bo3StartupGate.dll": "d24f274e847c63015b24a513a202815b4e0ef6bd1078a9b73ae6aec1c71bd8ca",
+    "Detours-LICENSE.md": "f854ae8aabc0404652b48a2b3bf7f21ec174c69d73f5596934c20884eb0639ef"
+  }
+}

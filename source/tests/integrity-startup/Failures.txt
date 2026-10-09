@@ -1,0 +1,26 @@
+Write these cases before the optional route.
+
+1. A fixed native plan with fewer than 42 edits refuses before publication.
+2. Integrity preparation refuses after relay allocation. The relay is freed under the freeze.
+3. An incomplete integrity plan refuses before any engine or helper edit.
+4. An integrity edit overlaps a native edit. Combined admission refuses all writes.
+5. An integrity edit has an incorrect original. Combined admission refuses all writes.
+6. A frozen primary frame intersects an integrity edit. Frame admission refuses all writes.
+7. A complete combined plan publishes every native and integrity edit in one transaction.
+8. A failure after apply restores every native and integrity byte and memory protection.
+9. A partial publication failure restores the native prefix before the child is terminated.
+10. A rollback write failure keeps the child frozen until owned-job termination.
+11. A thaw or gate-release failure contains the committed child without another apply.
+12. A receipt uses the new method and fixed profile counts. The old method remains unchanged.
+13. Deadline and sole-primary admission failures refuse before integrity preparation.
+14. The real module admits an authored MEM_IMAGE profile under the same job freeze.
+15. The real module refuses a wrong file digest before any native publication.
+16. The real module refuses a changed guard before any native publication.
+17. A later failure restores the real module edits and the complete native recipe together.
+
+The fixture uses the reviewed owned target, full native guards and runtime unwind.
+Its integrity endpoints are inert owned bytes. It does not validate game evaluator semantics.
+Early preparation failures prove zero writes and owned-child containment.
+Their local relay cleanup has source RAII evidence only. The receipt does not retain that relay address.
+Rollback and partial-write cases directly observe relay removal before child containment.
+Save original, applied and restored byte files, process-bound receipts, and dependency hashes.

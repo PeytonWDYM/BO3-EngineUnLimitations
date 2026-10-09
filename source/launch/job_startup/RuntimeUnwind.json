@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "imageSha256": "0b874dcc250848b7313ec13a0c76468dacc2009b5efa2bff4c587e169a9f77e0",
+  "timestamp": 1765634846,
+  "imageSize": 494186496,
+  "sourceDumpSha256": "80cdba63531333fbd243cd94d50015abc683da2ae427a2799514fe36c7f9e5ef",
+  "source": "Verified passive PID 65632 runtime snapshot, 2026-10-08T18:10:23.036Z. Native primary unwind reaches outer CRT then BaseThreadInitThunk. These guards describe metadata, not live allocation.",
+  "guards": [
+    {"tableRva": 445526400, "begin": 46014496, "end": 46014540, "unwindRva": 52711756, "info": "0107020007011300", "code": "4881ec98000000488d4c2420ff15327de817f644245c010fb74c2460b80a0000000f45c14881c498000000c3"},
+    {"tableRva": 445524228, "begin": 45957392, "end": 45957771, "unwindRva": 52707676, "info": "090f06000f640a000f3409000f520b70545bbc02", "code": "48895c24104889742418574883ec30e8fcde0000"}
+  ]
+}

@@ -2,8 +2,9 @@
 /build/
 /out/
 /dist/
-/bin/
-/obj/
+bin/
+obj/
+/artifacts/
 .cache/
 .vs/
 *.obj
@@ -18,11 +19,33 @@
 *.pch
 *.ipch
 *.idb
+*.class
+*.nupkg
+*.snupkg
+__pycache__/
+*.py[cod]
+.venv/
 
 # Logs and crash dumps
 *.log
 *.dmp
 *.mdmp
+
+# Game and Workshop payloads
+*.ff
+*.xpak
+*.iwd
+*.gscc
+*.cscc
+*.bin
+
+# Private Steam configuration and downloaded archives
+*.vdf
+*.acf
+*.zip
+*.7z
+*.tar.gz
+*.tar.xz
 
 # Local environment settings
 .env
@@ -33,3 +56,9 @@
 .DS_Store
 Thumbs.db
 Desktop.ini
+
+# Local diagnostic evidence and downloaded tools
+/research/captures/
+/research/local/
+/tools/
+/lab/

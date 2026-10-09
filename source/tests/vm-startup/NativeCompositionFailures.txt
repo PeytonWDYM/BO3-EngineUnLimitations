@@ -1,0 +1,21 @@
+Focused native export composition failures, declared before implementation
+
+Use a fixed owned child, pre-imported helper, and owned image continuations only.
+No BO3, AAE, target game DLL or normal installation may execute or change.
+
+1. Real helper state/error exports and both zero POD bindings must exist before activation.
+2. Each original thunk must reproduce the exact captured five-byte prefix and its ABI.
+3. The insertion thunk must preserve pushed RBX across continuation and unwind correctly.
+4. A near relay must fit every signed rel32 jump; rejected allocation/ranges must write nothing.
+5. All counts, bindings, relay bytes and four entry hooks must pass original-byte checks before writes.
+6. Readiness must follow complete readback; a refusal must restore all bytes/protections and release the relay.
+7. Real server codec exports must round-trip expanded state and use the hooked insertion bridge.
+8. Client read/write must reach the static original thunks with unchanged arguments.
+9. A native decode-time non-local error must clear the real helper TLS before the next import.
+10. Returned StateError must reach the active error entry with ERR_DROP code 2.
+11. A later relocated entry detour must chain through the helper error prelude and original thunk.
+12. Static thunk and error prelude Windows unwind metadata must match their actual stack effects.
+
+Record exact source/binary hashes, loader surface, entry prefixes, native receipts,
+transaction readiness/rollback, original continuation observations and unwind results.
+Owned continuation success does not prove native BO3 unwind, AAE coexistence or game activation.
