@@ -21,6 +21,7 @@ Removal restores your previous Steam launch options.
 
 This is a test release. One manual Windows session reached Zombies and verified 500,000 usable server slots.
 That session used All-around Enhancement. Stock Zombies needs a separate manual test.
+The session later had a match interruption and a native crash. Their connection to the expansion remains unresolved.
 Match stability, host migration, and hosting or joining friends still need validation.
 The client pool and actor limit retain their stock capacities.
 Expanded host migration requires matching patched clients. Matching patches alone do not prove compatibility.
