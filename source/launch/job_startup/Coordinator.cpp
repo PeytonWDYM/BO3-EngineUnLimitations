@@ -130,7 +130,7 @@ void WriteReceipt(std::ostream& out,const Receipt& r,std::string_view method) {
        <<",\"serverTotal\":500001,\"serverUsable\":500000,\"clientTotal\":65000,\"clientRoots\":18,\"stockClientRoots\":8,\"migrationBufferBytes\":33554432"
        <<",\"processId\":"<<r.processId<<",\"processCreatedFileTime\":"<<r.created<<",\"primaryThreadId\":"<<r.primaryThreadId
        <<",\"imagePath\":";JsonPath(out,r.image);
-    out<<",\"executableSha256\":\""<<kGameHash<<"\",\"helperSha256\":\""<<kHelperHash<<"\",\"gateSha256\":\""<<kGateHash<<'"'
+    out<<",\"executableSha256\":\""<<r.gameSha256<<"\",\"helperSha256\":\""<<kHelperHash<<"\",\"gateSha256\":\""<<kGateHash<<'"'
        <<",\"generation\":"<<r.generation<<",\"imageBase\":"<<r.patch.imageBase<<",\"helperBase\":"<<r.helperBase<<",\"gateBase\":"<<r.gateBase
        <<",\"jobOwned\":"<<yes(r.jobAssigned)<<",\"jobParentOnly\":true,\"killOnJobClose\":true"
        <<",\"freezeAttempted\":"<<yes(r.freezeAttempted)<<",\"freezeStatus\":"<<r.freezeStatus<<",\"frozenForTransaction\":"<<yes(r.frozen)

@@ -8,7 +8,7 @@ namespace {PrepareChecksum ownedPrepare;}
 void SetOwnedPrepareChecksum(PrepareChecksum prepare){ownedPrepare=std::move(prepare);}
 #endif
 void Coordinate(late_startup::OwnedChild& child,job_startup::OwnedJob& job,late_startup::MappedGate& gate,
-    const late_startup::PreparePlan& prepare,const std::array<unsigned char,32>& digest,Receipt& receipt) {
+    const late_startup::PreparePlan& prepare,Receipt& receipt) {
     const auto combined=[&](HANDLE process,std::uintptr_t image,vm_startup::Receipt& patchReceipt) {
         auto plan=prepare(process,image,patchReceipt);
         Require(plan.edits.size()==kNativeEdits && plan.relay && !plan.commitResources,
@@ -16,9 +16,9 @@ void Coordinate(late_startup::OwnedChild& child,job_startup::OwnedJob& job,late_
         auto checksum=[&] {
             try {
 #ifdef BO3_EARLY_OWNED_TEST
-                return ownedPrepare(process,image,digest,plan.edits);
+                return ownedPrepare(process,image,plan.edits);
 #else
-                return early_integrity::PrepareStopped(process,image,digest,plan.edits);
+                return early_integrity::PrepareStopped(process,image,plan.edits);
 #endif
             }catch(const early_integrity::ContextMismatch& error){receipt.checksumCapture=error.capture;throw;}
         }();

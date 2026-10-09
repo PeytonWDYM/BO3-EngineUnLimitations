@@ -25,8 +25,10 @@ This is a test release. One manual Windows session reached Zombies and verified 
 The client pool and actor limit retain their stock capacities.
 Expanded host migration requires matching patched clients. Matching patches alone do not prove compatibility.
 
-The current profile accepts only the executable from Steam depot `311211`, manifest `7651791086710252932`.
-Its SHA-256 is `0b874dcc250848b7313ec13a0c76468dacc2009b5efa2bff4c587e169a9f77e0`.
+The current profile accepts the build from Steam depot `311211`, manifest `7651791086710252932`.
+That build has PE timestamp `1765634846` and image size `494186496`.
+Any copy of that build is accepted, whatever its SHA-256. Copies can differ outside the code, such as in the signature.
+Before any write, the launcher checks the game's code in memory and refuses a copy whose code differs.
 The package includes no game executable or downgrade files.
 Other versions, including future updates, require separately verified native profiles.
 The installer and launcher refuse unknown versions before patch writes.
@@ -82,6 +84,9 @@ pwsh -NoProfile -File source/tests/vm-migration/Build-Admission.ps1 -OutputDirec
 
 The scripts look for msvc-wine in `~/msvc`. Set `MSVC_ROOT` to use another folder, and `WINE` to use another Wine binary.
 Test programs run through Wine.
+
+`source/tests/game-identity/Test-LauncherIdentity.py` runs a built launcher through Wine against private copies of your game executable.
+It checks that copies of the profiled build are admitted and other builds are refused before launch. Use a private `WINEPREFIX`.
 
 The setup executable needs a Windows Python 3.12 or later installed in a Wine prefix.
 Pass its `python.exe`. The installer E2E runs with the host `python3`.

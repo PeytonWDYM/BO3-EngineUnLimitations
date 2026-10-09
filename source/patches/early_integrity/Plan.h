@@ -34,9 +34,8 @@ struct PreparedPlan {
     std::vector<vm_startup::AddressEdit> edits;
     std::shared_ptr<RelayArena> arena;
 };
-// Reads every image guard before allocation. The caller verifies and locks the file.
+// Reads every image guard before allocation. The caller checks the build and locks the file.
 PreparedPlan PrepareStopped(HANDLE process, std::uintptr_t imageBase,
-    const std::array<unsigned char,32>& verifiedExecutableDigest,
     std::span<const vm_startup::AddressEdit> existingEdits);
 // Fixed MOV/LEA/JMP encoding. No stack pointer changes, callbacks, or runtime decoder.
 std::array<unsigned char,kRelayStride> EncodeRelay(const Site& site,

@@ -13,11 +13,11 @@ struct Receipt {
     std::vector<unsigned char> checksumCapture;
 };
 void Coordinate(late_startup::OwnedChild&,job_startup::OwnedJob&,late_startup::MappedGate&,
-    const late_startup::PreparePlan&,const std::array<unsigned char,32>& verifiedDigest,Receipt&);
+    const late_startup::PreparePlan&,Receipt&);
 void WriteReceipt(std::ostream&,const Receipt&);
 #ifdef BO3_EARLY_OWNED_TEST
 using PrepareChecksum=std::function<early_integrity::PreparedPlan(HANDLE,std::uintptr_t,
-    const std::array<unsigned char,32>&,std::span<const vm_startup::AddressEdit>)>;
+    std::span<const vm_startup::AddressEdit>)>;
 void SetOwnedPrepareChecksum(PrepareChecksum);
 #endif
 }

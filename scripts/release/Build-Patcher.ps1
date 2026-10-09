@@ -9,7 +9,7 @@ if ((Test-Path -LiteralPath $build) -or (Test-WithinPath $build $repo)) { throw 
 # The setup executable is a Windows program, so Linux builds run a Windows python.exe through Wine.
 if (!$IsWindows -and !$Python.EndsWith('.exe',[StringComparison]::OrdinalIgnoreCase)) { throw 'On Linux, pass the Windows python.exe that Wine runs.' }
 $manifest=Get-Content -LiteralPath (Join-Path $repo 'source/release.json') -Raw | ConvertFrom-Json
-if ($manifest.schemaVersion -ne 1 -or $manifest.builds.Count -ne 1) { throw 'This builder requires one complete verified native profile.' }
+if ($manifest.schemaVersion -ne 2 -or $manifest.builds.Count -ne 1) { throw 'This builder requires one complete verified native profile.' }
 $profile=$manifest.builds[0]
 foreach ($entry in $profile.files.PSObject.Properties) {
     if ((Get-FileHash -LiteralPath (Join-Path $NativeBuild $entry.Name)).Hash.ToLowerInvariant() -ne $entry.Value) { throw "The verified native file differs: $($entry.Name)" }

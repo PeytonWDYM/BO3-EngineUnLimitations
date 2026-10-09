@@ -20,7 +20,8 @@ int wmain(int argc,wchar_t** argv) {
         const auto helperFile=std::filesystem::canonical(directory/L"Bo3EnhancedHelper.dll");
         const auto gateFile=std::filesystem::canonical(directory/L"Bo3StartupGate.dll");
         Locks locks;locks.values.reserve(3);
-        VerifyFile(game,kGameHash,locks.values);VerifyFile(helperFile,kHelperHash,locks.values);
+        const auto gameSha256=VerifyGameBuild(game,kGameTimestamp,kGameImageSize,locks.values);
+        VerifyFile(helperFile,kHelperHash,locks.values);
         VerifyFile(gateFile,kGateHash,locks.values);
         bo3::enhanced::MappedHelper helper(helperFile);bo3::late_startup::MappedGate gate(gateFile);
         auto command=bo3::late_startup::QuoteArgument(game.wstring());
@@ -28,10 +29,11 @@ int wmain(int argc,wchar_t** argv) {
         const std::array<std::filesystem::path,2> helpers{helperFile,gateFile};
         bo3::job_startup::OwnedJob job;bo3::late_startup::OwnedChild child(game,std::move(command),helpers);job.Assign(child);
         bo3::late_startup::PrivateReceipt report(child);bo3::early_startup::Receipt receipt;
+        receipt.job.gameSha256=gameSha256;
         const auto prepare=[&](HANDLE process,std::uintptr_t image,vm_startup::Receipt&) {
             return bo3::late_startup::PrepareFixedPlan(process,image,helper,helperFile);
         };
-        try {bo3::early_startup::Coordinate(child,job,gate,prepare,kVerifiedGameDigest,receipt);report.Write(receipt);}
+        try {bo3::early_startup::Coordinate(child,job,gate,prepare,receipt);report.Write(receipt);}
         catch(...) {report.Write(receipt);throw;}
         std::wcout<<L"500K startup patch committed. Load full AAE and select Zombies. Receipt: "<<report.Path().wstring()<<L'\n';
         Require(WaitForSingleObject(child.process.hProcess,INFINITE)==WAIT_OBJECT_0,"Cannot retain the owned game lifetime.");

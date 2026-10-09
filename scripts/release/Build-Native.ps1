@@ -44,11 +44,11 @@ try {
     & $Python -B (Join-Path $repo 'source/patches/early_integrity/Generate-Profile.py') --output (Join-Path $build 'EarlyIntegrityProfile.h')
     if ($LASTEXITCODE -ne 0) { throw 'Checksum profile generation failed.' }
     $manifest=Get-Content -LiteralPath (Join-Path $repo 'source/release.json') -Raw | ConvertFrom-Json
-    $gameHash=$manifest.builds[0].gameSha256
+    $gameTimestamp=[uint32]$manifest.builds[0].gameTimestamp
+    $gameImageSize=[uint32]$manifest.builds[0].gameImageSize
     $helperHash=(Get-FileHash -LiteralPath (Join-Path $build 'Bo3EnhancedHelper.dll')).Hash.ToLowerInvariant()
     $gateHash=(Get-FileHash -LiteralPath (Join-Path $build 'Bo3StartupGate.dll')).Hash.ToLowerInvariant()
-    $digest=[Convert]::FromHexString($gameHash)
-    @('#pragma once','#include <array>','constexpr wchar_t kRepositoryRoot[]=L".";',"constexpr char kGameHash[]=`"$gameHash`";","constexpr char kHelperHash[]=`"$helperHash`";","constexpr char kGateHash[]=`"$gateHash`";",'constexpr std::array<unsigned char,32> kVerifiedGameDigest{'+(($digest | ForEach-Object {'0x'+$_.ToString('x2')}) -join ',')+'};') | Set-Content -LiteralPath (Join-Path $build 'BuildIdentity.h') -Encoding ascii
+    @('#pragma once','#include <cstdint>','constexpr wchar_t kRepositoryRoot[]=L".";',"constexpr std::uint32_t kGameTimestamp=$gameTimestamp;","constexpr std::uint32_t kGameImageSize=$gameImageSize;","constexpr char kHelperHash[]=`"$helperHash`";","constexpr char kGateHash[]=`"$gateHash`";") | Set-Content -LiteralPath (Join-Path $build 'BuildIdentity.h') -Encoding ascii
     $launcher=@('OwnedChild','MappedGate','FixedPlan','PrivateReceipt') | ForEach-Object {Join-Path $repo "source/launch/late_startup/$_.cpp"}
     $launcher+=@('Coordinator','OwnedJob','PrimaryAdmission','RuntimeUnwind') | ForEach-Object {Join-Path $repo "source/launch/job_startup/$_.cpp"}
     $launcher+=@('NativeJobFreeze','NativeState') | ForEach-Object {Join-Path $repo "source/launch/process_freeze/$_.cpp"}
@@ -62,5 +62,5 @@ try {
     Copy-Item -LiteralPath (Join-Path $DetoursRoot 'LICENSE.md') -Destination (Join-Path $build 'Detours-LICENSE.md')
     & $Python -B (Join-Path $repo 'source/launch/early_startup/Audit-Artifact.py') --directory $build
     if ($LASTEXITCODE -ne 0) { throw 'Native artifact audit failed.' }
-    @{status='unvalidated-source-build';gameSha256=$gameHash;serverUsableSlots=500000;files=@(Get-ChildItem -LiteralPath $build -File | Where-Object Extension -in @('.exe','.dll') | Get-FileHash | Select-Object Path,Hash)} | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $build 'build-receipt.json') -Encoding utf8
+    @{status='unvalidated-source-build';gameTimestamp=$gameTimestamp;gameImageSize=$gameImageSize;serverUsableSlots=500000;files=@(Get-ChildItem -LiteralPath $build -File | Where-Object Extension -in @('.exe','.dll') | Get-FileHash | Select-Object Path,Hash)} | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $build 'build-receipt.json') -Encoding utf8
 } finally { $env:INCLUDE=$savedInclude; $env:LIB=$savedLib }

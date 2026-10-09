@@ -19,6 +19,7 @@ struct Receipt {
     std::uintptr_t unwindLookupPc{};
     unsigned int runtimeMetadataReads{},runtimeMetadataMask{};
     std::wstring image;
+    std::string gameSha256;
     std::vector<std::uintptr_t> frames;
     std::vector<ThreadObservation> threads;
 };

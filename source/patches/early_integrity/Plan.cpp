@@ -151,9 +151,7 @@ std::array<unsigned char,kRelayStride> EncodeRelay(const Site& site,std::uintptr
     std::memcpy(code.data()+17,&continuation,4);
     return code;
 }
-PreparedPlan PrepareStopped(HANDLE process,std::uintptr_t imageBase,
-    const std::array<unsigned char,32>& digest,std::span<const vm_startup::AddressEdit> existingEdits) {
-    Require(digest==kExecutableDigest,"Early integrity executable identity differs.");
+PreparedPlan PrepareStopped(HANDLE process,std::uintptr_t imageBase,std::span<const vm_startup::AddressEdit> existingEdits) {
     Require(imageBase && imageBase<=UINTPTR_MAX-kImageSize-static_cast<std::uintptr_t>(INT32_MAX),"Early integrity image address overflows.");
     SYSTEM_INFO system{};GetSystemInfo(&system);
     Require(system.dwPageSize==4096 && imageBase%system.dwPageSize==0,"Early integrity page layout differs.");
