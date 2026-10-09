@@ -83,14 +83,18 @@ def inspect(instance: Instance, state: dict, pool: bytes | None, error: dict):
                      "deferredCount": len(deferred)}
 
 
-def sample(process, profile, instances, attempts):
+def sample(process, profile, instances, attempts, *, enhanced_session=None):
     error = ""
     for attempt in range(1, attempts + 1):
         try:
+            if enhanced_session is not None:
+                enhanced_session.authorize(profile, process)
             before = metadata(process, instances)
             first = read_pools(process, instances, before)
             first_errors = [first_error(process, item["error"], profile["errorMessageMaximumBytes"]) for item in before]
             middle = metadata(process, instances)
+            if enhanced_session is not None:
+                enhanced_session.authorize(profile, process)
             second = read_pools(process, instances, middle)
             second_errors = [first_error(process, item["error"], profile["errorMessageMaximumBytes"]) for item in middle]
             after = metadata(process, instances)

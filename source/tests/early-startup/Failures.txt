@@ -1,0 +1,23 @@
+Written before the early checksum launcher implementation.
+
+The launcher must prepare the original complete 42-edit native recipe first.
+It must preserve all original comparisons and all later AAE installation sites.
+One frozen-job transaction publishes the native plan, early hooks and relay pages.
+
+1. An incomplete native recipe refuses before checksum preparation.
+2. Wrong build, checksum guards, source hooks or AAE scan bytes refuse before publication.
+3. An incomplete correction inventory frees its arena while the child stays frozen.
+4. Source/relay edits that overlap native edits or frozen frames refuse before publication.
+5. A failure during publication restores both plans and the original protections.
+6. A failure after readback rolls back both plans before arena removal under freeze.
+7. A preparation failure removes uncommitted relay resources before child containment.
+8. A successful transaction commits both arenas before the job thaws.
+9. A thaw or release failure terminates the owned child with committed arenas retained.
+10. The receipt identifies the fixed profile, arena range, exact edit count and startup method.
+11. The complete transaction stays within the existing 30-second startup deadline.
+12. The launcher imports no debugger, context-write, PSS or production fixture APIs.
+13. Existing stock launch and executable files remain separate from the optional launcher.
+
+Run only owned native targets. Save source hashes, binary hashes, publication bytes,
+rollback bytes, protection observations and process-bound receipts in a private directory.
+Owned results do not establish game startup, AAE loading, migration or peer compatibility.

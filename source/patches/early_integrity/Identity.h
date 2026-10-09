@@ -1,0 +1,14 @@
+#pragma once
+#include <array>
+#include <cstddef>
+#include <cstdint>
+
+namespace bo3::early_integrity {
+inline constexpr std::uint32_t kSiteCount=1069, kPublicationCount=1079;
+inline constexpr std::size_t kRelayStride=32, kArenaSize=36864;
+inline constexpr std::uint32_t kTimestamp=0x693d731e, kImageSize=0x1d74b000;
+inline constexpr char kProfileId[]="b79d9e3e8d257fa2df8198c11cd8fc65b6f7cff428bef7e4a7dcb3d6c3ed8093";
+inline constexpr std::array<unsigned char,32> kExecutableDigest{
+    0x0b,0x87,0x4d,0xcc,0x25,0x08,0x48,0xb7,0x31,0x3e,0xc1,0x3a,0x0c,0x76,0x46,0x8d,
+    0xac,0xc2,0x00,0x9b,0x5e,0xfa,0x2b,0xff,0x4c,0x58,0x7e,0x16,0x9a,0x9f,0x77,0xe0};
+}

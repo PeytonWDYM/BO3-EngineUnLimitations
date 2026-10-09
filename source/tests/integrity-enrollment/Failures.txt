@@ -1,0 +1,39 @@
+Write these refusal cases before enrollment implementation.
+
+Receipt admission:
+- Missing or stale exact-process receipt keeps stock capacity.
+- New method in legacy or late suffix refuses.
+- Old method with integrity metadata refuses the new route.
+- Wrong method, process, creation time, image base, profile or endpoint digest refuses.
+- Admission or input attribution false, missing, or integer instead of boolean refuses.
+- Missing job ownership, freeze, sole-primary, thaw, release, commit or runtime metadata refuses.
+- Wrong native, combined, pattern, endpoint or retained-transform count refuses.
+- Native serializer with false input attribution refuses before live reads.
+- Ambiguous, replaced, changed, truncated or oversized receipt refuses.
+
+Fixed profile:
+- Real BlackOps3 never accepts a supplied fixture profile or capacity inventory.
+- Fixture override must match its exact executable hash, timestamp, size and module name.
+- Invalid region, family, flags, count, overlap, width or image-address field refuses.
+- Exact public profile digest and endpoint aggregate digests must match.
+
+Live admission and normalization:
+- Check all endpoints, retained transforms, typed prefixes, source and path guards.
+- Check ASLR image-address fields before zeroing them for the original guard hash.
+- Normalize only verified patched suffix bytes. Unchanged neighboring bytes remain guarded.
+- Restored endpoint, wrong opcode, changed transform, changed source, changed flag path,
+  wrong ASLR target, unreadable guard, changed helper or changed capacity refuses.
+- Repeated reads, process identity, liveness and receipt stability must agree.
+- No refusal performs an expanded VM pool read.
+
+Ongoing monitoring:
+- Post-enrollment endpoint restoration refuses before the next expanded pool read.
+- Receipt replacement, changed profile, changed process handle or process exit refuses.
+- CodeEvidence retains stock hashes after exact endpoint and capacity normalization.
+- Old legacy, late and job admission keeps its existing behavior.
+
+Proof limits:
+- Owned executable instructions and guards are authored inert fixture bytes.
+- The native serializer is real. Synthetic success fields are not a real startup transaction.
+- The monitor opens only query and VM_READ handles. The target changes its own memory.
+- Fixture enrollment does not validate BO3 startup, live allocation, AAE, migration or multiplayer.

@@ -87,7 +87,8 @@ def main():
                             emit("process-exited")
                             break
                         read_started = time.monotonic()
-                        reports, error, used = sample(process, profile, instances, args.attempts)
+                        reports, error, used = sample(process, profile, instances, args.attempts,
+                                                      enhanced_session=enrollment)
                         read_ms = round((time.monotonic() - read_started) * 1000, 2)
                         if reports is None:
                             if not process.alive():

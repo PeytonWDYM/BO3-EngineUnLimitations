@@ -63,7 +63,13 @@ PrivateReceipt::PrivateReceipt(const OwnedChild& child) {
 PrivateReceipt::PrivateReceipt(const std::filesystem::path& directory,const OwnedChild& child){Create(directory,child);}
 #endif
 PrivateReceipt::~PrivateReceipt(){if(file_!=INVALID_HANDLE_VALUE)CloseHandle(file_);for(const auto handle:directories_)CloseHandle(handle);}
-#ifdef BO3_BINDINGS_CONTROL
+#ifdef BO3_EARLY_STARTUP
+void PrivateReceipt::Write(const early_startup::Receipt& receipt) {
+    std::ostringstream stream;early_startup::WriteReceipt(stream,receipt);
+#elif defined(BO3_INTEGRITY_STARTUP)
+void PrivateReceipt::Write(const integrity_startup::Receipt& receipt) {
+    std::ostringstream stream;integrity_startup::WriteReceipt(stream,receipt);
+#elif defined(BO3_BINDINGS_CONTROL)
 void PrivateReceipt::Write(const bindings_control::Receipt& receipt) {
     std::ostringstream stream;bindings_control::WriteReceipt(stream,receipt);
 #elif defined(BO3_JOB_CONTROL)

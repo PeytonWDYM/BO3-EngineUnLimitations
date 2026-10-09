@@ -10,6 +10,8 @@ import struct
 from typing import Protocol
 
 from profile import integer
+from integrity_evidence import IntegrityProfile, load_integrity_profile
+from early_checksum_evidence import EarlyChecksum, METHOD as EARLY_METHOD, load_early_checksum
 
 
 class Module(Protocol):
@@ -44,6 +46,7 @@ class CapacitySite:
 
 _SEAL = object()
 _LATE_HELPER_SHA256 = "09b947ba384837853d5f4061a8fc3e2b61dee6b2663a751d6e7a2fb974c803c1"
+_INTEGRITY_METHOD = "late-crt-job-freeze-code-integrity"
 
 
 class ReceiptOrigin(Enum):
@@ -68,6 +71,9 @@ class EnhancedSession:
     _process: Process = field(repr=False, compare=False)
     _profile_fingerprint: str = field(repr=False)
     _seal: object = field(repr=False, compare=False)
+    integrity: IntegrityProfile | None = field(default=None, repr=False)
+    _receipt_data: bytes = field(default=b"", repr=False)
+    early_checksum: EarlyChecksum | None = field(default=None, repr=False)
 
     def authorize(self, profile: dict, process: Process | None = None) -> None:
         if self._seal is not _SEAL or _fingerprint(profile) != self._profile_fingerprint:
@@ -77,6 +83,8 @@ class EnhancedSession:
                 or current.started_ticks != self.process_created_filetime
                 or current.module.baseaddress != self.image_base or not current.alive()):
             raise ValueError("Enhanced enrollment no longer identifies the verified process.")
+        if self.integrity is not None or self.early_checksum is not None:
+            _verify_integrity_session(self, profile, current)
 
 
 def _sites(process: Process, profile: dict, supplied: tuple[CapacitySite, ...] | None) -> tuple[CapacitySite, ...]:
@@ -130,10 +138,21 @@ def _selected_receipt(process: Process, directory: Path) -> tuple[Path, bytes, R
     return path, _receipt(path), origin
 
 
-def _session(data: bytes, process: Process, *, origin: ReceiptOrigin = ReceiptOrigin.LEGACY) -> dict:
+def _session(data: bytes, process: Process, *, origin: ReceiptOrigin = ReceiptOrigin.LEGACY,
+             integrity: IntegrityProfile | None = None, early_checksum: EarlyChecksum | None = None) -> dict:
     session = json.loads(data)
     if not isinstance(session, dict):
         raise ValueError("Enhanced session receipt must be an object.")
+    early_method = session.get("startupMethod") == EARLY_METHOD
+    if early_method != (early_checksum is not None) or (early_method and origin is not ReceiptOrigin.JOB):
+        raise ValueError("Early checksum enrollment requires its exact job receipt route.")
+    if not early_method and any(name.startswith(("checksum", "earlyChecksum")) for name in session):
+        raise ValueError("Early checksum metadata cannot use an older startup method.")
+    new_method = session.get("startupMethod") == _INTEGRITY_METHOD
+    if new_method != (integrity is not None) or (new_method and origin is not ReceiptOrigin.JOB):
+        raise ValueError("Integrity enrollment requires its exact job receipt method and route.")
+    if not new_method and any(name.startswith("integrity") for name in session):
+        raise ValueError("Integrity metadata cannot use an older startup method.")
     expected = {"schema": 1, "candidate": "0.1.0-test.3", "processId": process.pid,
                 "processCreatedFileTime": process.started_ticks, "imageBase": process.module.baseaddress,
                 "serverTotal": 500001, "clientTotal": 65000, "clientRoots": 18, "stockClientRoots": 8,
@@ -151,6 +170,31 @@ def _session(data: bytes, process: Process, *, origin: ReceiptOrigin = ReceiptOr
                      "threadsObserved": 1, "attached": False, "detached": False,
                      "debugRegisterWrites": 0, "liveAllocationValidated": False,
                      "terminated": False, "rollbackCompleted": False, "generation": 1}
+        if integrity is not None:
+            expected |= {"startupMethod": _INTEGRITY_METHOD, "editsWritten": 1395,
+                         "integrityProfile": integrity.digest, "integrityOriginalDigest": integrity.original_digest,
+                         "integrityReplacementDigest": integrity.replacement_digest,
+                         "integrityAdmitted": True, "integrityInputAttributionVerified": True,
+                         "integrityPatternsAdmitted": 1365, "integrityEditsPrepared": 1353,
+                         "integrityTransformsRetained": 12, "nativeEditsRequired": 42,
+                         "combinedEditsRequired": 1395, "integrityReapplication": False,
+                         "jobParentOnly": True, "killOnJobClose": True, "freezeAttempted": True,
+                         "thawAttempted": True, "cleanupFailed": False, "relayFreed": False,
+                         "runtimeMetadataMask": 3, "stage": "released", "refusalReason": "", "unwindReason": "",
+                         "executableSha256": process.sha256}
+            if not integrity.attribution_verified:
+                raise ValueError("The fixed integrity profile has no verified input attribution.")
+        if early_checksum is not None:
+            expected |= {"startupMethod": EARLY_METHOD, "editsWritten": 1121,
+                         "earlyChecksumProfile": early_checksum.digest, "checksumAdmitted": True,
+                         "checksumSitesRequired": 1069, "checksumEditsPrepared": 1079,
+                         "checksumArena": early_checksum.arena, "checksumArenaBytes": 36864,
+                         "nativeEditsRequired": 42, "combinedEditsRequired": 1121,
+                         "checksumReapplication": False, "aaeStoreSitesPreserved": True,
+                         "jobParentOnly": True, "killOnJobClose": True, "freezeAttempted": True,
+                         "thawAttempted": True, "cleanupFailed": False, "relayFreed": False,
+                         "runtimeMetadataMask": 3, "stage": "released", "refusalReason": "", "unwindReason": "",
+                         "executableSha256": process.sha256}
     else:
         expected |= {"status": "ready", "activated": True}
     for name, value in expected.items():
@@ -168,6 +212,25 @@ def _session(data: bytes, process: Process, *, origin: ReceiptOrigin = ReceiptOr
     elif origin is ReceiptOrigin.JOB:
         integer(session["primaryThreadId"], "primary thread ID", 1, 0xFFFFFFFF)
         integer(session["gateBase"], "gate base", 1, (1 << 64) - 1)
+        if integrity is not None or early_checksum is not None:
+            integer(session["runtimeMetadataReads"], "runtime unwind metadata reads", 4, 64)
+            for name in ("primaryPc", "relay"):
+                integer(session[name], name, 1, (1 << 64)-1)
+            frames = session["frames"]
+            if not isinstance(frames, list) or not 1 <= len(frames) <= 64:
+                raise ValueError("Integrity enrollment requires the recorded native wait frames.")
+            for frame in frames:
+                integer(frame, "native wait frame", 1, (1 << 64)-1)
+            observations = session["threadObservations"]
+            if not isinstance(observations, list) or len(observations) != 1:
+                raise ValueError("Integrity enrollment requires one native primary observation.")
+            observation = observations[0]
+            if observation["threadId"] != session["primaryThreadId"] or observation["pc"] != session["primaryPc"]:
+                raise ValueError("The integrity primary observation differs from its receipt.")
+            integer(observation["threadId"], "observed primary thread", 1, 0xFFFFFFFF)
+            integer(observation["start"], "observed primary entry", 1, (1 << 64)-1)
+            if Path(session["imagePath"]).resolve() != process.path.resolve():
+                raise ValueError("The integrity receipt executable path differs.")
     if session.get("exited", False) is not False or session.get("rollbackCompleted", False) is not False:
         raise ValueError("Enhanced session receipt records exit or rollback.")
     return session
@@ -185,6 +248,8 @@ def _helper(process: Process, profile: dict, session: dict, *, late: bool = Fals
     expected_hash = evidence["sha256"]
     if not isinstance(expected_hash, str) or len(expected_hash) != 64 or digest != expected_hash.casefold():
         raise ValueError("The enhanced helper file differs from the reviewed identity.")
+    if session.get("startupMethod") in (_INTEGRITY_METHOD, EARLY_METHOD) and session["helperSha256"] != digest:
+        raise ValueError("The integrity receipt helper hash differs from its loaded helper.")
     if (late and (profile["status"] != "fixture-only" or process.path.name.casefold() == "blackops3.exe")
             and digest != _LATE_HELPER_SHA256):
         raise ValueError("Late enrollment requires the deployed original VM helper.")
@@ -211,7 +276,9 @@ def _runtime(process: Process, profile: dict, helper: Module, sites: tuple[Capac
 
 
 def resolve_enhanced_session(process: Process, profile: dict, sessions_directory: Path | None = None,
-                             *, capacity_sites: tuple[CapacitySite, ...] | None = None) -> EnhancedSession | None:
+                             *, capacity_sites: tuple[CapacitySite, ...] | None = None,
+                             integrity_profile: Path | None = None,
+                             early_checksum_profile: Path | None = None) -> EnhancedSession | None:
     """Call after VerifiedProcess admission. Missing exact receipt means a stock session.
 
     Every existing but invalid/non-ready receipt refuses enrollment. No expanded pool is read.
@@ -223,19 +290,43 @@ def resolve_enhanced_session(process: Process, profile: dict, sessions_directory
     if selected is None:
         return None
     path, before, origin = selected
-    session = _session(before, process, origin=origin)
+    parsed = json.loads(before)
+    integrity = (load_integrity_profile(process, profile, integrity_profile)
+                 if isinstance(parsed, dict) and parsed.get("startupMethod") == _INTEGRITY_METHOD else None)
+    early = (load_early_checksum(process, profile, parsed, early_checksum_profile)
+             if isinstance(parsed, dict) and parsed.get("startupMethod") == EARLY_METHOD else None)
+    session = _session(before, process, origin=origin, integrity=integrity, early_checksum=early)
     sites = _sites(process, profile, capacity_sites)
     helper = _helper(process, profile, session, late=origin is not ReceiptOrigin.LEGACY)
     first = _runtime(process, profile, helper, sites)
+    publication = early if early is not None else integrity
+    integrity_first = publication.verify(process) if publication is not None else None
     if (first != _runtime(process, profile, helper, sites)
+            or (publication is not None and integrity_first != publication.verify(process))
             or _selected_receipt(process, directory) != selected or not process.alive()):
         raise ValueError("Enhanced evidence changed during enrollment.")
     return EnhancedSession(process.pid, process.started_ticks, process.module.baseaddress, helper.baseaddress,
-                           path, sites, process, _fingerprint(profile), _SEAL)
+                           path, sites, process, _fingerprint(profile), _SEAL, integrity, before, early)
+
+
+def _verify_integrity_session(enrollment: EnhancedSession, profile: dict, process: Process) -> None:
+    selected = _selected_receipt(process, enrollment.receipt_path.parent)
+    if selected is None or selected[0] != enrollment.receipt_path or selected[1] != enrollment._receipt_data:
+        raise ValueError("The enrolled integrity receipt changed.")
+    path, before, origin = selected
+    session = _session(before, process, origin=origin, integrity=enrollment.integrity, early_checksum=enrollment.early_checksum)
+    helper = _helper(process, profile, session, late=True)
+    first = _runtime(process, profile, helper, enrollment.capacity_sites)
+    publication = enrollment.early_checksum if enrollment.early_checksum is not None else enrollment.integrity
+    guards = publication.verify(process)
+    if (first != _runtime(process, profile, helper, enrollment.capacity_sites)
+            or guards != publication.verify(process)
+            or _selected_receipt(process, path.parent) != selected or not process.alive()):
+        raise ValueError("The enrolled integrity evidence changed during repeated reads.")
 
 
 def verify_code_evidence(process: Process, profile: dict, enrollment: EnhancedSession | None = None) -> None:
-    """Preserve the stock hashes; normalize only attested four-byte capacity immediates."""
+    """Preserve stock hashes; normalize attested capacity immediates and verified checksum hooks."""
     sites: tuple[CapacitySite, ...] = ()
     if enrollment is not None:
         enrollment.authorize(profile, process)
@@ -244,7 +335,7 @@ def verify_code_evidence(process: Process, profile: dict, enrollment: EnhancedSe
         if selected is None or selected[0] != enrollment.receipt_path:
             raise ValueError("The enrolled enhanced receipt route changed.")
         path, receipt_before, origin = selected
-        session = _session(receipt_before, process, origin=origin)
+        session = _session(receipt_before, process, origin=origin, integrity=enrollment.integrity, early_checksum=enrollment.early_checksum)
         helper = _helper(process, profile, session, late=origin is not ReceiptOrigin.LEGACY)
         first = _runtime(process, profile, helper, sites)
     for evidence in profile.get("codeEvidence", []):
@@ -252,6 +343,9 @@ def verify_code_evidence(process: Process, profile: dict, enrollment: EnhancedSe
         if not 0 <= start < end <= process.module.size:
             raise ValueError("Invalid native code evidence range.")
         code = bytearray(process.read(process.module.baseaddress + start, end - start))
+        if enrollment is not None:
+            publication = enrollment.early_checksum if enrollment.early_checksum is not None else enrollment.integrity
+            if publication is not None:publication.normalize(code, start)
         for site in sites:
             immediate = site.rva + site.immediate_offset
             low, high = max(start, immediate), min(end, immediate + 4)
@@ -261,6 +355,8 @@ def verify_code_evidence(process: Process, profile: dict, enrollment: EnhancedSe
         if hashlib.sha256(code).hexdigest() != evidence["sha256"].casefold():
             raise ValueError("The live native code differs from the reviewed profile.")
     if enrollment is not None:
+        if enrollment.integrity is not None or enrollment.early_checksum is not None:
+            enrollment.authorize(profile, process)
         if (first != _runtime(process, profile, helper, sites)
                 or _selected_receipt(process, path.parent) != selected or not process.alive()):
             raise ValueError("Enhanced runtime evidence changed during code verification.")

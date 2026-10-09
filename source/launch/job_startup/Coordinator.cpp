@@ -11,6 +11,7 @@ namespace {
 Failure failure{};
 std::function<void(HANDLE,bool)> observer;
 std::function<void(HANDLE,std::uintptr_t)> primarySetup;
+std::function<void(HANDLE)> beforeApply;
 #endif
 void DebuggerAbsent(HANDLE process) {
     BOOL debugger=TRUE;
@@ -31,9 +32,10 @@ void JsonPath(std::ostream& out,std::wstring_view path) {
 void SetOwnedFailure(Failure value){failure=value;}
 void SetOwnedObserver(std::function<void(HANDLE,bool)> value){observer=std::move(value);}
 void SetOwnedPrimarySetup(std::function<void(HANDLE,std::uintptr_t)> value){primarySetup=std::move(value);}
+void SetOwnedBeforeApply(std::function<void(HANDLE)> value){beforeApply=std::move(value);}
 #endif
 void Coordinate(late_startup::OwnedChild& child,OwnedJob& job,late_startup::MappedGate& gate,
-    const late_startup::PreparePlan& prepare,Receipt& receipt) {
+    const late_startup::PreparePlan& prepare,Receipt& receipt,std::size_t expectedEdits) {
     const auto deadline=GetTickCount64()+child.payload.deadlineMs;
     receipt.processId=child.process.dwProcessId;receipt.primaryThreadId=child.process.dwThreadId;
     receipt.created=child.payload.processCreatedFileTime;receipt.image=job.Identity().image;receipt.jobAssigned=true;
@@ -58,13 +60,16 @@ void Coordinate(late_startup::OwnedChild& child,OwnedJob& job,late_startup::Mapp
         {
             receipt.stage="plan-preparation";
             auto plan=prepare(child.process.hProcess,receipt.patch.imageBase,receipt.patch);
-            Require(plan.edits.size()==42 && plan.relay,"The complete fixed transaction is required.");
+            Require(plan.edits.size()==expectedEdits && plan.relay,"The complete fixed transaction is required.");
             receipt.helperBase=plan.helperBase;receipt.relay=plan.relay->Address();
             AdmitEditFrames(receipt,plan.edits);job.Verify(child.process.hProcess);
             gate.VerifyWaiting(child.process.hProcess,child.payload,receipt.generation);Budget(deadline);
             try {
                 receipt.stage="patch-publication";
                 vm_startup::PausedPatch patch(child.process.hProcess,std::move(plan.edits),receipt.patch);
+#ifdef BO3_JOB_OWNED_TEST
+                if(beforeApply)beforeApply(child.process.hProcess);
+#endif
                 patch.Apply();
 #ifdef BO3_JOB_OWNED_TEST
                 if(observer)observer(child.process.hProcess,false);
@@ -72,10 +77,12 @@ void Coordinate(late_startup::OwnedChild& child,OwnedJob& job,late_startup::Mapp
 #endif
                 gate.VerifyWaiting(child.process.hProcess,child.payload,receipt.generation);
                 job.Verify(child.process.hProcess);DebuggerAbsent(child.process.hProcess);Budget(deadline);
-                patch.Commit();plan.relay->Commit();receipt.committed=true;
+                patch.Commit();plan.relay->Commit();
+                if(plan.commitResources)plan.commitResources();
+                receipt.committed=true;
             }catch(...) {
 #ifdef BO3_JOB_OWNED_TEST
-                if(receipt.patch.rollbackCompleted && observer)observer(child.process.hProcess,true);
+                if((receipt.patch.rollbackCompleted || beforeApply) && observer)observer(child.process.hProcess,true);
 #endif
                 throw;
             }
@@ -116,9 +123,10 @@ void Coordinate(late_startup::OwnedChild& child,OwnedJob& job,late_startup::Mapp
         std::rethrow_exception(initiating);
     }
 }
-void WriteReceipt(std::ostream& out,const Receipt& r) {
+void WriteReceipt(std::ostream& out,const Receipt& r,std::string_view method) {
     const auto yes=[](bool value){return value?"true":"false";};
-    out<<"{\"schema\":1,\"candidate\":\"0.1.0-test.3\",\"startupMethod\":\"late-crt-job-freeze\""
+    out<<"{\"schema\":1,\"candidate\":\"0.1.0-test.3\",\"startupMethod\":";JsonPath(out,std::wstring(method.begin(),method.end()));
+    out
        <<",\"serverTotal\":500001,\"serverUsable\":500000,\"clientTotal\":65000,\"clientRoots\":18,\"stockClientRoots\":8,\"migrationBufferBytes\":33554432"
        <<",\"processId\":"<<r.processId<<",\"processCreatedFileTime\":"<<r.created<<",\"primaryThreadId\":"<<r.primaryThreadId
        <<",\"imagePath\":";JsonPath(out,r.image);

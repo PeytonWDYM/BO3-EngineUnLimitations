@@ -3,6 +3,9 @@
 source/launch/enhanced/Steam*Profile.json text eol=lf
 source/launch/late_startup/SteamProfile.json text eol=lf
 source/launch/job_startup/SteamProfile.json text eol=lf
+source/launch/early_startup/SteamProfile.json text eol=lf
+source/patches/early_integrity/exact_build_profile.json text eol=lf
+source/patches/code_integrity/exact_build_profile.json text eol=lf
 source/launch/job_control/SteamProfile.json text eol=lf
 source/launch/bindings_control/SteamProfile.json text eol=lf
 # Preserve the exact bytes of the reviewed diagnostic recipes.

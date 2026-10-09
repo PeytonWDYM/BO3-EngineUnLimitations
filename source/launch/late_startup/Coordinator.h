@@ -11,6 +11,8 @@ struct PreparedPlan {
     std::unique_ptr<vm_startup::NearRelay> relay;
     std::vector<vm_startup::AddressEdit> edits;
     std::uintptr_t helperBase{};
+    // A bound noexcept closure owns extra publication resources until rollback or commit under the freeze.
+    std::function<void()> commitResources;
 };
 struct EventRow {DWORD code,thread;std::uintptr_t address;};
 struct Receipt {
