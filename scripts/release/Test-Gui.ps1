@@ -4,6 +4,17 @@ $ErrorActionPreference='Stop'
 $exe=(Get-Item -LiteralPath $Executable).FullName
 if (Test-Path -LiteralPath $Output) { throw 'Use a new GUI evidence folder.' }
 New-Item -ItemType Directory -Path $Output | Out-Null
+if (!$IsWindows) {
+    # Under Wine the setup refuses before it opens a window. Check that refusal instead of the window.
+    . (Join-Path $PSScriptRoot 'Platform.ps1')
+    $stderr=Join-Path $Output 'setup.stderr.txt'
+    Invoke-Windows $exe 2> $stderr | Set-Content -LiteralPath (Join-Path $Output 'setup.stdout.txt')
+    $exitCode=$LASTEXITCODE
+    if ($exitCode -ne 1) { throw "The setup executable under Wine exited with $exitCode instead of refusing." }
+    if ((Get-Content -LiteralPath $stderr -Raw) -notmatch 'does not support Proton or Wine') { throw 'The setup executable under Wine did not report the Proton refusal.' }
+    @{passed=$true;scope='Wine refusal before the setup window opens. No window, Steam changes, or game launch.';exitCode=$exitCode;executableSha256=(Get-FileHash -LiteralPath $exe).Hash} | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $Output 'result.json')
+    exit 0
+}
 Add-Type -AssemblyName System.Drawing
 Add-Type @'
 using System;

@@ -60,6 +60,40 @@ pwsh -NoProfile -File scripts/release/Build-Native.ps1 -Output C:/private/bo3-na
 The native source build produces an unvalidated candidate. It does not update the release's approved file hashes.
 Download the native developer ZIP from the test release to rebuild the installer with the approved payload.
 
+### Build on Linux
+
+The same scripts run on Linux x64 with PowerShell 7, Wine, and MSVC from [msvc-wine](https://github.com/mstorsjo/msvc-wine).
+Downloading MSVC means you accept the Visual Studio license.
+On Arch-based systems, install `wine`, `msitools`, and `powershell-bin`.
+
+```sh
+git clone https://github.com/mstorsjo/msvc-wine ~/src/msvc-wine
+~/src/msvc-wine/vsdownload.py --accept-license --architecture x64 --host-arch x64 --dest ~/msvc
+~/src/msvc-wine/install.sh ~/msvc
+git clone https://github.com/microsoft/Detours.git ~/src/Detours
+git -C ~/src/Detours checkout e4bfd6b03e50de46b47abfbd1e46b384f0c5f833
+(cd ~/src/Detours/src && PATH=~/msvc/bin/x64:$PATH nmake /nologo)
+python3 -m venv ~/venvs/bo3-500k
+~/venvs/bo3-500k/bin/pip install --require-hashes --only-binary=:all: -r scripts/release/requirements-native.txt
+pwsh -NoProfile -File scripts/release/Build-Native.ps1 -Output ~/private/bo3-native -DetoursRoot ~/src/Detours -Python ~/venvs/bo3-500k/bin/python
+pwsh -NoProfile -File source/tests/vm-pool/Test-StateAdapter.ps1 -OutputDirectory ~/private/state-tests -Python ~/venvs/bo3-500k/bin/python
+pwsh -NoProfile -File source/tests/vm-migration/Build-Admission.ps1 -OutputDirectory ~/private/migration-tests -Python ~/venvs/bo3-500k/bin/python
+```
+
+The scripts look for msvc-wine in `~/msvc`. Set `MSVC_ROOT` to use another folder, and `WINE` to use another Wine binary.
+Test programs run through Wine.
+
+The setup executable needs a Windows Python 3.12 or later installed in a Wine prefix.
+Pass its `python.exe`. The installer E2E runs with the host `python3`.
+
+```sh
+WINEPREFIX=~/private/wineprefix pwsh -NoProfile -File scripts/release/Build-Patcher.ps1 -Output ~/private/bo3-500k-build -NativeBuild <verified-native-folder> -Python ~/private/wineprefix/drive_c/Python313/python.exe
+```
+
+Under Wine the setup executable refuses every action, so the Linux packaged tests check that refusal.
+They do not open the setup window.
+Building on Linux does not add Proton support.
+
 ## License
 
 This project's source code uses the [MIT License](LICENSE).
