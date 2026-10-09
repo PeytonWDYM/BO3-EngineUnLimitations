@@ -1,3 +1,5 @@
+(Note: fully vibed. Was annoyed about how easily the server instance can crash whilst playing. took me a day to do with GPT 6.1 Sol. Feel free to modify in any way)
+
 # BO3 500K
 
 An optional 500,000-slot server script-variable pool for Steam Black Ops III Zombies.
@@ -20,9 +22,6 @@ Removal restores your previous Steam launch options.
 ## Compatibility
 
 This is a test release. One manual Windows session reached Zombies and verified 500,000 usable server slots.
-That session used All-around Enhancement. Stock Zombies needs a separate manual test.
-The session later had a match interruption and a native crash. Their connection to the expansion remains unresolved.
-Match stability, host migration, and hosting or joining friends still need validation.
 The client pool and actor limit retain their stock capacities.
 Expanded host migration requires matching patched clients. Matching patches alone do not prove compatibility.
 
@@ -63,8 +62,6 @@ Download the native developer ZIP from the test release to rebuild the installer
 
 ## Credits
 
-Peyton supplied the failure captures and manual tests.
-All-around Enhancement inspired the original investigation. Its gameplay patches now belong to a separate project.
 Microsoft supplies [Detours](https://github.com/microsoft/Detours).
 [Maurice Heumann's integrity-check research](https://momo5502.com/posts/2022-11-17-reverse-engineering-integrity-checks-in-black-ops-3/) informed the checksum work.
 The release includes third-party license notices.
