@@ -88,18 +88,43 @@ An isolated Proton startup test with the original logo video present reached the
 and verified the complete live pool with this option. Do not run two BO3 copies on
 the same Steam account at once; that interrupts the game's sign-in session.
 
-An optional Linux startup clip can play fullscreen with audio before Proton starts.
-Install `ffplay`, keep the clip in a local file, and prefix the existing launch command
-with `scripts/proton/Play-Intro.sh <local-video>`. For the private wrapper, for example:
+A source-built launcher also accepts `--custom-intro`. It redirects the startup movie
+through guarded engine edits and plays its separate stereo PCM audio inside the game.
+The original video files remain intact. Custom mode requires all 1,128 startup edits.
+The launcher refuses a missing video or audio file before creating the game.
 
-```text
-BO3_500K_SKIP_INTRO=1 "/absolute/Play-Intro.sh" "/absolute/intro.webm" "/absolute/Launch-Private.sh" "/absolute/private-root" %command%
+Prepare a local clip and a private decoder outside Git:
+
+```sh
+python3 scripts/proton/Prepare-Intro.py /absolute/local-clip.mkv /absolute/prepared-intro
+bash scripts/proton/Build-IntroCodec.sh /absolute/intro-codec-build
 ```
 
-The player finishes or closes before the game launches, and the engine skip suppresses
-the original logo. Missing media or playback failure still allows the game to start.
-Use a format supported by the player inside Steam's sandbox; VP9/Opus WebM was checked
-with Flatpak Steam. Clips are local user files and are not included in this repository.
+Copy the two prepared files into the private game's `video` directory. BO3's older
+Matroska reader needs positive size integers and a single AVC SPS/PPS pair; the
+preparation script writes that layout and a 48-kHz stereo PCM WAV. It needs `ffmpeg`.
+The decoder build needs a C compiler, make, curl and tar. It retains the pinned
+FFmpeg source and LGPL license outside Git. Clips and binaries are not bundled here.
+
+For Proton, wrap the existing Steam runtime command with
+`scripts/proton/Use-IntroCodec.sh <codec-build/codec> <existing-command...>`.
+It verifies the decoder checksums and inserts the matching libraries immediately
+before Proton inside Steam's runtime. Use a decoder path without spaces or colons.
+Steam's decoder refused H.264 in the isolated test; the private matching decoder
+produced frames. This does not establish compatibility with other Proton builds.
+
+A private run on the Proton build above displayed the supplied clip, captured its
+full audio during playback, and reached the menu with all 1,128 edits committed.
+The read-only check verified all 19 count instructions, both complete allocations,
+and the free-slot chain through slot 500,000. Audio follows the native movie entry
+and decoded-player update, rather than the later startup polling loop. Save, peer,
+migration, and other cinematic formats were not retested for this option.
+
+`scripts/proton/Launch-Installed.sh` can be copied into an authorized installation's
+`BO3-500K` folder as `Launch-Steam.sh`, beside the native files and `Use-IntroCodec.sh`.
+Put `custom` in `intro-mode` and the decoder folder's absolute path in `intro-codec.path`.
+The wrapper forwards Steam's command and selects exactly one intro mode; `stock`
+and `skip` are also accepted. Test new candidates on private copies first.
 
 AAE's Lua loader resolves `../../workshop/content/311210/<mod-ID>/T7Overcharged.ff` from the game directory and requests `quit` if its helper cannot load.
 A flat private game directory breaks that relationship. Preserve the layout above for both stock and patched comparisons.

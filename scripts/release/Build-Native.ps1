@@ -19,14 +19,14 @@ try {
     $assembler=$msvc.Ml64
     $flags=@('/nologo','/std:c++20','/EHsc','/W4','/WX','/MT','/O2',"/I$build","/I$repo/source/launch/enhanced","/I$DetoursRoot/include")
     $objects=@()
-    foreach ($relative in @('vm_startup/ErrorPrelude','vm_startup/OriginalEntries','vm_migration/VersionGate','vm_migration/Reentries')) {
+    foreach ($relative in @('startup_intro/OriginalEntries','vm_startup/ErrorPrelude','vm_startup/OriginalEntries','vm_migration/VersionGate','vm_migration/Reentries')) {
         $object=Join-Path $build ($relative.Replace('/','-')+'.obj')
         & $assembler /nologo /c "/Fo$object" (Join-Path $repo "source/patches/$relative.asm")
         if ($LASTEXITCODE -ne 0) { throw 'Native helper assembly failed.' }
         $objects+=$object
     }
-    $helper=@('source/launch/enhanced/Helper.cpp','source/patches/vm_pool/StateAdapter.cpp','source/patches/vm_pool/NativeStateBridge.cpp','source/patches/vm_startup/StateErrors.cpp','source/patches/vm_migration/Admission.cpp') | ForEach-Object {Join-Path $repo $_}
-    & $compiler @flags /LD @helper @objects $library "/Fo$build/" "/Fe$build/Bo3EnhancedHelper.dll" /link "/DEF:$repo/source/launch/enhanced/Helper.def" /INCREMENTAL:NO /Brepro
+    $helper=@('source/launch/enhanced/Helper.cpp','source/patches/vm_pool/StateAdapter.cpp','source/patches/vm_pool/NativeStateBridge.cpp','source/patches/vm_startup/StateErrors.cpp','source/patches/vm_migration/Admission.cpp','source/patches/startup_intro/Audio.cpp','source/patches/startup_intro/Wave.cpp') | ForEach-Object {Join-Path $repo $_}
+    & $compiler @flags /LD @helper @objects $library Winmm.lib "/Fo$build/" "/Fe$build/Bo3EnhancedHelper.dll" /link "/DEF:$repo/source/launch/enhanced/Helper.def" /INCREMENTAL:NO /Brepro
     if ($LASTEXITCODE -ne 0) { throw 'Native helper compilation failed.' }
     Copy-Item -LiteralPath (Join-Path $repo 'source/profiles/ProbeProfile.h'),(Join-Path $repo 'source/profiles/GateProfile.h') -Destination $build
     $gate=@('Helper','Admission','Gate','NativeEntry','LoaderSafety') | ForEach-Object {Join-Path $repo "source/launch/startup_gate/$_.cpp"}

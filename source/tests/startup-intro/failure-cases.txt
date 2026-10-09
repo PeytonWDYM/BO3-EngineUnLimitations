@@ -18,3 +18,20 @@ playback ID. The engine already continues when that ID is zero.
 7. Test a private copy with the original logo file present, verify menu startup,
    live 500K allocations, and the zero logo playback ID before main installation.
    Existing exact build/code admission remains mandatory.
+
+Custom engine intro cases (recorded before implementing the redirect):
+- Exact supported startup context redirects the movie name and preserves the real playback call/result/frame pump.
+- Changed call arguments, name, cinematic entry, truncated context, and unknown image remain refused before writes.
+- Missing custom MKV refuses before starting the game; no external player is launched.
+- A private single-instance run must display the supplied clip inside the BO3 window, then reach the menu with 500K.
+- Verify embedded audio during playback; if the engine ignores it, add and test audio inside the game process.
+- Keep the original logo asset intact; other cinematic calls and normal no-option launch remain unchanged.
+Custom audio admission and lifetime:
+- Starting audio from the outer startup polling loop produced only the movie tail. A readiness worker and a player-update table hook also failed this timing check.
+- Live reads verified patched startup calls and the update table while audio remained inactive until the movie tail. Hook the guarded engine entries, preserving their prologues in admitted helper unwind trampolines; filter other movie names.
+- Refuse changed or truncated intro polling loop, cinematic polling entry, or player-state layout before writes.
+- Refuse helper bindings outside the admitted helper, unreachable relay, or a missing/empty PCM WAV before creating the game.
+- Publish audio bindings and both polling calls in the same stopped transaction as the custom movie name and 500K.
+- Arm audio only once even if the engine requests the movie again. Start after the native player reaches decoded playback; stop when the intro ends or is skipped.
+- Capture the actual game audio and verify that the clip reaches the menu, including all pool counts and allocations.
+- A decoder that refuses H.264 must fail an isolated decode check; do not install a black-screen candidate.

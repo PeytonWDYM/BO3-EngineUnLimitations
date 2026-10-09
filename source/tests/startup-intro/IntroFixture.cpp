@@ -1,4 +1,5 @@
 #include "../../patches/startup_intro/Plan.h"
+#include "../../patches/startup_intro/AudioPlan.h"
 #include <array>
 #include <cstdio>
 #include <functional>
@@ -24,6 +25,38 @@ int main() {
         Check(edit.address==image.base+0x20f00a1 && edit.original==std::vector<unsigned char>{0xe8,0x1a,0xe3,0x1c,0xff}
             && edit.replacement==std::vector<unsigned char>{0x33,0xc0,0x90,0x90,0x90},"Wrong startup edit.");
         std::puts("exact-startup-call-zero-playback-id passed");
+        const auto custom=bo3::startup_intro::BuildPlan(image,original,label,entry,true);
+        constexpr char expectedCustom[]="BO3_500K_Custom_Intro";
+        std::vector<unsigned char> expectedLabel(sizeof(name),0);
+        std::copy_n(reinterpret_cast<const unsigned char*>(expectedCustom),sizeof(expectedCustom),expectedLabel.begin());
+        Check(custom.address==image.base+0x2fc1758 && custom.original==std::vector<unsigned char>(label.begin(),label.end())
+            && custom.replacement==expectedLabel,"Wrong custom movie redirect.");
+        std::puts("custom-movie-label-preserves-engine-playback-call passed");
+        const vm_startup::ImageRange helper{0x180000000ull,0x20000};
+        const auto audio=[&](auto loop,auto playing,auto layout) {
+            return bo3::startup_intro::BuildAudioPlan(image,helper,0x1000,0x2000,0x3000,0x4000,0x5000,0x6000,image.base+0x400000,
+                loop,playing,layout);
+        };
+        const auto audioEdits=audio(std::span(bo3::startup_intro::kLoop),
+            std::span(bo3::startup_intro::kPlayingEntry),std::span(bo3::startup_intro::kPlayerLayout));
+        Check(audioEdits.size()==6 && audioEdits[0].original==std::vector<unsigned char>(56,0)
+            && audioEdits[2].address==image.base+0x12be3c0 && audioEdits[3].address==image.base+0x12c0020 && audioEdits[4].address==image.base+0x20f00bf && audioEdits[5].address==image.base+0x20f00da,
+            "Incomplete custom audio publication.");
+        std::puts("custom-audio-bindings-relay-and-both-polls-prepared passed");
+        auto changedLoop=bo3::startup_intro::kLoop;changedLoop[5]^=1;
+        auto changedPlaying=bo3::startup_intro::kPlayingEntry;changedPlaying[0]^=1;
+        auto changedLayout=bo3::startup_intro::kPlayerLayout;changedLayout[39]^=1;
+        Check(Refuses([&]{audio(std::span(changedLoop),std::span(bo3::startup_intro::kPlayingEntry),std::span(bo3::startup_intro::kPlayerLayout));})
+            && Refuses([&]{audio(std::span(bo3::startup_intro::kLoop),std::span(changedPlaying),std::span(bo3::startup_intro::kPlayerLayout));})
+            && Refuses([&]{audio(std::span(bo3::startup_intro::kLoop),std::span(bo3::startup_intro::kPlayingEntry),std::span(changedLayout));}),
+            "Changed custom audio code or player layout admitted.");
+        std::puts("changed-audio-polls-entry-and-player-layout-refused passed");
+        Check(Refuses([&]{bo3::startup_intro::BuildAudioPlan(image,helper,helper.size-8,0x2000,0x3000,0x4000,0x5000,0x6000,image.base+0x400000,
+            bo3::startup_intro::kLoop,bo3::startup_intro::kPlayingEntry,bo3::startup_intro::kPlayerLayout);})
+            && Refuses([&]{bo3::startup_intro::BuildAudioPlan(image,helper,0x1000,0x2000,0x3000,0x4000,0x5000,0x6000,0x300000000ull,
+            bo3::startup_intro::kLoop,bo3::startup_intro::kPlayingEntry,bo3::startup_intro::kPlayerLayout);}),
+            "Out-of-image binding or unreachable audio relay admitted.");
+        std::puts("invalid-audio-binding-and-unreachable-relay-refused passed");
         for(const auto index:{12u,32u,37u,53u}) {
             auto changed=original;changed[index]^=1;
             Check(Refuses([&]{bo3::startup_intro::BuildPlan(image,changed,label,entry);}),"Changed startup context admitted.");

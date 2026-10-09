@@ -8,3 +8,5 @@ EXPORTS
     NativeOriginalError
     NativeOriginalInsertBody
     VmErrorPreludeBody
+    NativeOriginalIntro
+    NativeOriginalIntroUpdate

@@ -2,11 +2,12 @@
 #include "../preentry/Identity.h"
 #include "GameManifest.h"
 #include "../../patches/startup_intro/Plan.h"
+#include "../../patches/startup_intro/AudioPlan.h"
 #include <algorithm>
 
 namespace bo3::late_startup {
 PreparedPlan PrepareFixedPlan(HANDLE process,std::uintptr_t image,
-    enhanced::MappedHelper& helper,const std::filesystem::path& helperFile,bool skipStartupIntro) {
+    enhanced::MappedHelper& helper,const std::filesystem::path& helperFile,bool skipStartupIntro,bool customStartupIntro) {
     constexpr std::uint32_t total=500001;
     const auto& manifest=enhanced::ExactGameManifest;
     Require(manifest.guards.size()==82 && manifest.counts.size()==19,"The fixed complete inventory is required.");
@@ -39,11 +40,20 @@ PreparedPlan PrepareFixedPlan(HANDLE process,std::uintptr_t image,
     result.edits.insert(result.edits.end(),std::make_move_iterator(migration.begin()),std::make_move_iterator(migration.end()));
     for(const auto& edit:profile.edits)result.edits.push_back({image+edit.rva,edit.original,edit.replacement});
     Require(result.edits.size()==42,"The fixed native recipe must have 42 edits.");
-    if(skipStartupIntro) {
+    if(skipStartupIntro || customStartupIntro) {
         const auto context=vm_startup::ReadStopped(process,image+startup_intro::kContextRva,startup_intro::kContext.size());
         const auto name=vm_startup::ReadStopped(process,image+startup_intro::kNameRva,sizeof(startup_intro::kName));
         const auto cinematic=vm_startup::ReadStopped(process,image+startup_intro::kCinematicRva,startup_intro::kCinematicEntry.size());
-        result.edits.push_back(startup_intro::BuildPlan(imageRange,context,name,cinematic));
+        result.edits.push_back(startup_intro::BuildPlan(imageRange,context,name,cinematic,customStartupIntro));
+        if(customStartupIntro) {
+            const auto loop=vm_startup::ReadStopped(process,image+startup_intro::kLoopRva,startup_intro::kLoop.size());
+            const auto playing=vm_startup::ReadStopped(process,image+startup_intro::kPlayingRva,startup_intro::kPlayingEntry.size());
+            const auto layout=vm_startup::ReadStopped(process,image+startup_intro::kPlayerLayoutRva,startup_intro::kPlayerLayout.size());
+            auto audio=startup_intro::BuildAudioPlan(imageRange,helper.image,helper.introAudioBindings,
+                helper.introAudioHandler,helper.introStartHandler,helper.introUpdateHandler,helper.originalIntro,
+                helper.originalIntroUpdate,result.relay->Address()+192,loop,playing,layout);
+            result.edits.insert(result.edits.end(),std::make_move_iterator(audio.begin()),std::make_move_iterator(audio.end()));
+        }
     }
     return result;
 }

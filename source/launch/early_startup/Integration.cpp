@@ -9,7 +9,7 @@ void SetOwnedPrepareChecksum(PrepareChecksum prepare){ownedPrepare=std::move(pre
 #endif
 void Coordinate(late_startup::OwnedChild& child,job_startup::OwnedJob& job,late_startup::MappedGate& gate,
     const late_startup::PreparePlan& prepare,Receipt& receipt) {
-    const auto nativeEdits=kNativeEdits+(receipt.skipStartupIntro?1u:0u);
+    const auto nativeEdits=kNativeEdits+(receipt.customStartupIntro?7u:receipt.skipStartupIntro?1u:0u);
     const auto combined=[&](HANDLE process,std::uintptr_t image,vm_startup::Receipt& patchReceipt) {
         auto plan=prepare(process,image,patchReceipt);
         Require(plan.edits.size()==nativeEdits && plan.relay && !plan.commitResources,
@@ -47,9 +47,10 @@ void WriteReceipt(std::ostream& out,const Receipt& receipt) {
        <<",\"checksumEditsPrepared\":"<<receipt.checksumEdits
        <<",\"checksumArena\":"<<receipt.checksumArena<<",\"checksumArenaBytes\":"<<receipt.checksumArenaBytes
        <<",\"checksumCaptureBytes\":"<<receipt.checksumCapture.size()
-       <<",\"nativeEditsRequired\":"<<kNativeEdits+(receipt.skipStartupIntro?1u:0u)
-       <<",\"combinedEditsRequired\":"<<kNativeEdits+(receipt.skipStartupIntro?1u:0u)+early_integrity::kPublicationCount
+       <<",\"nativeEditsRequired\":"<<kNativeEdits+(receipt.customStartupIntro?7u:receipt.skipStartupIntro?1u:0u)
+       <<",\"combinedEditsRequired\":"<<kNativeEdits+(receipt.customStartupIntro?7u:receipt.skipStartupIntro?1u:0u)+early_integrity::kPublicationCount
        <<",\"startupIntroSkipped\":"<<(receipt.skipStartupIntro && receipt.job.committed?"true":"false")
+       <<",\"startupIntroCustom\":"<<(receipt.customStartupIntro && receipt.job.committed?"true":"false")
        <<",\"checksumReapplication\":false,\"aaeStoreSitesPreserved\":"<<(receipt.checksumAdmitted?"true":"false")<<'}';
     Require(out.good(),"Cannot write the early checksum receipt.");
 }

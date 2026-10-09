@@ -24,9 +24,12 @@ inventory = json.loads((repo / 'source/patches/vm_pool/exact_build_inventory.jso
 receipt = json.loads(args.receipt.read_text())
 assert receipt['committed'] and receipt['released'] and receipt['checksumAdmitted'], 'Startup was not admitted and released.'
 intro_skipped = receipt.get('startupIntroSkipped', False)
+intro_custom = receipt.get('startupIntroCustom', False)
+assert type(intro_custom) is bool and not (intro_custom and intro_skipped), 'Invalid startup intro selection.'
 assert type(intro_skipped) is bool, 'Invalid startup intro receipt.'
-assert receipt['nativeEditsRequired'] == 42 + int(intro_skipped), 'Incomplete native transaction.'
-assert receipt['editsWritten'] == receipt['combinedEditsRequired'] == 1121 + int(intro_skipped), 'Incomplete startup transaction.'
+intro_edits = 7 if intro_custom else int(intro_skipped)
+assert receipt['nativeEditsRequired'] == 42 + intro_edits, 'Incomplete native transaction.'
+assert receipt['editsWritten'] == receipt['combinedEditsRequired'] == 1121 + intro_edits, 'Incomplete startup transaction.'
 with args.game.open('rb') as game:
     digest = hashlib.file_digest(game, 'sha256').hexdigest()
 assert digest == receipt['executableSha256'], 'Private executable differs from the launch receipt.'
@@ -56,6 +59,19 @@ with proc.joinpath('mem').open('rb', buffering=0) as memory:
     assert struct.unpack_from('<I', header, 80)[0] == inventory['imageSize']
     if intro_skipped:
         assert read(base + 0x20f00a1, 5) == bytes.fromhex('33c0909090'), 'Startup intro edit differs.'
+    if intro_custom:
+        assert read(base + 0x2fc1758, 27) == b'BO3_500K_Custom_Intro\0'.ljust(27, b'\0'), 'Custom intro name differs.'
+        calls = [read(base + rva, 5) for rva in (0x20f00bf, 0x20f00da)]
+        assert all(call[0] == 0xe8 for call in calls), 'Custom audio polling call differs.'
+        targets = [base + rva + 5 + struct.unpack_from('<i', call, 1)[0]
+                   for rva, call in zip((0x20f00bf, 0x20f00da), calls)]
+        assert targets[0] == targets[1], 'Custom audio calls use different relays.'
+        assert read(base + 0x20f00a1, 5) == bytes.fromhex('e81ae31cff'), 'Original engine movie call differs.'
+        for rva, offset in ((0x12be3c0, 16), (0x12c0020, 32)):
+            jump = read(base + rva, 5)
+            assert jump[0] == 0xe9 and base + rva + 5 + struct.unpack_from('<i', jump, 1)[0] == targets[0] + offset, 'Custom movie engine entry relay differs.'
+        thunk = read(targets[0], 16)
+        assert thunk[:6] == bytes.fromhex('ff2500000000') and thunk[-2:] == b'\0\0', 'Custom audio relay differs.'
     counts = []
     for instruction in inventory['serverCountInstructions']:
         original = bytes.fromhex(instruction['bytes'])
@@ -89,7 +105,7 @@ result = {
     'serverPoolBytesReadable': len(slots), 'serverHashBytesReadable': len(hashes),
     'freeSlots': len(seen), 'expandedFreeSlots': sum(index >= 130000 for index in seen),
     'highestFreeSlot': max(seen, default=0), 'poolAddress': pool, 'hashAddress': buckets,
-    'startupIntroSkipped': intro_skipped,
+    'startupIntroSkipped': intro_skipped, 'startupIntroCustom': intro_custom,
     'scope': 'Read-only live allocation and free-chain snapshot. No game memory or files changed. No save or peer validation.',
 }
 with output.open('x') as target:

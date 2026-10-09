@@ -59,6 +59,12 @@ MappedHelper::MappedHelper(const std::filesystem::path& path)
         image.size = Header(mapped_).OptionalHeader.SizeOfImage;
         const auto entry = [&](const char* name) { return Export(mapped_, name, image.size); };
         bootOffset_ = entry("Bo3EnhancedBoot");
+        introAudioBindings=entry("Bo3IntroAudioBindings");
+        introAudioHandler=entry("IsCustomIntroPlaying");
+        introStartHandler=entry("StartCustomIntro");
+        introUpdateHandler=entry("UpdateCustomIntroPlayers");
+        originalIntro=entry("NativeOriginalIntro");
+        originalIntroUpdate=entry("NativeOriginalIntroUpdate");
         state = {entry("Bo3VmStateBindings"),entry("Bo3VmErrorBindings"),entry("ReadNativeState"),entry("WriteNativeState"),
             entry("InsertNativeStateKey"),entry("ReadStateOrDrop"),entry("WriteStateOrDrop"),entry("VmErrorPrelude"),
             entry("NativeOriginalReader"),entry("NativeOriginalWriter"),entry("NativeOriginalInsert"),entry("NativeOriginalError")};
