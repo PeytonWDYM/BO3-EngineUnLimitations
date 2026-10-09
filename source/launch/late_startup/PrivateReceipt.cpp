@@ -90,5 +90,17 @@ void PrivateReceipt::Write(const Receipt& receipt) {
     DWORD written{};
     Require(WriteFile(file_,bytes.data(),static_cast<DWORD>(bytes.size()),&written,nullptr)!=FALSE && written==bytes.size()
         && SetEndOfFile(file_) && FlushFileBuffers(file_),"Cannot persist the owned receipt.");
+#ifdef BO3_EARLY_STARTUP
+    if(!receipt.checksumCapture.empty()) {
+        auto capturePath=path_;capturePath.replace_extension(L".checksum-guards.bin");
+        const auto handle=CreateFileW(capturePath.c_str(),GENERIC_WRITE,FILE_SHARE_READ,nullptr,CREATE_NEW,FILE_ATTRIBUTE_NORMAL,nullptr);
+        Require(handle!=INVALID_HANDLE_VALUE,"Cannot create the private checksum capture.");
+        struct Owner {HANDLE value;~Owner(){CloseHandle(value);}} owned{handle};
+        DWORD captured{};
+        Require(receipt.checksumCapture.size()<=1024*1024 && WriteFile(handle,receipt.checksumCapture.data(),
+            static_cast<DWORD>(receipt.checksumCapture.size()),&captured,nullptr) && captured==receipt.checksumCapture.size()
+            && FlushFileBuffers(handle),"Cannot persist the complete private checksum capture.");
+    }
+#endif
 }
 }

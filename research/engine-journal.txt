@@ -1956,3 +1956,63 @@ The public usage contract is docs/500k-startup.md.
 
 Implementation and owned tests do not establish live allocation, complete BO3 startup, full AAE loading, host migration or peer compatibility.
 Those manual checks remain required. The public gameplay patcher does not advertise a validated pool expansion.
+
+October 8, first early-checksum launch refusal and exact diagnostics:
+
+Peyton manually used the approved Steam route and reported a startup crash.
+The receipt binds PID 58612 and creation time 134359850851101428 to the exact supported executable.
+The launcher refused during checksum plan preparation with zero edits, no commit, no thaw and no gate release.
+It terminated its frozen child with exit 97. No game exception or integrity detection is established by that receipt.
+The old refusal text omitted the exact guard RVA. It cannot identify this launch's first mismatch.
+Private evidence: early-startup-first-launch-01 retains the receipt and its recorder session.
+
+The old profile differs at seven full67-byte AAE scanner windows in the permitted saved stock PID62740 capture.
+Independent execution of the exact captured AAE scanner stops at its first selected transport target.
+Across both saved captures, all69 split sites pass138 cases and207 hostile unconsumed-tail mutations.
+The revised profile hashes only the19/20-byte prefix consumed before that selection.
+Exactly69 guard spans change. All14614 other guards and7950 absolute-pointer checks remain identical.
+Separate guards retain every executed store/transport instruction. Every full67-byte span remains excluded from patch writes.
+The revised public profile SHA-256 is c1cae883d95a25184e2b1ec9f7d5539a1a548584688bfef41ef27dace1b5bd1d.
+Both saved stock captures match all14683 revised guards and all1069 original source LEAs.
+They do not represent the failed frozen PID58612 or prove that this correction resolves its refusal.
+The earliest guarded count DWORD at RVA0x5d28 differs between disk and saved decrypted code.
+Exact early decoding state remains a separate possible cause. No count guard was removed or masked.
+
+The new hash-refusal diagnostic records its exact RVA, expected/actual hashes and normalized bytes within512 characters.
+It reads all14683 guarded spans under the existing job freeze before checksum arena allocation.
+The private sidecar contains856637 bytes and binds the fixed profile, executable, timestamp, image size and image base.
+Each record preserves raw bytes and memory state/type/protection. It introduces no process writes.
+The coordinator retains zero-write refusal, frozen termination and no gate release.
+All19 checksum groups and11 combined native groups pass, including complete private sidecar persistence.
+The combined owned capture independently decodes to exactly one injected hash mismatch and no pointer or memory differences.
+The inert image fixture now retains exact67/7-byte AAE store spans during apply and rollback.
+The earlier reviewer's correction is implementation and self-review. A separate fresh reviewer checks this revision before deployment.
+Private evidence: early-phase-admission-sol-01, early-startup-build-05 and early-admission-review-fresh-01 under release-enhancement.
+Production build05 passes its import and fixture-exclusion audit. Its launcher SHA-256 is4b105f59e6837447f525604048fcee90f72f05d0444181996a5c8838c4b83395.
+No agent game launch or game, mod, profile, audio or registry write occurred during this correction.
+The fresh99-file baseline retains all game/mod/profile/Cloud-cache hashes. Steam's appmanifest changed after the manual launch.
+Actual early admission,500k allocation,fullAAE startup,migration and friends remain unvalidated.
+
+Fresh independent Sol review passes20 items across16 files with no findings.
+Report SHA-256:607f0e73beb4a4df7110f7964f9b8c5490f4894d423feff08440088cb2b8f1bd.
+The fixed Steam recipe now pins production05, the new profile, the combined11 result and that immutable review.
+All five owned transport groups pass. An independent six-item pin addendum passes with no findings.
+Addendum SHA-256:edb2b34e76d61bfd63a47e7084949090e8c8362604cfa4acf013a9ecf7b70603.
+Recipe SHA-256:dc849b0e3ebb11c691dd6ea1e4e4519141a3f2f922bd861e922b9c0c328a0283.
+Root used the existing deployment authorization to close Steam cleanly, remove the old route and enable the reviewed revision.
+The original absent launch-options field remains available through canonical removal.
+All99 protected files match the fresh closed-Steam baseline after setup. The installed launcher hash matches production05.
+Steam reopened at02:34UTC. One new general recorder and the existing single fullAAE VM waiter await Peyton's manual launch.
+No game was launched by an agent. A real successful admission or a new exact refusal capture is still required.
+
+Peyton asked whether other BO3 clients had been used as injection references.
+The earlier investigation already used the pinned T7Patch-src Arxan.cpp pattern families listed above.
+Root also inspected BOIII's current Arxan component and Maurice Heumann's firsthand explanation.
+BOIII dispatches its checksum handling from post_unpack. The legacy path includes intact/split chained-store handlers.
+Its new-client path applies the three comparison pattern families. These branches do not establish stock Steam activation timing.
+The firsthand article describes correcting the computed checksum before its image-chain store.
+That is the same correction point independently validated in this project's fixed1069-site plan.
+Primary references:
+https://github.com/Ezz-lol/boiii-free/blob/main/src/client/component/arxan.cpp
+https://momo5502.com/posts/2022-11-17-reverse-engineering-integrity-checks-in-black-ops-3/
+Source inspection is research. No alternate client, third-party loader or new normal-game DLL was installed.

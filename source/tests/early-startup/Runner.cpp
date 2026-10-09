@@ -64,7 +64,7 @@ int wmain(int argc,wchar_t** argv) {
     try {
         Require(argc==3,"Use an owned startup case and a new private output path.");
         const std::wstring scenario=argv[1];const auto output=PrivateOutput(argv[2]);
-        const std::array cases{L"success",L"native-short",L"checksum-short",L"identity",L"original",L"overlap",L"frame",L"rollback",L"thaw",L"release"};
+        const std::array cases{L"success",L"native-short",L"checksum-short",L"identity",L"context",L"original",L"overlap",L"frame",L"rollback",L"thaw",L"release"};
         Require(std::find(cases.begin(),cases.end(),scenario)!=cases.end(),"Unknown early startup case.");
         wchar_t own[32768]{};Require(GetModuleFileNameW(nullptr,own,32768),"Cannot locate the owned startup fixture.");
         const auto directory=std::filesystem::path(own).parent_path();
@@ -96,6 +96,12 @@ int wmain(int argc,wchar_t** argv) {
             Require(native.size()==42,"The checksum planner did not receive the complete native recipe.");
             auto digest=bo3::early_integrity::kExecutableDigest;if(scenario==L"identity")digest[0]^=1;
             const auto checksumImage=ModuleBase(process,checksumFile);
+            if(scenario==L"context") {
+                const auto address=checksumImage+bo3::early_integrity::kGuards.front().rva;
+                auto byte=vm_startup::ReadStopped(process,address,1);byte.front()^=1;SIZE_T written{};
+                Require(WriteProcessMemory(process,reinterpret_cast<void*>(address),byte.data(),1,&written) && written==1,
+                    "Cannot seed the owned context mismatch.");
+            }
             SeedFixtureProtection(process,checksumImage);
             auto checksum=bo3::early_integrity::PrepareStopped(process,checksumImage,digest,native);
             observed.address=checksum.arena->address();observed.size=checksum.arena->size();
@@ -141,7 +147,7 @@ int wmain(int argc,wchar_t** argv) {
         bool passed=scenario==L"success"?!refused && exit==0 && receipt.job.released && receipt.job.committed:
             refused && exit==97 && receipt.job.terminated && !receipt.job.released;
         if(scenario==L"native-short")passed=passed && !observed.checksumCalled && receipt.job.patch.editsWritten==0;
-        else if(scenario==L"identity")passed=passed && observed.checksumCalled && !observed.address && receipt.job.patch.editsWritten==0;
+        else if(scenario==L"identity" || scenario==L"context")passed=passed && observed.checksumCalled && !observed.address && receipt.job.patch.editsWritten==0;
         else passed=passed && observed.arenaDestroyed;
         if(scenario==L"success" || scenario==L"thaw" || scenario==L"release")passed=passed && protectionsMatch
             && observed.retainedUnderFreeze && !observed.removedUnderFreeze
@@ -150,6 +156,14 @@ int wmain(int argc,wchar_t** argv) {
             && protectionsMatch && observed.removedUnderFreeze;
         if(scenario==L"checksum-short" || scenario==L"original" || scenario==L"overlap" || scenario==L"frame")
             passed=passed && receipt.job.patch.editsWritten==0 && observed.removedUnderFreeze;
+        if(scenario==L"context") {
+            Require(!receipt.checksumCapture.empty() && receipt.job.refusalReason.size()<=512,"The context refusal lost its capture.");
+            bo3::late_startup::PrivateReceipt privateReport(output.parent_path(),child);privateReport.Write(receipt);
+            auto captured=privateReport.Path();captured.replace_extension(L".checksum-guards.bin");
+            std::ifstream input(captured,std::ios::binary);std::vector<unsigned char> saved(receipt.checksumCapture.size());
+            input.read(reinterpret_cast<char*>(saved.data()),static_cast<std::streamsize>(saved.size()));
+            Require(input.good() && saved==receipt.checksumCapture,"The private frozen capture was not preserved.");
+        }
         Save(output.wstring()+L".before.bin",before);Save(output.wstring()+L".applied.bin",applied);Save(output.wstring()+L".restored.bin",restored);
         std::ofstream proof(output);proof<<"{\"passed\":"<<(passed?"true":"false")
             <<",\"arenaRemovedUnderFreeze\":"<<(observed.removedUnderFreeze?"true":"false")

@@ -22,6 +22,12 @@ require(p['timestamp']==0x693d731e and p['imageSize']==0x1d74b000,'Image identit
 require(len(p['guards'])==14683 and sum(len(g['pointers']) for g in p['guards'])==7950,'Guard inventory differs')
 require(p['siteCount']==len(p['sites'])==1069,'Checksum inventory differs')
 require(p['publicationCount']==1079 and p['arenaSize']==36864 and p['relayStride']==32,'Publication geometry differs')
+split=[s for s in p['sites'] if s['installerKind']=='split']
+require(len(split)==69 and sum(s['installerScanBytes']==19 for s in split)==39
+        and sum(s['installerScanBytes']==20 for s in split)==30,'AAE first-target scan inventory differs')
+guard_spans={(g['rva'],g['size']) for g in p['guards']}
+require(all((s['storeRva'],s['installerScanBytes']) in guard_spans for s in split),
+        'AAE consumed scan prefix lacks admission')
 def array(b):return '{'+','.join(f'0x{x:02x}' for x in b)+'}'
 lines=['#pragma once','#include "ProfileTypes.h"','namespace bo3::early_integrity {',
        f'inline constexpr std::array<Region,{len(p["regions"])}> kRegions{{{{']

@@ -10,7 +10,7 @@ FILES=('BO3-500K-Zombies.exe','Bo3EnhancedHelper.dll','Bo3StartupGate.dll','Deto
 CONTROLLERS=(FILES[0],'BO3-Integrity-Zombies.exe','BO3-Job-Zombies.exe','BO3-Late-Passive-Control.exe',
     'BO3-Late-Control.exe','BO3-Startup-Control.exe','BO3-Late-Zombies.exe','BO3-Enhanced-Zombies.exe')
 RECIPE_PATH=SOURCE/'SteamProfile.json'
-RECIPE_SHA256='e00898ce457b507acc694be8653105d2628f408d2fa92754a99cf89b6ff6b4f7'
+RECIPE_SHA256='dc849b0e3ebb11c691dd6ea1e4e4519141a3f2f922bd861e922b9c0c328a0283'
 
 
 def fixed_recipe() -> FixedSteamRecipe:

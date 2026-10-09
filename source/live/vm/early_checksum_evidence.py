@@ -9,7 +9,7 @@ from profile import integer
 
 METHOD='late-crt-job-freeze-early-checksum'
 GAME_SHA256='0b874dcc250848b7313ec13a0c76468dacc2009b5efa2bff4c587e169a9f77e0'
-PROFILE_SHA256='b79d9e3e8d257fa2df8198c11cd8fc65b6f7cff428bef7e4a7dcb3d6c3ed8093'
+PROFILE_SHA256='c1cae883d95a25184e2b1ec9f7d5539a1a548584688bfef41ef27dace1b5bd1d'
 ARENA_BYTES=36864
 
 @dataclass(frozen=True)

@@ -74,7 +74,7 @@ int wmain(int argc,wchar_t** argv) {
         }
         if(scenario==L"scan") {
             const auto& site=*std::find_if(integrity::kSites.begin(),integrity::kSites.end(),[](const auto& v){return v.splitInstaller;});
-            changeByte(site.storeRva+63);
+            changeByte(site.storeRva+18);
         }
         if(scenario==L"expected") {
             const std::uint32_t changed=0xabc12345;
@@ -121,6 +121,16 @@ int wmain(int argc,wchar_t** argv) {
                 if(scenario==L"rollback")throw std::runtime_error("Injected later failure.");
                 transaction.Commit();plan.arena->Commit();committed=true;
             }
+        } catch(const integrity::ContextMismatch& error) {
+            refused=true;failure=error.what();
+            size_t expected=128;for(const auto& guard:integrity::kGuards)expected+=20+guard.size;
+            Check(error.capture.size()==expected && std::memcmp(error.capture.data(),"BO3EGC01",8)==0,
+                "The frozen diagnostic capture is incomplete.");
+            Check(std::memcmp(error.capture.data()+24,integrity::kProfileId,64)==0,"The diagnostic profile binding differs.");
+            if(scenario==L"context")Check(failure.find("RVA "+std::to_string(integrity::kGuards.front().rva))!=std::string::npos
+                && failure.find(" expected=")!=std::string::npos && failure.find(" actual=")!=std::string::npos
+                && failure.find(" bytes=")!=std::string::npos && failure.size()<=512,"The bounded context diagnostic is incomplete.");
+            fprintf(stderr,"%s\n",failure.c_str());
         } catch(const std::exception& error){refused=true;failure=error.what();fprintf(stderr,"%s\n",failure.c_str());}
         const auto elapsed=std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now()-begin).count();
         Check(elapsed<30000,"Owned preparation exceeds stopped budget.");

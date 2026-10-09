@@ -3,8 +3,16 @@
 #include "Identity.h"
 #include "../vm_startup/DebugGate.h"
 #include <memory>
+#include <stdexcept>
+#include <string>
 
 namespace bo3::early_integrity {
+class ContextMismatch : public std::runtime_error {
+public:
+    const std::vector<unsigned char> capture;
+    ContextMismatch(std::string reason,std::vector<unsigned char> bytes)
+        :std::runtime_error(std::move(reason)),capture(std::move(bytes)) {}
+};
 // The caller retains the frozen, sole-child job through preparation and publication.
 // Release after PausedPatch rollback while the job is frozen. A failed rollback
 // requires child termination under that freeze; never thaw or release the gate.

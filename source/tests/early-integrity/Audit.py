@@ -26,6 +26,11 @@ installer = json.loads((audit / 'captured-aae-installer-proof.json').read_text()
 assert hashlib.sha256((audit / 'captured-aae-installer-proof.json').read_bytes()).hexdigest() == '46af4f98eda54d63bfc402e1a106d89ea2a9a6c8797e8e0e8f07c669a46d8633'
 prefixes = {p['storeRva']: p for p in installer['prefixes']}
 kinds = {e['gameRva']: t['kind'] for t in installer['tables'] for e in t['entries']}
+installer_image = (audit / 'captured-aae-image.bin').read_bytes()
+assert hashlib.sha256(installer_image).hexdigest() == 'd71c88061bfb1dd05730e2f5ac21483a51286d336935cacb903c35b58b9296dd'
+scanner_block = installer['blocks'][0]
+assert installer_image[scanner_block['moduleRva']:scanner_block['moduleRva']+scanner_block['size']].hex() == scanner_block['bytes']
+scanner_entry, scanner_selected, scanner_failed = 0x116fad, 0x116fe9, 0x117039
 mapping = json.loads((review/'setup-endpoint-mapping.json').read_text())
 endpoints = {r['setup']['rva']: r['mapping']['endpointRva'] for r in mapping['rows']}
 base = int(profile['captureIdentity']['imageBase'], 16)
@@ -34,6 +39,34 @@ registers = [UC_X86_REG_RAX, UC_X86_REG_RBX, UC_X86_REG_RCX, UC_X86_REG_RDX,
              UC_X86_REG_RBP, UC_X86_REG_RSP, UC_X86_REG_RSI, UC_X86_REG_RDI,
              UC_X86_REG_R8, UC_X86_REG_R9, UC_X86_REG_R10, UC_X86_REG_R11,
              UC_X86_REG_R12, UC_X86_REG_R13, UC_X86_REG_R14, UC_X86_REG_R15, UC_X86_REG_EFLAGS]
+
+def scan(raw):
+    """Run the captured AAE first-target search, stopping before wrapper construction."""
+    uc = Uc(UC_ARCH_X86, UC_MODE_64)
+    module_base, source_base = 0x180000000, 0x400000000
+    page = scanner_entry & ~4095
+    uc.mem_map(module_base+page, 8192)
+    uc.mem_write(module_base+page, installer_image[page:page+8192])
+    uc.mem_map(source_base, 4096)
+    uc.mem_write(source_base, raw)
+    uc.reg_write(UC_X86_REG_RDI, source_base)
+    reads, trace = [], []
+    def read(uc, access, address, size, value, user):
+        assert source_base <= address and address+size <= source_base+67, 'Unexpected AAE scan read'
+        reads.append((address-source_base, bytes(uc.mem_read(address, size)).hex()))
+    def code(uc, address, size, user):
+        trace.append(address-module_base)
+        if address in (module_base+scanner_selected, module_base+scanner_failed):
+            uc.emu_stop()
+    uc.hook_add(UC_HOOK_MEM_READ, read)
+    uc.hook_add(UC_HOOK_CODE, code)
+    uc.emu_start(module_base+scanner_entry, 0, count=1000)
+    assert trace[-1] == scanner_selected, 'AAE scanner did not select its first target'
+    offset = uc.reg_read(UC_X86_REG_RCX)-source_base
+    required = max(at+len(bytes.fromhex(value)) for at, value in reads)
+    assert required == offset+10 and required in (19, 20), 'AAE scanner read prefix differs'
+    return {'reads': reads, 'trace': trace, 'offset': offset, 'requiredPrefixBytes': required,
+            'targetRelativeToStore': uc.reg_read(UC_X86_REG_RDX)-source_base}
 
 def relay(row, at):
     lea_at = at + 9
@@ -138,20 +171,25 @@ for index, state in enumerate(states):
 assert len(rows) == len({r['leaRva'] for r in rows}) == 1069
 assert sum(r['adjacent'] for r in rows) == 998
 
-# Preserve the whole scan, including the original ADD admission word.
+# Preserve all 67 potential scan bytes against patch overlap. Hash only the bytes
+# actually read through the first selected target; later transport has its own guards.
+scan_proofs = []
 for row in rows:
     scan_end = row['storeRva'] + (67 if row['installerKind'] == 'split' else 7)
     assert not any(r['leaRva'] < scan_end and row['storeRva'] < r['leaRva']+7 for r in rows)
     if row['installerKind']=='split':
-        matches=[offset for offset in range(64)
-                 if image[row['storeRva']+offset+3]&0xf0==0x40
-                 and image[row['storeRva']+offset+4]==0x8d
-                 and image[row['storeRva']+offset+5]&0xc7==5]
-        assert matches and matches[0]+10<=67, 'First AAE scan target leaves its exact guard'
-        offset=matches[0]
-        target=row['storeRva']+offset+10+struct.unpack_from('<i',image,row['storeRva']+offset+6)[0]
+        raw = image[row['storeRva']:row['storeRva']+67]
+        proof = scan(raw)
+        count = proof['requiredPrefixBytes']
+        for fill in (0, 0xff, 0xa5):
+            assert scan(raw[:count]+bytes([fill])*(67-count)) == proof, 'AAE scanner consumed an unguarded tail'
+        row['installerScanBytes'] = count
+        target = row['storeRva']+proof['targetRelativeToStore']
         mapped=next(r['mapping']['trace'] for r in mapping['rows'] if r['setup']['rva']==row['setupRva'])
         assert target in {int(line.split()[0],16) for line in mapped}, 'AAE split target leaves the verified continuation'
+        scan_proofs.append({'storeRva': row['storeRva'], 'targetRva': target, 'scanner': proof,
+                            'tailMutationScenarios': 3})
+assert len(scan_proofs) == 69
 for row in rows:
     assert not any(row['leaRva']<site['rva']+site['size'] and site['rva']<row['leaRva']+7
                    for site in profile['sites']), 'A source hook overlaps an original evaluator'
@@ -193,7 +231,20 @@ for rec in eq['records']:
 for row in rows:
     add_guard(row['computedReadRva'], image[row['computedReadRva']:row['computedReadRva']+3])
     add_guard(row['leaRva'], image[row['leaRva']:row['leaRva']+7])
-    add_guard(row['storeRva'], image[row['storeRva']:row['storeRva']+(67 if row['installerKind']=='split' else 7)])
+    size = row['installerScanBytes'] if row['installerKind']=='split' else 7
+    add_guard(row['storeRva'], image[row['storeRva']:row['storeRva']+size])
+
+# Every executed transport instruction retains admission independent of the scan prefix.
+for row in rows:
+    if row['installerKind'] != 'split':
+        continue
+    mapped = next(r['mapping']['trace'] for r in mapping['rows'] if r['setup']['rva']==row['setupRva'])
+    for line in mapped:
+        at, raw = int(line.split()[0], 16), bytes.fromhex(line.split()[1])
+        if at < row['storeRva']+67 and row['storeRva'] < at+len(raw):
+            assert any(start <= at and at+len(raw) <= start+size
+                       and (start, size) != (row['storeRva'], row['installerScanBytes'])
+                       for start, size in guards), 'Executed AAE transport lost independent admission'
 
 result = {'schema': 1, 'executableSha256': profile['executableSha256'], 'timestamp': profile['timestamp'],
           'imageSize': len(image), 'siteCount': 1069, 'relayStride': 32, 'arenaSize': 36864,
@@ -203,6 +254,11 @@ args.output.mkdir(exist_ok=True)
 public_bytes=(json.dumps(result,indent=2)+'\n').encode()
 (args.output/'exact_build_profile.json').write_bytes(public_bytes)
 (args.output/'private-guards.json').write_text(json.dumps(list(private_guards.values()))+'\n')
+(args.output/'scan-input-proof.json').write_text(json.dumps({'passed': True, 'splitSites': 69,
+    'scenarios': 276, 'scope': 'Captured AAE first-target scanner emulator. No game execution.',
+    'scannerEntryModuleRva': scanner_entry, 'scannerSelectedModuleRva': scanner_selected,
+    'fullOverlapExclusionBytes': 67, 'executedTransportIndependentlyGuarded': True,
+    'proofs': scan_proofs}, indent=2)+'\n')
 (args.output/'flow-proof.json').write_text(json.dumps({'passed':True,'sites':1069,'transported':71,
     'scenarios':3207,'scope':'Independent Unicorn execution of exact saved setup instructions. No game execution.',
     'profileSha256':hashlib.sha256(public_bytes).hexdigest(),'proofs':proofs},indent=2)+'\n')

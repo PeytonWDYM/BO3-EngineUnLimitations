@@ -1,4 +1,4 @@
-The optional 500K launcher is built and reviewed. It remains a candidate for manual game validation.
+The optional 500K launcher remains a candidate for manual game validation.
 It applies the complete VM, client-root and migration plan before the first native allocation.
 Early checksum relays repair computed values before their chained stores and preserve AAE's later hook sites.
 The game executable and Workshop assets stay unchanged.
@@ -24,7 +24,14 @@ The fixed candidate has 500,000 usable server script slots, 18 client roots and 
 Client VM capacity stays at 64,999 usable slots. This does not expand the actor pool.
 Peer compatibility requires a match test. Friends may use the same candidate, but matching patches alone do not prove compatibility.
 
-Nineteen checksum groups, ten combined transaction groups and five Steam transport groups passed independent review.
+The first actual Steam launch refused during checksum preparation with zero patch writes.
+The launcher terminated its frozen child without a commit, thaw or gate release.
+That receipt does not establish a game integrity crash.
+The revised profile guards the exact bytes AAE's scanner reads before it selects its first target.
+Separate guards still cover every executed continuation instruction. All 67 possible split scan bytes remain unchanged.
+A new context refusal records the exact RVA, hashes and bytes, plus a private frozen guard capture.
+
+Nineteen checksum groups, eleven combined transaction groups and five Steam transport groups cover the candidate.
 The checksum proof covers 1,069 sites, 3,207 saved-code scenarios and 6,414 authored native executions.
 The read-only monitor verifies the exact process receipt, all source hooks, the complete relay arena,
 the helper boot/configuration and nineteen capacity instructions before it reads the expanded pool.

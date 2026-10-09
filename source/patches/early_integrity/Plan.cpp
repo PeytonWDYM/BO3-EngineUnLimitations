@@ -10,6 +10,33 @@
 namespace bo3::early_integrity {
 namespace {
 void Require(bool value,const char* message) {if(!value)throw std::runtime_error(message);}
+std::string Hex(std::span<const unsigned char> bytes) {
+    constexpr char digits[]="0123456789abcdef";
+    std::string result;result.reserve(bytes.size()*2);
+    for(const auto byte:bytes){result+=digits[byte>>4];result+=digits[byte&15];}
+    return result;
+}
+std::vector<unsigned char> CaptureGuards(HANDLE process,std::uintptr_t imageBase) {
+    std::vector<unsigned char> result;result.reserve(1024*1024);
+    const auto append=[&](const auto& value) {
+        const auto* begin=reinterpret_cast<const unsigned char*>(&value);
+        result.insert(result.end(),begin,begin+sizeof(value));
+    };
+    const char magic[8]{'B','O','3','E','G','C','0','1'};
+    append(magic);append(std::uint32_t{1});append(static_cast<std::uint32_t>(kGuards.size()));append(imageBase);
+    result.insert(result.end(),kProfileId,kProfileId+64);
+    result.insert(result.end(),kExecutableDigest.begin(),kExecutableDigest.end());
+    append(kTimestamp);append(kImageSize);
+    for(const auto& guard:kGuards) {
+        MEMORY_BASIC_INFORMATION memory{};
+        Require(VirtualQueryEx(process,reinterpret_cast<void*>(imageBase+guard.rva),&memory,sizeof(memory))==sizeof(memory),
+            "Cannot query a frozen checksum diagnostic span.");
+        append(guard.rva);append(guard.size);append(memory.State);append(memory.Type);append(memory.Protect);
+        const auto bytes=vm_startup::ReadStopped(process,imageBase+guard.rva,guard.size);
+        result.insert(result.end(),bytes.begin(),bytes.end());
+    }
+    return result;
+}
 std::int32_t Relative(std::uintptr_t destination,std::uintptr_t next) {
     if(destination>=next) {
         Require(destination-next<=INT32_MAX,"Early integrity displacement is unreachable.");
@@ -159,7 +186,9 @@ PreparedPlan PrepareStopped(HANDLE process,std::uintptr_t imageBase,
             std::fill_n(bytes.begin()+pointer.offset,8,static_cast<unsigned char>(0));
             priorEnd=pointer.offset+8;
         }
-        Require(hasher.Hash(bytes)==guard.digest,"Early integrity context differs.");
+        const auto actual=hasher.Hash(bytes);
+        if(actual!=guard.digest)throw ContextMismatch("Early integrity context differs at RVA "+std::to_string(guard.rva)
+            +" expected="+Hex(guard.digest)+" actual="+Hex(actual)+" bytes="+Hex(bytes),CaptureGuards(process,imageBase));
     }
     for(size_t index=0;index<kSites.size();++index) {
         const auto& site=kSites[index];

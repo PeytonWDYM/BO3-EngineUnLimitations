@@ -13,11 +13,15 @@ void Coordinate(late_startup::OwnedChild& child,job_startup::OwnedJob& job,late_
         auto plan=prepare(process,image,patchReceipt);
         Require(plan.edits.size()==kNativeEdits && plan.relay && !plan.commitResources,
             "The original complete 42-edit native recipe is required.");
+        auto checksum=[&] {
+            try {
 #ifdef BO3_EARLY_OWNED_TEST
-        auto checksum=ownedPrepare(process,image,digest,plan.edits);
+                return ownedPrepare(process,image,digest,plan.edits);
 #else
-        auto checksum=early_integrity::PrepareStopped(process,image,digest,plan.edits);
+                return early_integrity::PrepareStopped(process,image,digest,plan.edits);
 #endif
+            }catch(const early_integrity::ContextMismatch& error){receipt.checksumCapture=error.capture;throw;}
+        }();
         Require(checksum.edits.size()==early_integrity::kPublicationCount && checksum.arena,
             "The complete early checksum recipe is required.");
         receipt.checksumArena=checksum.arena->address();
@@ -41,6 +45,7 @@ void WriteReceipt(std::ostream& out,const Receipt& receipt) {
        <<",\"checksumSitesRequired\":"<<early_integrity::kSiteCount
        <<",\"checksumEditsPrepared\":"<<receipt.checksumEdits
        <<",\"checksumArena\":"<<receipt.checksumArena<<",\"checksumArenaBytes\":"<<receipt.checksumArenaBytes
+       <<",\"checksumCaptureBytes\":"<<receipt.checksumCapture.size()
        <<",\"nativeEditsRequired\":"<<kNativeEdits
        <<",\"combinedEditsRequired\":"<<kNativeEdits+early_integrity::kPublicationCount
        <<",\"checksumReapplication\":false,\"aaeStoreSitesPreserved\":"<<(receipt.checksumAdmitted?"true":"false")<<'}';

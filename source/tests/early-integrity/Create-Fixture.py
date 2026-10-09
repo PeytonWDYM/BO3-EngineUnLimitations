@@ -29,6 +29,10 @@ def place(rva,raw):
             data[rva-start:rva-start+len(raw)]=raw
             return
     raise ValueError(f'Fixture seed leaves owned sections: {rva:x}')
+for site in p['sites']:
+    rva=site['storeRva']
+    size=67 if site['installerKind']=='split' else 7
+    place(rva,capture[rva:rva+size])
 for g in guards:
     place(g['rva'],bytes.fromhex(g['bytes']))
 for site in p['sites']:

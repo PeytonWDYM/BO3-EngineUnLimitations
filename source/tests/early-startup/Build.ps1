@@ -33,7 +33,7 @@ $sources=Compile-EarlyStartup -Repo $repo -Output $output -DetoursRoot $DetoursR
 & $Python -B (Join-Path $repo 'source/launch/early_startup/Audit-Artifact.py') --directory $output --owned
 if($LASTEXITCODE -ne 0){throw 'The owned startup artifact audit failed.'}
 $cases=@()
-foreach($case in @('success','native-short','checksum-short','identity','original','overlap','frame','rollback','thaw','release')) {
+foreach($case in @('success','native-short','checksum-short','identity','context','original','overlap','frame','rollback','thaw','release')) {
     & "$output/EarlyStartupOwned.exe" $case "$output/$case.json"
     if($LASTEXITCODE -ne 0){throw "Owned early startup case failed: $case"}
     $cases+=Get-Content "$output/$case.json" -Raw | ConvertFrom-Json

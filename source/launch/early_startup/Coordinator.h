@@ -10,6 +10,7 @@ struct Receipt {
     bool checksumAdmitted=false;
     std::uintptr_t checksumArena{};
     std::size_t checksumArenaBytes{},checksumEdits{};
+    std::vector<unsigned char> checksumCapture;
 };
 void Coordinate(late_startup::OwnedChild&,job_startup::OwnedJob&,late_startup::MappedGate&,
     const late_startup::PreparePlan&,const std::array<unsigned char,32>& verifiedDigest,Receipt&);
