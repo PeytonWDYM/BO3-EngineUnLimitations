@@ -60,6 +60,12 @@ pwsh -NoProfile -File scripts/release/Build-Native.ps1 -Output C:/private/bo3-na
 The native source build produces an unvalidated candidate. It does not update the release's approved file hashes.
 Download the native developer ZIP from the test release to rebuild the installer with the approved payload.
 
+## License
+
+This project's source code uses the [MIT License](LICENSE).
+You can use, modify, distribute, and sell it. Keep the copyright and license notice with copies.
+Third-party components retain their own licenses.
+
 ## Credits
 
 Microsoft supplies [Detours](https://github.com/microsoft/Detours).
