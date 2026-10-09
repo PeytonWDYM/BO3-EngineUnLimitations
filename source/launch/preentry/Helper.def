@@ -1,6 +1,0 @@
-LIBRARY PreentryHelper64
-EXPORTS
-    FixtureImportOrdinal @1
-    AcquireFixtureReference
-    ReleaseFixtureReference
-    RemoveFixtureInstrumentation

@@ -6,7 +6,7 @@ import os
 from pathlib import Path
 import re
 
-from patcher.engine import PatchError
+from patcher.errors import PatchError
 
 
 @dataclass(frozen=True)
@@ -67,7 +67,7 @@ def game_running(executable_name: str = "BlackOps3.exe") -> bool:
         api.CloseHandle(handle)
 
 
-def steam_installs() -> list[dict[str, Path]]:
+def steam_installs() -> list[Path]:
     if os.name != "nt":
         return []
     try:
@@ -85,8 +85,7 @@ def steam_installs() -> list[dict[str, Path]]:
         if identity in seen:
             continue
         seen.add(identity)
-        workshop = library / "steamapps/workshop/content/311210/2631943123"
         game = library / "steamapps/common/Call of Duty Black Ops III"
-        if workshop.is_dir() or game.is_dir():
-            results.append({"workshop": workshop, "game": game})
+        if game.is_dir():
+            results.append(game)
     return results

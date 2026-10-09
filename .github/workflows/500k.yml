@@ -1,0 +1,83 @@
+name: BO3 500K
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: bo3-500k-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  installer:
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.13'
+      - name: Test owned Steam transactions
+        run: python -B source/tests/Test-Installer.py --output "${{ runner.temp }}/installer-tests"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        if: always()
+        with:
+          name: installer-${{ matrix.os }}
+          path: ${{ runner.temp }}/installer-tests/result.json
+          if-no-files-found: warn
+
+  native:
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.13'
+          architecture: x64
+      - name: Install pinned native build dependencies
+        run: python -m pip install --require-hashes --only-binary=:all: -r scripts/release/requirements-native.txt
+      - name: Build official Detours
+        shell: pwsh
+        run: |
+          $detours = Join-Path $env:RUNNER_TEMP 'Detours'
+          git clone https://github.com/microsoft/Detours.git $detours
+          if ($LASTEXITCODE -ne 0) { throw 'Detours clone failed.' }
+          git -C $detours checkout e4bfd6b03e50de46b47abfbd1e46b384f0c5f833
+          if ($LASTEXITCODE -ne 0) { throw 'Detours checkout failed.' }
+          $vswhere = Join-Path ${env:ProgramFiles(x86)} 'Microsoft Visual Studio/Installer/vswhere.exe'
+          $installation = & $vswhere -latest -products '*' -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath
+          Push-Location (Join-Path $detours 'src')
+          try {
+            cmd /c "`"$installation\VC\Auxiliary\Build\vcvars64.bat`" > nul && nmake /nologo"
+            if ($LASTEXITCODE -ne 0) { throw 'Detours build failed.' }
+          } finally { Pop-Location }
+      - name: Rebuild and audit the native launcher
+        shell: pwsh
+        run: ./scripts/release/Build-Native.ps1 -Output (Join-Path $env:RUNNER_TEMP 'native-build') -DetoursRoot (Join-Path $env:RUNNER_TEMP 'Detours') -Python python
+      - name: Test expanded state and migration transactions
+        shell: pwsh
+        run: |
+          ./source/tests/vm-pool/Test-StateAdapter.ps1 -OutputDirectory (Join-Path $env:RUNNER_TEMP 'state-tests') -Python python
+          ./source/tests/vm-migration/Build-Admission.ps1 -OutputDirectory (Join-Path $env:RUNNER_TEMP 'migration-tests') -Python python
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        if: always()
+        with:
+          name: native-build-and-tests
+          path: |
+            ${{ runner.temp }}/native-build/artifact-audit.json
+            ${{ runner.temp }}/native-build/build-receipt.json
+            ${{ runner.temp }}/state-tests/result.json
+            ${{ runner.temp }}/migration-tests/result.json
+          if-no-files-found: warn

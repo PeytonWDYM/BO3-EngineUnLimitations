@@ -1,8 +1,0 @@
-LIBRARY StartupFactories
-EXPORTS
-    StartupState
-    StartupEvent
-    SetMemoryFactories
-    OwnedCoCreateInstance
-    OwnedDirectSoundCreate8 @11 NONAME
-    OwnedDirectSoundCreate8Named=OwnedDirectSoundCreate8
