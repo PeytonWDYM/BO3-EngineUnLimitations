@@ -1,0 +1,14 @@
+IMAGE MEMORY: FAILURE CASES BEFORE IMPLEMENTATION
+
+Private Proton run native-5 refused before publication: RVA 23848, Protect=128.
+Wine maps writable executable PE sections with PAGE_EXECUTE_WRITECOPY (128).
+Windows' existing PAGE_EXECUTE_READWRITE admission remains unchanged.
+
+1. Admit committed executable copy-on-write image pages only on Wine.
+2. Refuse a foreign allocation base, MEM_PRIVATE, MEM_MAPPED, and uncommitted pages.
+3. Refuse non-executable, inaccessible, guarded or modified protection flags.
+4. Check the entire span: a second page with unsuitable protection must refuse.
+5. Refuse empty spans and overflowing addresses before querying memory.
+6. Publication onto an admitted image must read back and restore PAGE_EXECUTE_WRITECOPY.
+7. Rollback must restore both original bytes and original protection on that image.
+8. Retain every existing code digest, image pointer, site byte and overlap check.

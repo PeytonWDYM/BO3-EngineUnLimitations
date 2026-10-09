@@ -29,7 +29,7 @@ try {
     & $compiler @flags /LD @helper @objects $library "/Fo$build/" "/Fe$build/Bo3EnhancedHelper.dll" /link "/DEF:$repo/source/launch/enhanced/Helper.def" /INCREMENTAL:NO /Brepro
     if ($LASTEXITCODE -ne 0) { throw 'Native helper compilation failed.' }
     Copy-Item -LiteralPath (Join-Path $repo 'source/profiles/ProbeProfile.h'),(Join-Path $repo 'source/profiles/GateProfile.h') -Destination $build
-    $gate=@('Helper','Admission','Gate','NativeEntry') | ForEach-Object {Join-Path $repo "source/launch/startup_gate/$_.cpp"}
+    $gate=@('Helper','Admission','Gate','NativeEntry','LoaderSafety') | ForEach-Object {Join-Path $repo "source/launch/startup_gate/$_.cpp"}
     $gate+=Join-Path $repo 'source/launch/startup_probe/Observation.cpp'
     & $compiler @flags /LD @gate $library OneCore.lib "/Fo$build/" "/Fe$build/Bo3StartupGate.dll" /link "/DEF:$repo/source/launch/startup_gate/Helper.def" /INCREMENTAL:NO /Brepro
     if ($LASTEXITCODE -ne 0) { throw 'Startup gate compilation failed.' }
@@ -57,6 +57,7 @@ try {
     $launcher+=@('vm_startup/PausedPatch','vm_startup/NativePlan','vm_startup/NearRelay','vm_migration/MigrationPlan') | ForEach-Object {Join-Path $repo "source/patches/$_.cpp"}
     $launcher+=@('Integration','Launcher') | ForEach-Object {Join-Path $repo "source/launch/early_startup/$_.cpp"}
     $launcher+=Join-Path $repo 'source/patches/early_integrity/Plan.cpp'
+    $launcher+=Join-Path $repo 'source/patches/early_integrity/ImageMemory.cpp'
     & $compiler @flags /DBO3_JOB_STARTUP /DBO3_EARLY_STARTUP "/I$repo/source/patches/early_integrity" @launcher $library "/Fo$build/" "/Fe$build/BO3-500K-Zombies.exe" /link bcrypt.lib shell32.lib ole32.lib dbghelp.lib /OPT:REF /INCREMENTAL:NO /Brepro
     if ($LASTEXITCODE -ne 0) { throw '500K launcher compilation failed.' }
     Copy-Item -LiteralPath (Join-Path $DetoursRoot 'LICENSE.md') -Destination (Join-Path $build 'Detours-LICENSE.md')

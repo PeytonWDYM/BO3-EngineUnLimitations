@@ -1,4 +1,5 @@
 #include "Plan.h"
+#include "ImageMemory.h"
 #include "EarlyIntegrityProfile.h"
 #include "../vm_startup/PausedPatch.h"
 #include <bcrypt.h>
@@ -54,22 +55,11 @@ void Exclude(std::uintptr_t address,size_t size,std::span<const vm_startup::Addr
     for(const auto& edit:edits)Require(!Overlap(address,size,edit),"Early integrity context overlaps an existing edit.");
 }
 void ImageMemory(HANDLE process,std::uintptr_t imageBase,std::uintptr_t address,size_t size,bool code) {
+    RequireImageMemory(process,imageBase,address,size);
     const auto end=address+size;
-    while(address<end) {
-        MEMORY_BASIC_INFORMATION memory{};
-        Require(VirtualQueryEx(process,reinterpret_cast<void*>(address),&memory,sizeof(memory))==sizeof(memory),"Cannot query early integrity image memory.");
-        if(memory.State!=MEM_COMMIT || memory.Type!=MEM_IMAGE || memory.Protect!=PAGE_EXECUTE_READWRITE
-            || reinterpret_cast<std::uintptr_t>(memory.AllocationBase)!=imageBase)
-            throw std::runtime_error("Early integrity image ownership or protection differs at RVA "
-                +std::to_string(address-imageBase)+", protection "+std::to_string(memory.Protect)+".");
-        const auto start=reinterpret_cast<std::uintptr_t>(memory.BaseAddress);
-        Require(start<=address && memory.RegionSize && start<=UINTPTR_MAX-memory.RegionSize
-            && address<start+memory.RegionSize,"Early integrity memory region is invalid.");
-        if(code)Require(std::any_of(kRegions.begin(),kRegions.end(),[&](const Region& r){
+    if(code)Require(std::any_of(kRegions.begin(),kRegions.end(),[&](const Region& r){
             return address>=imageBase+r.rva && end<=imageBase+r.rva+r.size;
         }),"Early integrity guard leaves the fixed code regions.");
-        address=std::min(end,start+memory.RegionSize);
-    }
 }
 struct Hasher {
     BCRYPT_ALG_HANDLE algorithm{};

@@ -11,6 +11,8 @@ parser.add_argument("--directory", type=Path, required=True)
 parser.add_argument("--owned", action="store_true")
 args = parser.parse_args()
 name = "EarlyStartupOwned.exe" if args.owned else "BO3-500K-Zombies.exe"
+# The Wine fallback in process_freeze resolves NtSuspendProcess and NtResumeProcess at run time, only after
+# the job freeze reports STATUS_NOT_IMPLEMENTED under Wine. The launcher must still never import them.
 forbidden_apis = {"DebugActiveProcess", "DebugActiveProcessStop", "DebugSetProcessKillOnExit",
                   "WaitForDebugEvent", "WaitForDebugEventEx", "ContinueDebugEvent", "SetThreadContext",
                   "Wow64SetThreadContext", "PssCaptureSnapshot", "SuspendThread", "NtSuspendProcess",

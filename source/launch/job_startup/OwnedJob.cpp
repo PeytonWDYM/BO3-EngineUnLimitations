@@ -32,13 +32,21 @@ void OwnedJob::Verify(HANDLE process) const {
     Require(QueryInformationJobObject(job_,JobObjectBasicProcessIdList,&members,sizeof(members),nullptr)!=FALSE
         && members.assigned==1 && members.listed==1 && members.pids[0]==identity_.pid,
         "The startup job must contain exactly its owned child.");
+    if(suspend_.Active())suspend_.Verify();
 }
 NTSTATUS OwnedJob::Freeze(HANDLE process,bool freeze) {
     Verify(process);
 #ifdef BO3_JOB_OWNED_TEST
     if(freeze && ownedFreezeStatus_)return ownedFreezeStatus_;
 #endif
-    return process_freeze::ChangeOwnedJobFreeze(api_,job_,process,identity_,freeze);
+    if(suspend_.Active()) {
+        Require(!freeze,"The owned process is already suspended.");
+        return suspend_.Resume(process);
+    }
+    const auto status=process_freeze::ChangeOwnedJobFreeze(api_,job_,process,identity_,freeze);
+    if(status!=process_freeze::kNotImplemented || !freeze || !process_freeze::WineNtdll())return status;
+    // Proton has no job freeze. Suspend the sole member instead; Verify then refuses any thread change.
+    return suspend_.Suspend(process,identity_);
 }
 void OwnedJob::Kill(){Require(TerminateJobObject(job_,97)!=FALSE,"Cannot stop the owned startup job.");}
 #ifdef BO3_JOB_OWNED_TEST

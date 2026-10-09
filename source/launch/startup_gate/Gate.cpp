@@ -1,5 +1,6 @@
 #include "Gate.h"
 #include "Admission.h"
+#include "LoaderSafety.h"
 #include "NativeEntry.h"
 #include "../startup_probe/Observation.h"
 #include "ProbeProfile.h"
@@ -33,7 +34,7 @@ void Enter(std::uintptr_t returnSite,std::uintptr_t apiReturnSlot) {
     if(slot<low || high<sizeof(outer) || slot>high-sizeof(outer)
         || !ReadProcessMemory(GetCurrentProcess(),reinterpret_cast<void*>(slot),&outer,sizeof(outer),&count)
         || count!=sizeof(outer) || outer!=base+kCrtReturnRva) return;
-    if(loaderCallout()) return;
+    if(WithinLoaderCallout()) return;
     if(!HasNativeEntry(state)) return;
     if(InterlockedCompareExchange(&state.phase,static_cast<LONG>(Phase::Cold),static_cast<LONG>(Phase::Armed))
         !=static_cast<LONG>(Phase::Armed)) return;

@@ -14,7 +14,7 @@ struct Receipt {
     bool jobAssigned=false,freezeAttempted=false,frozen=false,membershipVerified=false;
     bool primaryAdmitted=false,thawAttempted=false,thawed=false;
     bool committed=false,debuggerAbsent=false,released=false,terminated=false,relayFreed=false;
-    bool cleanupFailed=false;
+    bool cleanupFailed=false,processSuspended=false;
     std::string stage="created",refusalReason,unwindReason;
     std::uintptr_t unwindLookupPc{};
     unsigned int runtimeMetadataReads{},runtimeMetadataMask{};

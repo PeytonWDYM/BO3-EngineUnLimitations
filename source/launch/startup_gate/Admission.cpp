@@ -1,12 +1,12 @@
 #include "Admission.h"
 #include "GateProfile.h"
+#include "LoaderSafety.h"
 #include <detours.h>
 #include <winternl.h>
 #include <cstring>
 
 namespace bo3::startup_gate {
 constinit Payload configuration{};
-constinit LoaderCallout loaderCallout{};
 namespace {
 using QueryObject=NTSTATUS(NTAPI*)(HANDLE,OBJECT_INFORMATION_CLASS,PVOID,ULONG,PULONG);
 bool TypedHandle(QueryObject query,std::uint64_t value,const wchar_t* expected,USHORT characters,ACCESS_MASK rights) {
@@ -44,9 +44,8 @@ bool AdmitPayload() {
     if(!GetProcessTimes(GetCurrentProcess(),&created,&exited,&kernel,&user)
         || ((std::uint64_t(created.dwHighDateTime)<<32)|created.dwLowDateTime)!=p.processCreatedFileTime) return false;
     const auto ntdll=GetModuleHandleW(L"ntdll.dll");
-    loaderCallout=reinterpret_cast<LoaderCallout>(GetProcAddress(ntdll,kLoaderQueryName));
     const auto query=reinterpret_cast<QueryObject>(GetProcAddress(ntdll,"NtQueryObject"));
-    if(!loaderCallout || !query) return false;
+    if(!AdmitLoaderSafety() || !query) return false;
     if(!TypedHandle(query,p.readyEvent,L"Event",5,EVENT_MODIFY_STATE|SYNCHRONIZE)
         || !TypedHandle(query,p.releaseEvent,L"Event",5,SYNCHRONIZE)
         || !TypedHandle(query,p.parentProcess,L"Process",7,SYNCHRONIZE|PROCESS_QUERY_LIMITED_INFORMATION)) return false;

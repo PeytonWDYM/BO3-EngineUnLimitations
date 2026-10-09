@@ -1,0 +1,18 @@
+WINE PROCESS SUSPEND: FAILURE CASES BEFORE IMPLEMENTATION
+
+Wine and Proton return STATUS_NOT_IMPLEMENTED for the job freeze. The fallback suspends the owned process with
+NtSuspendProcess. That call suspends only the threads that exist, so the fallback records the thread set and
+rechecks it before commit.
+
+1. Suspend a child with busy worker threads. Its shared counter must not advance while suspended.
+2. Return only after every thread has stopped. Reading each thread context waits for the stop on Wine.
+3. Resume the child. Its counter must advance again.
+4. A thread created in the child while it is suspended changes the thread set. Verification must refuse.
+5. A thread that ends while the child is suspended changes the thread set. Verification must refuse.
+6. Refuse a second suspend while one is active, and a resume without an active suspend.
+7. Refuse a process whose identity differs from the owned identity before suspending it.
+8. Use the fallback only when the job freeze returns STATUS_NOT_IMPLEMENTED and ntdll is Wine's.
+   Windows keeps the job freeze and never suspends by process.
+9. Keep the original refusal path: a refused transaction is never resumed. The job kills the suspended child.
+10. A thread created after the initial inventory but before NtSuspendProcess must be refused,
+    even if the syscall stopped it. Do not adopt a changed inventory as the original set.

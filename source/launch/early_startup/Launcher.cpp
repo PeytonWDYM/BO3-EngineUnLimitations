@@ -11,6 +11,13 @@ namespace {struct Locks {std::vector<HANDLE> values;~Locks(){for(const auto hand
 int wmain(int argc,wchar_t** argv) {
     try {
         Require(argc>=2,"Use BO3-500K-Zombies.exe <BlackOps3.exe> [game arguments].");
+        if(std::wstring_view(argv[1])==L"--verify-build") {
+            Require(argc==3,"Use BO3-500K-Zombies.exe --verify-build <BlackOps3.exe>.");
+            Locks locks;locks.values.reserve(1);
+            const auto digest=VerifyGameBuild(std::filesystem::canonical(argv[2]),kGameTimestamp,kGameImageSize,locks.values);
+            std::cout<<"Profiled PE build verified. SHA256: "<<digest<<'\n';
+            return 0;
+        }
         bo3::enhanced::LaunchLease lease;
         const auto game=std::filesystem::canonical(argv[1]);
         std::array<wchar_t,32768> own{};

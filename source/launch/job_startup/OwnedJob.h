@@ -8,6 +8,8 @@ class OwnedJob {
     process_freeze::NativeJobApi api_;
     HANDLE job_{};
     process_freeze::Identity identity_{};
+    // Used only when Wine reports the job freeze as not implemented.
+    process_freeze::ProcessSuspend suspend_;
 #ifdef BO3_JOB_OWNED_TEST
     NTSTATUS ownedFreezeStatus_{};
 #endif
@@ -18,6 +20,7 @@ public:
     void Verify(HANDLE process) const;
     NTSTATUS Freeze(HANDLE process,bool freeze);
     void Kill();
+    bool ProcessSuspended() const {return suspend_.Active();}
 #ifdef BO3_JOB_OWNED_TEST
     void AddOwnedMember(HANDLE process);
     void SetOwnedFreezeStatus(NTSTATUS status){ownedFreezeStatus_=status;}

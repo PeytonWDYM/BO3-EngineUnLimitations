@@ -1,0 +1,15 @@
+LOADER SAFETY: FAILURE CASES BEFORE IMPLEMENTATION
+
+Proton does not export RtlIsThreadWithinLoaderCallout. Preserve the rule that the gate
+must never wait on its parent while the current thread owns the loader lock.
+
+1. An uninitialized query must report unsafe, never permit a wait.
+2. Initialization in DLL_PROCESS_ATTACH must succeed on Windows and Wine. The query
+   must report unsafe inside process attach and safe after LoadLibrary returns.
+3. DLL_THREAD_ATTACH must report unsafe, and the worker must report safe after entry.
+4. Explicit, recursively held loader locks must remain unsafe through the first unlock;
+   the query becomes safe only after the final unlock. Querying must not change ownership.
+5. Missing platform exports, an unreadable PEB or lock, and a mismatched Wine x64 ABI
+   must refuse initialization. Windows must never select the Wine fallback.
+6. Existing image, payload, entry-anchor, caller-byte and native-unwind guards remain
+   mandatory. Record any additional Proton refusal before changing those paths.

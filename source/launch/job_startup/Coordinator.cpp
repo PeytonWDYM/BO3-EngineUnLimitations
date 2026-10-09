@@ -48,6 +48,7 @@ void Coordinate(late_startup::OwnedChild& child,OwnedJob& job,late_startup::Mapp
         receipt.stage="job-freeze";
         receipt.freezeAttempted=true;receipt.freezeStatus=job.Freeze(child.process.hProcess,true);
         Require(receipt.freezeStatus==0,"The job freeze did not return STATUS_SUCCESS.");receipt.frozen=true;
+        receipt.processSuspended=job.ProcessSuspended();
         job.Verify(child.process.hProcess);receipt.membershipVerified=true;
         DebuggerAbsent(child.process.hProcess);gate.Admit(child.process.hProcess);
         gate.VerifyWaiting(child.process.hProcess,child.payload,receipt.generation);
@@ -133,6 +134,7 @@ void WriteReceipt(std::ostream& out,const Receipt& r,std::string_view method) {
     out<<",\"executableSha256\":\""<<r.gameSha256<<"\",\"helperSha256\":\""<<kHelperHash<<"\",\"gateSha256\":\""<<kGateHash<<'"'
        <<",\"generation\":"<<r.generation<<",\"imageBase\":"<<r.patch.imageBase<<",\"helperBase\":"<<r.helperBase<<",\"gateBase\":"<<r.gateBase
        <<",\"jobOwned\":"<<yes(r.jobAssigned)<<",\"jobParentOnly\":true,\"killOnJobClose\":true"
+       <<",\"freezeBackend\":\""<<(r.processSuspended?"wine-process-suspend":"job-freeze")<<'"'
        <<",\"freezeAttempted\":"<<yes(r.freezeAttempted)<<",\"freezeStatus\":"<<r.freezeStatus<<",\"frozenForTransaction\":"<<yes(r.frozen)
        <<",\"jobMembershipVerified\":"<<yes(r.membershipVerified)<<",\"threadsObserved\":"<<r.threadsObserved<<",\"primaryPc\":"<<r.primaryPc
        <<",\"primaryOnlyAdmitted\":"<<yes(r.primaryAdmitted)<<",\"thawAttempted\":"<<yes(r.thawAttempted)<<",\"thawStatus\":"<<r.thawStatus

@@ -34,9 +34,16 @@ Other versions, including future updates, require separately verified native pro
 The installer and launcher refuse unknown versions before patch writes.
 They do not reuse offsets from another game build.
 
-**Linux / Proton:** unsupported in this release.
-The startup transaction requires job freezing that [Valve's Wine backend](https://github.com/ValveSoftware/wine/blob/bleeding-edge/dlls/ntdll/unix/sync.c) does not implement.
-A Proton release needs another verified startup backend and game tests.
+**Linux / Proton:** the source contains an experimental startup backend. Released packages remain unvalidated for Proton.
+When Wine returns `STATUS_NOT_IMPLEMENTED` for job freezing, the launcher suspends its owned process and verifies that every existing thread has stopped and the thread inventory stays unchanged.
+The job still owns exactly one game process and kills it on refusal or launcher exit.
+Windows retains job freezing. Wine also gets a checked loader-lock query and admission for executable copy-on-write image pages; all existing native code guards remain required.
+
+A private test on Proton Experimental `experimental-11.0-20261001-x86_64` committed all 1,121 startup edits and reached a vanilla Shadows of Evil solo match.
+A read-only check verified all 19 server-count instructions, the complete 32,000,064-byte server pool, its 2,000,004-byte hash allocation, and the free-slot chain through slot 500,000.
+This verifies startup and live allocation in that session, not full compatibility.
+The session reported UI Error 46507 when opening the pause menu. Full All-around Enhancement loaded a map and opened its pause menu on the same downgraded executable without 500K, but loading it with 500K quit the game. Its compatibility with this patch is unresolved. Save data, matching peers, host migration, and other Proton versions remain unverified.
+Use a private game copy and prefix for further tests. The Windows setup executable still refuses Wine.
 
 ## Build and contribute
 
@@ -86,7 +93,20 @@ The scripts look for msvc-wine in `~/msvc`. Set `MSVC_ROOT` to use another folde
 Test programs run through Wine.
 
 `source/tests/game-identity/Test-LauncherIdentity.py` runs a built launcher through Wine against private copies of your game executable.
-It checks that copies of the profiled build are admitted and other builds are refused before launch. Use a private `WINEPREFIX`.
+It uses `--verify-build` to check PE identity without starting the game or writing patches.
+Copies of the profiled build are admitted and other builds are refused. Runtime code admission is checked separately. Use a private `WINEPREFIX`.
+
+The Proton startup fixtures exercise stopped worker threads, changed thread inventories, loader-lock ownership, image protections, publication, and rollback:
+
+```sh
+WINEPREFIX=~/private/wineprefix pwsh -NoProfile -File source/tests/process-freeze/Test-ProcessSuspend.ps1 -OutputDirectory ~/private/suspend-tests
+WINEPREFIX=~/private/wineprefix pwsh -NoProfile -File source/tests/startup-loader/Test-LoaderSafety.ps1 -OutputDirectory ~/private/loader-tests
+WINEPREFIX=~/private/wineprefix pwsh -NoProfile -File source/tests/image-memory/Test-ImageMemory.ps1 -OutputDirectory ~/private/image-tests
+python3 -B source/tests/game-identity/Check-ProtonPool.py --pid <host-game-pid> --game <private-BlackOps3.exe> --receipt <committed-session.json> --output ~/private/live-pool.json
+```
+
+The live check only reads the selected process and refuses mismatched executable and receipt identities. Run it after a map loads; a changing free-slot chain can require another snapshot.
+Keep receipts and test results outside Git. Fixture results do not replace save or peer tests.
 
 The setup executable needs a Windows Python 3.12 or later installed in a Wine prefix.
 Pass its `python.exe`. The installer E2E runs with the host `python3`.
@@ -97,7 +117,7 @@ WINEPREFIX=~/private/wineprefix pwsh -NoProfile -File scripts/release/Build-Patc
 
 Under Wine the setup executable refuses every action, so the Linux packaged tests check that refusal.
 They do not open the setup window.
-Building on Linux does not add Proton support.
+Building on Linux does not validate a Proton release.
 
 ## License
 
