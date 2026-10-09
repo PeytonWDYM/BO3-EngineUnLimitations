@@ -1,0 +1,192 @@
+{
+  "schemaVersion": 1,
+  "researchDate": "2026-10-09",
+  "status": "research_only_no_active_patch",
+  "executableProfileSha256": "0b874dcc250848b7313ec13a0c76468dacc2009b5efa2bff4c587e169a9f77e0",
+  "capturedModuleManifestSha256": "01d292edca086aeca406a9171feba2dac8aea80df2e867026ff78f441bab4511",
+  "aaeRepositoryCommit": "688facf4c081429a47de845a01965ed3aa40fb8f",
+  "publicScriptSourceCommit": "07cbfcd113fb5031dc717296f73b371478d4eb77",
+  "decompiler": {
+    "name": "Atian tools",
+    "version": "3.3.0",
+    "sha256": "d6db380930717a5d434a68c84155f152fb44efe87e9a59e133299b3bd978b4cf",
+    "arguments": [
+      "gscd",
+      "-g",
+      "-a",
+      "-H",
+      "-L",
+      "-o",
+      "<private-output>",
+      "<private-compiled-script>"
+    ]
+  },
+  "scripts": [
+    {
+      "name": "scripts/zm/_zm.gsc",
+      "compiledSha256": "4bc0bec345b2f08c0653d3884435f7bcbb5e794436c5178ce3b477fbd0ad50d5",
+      "compiledBytes": 126432,
+      "roundSpawnOffset": "0xd938",
+      "checks": {
+        "configuredAfterSpawnWaitPresent": true,
+        "positiveRespawnWaitSeconds": 0.1,
+        "networkFrameCallsInRoundSpawning": 3,
+        "normalAttemptAlwaysReachesNetworkFrameWait": true
+      }
+    },
+    {
+      "name": "scripts/shared/ai/zombie_utility.gsc",
+      "compiledSha256": "accd44a026746855cfdd55c0cd39da506b2dc2033a2a184e77e7324d6aa75a0b",
+      "compiledBytes": 44108,
+      "spawnZombieOffset": "0x4308",
+      "checks": {
+        "waitsForNativeFreeActor": true,
+        "nativeCapacityRetrySeconds": 0.05
+      }
+    }
+  ],
+  "publicNetworkWaitSemantics": {
+    "name": "scripts/shared/util_shared.gsc",
+    "sourceSha256": "fc2cd7757f96734fe3ad5c43f0f362cdafaff5403de688f4c4a51b060e34e353",
+    "soloSecondsPerDefaultCall": 0.1,
+    "cooperativeWait": "snapshot_acknowledgment",
+    "exactLoadedUtilityAttributed": false
+  },
+  "nativeReplay": {
+    "counter": {
+      "status": "stock_actor64_boundary_proven_in_owned_replay",
+      "capturedCodeSha256": "5dd51b827c3b8277cc4295a5b2b81fd1bff1db0ee21ccfb620166a481429ec48",
+      "rva": "0x24b15e0",
+      "slotStride": 8464,
+      "counterSlots": 64,
+      "scenarios": [
+        {
+          "case": "all64_free",
+          "freeActors": 64,
+          "expected": 64,
+          "poolUnchanged": true
+        },
+        {
+          "case": "all64_busy",
+          "freeActors": 0,
+          "expected": 0,
+          "poolUnchanged": true
+        },
+        {
+          "case": "half64_busy",
+          "freeActors": 32,
+          "expected": 32,
+          "poolUnchanged": true
+        },
+        {
+          "case": "free_extended_slots_do_not_raise_capacity",
+          "freeActors": 0,
+          "expected": 0,
+          "poolUnchanged": true
+        }
+      ],
+      "capacity200Implemented": false,
+      "gameLaunched": false
+    },
+    "allocatorsAndInlineTableReset": {
+      "status": "captured_allocator_boundary_replay_passed",
+      "cases": [
+        {
+          "allocator": "actor",
+          "case": "empty",
+          "selectedIndex": 0,
+          "poolUnchanged": true,
+          "capturedCodeSha256": "078d865b2f7871198f34b79e75c4ce5098dccaf364c5b766f2ab5a7fda34c3a7"
+        },
+        {
+          "allocator": "actor",
+          "case": "last_stock_slot",
+          "selectedIndex": 63,
+          "poolUnchanged": true,
+          "capturedCodeSha256": "078d865b2f7871198f34b79e75c4ce5098dccaf364c5b766f2ab5a7fda34c3a7"
+        },
+        {
+          "allocator": "actor",
+          "case": "free_expanded_slots_ignored",
+          "selectedIndex": null,
+          "poolUnchanged": true,
+          "capturedCodeSha256": "078d865b2f7871198f34b79e75c4ce5098dccaf364c5b766f2ab5a7fda34c3a7"
+        },
+        {
+          "allocator": "actor",
+          "case": "one_byte_200_edit_is_negative",
+          "selectedIndex": null,
+          "poolUnchanged": true,
+          "capturedCodeSha256": "078d865b2f7871198f34b79e75c4ce5098dccaf364c5b766f2ab5a7fda34c3a7"
+        },
+        {
+          "allocator": "sentient",
+          "case": "empty",
+          "selectedIndex": 0,
+          "poolUnchanged": true,
+          "capturedCodeSha256": "d9cd241e30f9483486d67d1a3eff19f3dd5b72c943922abb20112035649ecb72"
+        },
+        {
+          "allocator": "sentient",
+          "case": "last_stock_slot",
+          "selectedIndex": 103,
+          "poolUnchanged": true,
+          "capturedCodeSha256": "d9cd241e30f9483486d67d1a3eff19f3dd5b72c943922abb20112035649ecb72"
+        },
+        {
+          "allocator": "sentient",
+          "case": "free_expanded_slots_ignored",
+          "selectedIndex": null,
+          "poolUnchanged": true,
+          "capturedCodeSha256": "d9cd241e30f9483486d67d1a3eff19f3dd5b72c943922abb20112035649ecb72"
+        }
+      ],
+      "tableResetCases": [
+        {
+          "index": 0,
+          "firstWriteOffset": "0x12a0",
+          "bytesCleared": 72,
+          "overlapsTrailingFields": false,
+          "outsideOwnerRecord": false
+        },
+        {
+          "index": 103,
+          "firstWriteOffset": "0x2f98",
+          "bytesCleared": 72,
+          "overlapsTrailingFields": false,
+          "outsideOwnerRecord": false
+        },
+        {
+          "index": 104,
+          "firstWriteOffset": "0x2fe0",
+          "bytesCleared": 72,
+          "overlapsTrailingFields": true,
+          "outsideOwnerRecord": false
+        },
+        {
+          "index": 199,
+          "firstWriteOffset": "0x4a98",
+          "bytesCleared": 72,
+          "overlapsTrailingFields": false,
+          "outsideOwnerRecord": true
+        }
+      ],
+      "tableResetCodeSha256": "d3bddaa583d531e12d75db2687c921bbf25313c969e543bb0e49c67f227c6743",
+      "capacity200Implemented": false,
+      "gameLaunched": false,
+      "limit": "Owned pool replay stops before allocation initialization. No game stability or patch validation."
+    },
+    "counterResultSha256": "fec8235f552cc651ee5c966cc627332f2911c4e508c37db4538b19b6698fd84b",
+    "allocatorResultSha256": "6ccad9b808d7a411de18d8f0693f60ee4c53d51eae9d27a8d688d0f73b7de68b"
+  },
+  "validationLimits": {
+    "gameLaunched": false,
+    "workingInstallationWritten": false,
+    "spawnRateMeasured": false,
+    "reportedThreeToFourBurstRootCauseProven": false,
+    "capacityAbove200Implemented": false,
+    "gameplayValidated": false,
+    "peerBehaviorValidated": false,
+    "protonValidated": false
+  }
+}
