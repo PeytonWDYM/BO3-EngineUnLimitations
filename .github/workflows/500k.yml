@@ -47,7 +47,8 @@ jobs:
           python-version: '3.13'
           architecture: x64
       - name: Install pinned native build dependencies
-        run: python -m pip install --require-hashes --only-binary=:all: -r scripts/release/requirements-native.txt
+        run: |
+          python -m pip install --require-hashes --only-binary=:all: -r scripts/release/requirements-native.txt
       - name: Build official Detours
         shell: pwsh
         run: |
