@@ -108,6 +108,12 @@ Type-24 association WORDs, variable codecs, map/mod resets, complete compression
 Private evidence: 500k-allocation-audit-sol-01, 500k-state-audit-sol-01 and 500k-boundary-review-sol-01.
 All 99 protected paths match the last test baseline. No game, Steam, input or audio change occurred.
 The blocked integrity prototype remains disabled. No new real-game 500k candidate is prepared from these probes.
+The separate large-compression proof processes the 23,500,000-byte scalar stream through ninety captured native chunks.
+Its 5,013,185-byte compressed output reconstructs byte-exact through a pinned LZ4 decoder.
+A one-byte-short final-chunk budget sets native overflow and clears buffered bytes.
+Independent replay matches both outputs and observes no native or owned-copy write outside either logical output budget.
+This proves representative scalar compression. Complete native load, variable state, AAE and actual peer delivery remain unvalidated.
+Private evidence: 500k-large-compression-sol-01 and 500k-large-compression-review-sol-01.
 
 Peyton authorized reversible Steam Play integration. The original BO3 LaunchOptions field is absent.
 Use the reviewed file-based setup while Steam is closed. Preserve the original field and unrelated Steam configuration bytes.

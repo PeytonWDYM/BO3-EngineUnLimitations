@@ -1839,3 +1839,43 @@ Boundary review SHA-256: 9139b2b868f86a06deaf2702096a4362f511808a26f746db8d15e1e
 Boundary review pins SHA-256: 9df46db3e1cc128506d6dab4b62408602abc160fdba0f0c61de649b29e9af68a.
 Root's read-only protected-file comparison matches all 99 paths from manual-bindings-control-08's final baseline.
 These results do not explain the earlier startup fault. Its twelve observed VM/migration fields were zero.
+
+The final boundary review changes one sentence to identify its first allocation replay as historical.
+Both first-freeze files are preserved byte-exact in 500k-boundary-review-sol-01/history-freeze-01.
+Final boundary review SHA-256: b30470e94991d723a2d48c327013d4cf1ed939ff3d8a62cb639368c9ccc1bff3.
+Final boundary pins SHA-256: 445c7b5a385718f28c7a29176ed9c937fff6fac61ecfe1c3ee3d2a1b1ad410db.
+No test result or production finding changed. The citation follow-up preserves both versions and their exact delta.
+
+October 8, representative large native scalar compression:
+
+The earlier migration replay compressed only 120-byte inputs. A separate owned proof now compresses the retained dense scalar stream.
+Failure cases and input chunk hashes preceded the new replay. No new substitute callback or compressor implementation was added.
+The input contains 500,000 scalar slot records and exactly 23,500,000 bytes.
+Captured native flush and compressor code processes ninety field-boundary chunks under the 32 MiB budget.
+The output contains 5,013,185 bytes, including ninety DWORD compressed-size prefixes.
+A pinned python-lz4 decoder reconstructs every raw block and matches the entire retained input SHA-256.
+The output has 28,541,247 bytes remaining under its configured budget.
+The native wrapper directly computes n plus floor(n/255) plus sixteen before selecting its bounded compressor path.
+
+A second case gives the final chunk one byte less space than its successful compressed output.
+It reuses the validated earlier output prefix. The native compressor returns zero, sets overflow, and clears buffered bytes.
+The prior prefix and the sixty-four-byte boundary canary remain unchanged.
+Independent replay matches the complete compressed stream and reconstructed input byte-exact.
+Its stronger instrumentation observes every native output write and bounds the owned copy/fill callbacks.
+The positive case records 5,001,469 native output writes and ninety owned-copy writes, all inside its logical budget.
+The negative case records 36,183 native output writes and no out-of-budget write.
+The larger physical emulator mapping therefore does not hide a logical-budget overrun in these cases.
+This is representative scalar compression and trusted reconstruction. It does not execute the native whole-state load.
+Variable codecs, roots, associations, full tail, outer migration sections, peer delivery and deadlines remain unvalidated.
+The emulator runtime does not establish a game or network deadline.
+Private evidence: 500k-large-compression-sol-01. The previous state and boundary audits remain frozen.
+Compression report SHA-256: 40a1aa45201a5c8690f2eb4ee97b4779314ab3376aab178d51277192c71d4a6b.
+Compression result SHA-256: 039f3035cd203e107b91626f8e29326ca58f53f7fca37d5fe2739fea3b3e9e53.
+Compression pins SHA-256: 2bb6c3690cbaf9bbb621ffbe8088b34deb5346c3c6adab1531c7c08b604e966c.
+Fresh review verifies all 1,982 author pins and independently parses all 500,000 records and ninety chunk boundaries.
+It repeats only the two new cases. The reviewer retains 2,000 unique pinned files and no whole-state deployment approval.
+Compression review SHA-256: 7181fffeef7bde568f66c547e4c0c427ed6ce78215fe04af4eb2681a4a732461.
+Compression review pins SHA-256: 49bc8d18080104daef59b5d937d1c848557fa639a4843c8ccb93efe55437f9d3.
+No game launch, installation write, Steam change, desktop input or audio change occurred.
+Root's final read-only comparison still matches all 99 protected paths from the prior game's final baseline.
+The integrity-hook implementation remains blocked. No expanded-pool BO3 startup or friends compatibility is validated.
