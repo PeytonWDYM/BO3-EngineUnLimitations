@@ -1,3 +1,0 @@
-LIBRARY SdkInterceptHelper
-EXPORTS
-    SdkDetoursOrdinal @1 NONAME

@@ -1,137 +1,41 @@
-[CmdletBinding()]
-param(
-    [Parameter(Mandatory)][string]$Output,
-    [string]$Python = 'python',
-    [string]$UpxArchive,
-    [string]$UpxSourceArchive,
-    [string]$EnhancedBuild
-)
-$ErrorActionPreference = 'Stop'
-$repo = (Resolve-Path (Join-Path $PSScriptRoot '../..')).Path
-$buildRoot = [IO.Path]::GetFullPath($Output)
-if (Test-Path -LiteralPath $buildRoot) { throw 'Select a new build output folder.' }
-$manifest = Join-Path $repo 'source/patchplans/release.json'
-if (-not (Test-Path -LiteralPath $manifest)) { throw 'The completed release manifest is missing.' }
-$plan = Get-Content -LiteralPath $manifest -Raw | ConvertFrom-Json
-if ($plan.schemaVersion -ne 1 -or $plan.status -ne 'ready' -or $plan.features.Count -eq 0) {
-    throw 'The release manifest is incomplete.'
+#Requires -Version 7.0
+param([Parameter(Mandatory)][string]$Output, [Parameter(Mandatory)][string]$NativeBuild, [string]$Python='python')
+$ErrorActionPreference='Stop'
+. (Join-Path $PSScriptRoot '../../source/launch/enhanced/PhysicalPath.ps1')
+$repo=PhysicalPath (Join-Path $PSScriptRoot '../..')
+$build=PhysicalPath $Output
+if ((Test-Path -LiteralPath $build) -or $build.Equals($repo,[StringComparison]::OrdinalIgnoreCase) -or $build.StartsWith($repo+'\',[StringComparison]::OrdinalIgnoreCase)) { throw 'Use a new build folder outside the repository.' }
+$manifest=Get-Content -LiteralPath (Join-Path $repo 'source/release.json') -Raw | ConvertFrom-Json
+if ($manifest.schemaVersion -ne 1 -or $manifest.builds.Count -ne 1) { throw 'This builder requires one complete verified native profile.' }
+$profile=$manifest.builds[0]
+foreach ($entry in $profile.files.PSObject.Properties) {
+    if ((Get-FileHash -LiteralPath (Join-Path $NativeBuild $entry.Name)).Hash.ToLowerInvariant() -ne $entry.Value) { throw "The verified native file differs: $($entry.Name)" }
 }
-New-Item -ItemType Directory -Path $buildRoot | Out-Null
-$venv = Join-Path $buildRoot 'build-env'
-& $Python -m venv $venv
-if ($LASTEXITCODE -ne 0) { throw 'Python could not create the build environment.' }
-$buildPython = Join-Path $venv 'Scripts/python.exe'
+New-Item -ItemType Directory -Path $build | Out-Null
+$native=Join-Path $build "resources/native/$($profile.id)"
+New-Item -ItemType Directory -Path $native -Force | Out-Null
+foreach ($entry in $profile.files.PSObject.Properties) { Copy-Item -LiteralPath (Join-Path $NativeBuild $entry.Name) -Destination $native }
+Copy-Item -LiteralPath (Join-Path $repo 'source/release.json') -Destination (Join-Path $build 'resources/release.json')
+& $Python -m venv (Join-Path $build 'env')
+if ($LASTEXITCODE -ne 0) { throw 'Could not create the build environment.' }
+$buildPython=Join-Path $build 'env/Scripts/python.exe'
 & $buildPython -m pip install --disable-pip-version-check --require-hashes --only-binary=:all: -r (Join-Path $PSScriptRoot 'requirements.txt')
-if ($LASTEXITCODE -ne 0) { throw 'The pinned build dependencies could not install.' }
-& $PSScriptRoot/Test-Patcher.ps1 -Output (Join-Path $buildRoot 'tests') -Python $buildPython
-$upxHash = 'eabc6792a347d45e945be7748423e7868fd01b0d2bcaa2f4b1031fd71ff69bda'
-$exeHash = 'd20ebe0b7b22b6be968c8c34be61f94ddea12cb11462e2cec27f548ef9574df8'
-$archive = Join-Path $buildRoot 'upx-5.2.1-win64.zip'
-if ($UpxArchive) {
-    Copy-Item -LiteralPath $UpxArchive -Destination $archive
-} else {
-    Invoke-WebRequest -Uri 'https://github.com/upx/upx/releases/download/v5.2.1/upx-5.2.1-win64.zip' -OutFile $archive
-}
-if ((Get-FileHash -LiteralPath $archive -Algorithm SHA256).Hash.ToLowerInvariant() -ne $upxHash) {
-    throw 'The official UPX archive has an unexpected hash.'
-}
-$tools = Join-Path $buildRoot 'resources/upx'
-New-Item -ItemType Directory -Path $tools -Force | Out-Null
-Expand-Archive -LiteralPath $archive -DestinationPath (Join-Path $buildRoot 'upx-extracted')
-$upx = Join-Path $buildRoot 'upx-extracted/upx-5.2.1-win64/upx.exe'
-if ((Get-FileHash -LiteralPath $upx -Algorithm SHA256).Hash.ToLowerInvariant() -ne $exeHash) {
-    throw 'The official UPX executable has an unexpected hash.'
-}
-Copy-Item -LiteralPath $upx -Destination (Join-Path $tools 'upx.exe')
-Copy-Item -LiteralPath (Join-Path $buildRoot 'upx-extracted/upx-5.2.1-win64/COPYING') -Destination (Join-Path $tools 'COPYING')
-Copy-Item -LiteralPath (Join-Path $buildRoot 'upx-extracted/upx-5.2.1-win64/LICENSE') -Destination (Join-Path $tools 'LICENSE')
-$sourceNotice = @'
-UPX 5.2.1 is a separate bundled tool.
-Its license and copying terms are in this folder.
-Corresponding source: https://github.com/upx/upx/releases/download/v5.2.1/upx-5.2.1-src.tar.xz
-Release: https://github.com/upx/upx/releases/tag/v5.2.1
-The patcher invokes UPX only to unpack the user's verified native module.
-'@
-Set-Content -LiteralPath (Join-Path $tools 'SOURCE.txt') -Value $sourceNotice -Encoding utf8
-$data = Join-Path $buildRoot 'resources/patchplans'
-New-Item -ItemType Directory -Path $data | Out-Null
-Get-ChildItem -LiteralPath (Join-Path $repo 'source/patchplans') -Filter '*.json' -File | ForEach-Object {
-    Copy-Item -LiteralPath $_.FullName -Destination $data
-}
-$dist = Join-Path $buildRoot 'dist'
-$arguments = @('-m', 'PyInstaller', '--noconfirm', '--clean', '--onefile', '--console', '--noupx', '--name', 'BO3-Engine-UnLimitations', '--paths', (Join-Path $repo 'source'), '--add-data', "$data;patchplans", '--add-data', "$tools;upx", '--distpath', $dist, '--workpath', (Join-Path $buildRoot 'work'), '--specpath', (Join-Path $buildRoot 'spec'))
-$enhancedManifest = Join-Path $repo 'source/patcher/enhanced_manifest.json'
-if ($EnhancedBuild) {
-    $enhanced = Get-Content -LiteralPath $enhancedManifest -Raw | ConvertFrom-Json
-    if ($enhanced.version -ne $plan.version) { throw 'Enhanced payload version differs from the patcher release.' }
-    $enhancedResources = Join-Path $buildRoot 'resources/enhanced'
-    New-Item -ItemType Directory -Path $enhancedResources | Out-Null
-    foreach ($entry in $enhanced.files.PSObject.Properties) {
-        $inputFile = Join-Path $EnhancedBuild $entry.Name
-        if ((Get-FileHash -LiteralPath $inputFile -Algorithm SHA256).Hash.ToLowerInvariant() -ne $entry.Value) {
-            throw "The reviewed enhanced launcher payload differs: $($entry.Name)"
-        }
-        Copy-Item -LiteralPath $inputFile -Destination (Join-Path $enhancedResources $entry.Name)
-    }
-    Copy-Item -LiteralPath $enhancedManifest -Destination (Join-Path $enhancedResources 'manifest.json')
-    $arguments += @('--add-data', "$enhancedResources;enhanced")
-}
-foreach ($module in ($plan.features.transform | ForEach-Object { ($_ -split ':')[0] } | Sort-Object -Unique)) {
-    $arguments += @('--hidden-import', $module)
-}
-$arguments += (Join-Path $repo 'source/patcher/app.py')
-& $buildPython @arguments
-if ($LASTEXITCODE -ne 0) { throw 'The Windows executable build failed.' }
-$licenses = Join-Path $dist 'UPX-licenses'
-New-Item -ItemType Directory -Path $licenses | Out-Null
-foreach ($name in @('COPYING', 'LICENSE', 'SOURCE.txt')) {
-    Copy-Item -LiteralPath (Join-Path $tools $name) -Destination $licenses
-}
-$sourceArchive = Join-Path $dist 'upx-5.2.1-src.tar.xz'
-if ($UpxSourceArchive) {
-    Copy-Item -LiteralPath $UpxSourceArchive -Destination $sourceArchive
-} else {
-    Invoke-WebRequest -Uri 'https://github.com/upx/upx/releases/download/v5.2.1/upx-5.2.1-src.tar.xz' -OutFile $sourceArchive
-}
-$sourceHash = 'a7d457be4ef942e46844ee8f301206b111394cbcbde3599747a6904c54ff116b'
-if ((Get-FileHash -LiteralPath $sourceArchive -Algorithm SHA256).Hash.ToLowerInvariant() -ne $sourceHash) {
-    throw 'The official UPX source archive has an unexpected hash.'
-}
-Copy-Item -LiteralPath (Join-Path $repo 'docs/patcher.md') -Destination (Join-Path $dist 'README-patcher.md')
-if (Test-Path -LiteralPath (Join-Path $repo 'LICENSE')) {
-    Copy-Item -LiteralPath (Join-Path $repo 'LICENSE') -Destination (Join-Path $dist 'LICENSE-patcher')
-}
-$artifact = Join-Path $dist 'BO3-Engine-UnLimitations.exe'
-if ($EnhancedBuild) {
-    Copy-Item -LiteralPath (Join-Path $enhancedResources 'Detours-LICENSE.md') -Destination (Join-Path $dist 'Detours-LICENSE.md')
-    Copy-Item -LiteralPath $enhancedManifest -Destination (Join-Path $dist 'enhanced-launcher-manifest.json')
-}
-& $buildPython (Join-Path $PSScriptRoot 'Collect-Licenses.py') (Join-Path $dist 'third-party-licenses')
-if ($LASTEXITCODE -ne 0) { throw 'The dependency license collection failed.' }
-& $buildPython (Join-Path $repo 'source/tests/patcher/test_executable.py') --executable $artifact --manifest $manifest --output (Join-Path $buildRoot 'executable-tests')
-if ($LASTEXITCODE -ne 0) { throw 'The packaged executable checks failed.' }
-$enhancedChecks = @((Join-Path $repo 'source/tests/patcher/test_packaged_enhanced.py'), '--executable', $artifact, '--manifest', $enhancedManifest, '--output', (Join-Path $buildRoot 'enhanced-executable-tests'))
-if ($EnhancedBuild) { $enhancedChecks += '--bundled' }
-& $buildPython @enhancedChecks
-if ($LASTEXITCODE -ne 0) { throw 'The optional enhanced payload checks failed.' }
-& $buildPython (Join-Path $repo 'source/tests/patcher/test_packaged_steam.py') --executable $artifact --manifest $manifest --output (Join-Path $buildRoot 'steam-executable-tests')
-if ($LASTEXITCODE -ne 0) { throw 'The frozen Steam setup checks failed.' }
-$report = [ordered]@{
-    schema = 1
-    version = $plan.version
-    artifact = 'BO3-Engine-UnLimitations.exe'
-    artifactSha256 = (Get-FileHash -LiteralPath $artifact -Algorithm SHA256).Hash.ToLowerInvariant()
-    artifactBytes = (Get-Item -LiteralPath $artifact).Length
-    manifestSha256 = (Get-FileHash -LiteralPath $manifest -Algorithm SHA256).Hash.ToLowerInvariant()
-    upxArchiveSha256 = $upxHash
-    upxExecutableSha256 = $exeHash
-    upxSourceSha256 = $sourceHash
-    timestampUtc = [DateTime]::UtcNow.ToString('o')
-    containsGameAssets = $false
-    gameplayValidated = $false
-    friendsValidated = $false
-    enhancedLauncherBundled = [bool]$EnhancedBuild
-    enhancedLauncherStatus = $(if ($EnhancedBuild) { 'experimental-unvalidated-game' } else { 'not-bundled' })
-}
-$report | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $dist 'build.json') -Encoding utf8
-Write-Output "Release files: $dist"
+if ($LASTEXITCODE -ne 0) { throw 'Pinned build dependencies could not install.' }
+& $buildPython -B (Join-Path $repo 'source/tests/Test-Installer.py') --output (Join-Path $build 'tests')
+if ($LASTEXITCODE -ne 0) { throw 'Installer E2E failed.' }
+$dist=Join-Path $build 'dist'
+& $buildPython -m PyInstaller --noconfirm --clean --onefile --console --noupx --name BO3-500K-Setup --paths (Join-Path $repo 'source') --add-data "$(Join-Path $build 'resources/release.json');." --add-data "$(Join-Path $build 'resources/native');native" --distpath $dist --workpath (Join-Path $build 'work') --specpath (Join-Path $build 'spec') (Join-Path $repo 'source/patcher/app.py')
+if ($LASTEXITCODE -ne 0) { throw 'Executable packaging failed.' }
+$exe=Join-Path $dist 'BO3-500K-Setup.exe'
+$exeVersion=& $exe --version
+if ($LASTEXITCODE -ne 0 -or $exeVersion -ne $manifest.version) { throw 'The packaged executable version differs from the release manifest.' }
+& $buildPython -B (Join-Path $PSScriptRoot 'Test-Executable.py') --executable $exe --output (Join-Path $build 'executable-tests')
+if ($LASTEXITCODE -ne 0) { throw 'Packaged executable E2E failed.' }
+& (Join-Path $PSScriptRoot 'Test-Gui.ps1') -Executable $exe -Output (Join-Path $build 'gui-tests')
+if ($LASTEXITCODE -ne 0) { throw 'Packaged GUI failed.' }
+& $buildPython -B (Join-Path $PSScriptRoot 'Collect-Licenses.py') (Join-Path $dist 'licenses')
+if ($LASTEXITCODE -ne 0) { throw 'License collection failed.' }
+Copy-Item -LiteralPath (Join-Path $native 'Detours-LICENSE.md') -Destination (Join-Path $dist 'licenses/Detours-LICENSE.txt')
+Copy-Item -LiteralPath (Join-Path $repo 'README.md') -Destination (Join-Path $dist 'Readme.txt')
+@{version=$manifest.version;exeSha256=(Get-FileHash -LiteralPath $exe).Hash.ToLowerInvariant();manifestSha256=(Get-FileHash -LiteralPath (Join-Path $repo 'source/release.json')).Hash.ToLowerInvariant();gameplayValidated=$false;protonSupported=$false;files=@(Get-ChildItem -LiteralPath $dist -Recurse -File | ForEach-Object { @{path=[IO.Path]::GetRelativePath($dist,$_.FullName).Replace('\','/');sha256=(Get-FileHash -LiteralPath $_.FullName).Hash.ToLowerInvariant()} })} | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $dist 'build.json') -Encoding utf8
+Compress-Archive -LiteralPath (Get-ChildItem -LiteralPath $dist | ForEach-Object FullName) -DestinationPath (Join-Path $build "BO3-500K-$($manifest.version)-windows.zip")

@@ -6,7 +6,7 @@ import os
 from pathlib import Path
 
 from patcher.coordination import StateLock
-from patcher.enhanced_launch import prepare, PAYLOAD_NAMES
+from patcher.payload import prepare, PAYLOAD_NAMES, supported_build
 from patcher.errors import PatchError
 from patcher.paths import private_path, reject_redirects
 from patcher.storage import replace_bytes
@@ -91,7 +91,7 @@ class SteamPlay:
 
     def _closed(self) -> None:
         if any(self.process_running(name) for name in ('steam.exe', 'BlackOps3.exe', PAYLOAD_NAMES[0])):
-            raise PatchError("Close Steam, Black Ops III, and the enhanced launcher before changing Steam Play.")
+            raise PatchError("Close Steam, Black Ops III, and the 500K launcher before changing Steam Play.")
 
     def _read(self) -> bytes:
         reject_redirects(self.config, private_files=True)
@@ -154,6 +154,7 @@ class SteamPlay:
         self._save(receipt)
 
     def enable(self, resources: Path, game: Path, *, tools_root: Path | None = None) -> dict:
+        supported_build(resources, game)
         self._closed()
         private_path(self.state, installations=(self.steam, game.resolve(strict=True)))
         self._private_paths()
@@ -181,7 +182,26 @@ class SteamPlay:
             self._edit(before, after, receipt, 'enable')
             return {'status': 'enabled', 'launcher': launcher, 'receiptFolder': str(self.state)}
 
+    def status(self, game: Path, resources: Path) -> dict:
+        receipt = self._receipt()
+        field = launch_field(self._read())
+        try:
+            build = supported_build(resources, game)
+        except PatchError as error:
+            support = {'gameSupported': False, 'message': str(error)}
+        else:
+            support = {'gameSupported': True, 'build': build['id']}
+        phase = receipt['phase'] if receipt else 'restored'
+        status = 'enabled' if phase == 'enabled' and field.value == receipt['installed'] else phase
+        if phase == 'enabled' and field.value != receipt['installed']:
+            status = 'externally-changed'
+        return {'status': status, 'receiptFolder': str(self.state), **support}
+
     def remove(self) -> dict:
+        self._private_paths()
+        receipt = self._receipt()
+        if receipt is None or receipt['phase'] == 'restored':
+            return {'status': 'already-restored', 'receiptFolder': str(self.state)}
         self._closed()
         self._private_paths()
         with StateLock(self.state):
