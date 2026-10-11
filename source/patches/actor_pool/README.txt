@@ -172,5 +172,16 @@ The fixture executes native prologs, late saves, and epilogs. Other body context
 It omits handlers for the owned comparison and authors the final cookie-check endpoint.
 This closes the owned frame comparison. Live registration, native handler execution, saves, and client replication remain separate requirements.
 
+Test-NativeUnwind.ps1, Test-LeafUnwind.ps1, and Test-CallerException.ps1 accept -Actors 300 or -Actors 500.
+The Python export commands accept the corresponding --actors option. Their default remains 300 for earlier comparisons.
+At 500, the complete continuation comparison passes 1,834 contexts across 79 continuations with -IncludeTemporalRestore.
+It refuses 1,642 wrong-depth, 79 missing-allocation, and 67 wrong-save candidates.
+The leaf comparison passes 352 contexts across 17 stubs and refuses twelve incorrect stack-phase candidates.
+The caller exception test uses the complete 26,736-byte frame at depths 0, 8, 16, 24, 32, and 40.
+Each run passes two normal returns, two C++ exceptions, six cookie checks, and two cleanup calls.
+Each run refuses a stale cookie. Bridge depths also refuse missing frame translation and incorrect native code locations.
+Suppression runs preserve the native incomplete-prolog rule. Successful runs release all owned function records and code allocations.
+Actual game CRT, all native owners, and live registration remain unverified.
+
 provenance.json records the owner's authorized local AAE prototype and original source hashes.
 This directory contains Python source and address/hash contracts. It contains no game executable or extracted game bodies.

@@ -144,6 +144,11 @@ Runtime ABI admission, native handler dispatch, live registration, temporal hist
 The 500-actor replays also pass 500 constructors and cleanup calls, DObj storage, iterators, admission scans, history, and the full no-fire caller.
 Complete producer/rewind frame tests pass 739 Windows instruction contexts for each expanded shape.
 The tests refuse stale allocation and register-save metadata. Live native handler bindings remain under development.
+The 500-actor Windows continuation comparison passes 1,834 contexts across 79 continuations, including the temporal restore stub.
+Its leaf comparison passes 352 contexts across 17 stubs. Both tests delete their function tables.
+The 26,736-byte caller also passes normal returns and real Windows C++ exceptions at temporary depths 0 through 40.
+Each selected depth checks cleanup once and rejects a stale cookie. Bridge depths also reject missing frame and code-location translation.
+These fixtures use authored body and CRT endpoints. They do not establish game handler or runtime registration behavior.
 A separate temporal restore preparation handles 300 records in five native replay cases and five additional Windows unwind contexts.
 It preserves the native loop target. The complete producer preparation passes fifteen owned replay cases.
 Its temporary flags and cookie use separate storage. A count-only candidate corrupts the stack.

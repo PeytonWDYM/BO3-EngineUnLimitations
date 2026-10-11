@@ -170,3 +170,7 @@ Native handler-owner admission
 132. Move allocation, late register saves, and cookie offsets together for 300 and 500 actors. Preserve chained-parent semantics.
 133. Check stock and expanded prolog, body, late-save fragment, and epilog contexts through Windows RtlVirtualUnwind.
 134. Reject stale allocation and register-save metadata through the same Windows comparison. Retain native handler admission as a separate requirement.
+135. Run complete continuation and leaf frame comparisons for 500/540 using disjoint storage regions. Preserve all native register, stack, and metadata guards.
+136. Run the 500-actor caller through actual Windows C++ exceptions with the captured cookie-handler bridge at temporary depths 0, 8, 16, 24, 32, and 40.
+137. Verify the 26,736-byte caller frame, complete cookie translation, cleanup once, outer catch, and normal return for every selected temporary depth.
+138. Preserve all earlier stale-cookie, frame-translation, and code-location refusal cases. Keep actual game CRT and runtime registration checks separate.

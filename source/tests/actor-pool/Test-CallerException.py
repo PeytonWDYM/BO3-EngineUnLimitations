@@ -10,6 +10,7 @@ from dataclasses import replace
 PATCHES = Path(__file__).resolve().parents[2] / 'patches/actor_pool'
 sys.path.insert(0, str(PATCHES))
 from captured_code import CapturedCode, CodeGuard
+from shape import ActorShape
 from temporal_layout import TemporalLayout
 from temporal_caller import CALLER_FUNCTION, prepare_caller
 from temporal_caller import caller_frame
@@ -43,11 +44,12 @@ def rebase(raw: bytes, origin: int, destination: int, targets: dict[int, int]) -
     return bytes(result)
 
 
-def run(module: Path, executable: Path, output: Path, temporary_stack: int = 0) -> dict:
+def run(module: Path, executable: Path, output: Path, temporary_stack: int = 0, actors: int = 300) -> dict:
     output = output.resolve()
     if (Path.home() / '.codex/labs/bo3-engine').resolve() not in output.parents or output.exists():
         raise ValueError('Use a new directory inside the private BO3 lab.')
     code = CapturedCode(module, executable)
+    layout = TemporalLayout(ActorShape(actors))
     guards = (CALLER_FUNCTION, CALLER_UNWIND, HANDLER, COMMON, PROBE_FUNCTION, CLEANUP_LEAF,
               FUNCTION_INFO, CLEANUP_MAP, STATE_MAP, HANDLER_UNWIND, COMMON_UNWIND, PROBE_UNWIND)
     captured = {guard.rva: code.guarded(guard) for guard in guards}
@@ -66,10 +68,10 @@ def run(module: Path, executable: Path, output: Path, temporary_stack: int = 0) 
     for expanded in (False, True):
         body = bytearray(captured[CALLER_FUNCTION.rva])
         if expanded:
-            for edit in prepare_caller(code, TemporalLayout()):
+            for edit in prepare_caller(code, layout):
                 offset = edit.guard.rva - CALLER_FUNCTION.rva
                 body[offset:offset + edit.guard.size] = edit.replacement
-        metadata = bytearray(prepare_caller_unwind(code, TemporalLayout()).replacement if expanded else captured[CALLER_UNWIND.rva])
+        metadata = bytearray(prepare_caller_unwind(code, layout).replacement if expanded else captured[CALLER_UNWIND.rva])
         struct.pack_into('<II', metadata, 68, 0x1000, 0x3000)
         struct.pack_into('<i', body, 0x1A, 0x1200 - 0x1E)
         struct.pack_into('<i', body, 0x8D, 0x4000 - 0x91)
@@ -98,7 +100,7 @@ def run(module: Path, executable: Path, output: Path, temporary_stack: int = 0) 
             stub += b'\x48\x83\xc4' + bytes([temporary_stack])
             stub += b'\xe9' + struct.pack('<i', 0x5DD - 0x1812)
             shifted = []
-            growth = caller_frame(TemporalLayout()).growth if expanded else 0
+            growth = caller_frame(layout).growth if expanded else 0
             for operation in native_frame.operations:
                 if operation.opcode == 1:
                     operation = replace(operation, value=operation.value + growth // 8)
@@ -129,6 +131,7 @@ def run(module: Path, executable: Path, output: Path, temporary_stack: int = 0) 
                                [PATCHES / 'caller_unwind.py', PATCHES / 'temporal_caller.py', Path(__file__)]},
                'gameWrites': 0, 'activationAllowed': False, 'gameCrtVerified': False}
     receipt['temporaryStackBytes'] = temporary_stack
+    receipt['actors'] = actors
     (output / 'input-receipt.json').write_text(json.dumps(receipt, indent=2) + '\n')
     return {'output': str(output), 'variants': 2}
 
@@ -138,5 +141,6 @@ if __name__ == '__main__':
     for name in ('module', 'executable', 'output'):
         parser.add_argument('--' + name, type=Path, required=True)
     parser.add_argument('--temporary-stack', type=int, choices=(0, 8, 16, 24, 32, 40), default=0)
+    parser.add_argument('--actors', type=int, choices=(300, 500), default=300)
     args = parser.parse_args()
-    print(json.dumps(run(args.module, args.executable, args.output, args.temporary_stack), indent=2))
+    print(json.dumps(run(args.module, args.executable, args.output, args.temporary_stack, args.actors), indent=2))

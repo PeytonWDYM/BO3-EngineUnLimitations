@@ -3,11 +3,12 @@ param(
     [Parameter(Mandatory)][string]$Output,
     [Parameter(Mandatory)][string]$Manifest,
     [Parameter(Mandatory)][string]$Executable,
-    [string]$Python = 'python'
+    [string]$Python = 'python',
+    [ValidateSet(300,500)][int]$Actors=300
 )
 $ErrorActionPreference = 'Stop'
 $target = [IO.Path]::GetFullPath($Output)
-& $Python -B (Join-Path $PSScriptRoot 'Test-LeafUnwind.py') --module $Manifest --executable $Executable --output $target
+& $Python -B (Join-Path $PSScriptRoot 'Test-LeafUnwind.py') --module $Manifest --executable $Executable --output $target --actors $Actors
 if ($LASTEXITCODE -ne 0) { throw 'The guarded leaf-unwind export failed.' }
 $vswhere = Join-Path ${env:ProgramFiles(x86)} 'Microsoft Visual Studio/Installer/vswhere.exe'
 $installation = & $vswhere -latest -products '*' -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath

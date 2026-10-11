@@ -10,6 +10,7 @@ from dataclasses import replace
 PATCHES = Path(__file__).resolve().parents[2] / 'patches/actor_pool'
 sys.path.insert(0, str(PATCHES))
 from captured_code import CapturedCode
+from shape import ActorShape
 from table_layout import TableLayout, NativeSentientAddress, ExternalTableAddress
 from storage_plan import StorageLayout
 from table_plan import prepare
@@ -22,13 +23,13 @@ from native_handlers import prepare_native_handler
 import capstone
 
 
-def run(module: Path, executable: Path, output: Path, include_temporal_restore: bool = False) -> dict:
+def run(module: Path, executable: Path, output: Path, include_temporal_restore: bool = False, actors: int = 300) -> dict:
     output = output.resolve()
     if (Path.home() / '.codex/labs/bo3-engine').resolve() not in output.parents or output.exists():
         raise ValueError('Use a new output directory inside the private BO3 lab.')
     code = CapturedCode(module, executable)
-    layout = TableLayout(NativeSentientAddress(code.base + 0x21000000), ExternalTableAddress(code.base + 0x22000000))
-    storage = StorageLayout(*(code.base + offset for offset in (0x23000000, 0x24000000, 0x25000000, 0x26000000, 0x27000000)))
+    layout = TableLayout(NativeSentientAddress(code.base + 0x21000000), ExternalTableAddress(code.base + 0x22000000), ActorShape(actors))
+    storage = StorageLayout(*(code.base + offset for offset in (0x24000000, 0x26000000, 0x28000000, 0x2A000000, 0x2C000000)))
     plan = prepare(code, layout, code.base + 0x20000000, storage)
     edits = plan.rewrites
     if include_temporal_restore:
@@ -131,6 +132,7 @@ def run(module: Path, executable: Path, output: Path, include_temporal_restore: 
     receipt = {'scope': 'Owned Windows native frame comparison only. Handler dispatch and game registration remain gated.',
                'continuations': rows, 'fixtureSha256': hashlib.sha256(data).hexdigest(),
                'includeTemporalRestore': include_temporal_restore,
+               'actors': actors,
                'preparedNativeHandlerSites': sum('nativeHandlerRecipe' in row for row in rows),
                'nativeHandlerAdmissionRefusals': refusals,
                'sourceFiles': {path.name: hashlib.sha256(path.read_bytes()).hexdigest()
@@ -148,5 +150,6 @@ if __name__ == '__main__':
     parser.add_argument('--executable', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--include-temporal-restore', action='store_true')
+    parser.add_argument('--actors', type=int, choices=(300, 500), default=300)
     args = parser.parse_args()
-    print(json.dumps(run(args.module, args.executable, args.output, args.include_temporal_restore), indent=2))
+    print(json.dumps(run(args.module, args.executable, args.output, args.include_temporal_restore, args.actors), indent=2))

@@ -4,11 +4,12 @@ param(
     [Parameter(Mandatory)][string]$Manifest,
     [Parameter(Mandatory)][string]$Executable,
     [string]$Python = 'python',
-    [ValidateSet(0, 8, 16, 24, 32, 40)][int]$TemporaryStack = 0
+    [ValidateSet(0, 8, 16, 24, 32, 40)][int]$TemporaryStack = 0,
+    [ValidateSet(300,500)][int]$Actors=300
 )
 $ErrorActionPreference = 'Stop'
 $target = [IO.Path]::GetFullPath($Output)
-& $Python -B (Join-Path $PSScriptRoot 'Test-CallerException.py') --module $Manifest --executable $Executable --output $target --temporary-stack $TemporaryStack
+& $Python -B (Join-Path $PSScriptRoot 'Test-CallerException.py') --module $Manifest --executable $Executable --output $target --temporary-stack $TemporaryStack --actors $Actors
 if ($LASTEXITCODE -ne 0) { throw 'The guarded caller-exception export failed.' }
 $vswhere = Join-Path ${env:ProgramFiles(x86)} 'Microsoft Visual Studio/Installer/vswhere.exe'
 $installation = & $vswhere -latest -products '*' -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath
