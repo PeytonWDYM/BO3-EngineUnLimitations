@@ -211,6 +211,17 @@ The 500-actor case round-trips all records in reverse order through the captured
 It covers changed/unchanged states, sparse removals, padding, record canaries, and both wider entity actor-index fields.
 Stock high-ID packets and a mismatched six-bit reader fail the Unicorn comparison. Clear, alternate field-table flag, and cookie endpoints are authored.
 Expanded client storage, snapshot copies, sentinel consumers, demos/migration, alternate field selection, and peer admission remain required.
+The separate client snapshot preparation provides two complete external snapshots for each of two local clients.
+It keeps native member offsets and appends space for all 500 actor records to each snapshot.
+Five guarded rewrites coordinate export, actor lookup, and slot selection. The native retry entry and client object layout stay intact.
+The 500-actor shape requires 2,474,368 bytes for its four snapshots.
+
+Captured native blocks pass 27 cases, including complete ring-wrapped copies, both local clients, both slots, and every actor lookup.
+Eleven owner and six address refusals pass. The comparison detects stock truncation and metadata corruption from a count-only change.
+Both slot stubs pass all nine Windows instruction boundaries and four incorrect allocation/save metadata comparisons.
+The 300-actor shape passes the same native paths with its selected storage size.
+
+All snapshot reset/copy paths, connection ring ownership, client actor storage, complete caller execution, and matching peers still need verification.
 No 500-actor, expanded-entity, reliable-command, gamestate, higher-round, or player-count patch is active here.
 No new engine performance claim applies to this source work.
 

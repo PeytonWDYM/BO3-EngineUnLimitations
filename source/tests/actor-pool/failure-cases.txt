@@ -206,3 +206,17 @@ Actor wire preparation
 166. A stock reader paired with an expanded writer must fail the comparison. A mismatched peer needs separate admission before activation.
 167. Refuse altered owner code, changed operand instructions, changed descriptor names/layouts, and changed class-three table identity before export.
 168. Keep these wire rewrites outside activation until expanded client arrays, client caches, snapshot copies, demo/migration framing, sentinel consumers, and peer admission pass.
+
+Client snapshot storage
+169. Guard the complete native snapshot exporter, actor consumer, slot selection, and chained frame metadata before preparing client snapshot changes.
+170. Keep the original client object stride and member offsets. Give each of two local clients two complete external snapshots with separate appended actor arrays.
+171. Keep native snapshot metadata and its old actor storage intact. Move both actor array references to the appended array and increase the exporter clamp together.
+172. Copy all 500 native 80-byte actor records through the actual export loop, including a wrap across the connection actor ring. Compare every copied byte.
+173. Check counts zero, one, 63/64/65, 299/300, the selected capacity, and capacity plus one. Preserve the native negative-count behavior without a copy.
+174. Select both external snapshot slots for both local clients through the native caller. Keep the sequence increment, call arguments, and internal retry entry unchanged.
+175. Run the actual client actor address calculation for every exported record. It must read the appended array and preserve the native record stride.
+176. Compare complete snapshot and client-object canaries. Detect stock truncation and the metadata damage caused by increasing only the count.
+177. Refuse altered native code, altered slot instructions, altered frame metadata, image aliases, overlapping storage and stubs, invalid alignment, and unreachable rel32 stubs before export.
+178. Compare each slot-selection stub instruction boundary with its original native frame through Windows RtlVirtualUnwind. Reject missing native allocation or incorrect saved-register metadata.
+179. Keep these preparations outside activation until client actor storage, complete snapshot reset/copy paths, connection actor-ring ownership, saves, demos/migration, and peer admission pass.
+180. Admit a two-entry Windows comparison only for both exact client snapshot sites in their fixed order. Refuse a missing, reversed, or substituted site.

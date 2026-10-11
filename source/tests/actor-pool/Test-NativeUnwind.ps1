@@ -5,11 +5,14 @@ param(
     [Parameter(Mandatory)][string]$Executable,
     [string]$Python = 'python',
     [switch]$IncludeTemporalRestore,
+    [switch]$ClientSnapshots,
     [ValidateSet(300,500)][int]$Actors=300
 )
 $ErrorActionPreference = 'Stop'
 $target = [IO.Path]::GetFullPath($Output)
-$arguments = @('-B', (Join-Path $PSScriptRoot 'Test-NativeUnwind.py'), '--module', $Manifest, '--executable', $Executable, '--output', $target,'--actors',$Actors)
+if ($ClientSnapshots -and $IncludeTemporalRestore) { throw 'Select client snapshots or temporal restore.' }
+$generator = if ($ClientSnapshots) { 'Test-ClientSnapshotUnwind.py' } else { 'Test-NativeUnwind.py' }
+$arguments = @('-B', (Join-Path $PSScriptRoot $generator), '--module', $Manifest, '--executable', $Executable, '--output', $target,'--actors',$Actors)
 if ($IncludeTemporalRestore) { $arguments += '--include-temporal-restore' }
 & $Python @arguments
 if ($LASTEXITCODE -ne 0) { throw 'The guarded native-unwind export failed.' }

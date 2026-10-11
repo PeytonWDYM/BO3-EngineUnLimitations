@@ -223,5 +223,24 @@ Stock high-ID packets and a mismatched six-bit reader fail the comparison. Conse
 The clear, alternate field-table flag, and cookie endpoints are authored. Unicorn executes the captured codec bodies and stock class-three field selection.
 Expanded snapshot copies, client caches, sentinel consumers, demo/migration framing, alternate field selection, and real peer admission remain required.
 
+client_snapshots.py prepares complete external snapshot storage for two local clients, with two slots per client.
+Each snapshot retains all native member offsets and appends the expanded 80-byte actor array after the complete stock snapshot.
+Five guarded rewrites coordinate the actor clamp, exporter/consumer offsets, and two native slot-selection stubs.
+The stubs preserve the native client object layout, sequence increment, call arguments, and internal retry entry.
+Prepare-ActorPlan.py exports the storage, five edits, two stubs, and complete frame requirements under clientSnapshotPreparation.
+
+The 500-actor shape needs 618,592 bytes per snapshot and 2,474,368 bytes for all four snapshots.
+The 300-actor shape needs 602,592 bytes per snapshot and 2,410,368 bytes for all four snapshots.
+Test-ClientSnapshots.py passes 27 cases for 500 actors and 26 for 300 actors, with eleven owner and six address refusals each.
+The captured copy loop preserves every native record byte across the connection ring boundary.
+The captured client address calculation reaches every exported record. Complete snapshot and client-object canaries remain intact.
+The comparison detects stock truncation and metadata corruption from a count-only patch.
+
+Test-NativeUnwind.ps1 -ClientSnapshots compares both stubs with their complete original native frames.
+Both shapes pass nine Windows instruction boundaries and four incorrect native allocation/save metadata comparisons.
+Runtime registrations disappear after the owned comparison. The actual game performs no writes in these tests.
+Complete native caller execution, all snapshot reset/copy paths, connection ring allocation, client actor storage, saves, and real peers remain required.
+These snapshots stay outside activation and the default installer recipe.
+
 provenance.json records the owner's authorized local AAE prototype and original source hashes.
 This directory contains Python source and address/hash contracts. It contains no game executable or extracted game bodies.

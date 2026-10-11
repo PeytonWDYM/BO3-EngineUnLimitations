@@ -14,6 +14,7 @@ from omissions import omission_inventory
 from unwind import requirements
 from shape import ActorShape
 from actor_wire import prepare_actor_wire
+from client_snapshots import ClientSnapshots,prepare_client_snapshots
 
 
 def export(module: Path, executable: Path, output: Path, actors: int = 500) -> dict:
@@ -26,6 +27,9 @@ def export(module: Path, executable: Path, output: Path, actors: int = 500) -> d
     plan = prepare(code,layout,code.base+0x20000000,storage)
     unwind = requirements(code,plan.rewrites)
     wire = prepare_actor_wire(code,layout.shape)
+    snapshots = ClientSnapshots(code.base+0x2E000000,layout.shape)
+    snapshot_edits = prepare_client_snapshots(code,snapshots,code.base+0x201C0000)
+    snapshot_unwind = requirements(code,snapshot_edits)
     output.mkdir(parents=True)
     edits = []
     for index,edit in enumerate(plan.rewrites):
@@ -36,6 +40,15 @@ def export(module: Path, executable: Path, output: Path, actors: int = 500) -> d
             (output/filename).write_bytes(edit.stub)
             item.update(stubAddress=hex(edit.stub_address),stubFile=filename,stubSha256=hashlib.sha256(edit.stub).hexdigest())
         edits.append(item)
+    client_edits = []
+    for index,edit in enumerate(snapshot_edits):
+        item = {'name':edit.name,'rva':hex(edit.guard.rva),'size':edit.guard.size,'sha256':edit.guard.sha256,
+                'replacement':edit.replacement.hex()}
+        if edit.stub:
+            filename = f'snapshot-stub-{index:02d}.bin'
+            (output/filename).write_bytes(edit.stub)
+            item.update(stubAddress=hex(edit.stub_address),stubFile=filename,stubSha256=hashlib.sha256(edit.stub).hexdigest())
+        client_edits.append(item)
     report = {'status':f'disabled_actor_{actors}_preparation','deploymentAllowed':False,'coverageComplete':False,
               'executableSha256':code.executable_sha256,'moduleManifestSha256':MANIFEST_SHA256,
               'shape':asdict(layout.shape)|{'sentients':layout.capacity},
@@ -48,6 +61,10 @@ def export(module: Path, executable: Path, output: Path, actors: int = 500) -> d
               'wirePreparation':{'bits':layout.shape.actors.bit_length(),'deploymentAllowed':False,
                   'rewrites':[{'name':edit.name,'rva':hex(edit.guard.rva),'size':edit.guard.size,
                                'sha256':edit.guard.sha256,'replacement':edit.replacement.hex()} for edit in wire]},
+              'clientSnapshotPreparation':{'deploymentAllowed':False,'storageAddress':hex(snapshots.base),
+                  'localClients':2,'snapshotsPerLocalClient':2,'snapshotBytes':snapshots.snapshot_bytes,
+                  'actorOffset':snapshots.actor_offset,'actorRecordBytes':80,'storageBytes':snapshots.total_bytes,
+                  'rewrites':client_edits,'unwindRequirements':snapshot_unwind},
               'sourceFiles':{path.name:hashlib.sha256(path.read_bytes()).hexdigest()
                              for path in Path(__file__).parent.iterdir() if path.suffix in ('.py','.json','.txt')}}
     (output/'plan.json').write_text(json.dumps(report,indent=2)+'\n')
