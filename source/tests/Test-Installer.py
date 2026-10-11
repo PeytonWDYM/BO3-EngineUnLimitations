@@ -2,6 +2,7 @@
 import argparse
 import hashlib
 import json
+import os
 from pathlib import Path
 import sys
 
@@ -129,8 +130,13 @@ def run(output: Path) -> None:
     assert manager.config.read_bytes() == original
     record('updated-game-status', manager, original)
 
+    if os.name == 'nt':
+        sys.path.insert(0, str(Path(__file__).resolve().parent / 'installer-paths'))
+        from PathCases import run_path_cases
+        cases.extend(run_path_cases(output, resources))
     (output / 'result.json').write_text(json.dumps({'passed': True, 'cases': cases,
-        'scope': 'Owned Steam configuration and payload files. No Steam or game launch.'}, indent=2) + '\n')
+        'scope': 'Owned Steam configuration and payload files. No Steam or game launch.',
+        'windowsPathCases': 'executed' if os.name == 'nt' else 'not run: Windows junction and GUI cases'}, indent=2) + '\n')
     print(f'{len(cases)} installer E2E cases passed. Evidence: {output / "result.json"}')
 
 

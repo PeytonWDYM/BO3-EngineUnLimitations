@@ -44,7 +44,8 @@ def builds(resources: Path) -> list[Build]:
 
 
 def supported_build(resources: Path, game: Path) -> Build:
-    executable = game / 'BlackOps3.exe'
+    # Resolve read-only game folder aliases. Keep executable and private-file guards.
+    executable = game.resolve(strict=True) / 'BlackOps3.exe'
     reject_redirects(executable, private_files=True)
     digest = file_hash(executable)
     for build in builds(resources):
@@ -62,6 +63,7 @@ def verify(folder: Path, hashes: dict[str, str]) -> None:
 
 
 def prepare(resources: Path, game: Path, *, tools_root: Path | None = None) -> Path:
+    game = game.resolve(strict=True)
     build = supported_build(resources, game)
     source = resources / 'native' / build['id']
     verify(source, build['files'])

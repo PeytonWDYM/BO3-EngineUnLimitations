@@ -3,8 +3,12 @@
 
 namespace bo3::vm {
 namespace {
-bool Supported(std::uint32_t total) {
-    return total == StockTotal || total == 500001 || total == 1000001;
+bool Supported(const NativePool& native, std::uint32_t instance) {
+    if (instance == 0 && native.stockTotal == StockTotal && native.formatMagic == FormatMagic)
+        return native.total == StockTotal || native.total == 500001 || native.total == 1000001;
+    return instance == 1 && native.stockTotal == StockClientTotal && native.formatMagic == ClientFormatMagic
+        && native.clientRoots == 0 && native.stockClientRoots == 0
+        && (native.total == StockClientTotal || native.total == 250001 || native.total == 500001);
 }
 std::uint32_t Read32(const NativePool& native, void* file) {
     std::uint32_t value;
@@ -47,13 +51,13 @@ std::uint64_t TranslateImportedKey(const ImportContext& context, const Slot& slo
 }
 
 StateError ReadState(const NativePool& native, ImportContext& context, std::uint32_t instance, void* file) {
-    if (instance == 1) { native.readClient(instance, file); return StateError::None; }
-    if (!Supported(native.total)) return StateError::UnsupportedCapacity;
+    if (!Supported(native, instance)) return StateError::UnsupportedCapacity;
+    if (instance == 1 && native.total == StockClientTotal) { native.readClient(instance, file); return StateError::None; }
     if (context.active) return StateError::NestedImport;
     auto head = Read32(native, file);
-    auto savedTotal = StockTotal;
+    auto savedTotal = native.stockTotal;
     auto savedClientRoots = native.stockClientRoots;
-    if (head == FormatMagic) {
+    if (head == native.formatMagic) {
         const auto version = Read32(native, file);
         savedTotal = Read32(native, file);
         savedClientRoots = Read32(native, file);
@@ -76,13 +80,13 @@ StateError ReadState(const NativePool& native, ImportContext& context, std::uint
 }
 
 StateError WriteState(const NativePool& native, std::uint32_t instance, void* file) {
-    if (instance == 1) { native.writeClient(instance, file); return StateError::None; }
-    if (!Supported(native.total)) return StateError::UnsupportedCapacity;
-    if (native.total == StockTotal && native.clientRoots != native.stockClientRoots)
+    if (!Supported(native, instance)) return StateError::UnsupportedCapacity;
+    if (instance == 1 && native.total == StockClientTotal) { native.writeClient(instance, file); return StateError::None; }
+    if (native.total == native.stockTotal && native.clientRoots != native.stockClientRoots)
         return StateError::ClientRootMismatch;
     if (native.slots[0].next >= native.total) return StateError::InvalidFreeHead;
-    if (native.total != StockTotal) {
-        native.write32(file, FormatMagic);
+    if (native.total != native.stockTotal) {
+        native.write32(file, native.formatMagic);
         native.write32(file, FormatVersion);
         native.write32(file, native.total);
         native.write32(file, native.clientRoots);

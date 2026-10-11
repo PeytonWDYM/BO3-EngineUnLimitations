@@ -71,6 +71,7 @@ jobs:
         shell: pwsh
         run: |
           ./source/tests/vm-pool/Test-StateAdapter.ps1 -OutputDirectory (Join-Path $env:RUNNER_TEMP 'state-tests') -Python python
+          ./source/tests/client-vm/Test-ClientState.ps1 -Output (Join-Path $env:RUNNER_TEMP 'client-state-tests')
           ./source/tests/vm-migration/Build-Admission.ps1 -OutputDirectory (Join-Path $env:RUNNER_TEMP 'migration-tests') -Python python
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         if: always()
@@ -80,5 +81,6 @@ jobs:
             ${{ runner.temp }}/native-build/artifact-audit.json
             ${{ runner.temp }}/native-build/build-receipt.json
             ${{ runner.temp }}/state-tests/result.json
+            ${{ runner.temp }}/client-state-tests/receipt.json
             ${{ runner.temp }}/migration-tests/result.json
           if-no-files-found: warn

@@ -6,6 +6,8 @@ namespace bo3::vm {
 inline constexpr std::uint32_t StockTotal = 130000;
 inline constexpr std::uint32_t FormatMagic = 0x33564d50;
 inline constexpr std::uint32_t FormatVersion = 1;
+inline constexpr std::uint32_t StockClientTotal = 65000;
+inline constexpr std::uint32_t ClientFormatMagic = 0x43564d50;
 
 struct Slot {
     std::uint64_t value;
@@ -39,6 +41,7 @@ struct NativePool {
     TailFunction readTail, writeTail;
     WholeFunction readClient, writeClient;
     std::uint32_t clientRoots, stockClientRoots;
+    std::uint32_t stockTotal = StockTotal, formatMagic = FormatMagic;
 };
 
 // The native insertion hook calls this after decoding a key and before inserting it.
