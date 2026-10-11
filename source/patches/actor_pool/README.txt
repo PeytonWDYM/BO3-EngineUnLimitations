@@ -65,7 +65,19 @@ leaf_unwind.py describes every instruction boundary in those sixteen stubs and t
 Test-LeafUnwind.ps1 registers these seventeen stubs in owned Windows allocations.
 It verifies 352 instruction-boundary contexts with RtlLookupFunctionEntry and RtlVirtualUnwind.
 Twelve wrong stack-phase mutations fail. Every owned function table is deleted after its test.
-This does not register a game patch or verify the 78 native frame continuations.
+This does not register a game patch or verify native handler dispatch.
+native_unwind.py reads complete native chains and selects the saves active at each hook.
+continuation_unwind.py prepares complete flattened frames with temporary allocation and save offsets.
+Test-NativeUnwind.ps1 compares 1,829 boundaries across all 78 continuations with the original Windows frames.
+It checks all native caller GPR and XMM values, including five hooks inside native prologs.
+The original frame uses captured native unwind bytes. Only owned chain addresses and handler flags change.
+The owned stub copies rebase branch addresses. The emitted game-plan bytes remain unchanged.
+Each phase chains to a separate complete frame with the logical native procedure bounds.
+This prevents Windows from treating the continuation jump as a function exit.
+The comparison refuses 1,642 missing-depth, 78 missing-allocation, and 66 wrong-save mutations.
+All owned registrations are deleted. The fixture never executes the stubs or game code.
+Unscaled XMM offsets at odd eight-byte phases still need runtime ABI admission.
+Native handler dispatch and game registration remain unverified.
 Continuation metadata must preserve the complete native frame and describe added stack phases.
 Grouped CHAININFO alone cannot describe an added fixed allocation that differs from the primary frame.
 Native handlers, partial prologs, epilogs, and game registration remain activation gates.

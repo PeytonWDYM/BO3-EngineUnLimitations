@@ -129,7 +129,10 @@ External awareness tables can preserve the native record stride, but their compl
 Its 152 guarded rewrites and 95 stubs preserve the native actor and sentient record strides.
 Native replays cover matrix operations, actor construction and cleanup, DObj storage, and iterator bounds.
 Owned Windows tests verify stack unwinding at 352 instruction boundaries across seventeen leaf stubs.
-The 78 native frame continuations, temporal history, combined saves, and matching client replication still block activation.
+Another owned test compares 1,829 boundaries across all 78 continuations with their original native Windows frames.
+The comparison preserves five partial prologs and uses separate flattened frames for temporary stack phases.
+It omits native handlers and rebases branch addresses only inside the owned fixture.
+Runtime ABI admission, native handler dispatch, live registration, temporal history, combined saves, and client replication still block activation.
 No 300-actor, expanded-entity, network-capacity, higher-round, or player-count patch is active here.
 No new engine performance claim applies to this source work.
 

@@ -49,3 +49,19 @@ Owned Windows unwind
 38. Refuse frameless leaves that write XMM6 through XMM15 or their wider register aliases.
 39. Refuse implicit vector clears and floating-point control changes with unclassified ABI effects.
 40. Refuse RET with a stack adjustment, far returns, privileged exits, and body fallthrough.
+
+Owned native continuation unwind
+41. Compare each stub boundary with Windows unwinding of the original captured native frame.
+42. Apply only native save operations completed at a hook inside a prolog. Cover all five known sites.
+43. Resolve every chained frame. Refuse cycles, unknown versions or operations, malformed slots, and frame-pointer layouts.
+44. Describe temporary nonvolatile saves before the temporary allocation. Preserve the original native save sequence.
+45. Reject dynamic, mismatched, or unbalanced stub stack transitions and calls without a call-frame contract.
+46. Detect metadata that omits temporary stack depth or the native allocation. Check a wrong native save offset.
+47. Exercise actual RtlAddFunctionTable, RtlLookupFunctionEntry, RtlVirtualUnwind, and table deletion in owned memory.
+48. Keep language handlers and game registration gated. Stripped handler flags are permitted only in the owned comparison fixture.
+49. Shift native SAVE offsets by the active temporary stack depth. Windows uses the fixed frame base for these offsets.
+50. Record XMM saves that require unscaled offsets at odd eight-byte phases. Keep their runtime ABI admission unresolved.
+51. Prevent Windows from treating the outgoing continuation jump as a completed native epilog in the owned phase comparison.
+52. Preserve the logical native procedure range when chaining a phase to its complete flattened frame. Rebase only branch addresses in the owned fixture.
+53. Verify original caller values for every native-saved GPR and XMM register. Do not accept matching reads of uninitialized stack data.
+54. Use captured native unwind bytes for the Windows oracle. Change only owned chain addresses and explicitly omitted handler flags.
