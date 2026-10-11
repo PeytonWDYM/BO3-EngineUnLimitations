@@ -242,6 +242,11 @@ Zero, negative, and unsupported counts retain the original allocation product in
 Thirty-two captured allocation, pointer encoding/decoding, and release cases pass across all sixteen PEB branches and both local-client counts.
 The allocation stub passes seven Windows unwind boundaries against its original native frame. It adds no stack allocation or calls.
 The hunk providers and setup endpoints in these replays are authored. Actual provider reserves, configured counts, and complete game callers remain unverified.
+The two-pass client caller also has a separate native hunk replay. It executes the measuring provider, setup tail, fixed-backing provider, and native reset.
+Sixty-four stock/expanded cases cover both client counts and all sixteen PEB branches. The measured reserve grows by exactly 6,835,776 bytes.
+Every native allocation fits that reserve. Complete canaries and caller registers remain intact without another reserve or commit.
+Thirty-nine changed caller/provider/dispatch cases refuse preparation. Two stale measured reserves reach the native exhaustion path.
+Outer components, OS allocation/clear APIs, and auxiliary initialization remain authored in this separate replay. Game behavior remains unverified.
 The combined export includes 207 native edits, 100 bodies, nine complete storage regions, and both static reset frames without overlaps.
 
 Remaining snapshot copies, connection ring ownership, actor flag/sentinel consumers, saves, complete caller execution, and matching peers still need verification.
