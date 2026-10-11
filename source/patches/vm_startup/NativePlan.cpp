@@ -30,6 +30,8 @@ std::vector<AddressEdit> BuildNativePlan(const NativePlanInput& input) {
         {0x12d5f20,{0x48,0x89,0x5c,0x24,0x08}}, {0x12d9420,{0x40,0x53,0x49,0x8b,0xd8}},
         {0x20ec0b0,{0x4c,0x89,0x4c,0x24,0x20}}}};
     Require(input.total==130000 || input.total==500001 || input.total==1000001,"Unsupported native plan capacity.");
+    Require(input.clientTotal==bo3::vm::StockClientTotal || input.clientTotal==250001 || input.clientTotal==500001,
+        "Unsupported client VM capacity.");
     Require(input.relay<=UINTPTR_MAX-64,"Native relay address overflows.");
     for(std::size_t index=0;index<exact.size();++index)
         Require(input.entries[index].rva==exact[index].rva && input.entries[index].original==exact[index].original,
@@ -37,7 +39,7 @@ std::vector<AddressEdit> BuildNativePlan(const NativePlanInput& input) {
     const auto& offsets=input.exports;
     const auto helper=[&](std::uint32_t rva) { return Address(input.helper,rva,1); };
     bo3::vm::NativeStateBindings state{};
-    state.imageBase=input.image.base; state.total=input.total;
+    state.imageBase=input.image.base; state.total=input.total; state.clientTotal=input.clientTotal;
     state.clientRoots=input.clientRoots; state.stockClientRoots=input.stockClientRoots;
     state.modePolicy=input.modePolicy;
     state.originalClientReader=reinterpret_cast<bo3::vm::WholeFunction>(helper(offsets.originalReader));

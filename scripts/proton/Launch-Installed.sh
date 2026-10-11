@@ -17,7 +17,7 @@ if [[ $mode == custom ]]; then
 fi
 args=();matched=0
 for arg in "$@"; do
-    if [[ $arg == "$game/BlackOps3.exe" ]]; then
+    if [[ $arg == */BlackOps3.exe && $(realpath -e -- "$arg" 2>/dev/null) == "$game/BlackOps3.exe" ]]; then
         matched=$((matched+1))
         args+=("$root/BO3-500K-Zombies.exe" "Z:${game//\//\\}\\BlackOps3.exe")
         if [[ $mode == skip ]]; then args+=(--skip-intro); fi

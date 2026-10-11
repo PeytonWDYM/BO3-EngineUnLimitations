@@ -2,6 +2,7 @@
 import argparse
 import hashlib
 import json
+import os
 from pathlib import Path
 import struct
 import sys
@@ -9,7 +10,7 @@ import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from patcher.errors import PatchError
 from patcher.steam_launch import SteamPlay
-from patcher.payload import PAYLOAD_NAMES, supported_build
+from patcher.payload import PAYLOAD_NAMES, supported_build, builds as release_builds
 from patcher.vdf_span import launch_field
 
 
@@ -44,6 +45,21 @@ def run(output: Path) -> None:
                        'runtime': 'windows', 'files': hashes})
     (resources / 'release.json').write_text(json.dumps({'schemaVersion': 2, 'version': 'owned', 'builds': builds}))
     cases = []
+    source_profiles = release_builds(Path(__file__).resolve().parents[1])
+    assert source_profiles and all('gameTimestamp' in build and 'gameImageSize' in build for build in source_profiles)
+    cases.append({'name': 'actual-source-schema2-profiles', 'passed': True})
+    incompatible = output / 'schema1-bundle'
+    incompatible.mkdir()
+    incompatible_manifest = json.loads((resources / 'release.json').read_text())
+    incompatible_manifest['schemaVersion'] = 1
+    (incompatible / 'release.json').write_text(json.dumps(incompatible_manifest))
+    try:
+        release_builds(incompatible)
+    except PatchError as error:
+        assert 'no supported game profiles' in str(error), error
+    else:
+        raise AssertionError('Linux build selection admitted schema 1')
+    cases.append({'name': 'schema1-manifest-refused', 'passed': True})
 
     def fixture(name: str, original: str = '') -> tuple[SteamPlay, Path, Path, bytes]:
         root = output / name
@@ -165,8 +181,13 @@ def run(output: Path) -> None:
     assert manager.config.read_bytes() == original
     record('updated-game-status', manager, original)
 
+    if os.name == 'nt':
+        sys.path.insert(0, str(Path(__file__).resolve().parent / 'installer-paths'))
+        from PathCases import run_path_cases
+        cases.extend(run_path_cases(output, resources, game_bytes=pe(1, 0x1000)))
     (output / 'result.json').write_text(json.dumps({'passed': True, 'cases': cases,
-        'scope': 'Owned Steam configuration and payload files. No Steam or game launch.'}, indent=2) + '\n')
+        'scope': 'Owned Steam configuration and payload files. No Steam or game launch.',
+        'windowsPathCases': 'executed' if os.name == 'nt' else 'not run: Windows junction and GUI cases'}, indent=2) + '\n')
     print(f'{len(cases)} installer E2E cases passed. Evidence: {output / "result.json"}')
 
 

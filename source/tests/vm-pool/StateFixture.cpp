@@ -134,6 +134,8 @@ void Cases() {
     native.clientRoots = 10; stream.clear(); writeCalls = 0;
     Need(WriteState(native, 0, nullptr) == StateError::ClientRootMismatch && stream.empty() && writeCalls == 0);
     std::cout << "stock-runtime-stock-format passed\n";
+    native.total = 65000; native.stockTotal = 65000; native.formatMagic = ClientFormatMagic;
+    native.clientRoots = native.stockClientRoots = 0;
     Need(ReadState(native, context, 1, nullptr) == StateError::None);
     Need(WriteState(native, 1, nullptr) == StateError::None);
     std::cout << "client-original-whole-functions passed\n";
