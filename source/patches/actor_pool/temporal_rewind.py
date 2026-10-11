@@ -83,4 +83,5 @@ def prepare_rewind(code: CapturedCode, layout: TemporalLayout, address: int) -> 
     body[offset:offset + 5] = b'\xe8' + rel32(call_address + 5, code.base + PROBE_FUNCTION.rva)
     # Both pushes and the complete native SUB instruction occupy the ten-byte entry span.
     hook = b'\xe9' + rel32(code.base + REWIND_FUNCTION.rva + 5, address) + b'\x90' * 5
-    return Rewrite('temporal_rewind', code.guard(REWIND_FUNCTION.rva, 10), hook, address, bytes(body))
+    return Rewrite('temporal_rewind', code.guard(REWIND_FUNCTION.rva, 10), hook, address, bytes(body),
+                   instruction_map=tuple(moved.addresses.items()))

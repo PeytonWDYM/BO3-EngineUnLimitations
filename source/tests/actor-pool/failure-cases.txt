@@ -1,4 +1,4 @@
-300 ACTOR / 340 SENTIENT PREPARATION FAILURE CASES
+ACTOR / SENTIENT PREPARATION FAILURE CASES
 
 Write these cases before implementation. Save replay results outside Git.
 
@@ -153,3 +153,20 @@ Native handler-owner admission
 118. Admit only the twelve researched GS-only roots for the existing twenty continuation sites. Refuse an unknown owner or altered handler metadata.
 119. Preserve each original image base, root function, handler-data address, prolog extent, and cookie offset. Do not change the emitted actor-plan bytes.
 120. Distinguish the prepared owner recipe from verified live binding, complete owner-specific exception dispatch, and the separate C++ caller preparation.
+
+500-actor target cases, before shape expansion:
+
+121. Admit only the researched 300/340 and target 500/540 shapes. Retain forty reserved sentients.
+122. Refuse the old sixteen-MiB-spaced layout when the 540-by-540 knowledge matrix overlaps actor storage.
+123. Replay every guarded direct member operation at actor 499 and sentient 539. Preserve unrelated records and registers.
+124. Construct and destroy all 500 complete actor records. Preserve the following canary record and reverse cleanup order.
+125. Replay 500 DObj entries, signed iterator boundaries, admission scans, and the unchanged adjacent array and corpse capacity.
+126. Replay twenty-row history with actor 499, wraparound, filtering, interpolation, rewind, and the four-lane final group.
+127. Replay the full no-fire caller with 500 poses. Reject the old corpse-buffer address without hiding cookie or register failures.
+128. Derive producer, rewind, caller, and history extents from the selected shape. Never use a 300-sized temporary buffer for 500 actors.
+129. Keep activation refused until client codecs, complete frames, saves, startup ownership, and actual game tests pass.
+130. Guard all six producer/rewind runtime fragments, complete metadata, native calls, and the common cookie handler before relocation.
+131. Map every runtime boundary and unwind operation to the relocated instruction boundary. Reject missing or reversed boundaries.
+132. Move allocation, late register saves, and cookie offsets together for 300 and 500 actors. Preserve chained-parent semantics.
+133. Check stock and expanded prolog, body, late-save fragment, and epilog contexts through Windows RtlVirtualUnwind.
+134. Reject stale allocation and register-save metadata through the same Windows comparison. Retain native handler admission as a separate requirement.

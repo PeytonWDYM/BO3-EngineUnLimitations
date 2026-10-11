@@ -83,6 +83,7 @@ def relocate_function(raw: bytes, source: int, destination: int,
     for instruction, value, target in fragments:
         addresses[instruction.address] = position
         position += len(value)
+    addresses[end] = position
     result = bytearray()
     for instruction, raw_value, target in fragments:
         value = bytearray(raw_value)

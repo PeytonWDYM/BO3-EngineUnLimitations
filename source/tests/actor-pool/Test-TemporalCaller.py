@@ -15,9 +15,10 @@ from temporal_restore import RESTORE_FUNCTION, prepare_restore
 from temporal_history import RECORDER_FUNCTION, SELECTOR_FUNCTION, prepare_history
 from temporal_rewind import REWIND_FUNCTION, PROBE_FUNCTION, prepare_rewind
 from temporal_caller import CALLER_FUNCTION, caller_frame, prepare_caller
+from shape import ActorShape
 
 
-def run(module: Path, executable: Path, dependencies: Path, output: Path) -> dict:
+def run(module: Path, executable: Path, dependencies: Path, output: Path, actor_count: int = 300) -> dict:
     sys.path.insert(0, str(dependencies))
     from unicorn import Uc, UC_ARCH_X86, UC_MODE_64, UC_HOOK_CODE, UC_HOOK_MEM_WRITE
     import unicorn.x86_const as x64
@@ -27,7 +28,7 @@ def run(module: Path, executable: Path, dependencies: Path, output: Path) -> dic
     if (Path.home() / '.codex/labs/bo3-engine').resolve() not in output.parents or output.exists():
         raise ValueError('Use a new result file inside the private BO3 lab.')
     code = CapturedCode(module, executable)
-    layout = TemporalLayout()
+    layout = TemporalLayout(ActorShape(actor_count))
     frame = caller_frame(layout)
     edits = prepare_caller(code, layout)
     decoder = Cs(CS_ARCH_X86, CS_MODE_64)
@@ -53,7 +54,7 @@ def run(module: Path, executable: Path, dependencies: Path, output: Path) -> dic
     cases = []
 
     def replay(name: str, mode: str):
-        count = 64 if mode == 'stock' else 300
+        count = 64 if mode == 'stock' else actor_count
         width, state_offset = count * 12, count * 24
         valid_offset, time_offset = count * 25, count * 26
         row_bytes = time_offset + 4
@@ -72,7 +73,7 @@ def run(module: Path, executable: Path, dependencies: Path, output: Path) -> dic
                 blobs.append((code.base + edit.guard.rva, replacement))
                 if edit.stub:
                     blobs.append((edit.stub_address, edit.stub))
-        regions = [(actors, 0x280000), (entities, 0x100000), (player, 0x4000), (weapon, 0x4000), (stats, 0x4000),
+        regions = [(actors, count * 0x2110), (entities, count * 0x4F8), (player, 0x4000), (weapon, 0x4000), (stats, 0x4000),
                    (definition, 0x4000), (history_base, row_bytes * 20), (stack, 0x20000), (tib, 4096), (stop, 4096),
                    (code.base + 0xA1CB6D4, 4), *rip_regions, *[(code.base + target, 1) for target in endpoints]]
         pages = set()
@@ -187,8 +188,8 @@ def run(module: Path, executable: Path, dependencies: Path, output: Path) -> dic
                       'probePages': [hex(page) for page in probes]})
 
     replay('stock64-complete-no-fire-caller', 'stock')
-    replay('wide300-complete-no-fire-caller', 'prepared')
-    replay('wide300-old-corpse-address-refused', 'old-corpse-buffer')
+    replay(f'wide{actor_count}-complete-no-fire-caller', 'prepared')
+    replay(f'wide{actor_count}-old-corpse-address-refused', 'old-corpse-buffer')
     result = {'passed': True, 'cases': cases,
               'scope': 'Owned complete no-fire caller with native selection, production, rewind, restore and probing. Corpse and other external helper endpoints are authored.',
               'sourceFiles': {path.name: hashlib.sha256(path.read_bytes()).hexdigest() for path in
@@ -205,5 +206,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     for name in ('module', 'executable', 'dependencies', 'output'):
         parser.add_argument('--' + name, type=Path, required=True)
+    parser.add_argument('--actors', type=int, choices=(300,500), default=300)
     args = parser.parse_args()
-    print(json.dumps(run(args.module, args.executable, args.dependencies, args.output), indent=2))
+    print(json.dumps(run(args.module, args.executable, args.dependencies, args.output, args.actors), indent=2))

@@ -1,4 +1,4 @@
-DISABLED 300 ACTOR / 340 SENTIENT PREPARATION
+500 ACTOR / 540 SENTIENT PREPARATION
 
 This source prepares owned native replays. It cannot activate a game patch.
 FixedPlan and the installer do not use this plan.
@@ -6,9 +6,13 @@ FixedPlan and the installer do not use this plan.
 shape.py supplies every emitted capacity and storage extent.
 The forty extra sentients preserve the stock count difference. Actual demand remains unmeasured.
 Native actor records retain stride 0x2110. Native sentient records retain stride 0x3088.
-The two external matrices contain 340-by-340 entries of 72 bytes and two bytes.
+The target matrices contain 540-by-540 entries of 72 bytes and two bytes.
 Storage includes actors, secondary actors, sentients, both matrices, handle heads, and DObj pointers.
-The seven regions use 16,165,640 bytes. Stub storage and allocator overhead are additional.
+The seven target regions use 33,932,440 bytes. Stub storage and allocator overhead are additional.
+The earlier 300/340 shape remains available for comparisons. It uses 16,165,640 bytes.
+Prepare-ActorPlan.py defaults to 500 actors. Use --actors 300 to export the earlier shape.
+Replay storage reserves thirty-two MiB between the knowledge matrix and actor storage.
+The old sixteen-MiB spacing overlaps at 540 sentients and fails admission.
 The shared 2,047-node handle pool, corpse pool, and normal entity limit retain their stock sizes.
 
 table_plan.py prepares 152 guarded edits and 95 stubs.
@@ -30,7 +34,7 @@ Prepare-ActorPlan.py exports bytes only into a new private BO3 lab directory.
 Its addresses describe owned replay allocations against an unpacked module.
 They are not runtime allocation addresses or packed-file offsets.
 
-python -B source/patches/actor_pool/Prepare-ActorPlan.py --module <pinned-module.json> --executable <exact-private-executable> --output <new-private-lab-directory>
+python -B source/patches/actor_pool/Prepare-ActorPlan.py --module <pinned-module.json> --executable <exact-private-executable> --output <new-private-lab-directory> --actors 500
 
 Write failure cases before logic. source/tests/actor-pool/failure-cases.txt records this change's cases.
 Run each test with a new result path inside the private BO3 lab.
@@ -154,6 +158,19 @@ Grouped CHAININFO alone cannot describe an added fixed allocation that differs f
 Native handlers, partial prologs, epilogs, and game registration remain activation gates.
 Startup must allocate, construct, guard, and roll back all storage before the first native consumer.
 Complete consumer coverage, shared handle demand, save behavior, and actual Windows game behavior remain open.
+
+The external-table, storage-omission, history, caller, and admission replays accept --actors 500.
+These runs check actor 499 and sentient 539, all 500 constructors and cleanup calls, and the complete temporal chain.
+The native history contains twenty 13,004-byte rows at the target shape.
+The producer allocates 1,160 stack bytes. Rewind allocates 12,632 bytes. The caller allocates 26,736 bytes.
+temporal_unwind.py guards all six producer/rewind runtime fragments and their complete chained metadata.
+It maps runtime boundaries and operation offsets to the relocated instructions.
+Allocation, late register saves, cookie offsets, and chained parents use the selected shape.
+Test-TemporalUnwind.ps1 checks 739 actual Windows unwind contexts at both 300 and 500 actors.
+Both shapes refuse two stale allocations and two stale register-save tables. All four owned function tables are deleted.
+The fixture executes native prologs, late saves, and epilogs. Other body contexts use the active frame state.
+It omits handlers for the owned comparison and authors the final cookie-check endpoint.
+This closes the owned frame comparison. Live registration, native handler execution, saves, and client replication remain separate requirements.
 
 provenance.json records the owner's authorized local AAE prototype and original source hashes.
 This directory contains Python source and address/hash contracts. It contains no game executable or extracted game bodies.

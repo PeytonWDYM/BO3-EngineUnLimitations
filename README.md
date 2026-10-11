@@ -99,27 +99,29 @@ Their output must stay outside Git.
 
 `source/tests/client-vm/Test-ClientAdmission.ps1` runs 146 refusal cases against pinned native guard spans.
 It also checks the complete 61-edit recipe and both helper pool capacities in owned memory.
-It requires the explicit developer build and separate private client and normalized server span files.
+It requires the default native build and separate private client and normalized server span files.
 `source/tests/actor-pool/Test-LeafUnwind.ps1` checks the guarded leaf stubs with the Windows unwind APIs.
 Both tests produce repeatable result and source-hash receipts in new output folders.
 
-The 300-zombie goal requires more than a larger actor allocation:
+The 500-actor target requires coordinated native storage, codecs, and script limits:
 
 | Target | Native dependency that still needs a complete patch |
 | --- | --- |
-| 300 actors | Inline sentient awareness tables, DObj arrays, actor iterators, save framing, and client replication |
+| 500 actors | Inline sentient awareness tables, DObj arrays, actor iterators, save framing, and client replication |
 | About 5,120 active entities | Separate normal and fake ID ranges, dependent arrays, and snapshot serializers |
 | More reliable commands | Different server and client rings, an inline command arena, reset, demo, resend, and migration paths |
 | More gamestate text | The 64KiB character arena, complete state copies, reset, and matching client storage |
 | More clientfields | Packed set budgets, callback arrays, counter storage, schema hashes, and snapshot layouts |
 | Higher rounds | Script clamps and the shared 8-bit round-completion field, plus native statistics and UI checks |
-| More than 10 players | Map scripts, player state, peer behavior, and the existing 18-slot parser boundary |
+| Stable future sessions with 10 players | Host load, map scripts, player state, and matching-peer stress tests |
 
 A native replay proves that sentient index 104 overwrites movement data in the stock layout.
 Index 299 writes beyond the stock sentient record.
 Changing the actor count or relocating only the outer sentient pool cannot support 300 actors.
 External awareness tables can preserve the native record stride, but their complete consumers and save format remain unverified.
-`source/patches/actor_pool` prepares a disabled 300-actor and 340-sentient plan with seven storage regions.
+`source/patches/actor_pool` defaults its export to 500 actors and 540 sentients with seven storage regions.
+The earlier 300/340 shape remains available for owned comparisons.
+The target uses 33,932,440 storage bytes and passes native replays at actor 499 and sentient 539.
 Its 152 guarded rewrites and 95 stubs preserve the native actor and sentient record strides.
 Native replays cover matrix operations, actor construction and cleanup, DObj storage, and iterator bounds.
 Owned Windows tests verify stack unwinding at 352 instruction boundaries across seventeen leaf stubs.
@@ -127,6 +129,9 @@ Another owned test compares 1,829 boundaries across all 78 continuations with th
 The comparison preserves five partial prologs and uses separate flattened frames for temporary stack phases.
 It omits native handlers and rebases branch addresses only inside the owned fixture.
 Runtime ABI admission, native handler dispatch, live registration, temporal history, combined saves, and client replication still block activation.
+The 500-actor replays also pass 500 constructors and cleanup calls, DObj storage, iterators, admission scans, history, and the full no-fire caller.
+Complete producer/rewind frame tests pass 739 Windows instruction contexts for each expanded shape.
+The tests refuse stale allocation and register-save metadata. Live native handler bindings remain under development.
 A separate temporal restore preparation handles 300 records in five native replay cases and five additional Windows unwind contexts.
 It preserves the native loop target. The complete producer preparation passes fifteen owned replay cases.
 Its temporary flags and cookie use separate storage. A count-only candidate corrupts the stack.

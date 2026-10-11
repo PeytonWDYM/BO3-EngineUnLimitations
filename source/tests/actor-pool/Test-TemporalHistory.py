@@ -13,9 +13,10 @@ from temporal_layout import TemporalLayout
 from temporal_producer import PRODUCER_FUNCTION, prepare_producer
 from temporal_restore import RESTORE_FUNCTION, prepare_restore
 from temporal_history import RECORDER_FUNCTION, SELECTOR_FUNCTION, prepare_history
+from shape import ActorShape
 
 
-def run(module: Path, executable: Path, dependencies: Path, output: Path, include_rewind: bool = False) -> dict:
+def run(module: Path, executable: Path, dependencies: Path, output: Path, include_rewind: bool = False, actor_count: int = 300) -> dict:
     sys.path.insert(0, str(dependencies))
     from unicorn import Uc, UC_ARCH_X86, UC_MODE_64, UC_HOOK_CODE, UC_HOOK_MEM_WRITE
     import unicorn.x86_const as x64
@@ -23,7 +24,7 @@ def run(module: Path, executable: Path, dependencies: Path, output: Path, includ
     if (Path.home() / '.codex/labs/bo3-engine').resolve() not in output.parents or output.exists():
         raise ValueError('Use a new result file inside the private BO3 lab.')
     code = CapturedCode(module, executable)
-    layout = TemporalLayout()
+    layout = TemporalLayout(ActorShape(actor_count))
     actors, entities, expanded_history, state, argument = 0x40000000, 0x48000000, code.base + 0x20200000, 0x49200000, 0x49300000
     stack, stop = 0x50000000, 0x51000000
     native_history = code.base + 0xA1C3484
@@ -46,7 +47,7 @@ def run(module: Path, executable: Path, dependencies: Path, output: Path, includ
     def replay(name: str, mode: str, start_counter: int, frames: int, patterned: bool = False,
                use_rewind: bool = False, stack_offset: int = 0xF008, requested_age: int = 75):
         machine = Uc(UC_ARCH_X86, UC_MODE_64)
-        count = 64 if mode == 'stock' else 300
+        count = 64 if mode == 'stock' else actor_count
         vector_bytes = count * 12
         state_offset, valid_offset = vector_bytes * 2, vector_bytes * 2 + count
         time_offset = (valid_offset + count + 3) & ~3
@@ -59,7 +60,7 @@ def run(module: Path, executable: Path, dependencies: Path, output: Path, includ
                 if edit.stub:
                     blob = edit.stub
                     if mode == 'unchecked-tail' and edit.name == 'temporal_history_recorder':
-                        check = b'\x49\x81\xf9' + struct.pack('<I', 296) + b'\x0f\x8d'
+                        check = b'\x49\x81\xf9' + struct.pack('<I', actor_count - 4) + b'\x0f\x8d'
                         assert blob.count(check) == 1
                         offset = blob.index(check)
                         blob = blob[:offset] + b'\x90' * 13 + blob[offset + 13:]
@@ -72,7 +73,7 @@ def run(module: Path, executable: Path, dependencies: Path, output: Path, includ
                         offset = calls[0].address - edit.stub_address
                         blob = blob[:offset] + b'\x90' * calls[0].size + blob[offset + calls[0].size:]
                     blobs.append((edit.stub_address, blob))
-        regions = [(actors, 0x280000), (entities, 0x100000), (history - 16, row_bytes * 20 + 32),
+        regions = [(actors, (count + 4) * 0x2110), (entities, count * 0x4F8), (history - 16, row_bytes * 20 + 32),
                    (counter_address, 4), (time_address, 4), (code.base + 0xA1B0744, 4), (code.base + 0xA1B0798, 8),
                    (code.base + 0x35EEA10, 8), (code.base + 0xA0377A0, 8), (0x52000000, 0x1000),
                    (state, 0x4000), (argument, 0x1000), (stack, 0x10000), (stop, 0x1000),
@@ -86,7 +87,7 @@ def run(module: Path, executable: Path, dependencies: Path, output: Path, includ
             machine.mem_write(address, data)
         for address in callbacks:
             machine.mem_write(address, b'\xc3')
-        machine.mem_write(actors, b'\xcc' * (304 * 0x2110))
+        machine.mem_write(actors, b'\xcc' * ((count + 4) * 0x2110))
         machine.mem_write(code.base + 0xA1B0798, struct.pack('<Q', actors))
         machine.mem_write(code.base + 0xA1B0744, struct.pack('<I', 0x55AA))
         cookie = 0x123456789ABCDEF0
@@ -283,23 +284,23 @@ def run(module: Path, executable: Path, dependencies: Path, output: Path, includ
         assert machine.mem_read(state, len(wanted)) == bytes(wanted)
         assert machine.mem_read(history, len(expected)) == bytes(expected)
         cases.append({'case': name, 'actors': count, 'framesRecorded': frames, 'finalCounter': counter,
-                      'selectorRequests': len(requests), 'restoredActors': len(accepted), 'actor299Restored': 299 in accepted,
+                      'selectorRequests': len(requests), 'restoredActors': len(accepted), 'lastActorRestored': actor_count-1 in accepted,
                       'nativeHistoryAndPoseChainMatches': True, 'predicateCalls': len(predicate_calls)})
 
     replay('stock64-chain', 'stock', 0, 3)
     replay('stock64-filtered-wrap', 'stock', 19, 3, True)
-    replay('wide300-empty-history', 'prepared', 0, 0)
-    replay('wide300-chain', 'prepared', 0, 3)
-    replay('wide300-filtered-wrap', 'prepared', 19, 3, True)
-    replay('wide300-full-history-wrap', 'prepared', 0, 25)
-    replay('wide300-large-counter', 'prepared', 100003, 3)
+    replay(f'wide{actor_count}-empty-history', 'prepared', 0, 0)
+    replay(f'wide{actor_count}-chain', 'prepared', 0, 3)
+    replay(f'wide{actor_count}-filtered-wrap', 'prepared', 19, 3, True)
+    replay(f'wide{actor_count}-full-history-wrap', 'prepared', 0, 25)
+    replay(f'wide{actor_count}-large-counter', 'prepared', 100003, 3)
     replay('unchecked-eight-lane-tail-refused', 'unchecked-tail', 0, 1)
     if include_rewind:
-        replay('wide300-native-rewind', 'prepared', 0, 3, use_rewind=True)
-        replay('wide300-native-rewind-filtered', 'prepared', 19, 3, True, True, 0xE188)
-        replay('wide300-native-rewind-short-history', 'prepared', 0, 3, use_rewind=True, requested_age=25)
-        replay('wide300-native-rewind-time-clamp', 'prepared', 0, 25, use_rewind=True, requested_age=5000)
-        replay('wide300-missing-probe-refused', 'no-probe', 0, 3, use_rewind=True)
+        replay(f'wide{actor_count}-native-rewind', 'prepared', 0, 3, use_rewind=True)
+        replay(f'wide{actor_count}-native-rewind-filtered', 'prepared', 19, 3, True, True, 0xE188)
+        replay(f'wide{actor_count}-native-rewind-short-history', 'prepared', 0, 3, use_rewind=True, requested_age=25)
+        replay(f'wide{actor_count}-native-rewind-time-clamp', 'prepared', 0, 25, use_rewind=True, requested_age=5000)
+        replay(f'wide{actor_count}-missing-probe-refused', 'no-probe', 0, 3, use_rewind=True)
     result = {'passed': True, 'cases': cases,
               'scope': 'Owned captured temporal chain. Predicate, cookie and relink endpoints are authored. Optional rewind also authors memset and its native helper endpoint.',
               'sourceFiles': {path.name: hashlib.sha256(path.read_bytes()).hexdigest() for path in
@@ -321,5 +322,6 @@ if __name__ == '__main__':
     for name in ('module', 'executable', 'dependencies', 'output'):
         parser.add_argument('--' + name, type=Path, required=True)
     parser.add_argument('--include-rewind', action='store_true')
+    parser.add_argument('--actors', type=int, choices=(300,500), default=300)
     args = parser.parse_args()
-    print(json.dumps(run(args.module, args.executable, args.dependencies, args.output, args.include_rewind), indent=2))
+    print(json.dumps(run(args.module, args.executable, args.dependencies, args.output, args.include_rewind, args.actors), indent=2))

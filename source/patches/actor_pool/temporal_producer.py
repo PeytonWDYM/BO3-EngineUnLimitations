@@ -77,4 +77,5 @@ def prepare_producer(code: CapturedCode, layout: TemporalLayout, stub_address: i
         raise ValueError('The producer member inventory differs from the researched native body.')
     relocated = relocate_function(original, code.base + PRODUCER_FUNCTION.rva, stub_address, replacements)
     hook = b'\xe9' + rel32(code.base + PRODUCER_FUNCTION.rva + 5, stub_address)
-    return Rewrite('temporal_producer', code.guard(PRODUCER_FUNCTION.rva, 5), hook, stub_address, relocated.code)
+    return Rewrite('temporal_producer', code.guard(PRODUCER_FUNCTION.rva, 5), hook, stub_address, relocated.code,
+                   instruction_map=tuple(relocated.addresses.items()))

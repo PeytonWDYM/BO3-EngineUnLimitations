@@ -14,9 +14,10 @@ from table_plan import prepare
 from table_layout import TableLayout, NativeSentientAddress, ExternalTableAddress
 from storage_plan import StorageLayout
 from omissions import omission_inventory
+from shape import ActorShape
 
 
-def run(module: Path, executable: Path, dependencies: Path, output: Path) -> dict:
+def run(module: Path, executable: Path, dependencies: Path, output: Path, actors: int = 300) -> dict:
     sys.path.insert(0,str(dependencies))
     from unicorn import Uc, UC_ARCH_X86, UC_MODE_64, UC_HOOK_CODE
     import unicorn.x86_const as x64
@@ -26,8 +27,8 @@ def run(module: Path, executable: Path, dependencies: Path, output: Path) -> dic
         raise ValueError('Use a new result file inside the private BO3 lab.')
     code = CapturedCode(module,executable)
     base = code.base
-    layout = TableLayout(NativeSentientAddress(base+0x21000000),ExternalTableAddress(base+0x22000000))
-    storage = StorageLayout(base+0x23000000,base+0x24000000,base+0x25000000,base+0x26000000,base+0x27000000)
+    layout = TableLayout(NativeSentientAddress(base+0x21000000),ExternalTableAddress(base+0x22000000),ActorShape(actors))
+    storage = StorageLayout(*(base+offset for offset in (0x24000000,0x26000000,0x28000000,0x2A000000,0x2C000000)))
     plan = prepare(code,layout,base+0x20000000,storage)
     shape = layout.shape
     results = []
@@ -64,14 +65,14 @@ def run(module: Path, executable: Path, dependencies: Path, output: Path) -> dic
                                                     (0x24AE611,0x24AE645,'rsi','rcx')]:
         fragments = program(start,end)
         uc = machine(fragments,[(storage.dobj,shape.dobj_bytes+8)])
-        for index in (0,63,64,199,299):
+        for index in (0,63,64,199,shape.actors-1):
             token = 0x70000000+index
             uc.mem_write(storage.dobj+index*8,struct.pack('<Q',token))
             uc.reg_write(reg(input_register),storage.actors+index*0x2110)
             uc.reg_write(reg('rsp'),0x302000)
             uc.emu_start(base+start,0x400000 if start==0x24B5EB0 else base+end,count=100)
             assert uc.reg_read(reg(output_register)) == token
-        results.append({'case':'native_dobj_lookup','rva':hex(start),'indices':[0,63,64,199,299]})
+        results.append({'case':'native_dobj_lookup','rva':hex(start),'indices':[0,63,64,199,shape.actors-1]})
 
     # Replay native setup. Only the allocation callback uses an owned RET stand-in.
     allocation = base+0x22C7FE0
@@ -134,7 +135,7 @@ def run(module: Path, executable: Path, dependencies: Path, output: Path) -> dic
         site = next(item for item in omission_inventory() if int(item['rva'],0)==edit.guard.rva)
         target = base+int(site['branchTargetRva'],0)
         continuation = base+edit.guard.rva+edit.guard.size
-        for index in (-1,0,63,64,299,300,339):
+        for index in (-1,0,63,64,shape.actors-1,shape.actors,shape.sentients-1):
             uc = machine([(base+edit.guard.rva,edit.replacement),(edit.stub_address,edit.stub)],[(target,1),(continuation,1)])
             uc.reg_write(reg('r8'),index & ((1 << 64)-1))
             stops=[]
@@ -162,7 +163,7 @@ def run(module: Path, executable: Path, dependencies: Path, output: Path) -> dic
     corpse = base+0x28000000
     policy_instruction = code.read(0x1B75DC0,7)
     policy = base+0x1B75DC7+struct.unpack('<i',policy_instruction[3:])[0]
-    for occupied,limit in [(299,300),(300,300),(300,301)]:
+    for occupied,limit in [(shape.actors-1,shape.actors),(shape.actors,shape.actors),(shape.actors,shape.actors+1)]:
         uc = machine(program(0x1B75DC0,0x1B75E59),[(storage.actors,shape.actor_bytes),(corpse,64*0x21A0),(policy,4)])
         uc.mem_write(base+0xA1B0770,struct.pack('<Q',corpse))
         uc.mem_write(policy,struct.pack('<I',limit))
@@ -200,5 +201,6 @@ if __name__=='__main__':
     parser.add_argument('--executable',type=Path,required=True)
     parser.add_argument('--dependencies',type=Path,required=True)
     parser.add_argument('--output',type=Path,required=True)
+    parser.add_argument('--actors',type=int,choices=(300,500),default=300)
     args=parser.parse_args()
-    print(json.dumps(run(args.module,args.executable,args.dependencies,args.output),indent=2))
+    print(json.dumps(run(args.module,args.executable,args.dependencies,args.output,args.actors),indent=2))

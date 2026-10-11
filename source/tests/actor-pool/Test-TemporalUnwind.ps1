@@ -1,0 +1,31 @@
+#Requires -Version 7.0
+param(
+    [Parameter(Mandatory)][string]$Output,
+    [Parameter(Mandatory)][string]$Manifest,
+    [Parameter(Mandatory)][string]$Executable,
+    [Parameter(Mandatory)][string]$Dependencies,
+    [ValidateSet(300,500)][int]$Actors=500,
+    [string]$Python='python'
+)
+$ErrorActionPreference='Stop'
+$target=[IO.Path]::GetFullPath($Output)
+& $Python -B (Join-Path $PSScriptRoot 'Test-TemporalUnwind.py') --module $Manifest --executable $Executable --dependencies $Dependencies --output $target --actors $Actors
+if ($LASTEXITCODE -ne 0) { throw 'Temporal frame export failed.' }
+$vswhere=Join-Path ${env:ProgramFiles(x86)} 'Microsoft Visual Studio/Installer/vswhere.exe'
+$installation=& $vswhere -latest -products '*' -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath
+$compiler=Get-ChildItem (Join-Path $installation 'VC/Tools/MSVC') -Directory | Sort-Object Name -Descending | Select-Object -First 1
+$sdkRoot=Join-Path ${env:ProgramFiles(x86)} 'Windows Kits/10'
+$sdk=Get-ChildItem (Join-Path $sdkRoot 'Lib') -Directory | Sort-Object Name -Descending | Select-Object -First 1
+$savedInclude,$savedLib=$env:INCLUDE,$env:LIB
+try {
+    $env:INCLUDE="$($compiler.FullName)/include;$sdkRoot/Include/$($sdk.Name)/um;$sdkRoot/Include/$($sdk.Name)/shared;$sdkRoot/Include/$($sdk.Name)/ucrt"
+    $env:LIB="$($compiler.FullName)/lib/x64;$sdkRoot/Lib/$($sdk.Name)/um/x64;$sdkRoot/Lib/$($sdk.Name)/ucrt/x64"
+    $fixture=Join-Path $PSScriptRoot 'TemporalUnwindFixture.cpp'
+    $binary=Join-Path $target 'TemporalUnwindFixture.exe'
+    & (Join-Path $compiler.FullName 'bin/Hostx64/x64/cl.exe') /nologo /EHsc /W4 /WX /MT /std:c++20 /O2 $fixture "/Fe:$binary" "/Fo:$target/" /link /INCREMENTAL:NO /Brepro 2>&1 | Tee-Object -FilePath (Join-Path $target 'build.txt')
+    if ($LASTEXITCODE -ne 0) { throw 'Temporal Windows fixture compilation failed.' }
+    & $binary (Join-Path $target 'temporal-unwind.bin') | Tee-Object -FilePath (Join-Path $target 'result.json')
+    if ($LASTEXITCODE -ne 0) { throw 'Temporal Windows unwinding failed.' }
+    $paths=@($fixture,$PSCommandPath,$binary,(Join-Path $target 'input-receipt.json'),(Join-Path $target 'result.json'))
+    @{passed=$true;actors=$Actors;files=@($paths | Get-FileHash | Select-Object Path,Hash);gameWrites=0} | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $target 'receipt.json')
+} finally { $env:INCLUDE=$savedInclude; $env:LIB=$savedLib }

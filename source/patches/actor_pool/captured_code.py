@@ -32,6 +32,7 @@ class Rewrite:
     stub_address: int | None = None
     stub: bytes = b''
     owner_register: str | None = None
+    instruction_map: tuple[tuple[int, int], ...] = ()
 
 
 class CapturedCode:

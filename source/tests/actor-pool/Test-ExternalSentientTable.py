@@ -12,10 +12,11 @@ sys.path.insert(0,str(PATCHES))
 from table_layout import TableLayout, NativeSentientAddress, ExternalTableAddress, NATIVE_SENTIENT_BYTES
 from table_plan import CapturedCode, CodeGuard, prepare, normalize_register
 from storage_plan import StorageLayout
+from shape import ActorShape
 from x64_table import REGISTERS
 
 
-def run(module: Path, executable: Path, dependencies: Path, output: Path):
+def run(module: Path, executable: Path, dependencies: Path, output: Path, actors: int = 300):
     sys.path.insert(0,str(dependencies))
     import capstone
     from unicorn import Uc, UC_ARCH_X86, UC_MODE_64, UC_HOOK_CODE
@@ -25,8 +26,8 @@ def run(module: Path, executable: Path, dependencies: Path, output: Path):
     if (Path.home()/'.codex/labs/bo3-engine').resolve() not in output.parents or output.exists():
         raise ValueError('Use a new result file inside the private BO3 lab.')
     source = CapturedCode(module,executable)
-    layout = TableLayout(NativeSentientAddress(source.base+0x21000000),ExternalTableAddress(source.base+0x22000000))
-    plan = prepare(source,layout,source.base+0x20000000,StorageLayout(source.base+0x23000000,source.base+0x24000000,source.base+0x25000000,source.base+0x26000000,source.base+0x27000000))
+    layout = TableLayout(NativeSentientAddress(source.base+0x21000000),ExternalTableAddress(source.base+0x22000000),ActorShape(actors))
+    plan = prepare(source,layout,source.base+0x20000000,StorageLayout(*(source.base+offset for offset in (0x24000000,0x26000000,0x28000000,0x2A000000,0x2C000000))))
     shape = layout.shape
     pointer = source.base+0xA1B0790
     gprs = {r:getattr(x86,'UC_X86_REG_'+r.upper()) for r in REGISTERS}
@@ -76,7 +77,7 @@ def run(module: Path, executable: Path, dependencies: Path, output: Path):
         edit = member_edits[rva]
         instruction = next(decoder.disasm(binding.original,source.base+rva))
         mem = next(op for op in instruction.operands if op.type == capstone.x86.X86_OP_MEM)
-        for owner_index,target_index in [(0,0),(0,104),(103,103),(199,199),(299,299),(339,339)]:
+        for owner_index,target_index in [(0,0),(0,104),(103,103),(199,199),(shape.actors-1,shape.actors-1),(shape.sentients-1,shape.sentients-1)]:
             owner = NativeSentientAddress(layout.native_pool+owner_index*NATIVE_SENTIENT_BYTES)
             if binding.index_register is None and binding.base_register == binding.owner_register:
                 target_index = 0
@@ -128,8 +129,8 @@ def run(module: Path, executable: Path, dependencies: Path, output: Path):
 
     accessor = next(e for e in plan.rewrites if e.name == 'external_table_accessor')
     uc = machine([(source.base+accessor.guard.rva,accessor.replacement),(accessor.stub_address,accessor.stub)])
-    for owner_index in (0,103,104,199,299,339):
-        for target_index in (0,103,104,199,299,339):
+    for owner_index in (0,103,104,199,shape.actors-1,shape.sentients-1):
+        for target_index in (0,103,104,199,shape.actors-1,shape.sentients-1):
             owner = NativeSentientAddress(layout.native_pool+owner_index*NATIVE_SENTIENT_BYTES)
             target = NativeSentientAddress(layout.native_pool+target_index*NATIVE_SENTIENT_BYTES)
             uc.reg_write(x86.UC_X86_REG_RSP,0x302000)
@@ -199,13 +200,13 @@ def run(module: Path, executable: Path, dependencies: Path, output: Path):
         uc.mem_write(source.base+0xA1B0798,struct.pack('<Q',plan.actor_array))
         uc.reg_write(gprs['rcx'],plan.actor_array+63*0x2110 if next_actor else 2)
         uc.reg_write(gprs['rdx'],2)
-        uc.emu_start(source.base+start,0x400000,count=4000)
+        uc.emu_start(source.base+start,0x400000,count=shape.actors*32)
         assert uc.reg_read(gprs['rax']) == plan.actor_array+(shape.actors-1)*0x2110
     results.append({'case':'native_actor_iterators','lastActorSelected':(shape.actors-1),'firstAndNextIterators':True})
 
     uc = machine(native_program(0x24B1580,0x54))
     uc.mem_write(layout.native_pool,bytes(shape.sentients*0x3088))
-    uc.emu_start(source.base+0x24B1580,0x400000,count=2000)
+    uc.emu_start(source.base+0x24B1580,0x400000,count=shape.sentients*32)
     assert uc.reg_read(gprs['rax']) == 0 and uc.reg_read(gprs['rdx']) == layout.native_pool+shape.sentients*0x3088
     results.append({'case':'native_sentient_eligibility_scan','recordsVisited':shape.sentients,'emptyCount':0})
 
@@ -221,7 +222,8 @@ def run(module: Path, executable: Path, dependencies: Path, output: Path):
     uc = machine([(source.base+0x2505B20,source.read(0x2505B20,0x3B)),
                   (source.base+init.guard.rva,init.replacement),(init.stub_address,init.stub),
                   (source.base+init_count.guard.rva,init_count.replacement)])
-    uc.emu_start(source.base+0x2505B20,source.base+0x2505B4D,count=2000000)
+    uc.emu_start(source.base+0x2505B20,source.base+0x2505B4D,count=layout.table_bytes//8+plan.word_table.table_bytes//8+shape.sentients*32)
+    assert uc.reg_read(x86.UC_X86_REG_RIP) == source.base+0x2505B4D
     assert bytes(uc.mem_read(layout.external_table,layout.table_bytes)) == bytes(layout.table_bytes)
     assert bytes(uc.mem_read(plan.word_table.external_table,len(word_bytes))) == bytes(len(word_bytes))
     expected_native = bytearray(native_bytes)
@@ -328,7 +330,7 @@ def run(module: Path, executable: Path, dependencies: Path, output: Path):
 
         uc.hook_add(UC_HOOK_CODE,record_reset)
         uc.reg_write(x86.UC_X86_REG_RCX,victim)
-        uc.emu_start(source.base+0x2506270,0x400000,count=20000)
+        uc.emu_start(source.base+0x2506270,0x400000,count=shape.sentients*128)
         assert selected == [index for index in range(shape.sentients) if index != victim_index]
     results.append({'case':'native_free_owner_selection','victims':[104,(shape.sentients-1)],'ownersPerVictim':(shape.sentients-1),
                     'limit':'Reset arguments only. Unrelated routines and reset body use RET stand-ins in this selection replay.'})
@@ -357,7 +359,7 @@ def run(module: Path, executable: Path, dependencies: Path, output: Path):
             cleanup.append((uc.reg_read(x86.UC_X86_REG_RCX)-plan.actor_array)//0x2110)
 
     uc.hook_add(UC_HOOK_CODE,record_actor)
-    uc.emu_start(source.base+0x2DD10C0,source.base+0x2DD10EE,count=10000)
+    uc.emu_start(source.base+0x2DD10C0,source.base+0x2DD10EE,count=shape.actors*256)
     assert construction == list(range(shape.actors))
     constructor_row = bytes(uc.mem_read(plan.actor_array,0x2110))
     expected_row = bytearray(actor_bytes[:0x2110])
@@ -375,7 +377,7 @@ def run(module: Path, executable: Path, dependencies: Path, output: Path):
     assert bytes(uc.mem_read(plan.actor_array+shape.actors*0x2110,0x2110)) == actor_bytes[-0x2110:]
     uc.reg_write(x86.UC_X86_REG_RSP,0x302000)
     uc.mem_write(0x302000,struct.pack('<Q',0x400000))
-    uc.emu_start(source.base+0x2EFA3D0,0x400000,count=10000)
+    uc.emu_start(source.base+0x2EFA3D0,0x400000,count=shape.actors*128)
     assert cleanup == list(reversed(range(shape.actors)))
     struct.pack_into('<Q',expected_row,0x8A0,source.base+0x2F1BB40)
     for index in range(shape.actors):
@@ -413,8 +415,7 @@ def run(module: Path, executable: Path, dependencies: Path, output: Path):
         raise AssertionError('An incomplete table plan allowed activation.')
     report = {'status':'guarded_external_table_owned_native_replay_passed','cases':results,
               'directInstructionStates':len(plan.member_bindings)*6,'rewrites':len(plan.rewrites),'gameLaunched':False,
-              'capacity300Activated':False,'coverageComplete':False,
-              'implementationVersion':'disabled-actor-300-preparation-1',
+              'actorCapacity':shape.actors,'sentientCapacity':shape.sentients,'activationAllowed':False,'coverageComplete':False,
               'supportedExecutableSha256':'0b874dcc250848b7313ec13a0c76468dacc2009b5efa2bff4c587e169a9f77e0',
               'moduleManifestSha256':hashlib.sha256(module.read_bytes()).hexdigest(),
               'sourceFiles':{str(p.relative_to(PATCHES.parents[2])):hashlib.sha256(p.read_bytes()).hexdigest()
@@ -436,5 +437,6 @@ if __name__ == '__main__':
     parser.add_argument('--executable',type=Path,required=True)
     parser.add_argument('--dependencies',type=Path,required=True)
     parser.add_argument('--output',type=Path,required=True)
+    parser.add_argument('--actors',type=int,choices=(300,500),default=300)
     args = parser.parse_args()
-    print(json.dumps(run(args.module,args.executable,args.dependencies,args.output),indent=2))
+    print(json.dumps(run(args.module,args.executable,args.dependencies,args.output,args.actors),indent=2))

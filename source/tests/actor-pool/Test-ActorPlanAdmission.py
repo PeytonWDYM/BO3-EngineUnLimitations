@@ -17,7 +17,7 @@ from table_plan import prepare
 from x64_table import rel32
 
 
-def run(module: Path, executable: Path, output: Path) -> dict:
+def run(module: Path, executable: Path, output: Path, actors: int = 300) -> dict:
     output = output.resolve()
     if (Path.home()/'.codex/labs/bo3-engine').resolve() not in output.parents or output.exists():
         raise ValueError('Use a new output directory inside the private BO3 lab.')
@@ -58,8 +58,10 @@ def run(module: Path, executable: Path, output: Path) -> dict:
     refuse('changed_native_guard',lambda:source.guarded(CodeGuard(0x2505BB0,50,'0'*64)))
     refuse('unsupported_shape',lambda:ActorShape(200))
     refuse('rel32_out_of_range',lambda:rel32(0,1 << 31))
-    layout = TableLayout(NativeSentientAddress(source.base+0x21000000),ExternalTableAddress(source.base+0x22000000))
-    storage = StorageLayout(source.base+0x23000000,source.base+0x24000000,source.base+0x25000000,source.base+0x26000000,source.base+0x27000000)
+    layout = TableLayout(NativeSentientAddress(source.base+0x21000000),ExternalTableAddress(source.base+0x22000000),ActorShape(actors))
+    storage = StorageLayout(*(source.base+offset for offset in (0x24000000,0x26000000,0x28000000,0x2A000000,0x2C000000)))
+    if actors == 500:
+        refuse('old_matrix_spacing_overlap',lambda:StorageLayout(source.base+0x23000000,storage.secondary_actors,storage.sentient_heads,storage.indexed_words,storage.dobj).regions(layout))
     refuse('storage_overlap',lambda:StorageLayout(storage.actors,storage.actors,storage.sentient_heads,storage.indexed_words,storage.dobj).regions(layout))
     refuse('storage_unaligned',lambda:StorageLayout(storage.actors+1,storage.secondary_actors,storage.sentient_heads,storage.indexed_words,storage.dobj).regions(layout))
     refuse('storage_wrap',lambda:StorageLayout((1 << 64)-16,storage.secondary_actors,storage.sentient_heads,storage.indexed_words,storage.dobj).regions(layout))
@@ -69,12 +71,14 @@ def run(module: Path, executable: Path, output: Path) -> dict:
     plan = prepare(source,layout,source.base+0x20000000,storage)
     refuse('incomplete_plan_activation',plan.require_activation,RuntimeError)
     regions = storage.regions(layout)
-    assert len(regions)==7 and sum(size for _,size in regions)==16165640
-    assert (layout.table_bytes,plan.word_table.table_bytes)==(8323200,231200)
+    expected = {300:(16165640,8323200,231200),500:(33932440,20995200,583200)}[actors]
+    assert len(regions)==7 and sum(size for _,size in regions)==expected[0]
+    assert (layout.table_bytes,plan.word_table.table_bytes)==expected[1:]
     report = {'status':'actor_preparation_admission_refusals_passed','cases':cases,
               'executableSha256':source.executable_sha256,'moduleManifestSha256':hashlib.sha256(module.read_bytes()).hexdigest(),
               'sourceFiles':{str(path.relative_to(PATCHES.parents[2])):hashlib.sha256(path.read_bytes()).hexdigest()
                              for path in [*PATCHES.glob('*.py'),*PATCHES.glob('*.json'),Path(__file__)]},
+              'actors':actors,'sentients':layout.capacity,'storageBytes':expected[0],
               'deploymentAllowed':False,'gameLaunched':False}
     (output/'result.json').write_text(json.dumps(report,indent=2)+'\n')
     return {'status':report['status'],'cases':len(cases),'output':str(output/'result.json')}
@@ -85,5 +89,6 @@ if __name__=='__main__':
     parser.add_argument('--module',type=Path,required=True)
     parser.add_argument('--executable',type=Path,required=True)
     parser.add_argument('--output',type=Path,required=True)
+    parser.add_argument('--actors',type=int,choices=(300,500),default=300)
     args=parser.parse_args()
-    print(json.dumps(run(args.module,args.executable,args.output),indent=2))
+    print(json.dumps(run(args.module,args.executable,args.output,args.actors),indent=2))

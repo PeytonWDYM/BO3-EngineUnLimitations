@@ -1,4 +1,4 @@
-"""One researched capacity shape. This is not a runtime admission policy."""
+"""Guarded actor preparation shapes. Runtime admission also needs codecs, saves, and complete frames."""
 
 from dataclasses import dataclass
 
@@ -13,8 +13,8 @@ class ActorShape:
     sentient_reserve: int = 40
 
     def __post_init__(self) -> None:
-        if (self.actors, self.sentient_reserve) != (300, 40):
-            raise ValueError('Only the researched 300/340 preparation shape is supported.')
+        if (self.actors, self.sentient_reserve) not in ((300, 40), (500, 40)):
+            raise ValueError('Only the 300/340 and 500/540 preparation shapes are supported.')
 
     @property
     def sentients(self) -> int:

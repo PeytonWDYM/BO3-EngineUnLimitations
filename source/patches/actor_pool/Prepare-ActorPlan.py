@@ -12,15 +12,16 @@ from table_plan import prepare, ACTIVATION_GATES
 from storage_plan import StorageLayout
 from omissions import omission_inventory
 from unwind import requirements
+from shape import ActorShape
 
 
-def export(module: Path, executable: Path, output: Path) -> dict:
+def export(module: Path, executable: Path, output: Path, actors: int = 500) -> dict:
     output = output.resolve()
     if (Path.home()/'.codex/labs/bo3-engine').resolve() not in output.parents or output.exists():
         raise ValueError('Use a new output directory inside the private BO3 lab.')
     code = CapturedCode(module,executable)
-    layout = TableLayout(NativeSentientAddress(code.base+0x21000000),ExternalTableAddress(code.base+0x22000000))
-    storage = StorageLayout(code.base+0x23000000,code.base+0x24000000,code.base+0x25000000,code.base+0x26000000,code.base+0x27000000)
+    layout = TableLayout(NativeSentientAddress(code.base+0x21000000),ExternalTableAddress(code.base+0x22000000),ActorShape(actors))
+    storage = StorageLayout(*(code.base+offset for offset in (0x24000000,0x26000000,0x28000000,0x2A000000,0x2C000000)))
     plan = prepare(code,layout,code.base+0x20000000,storage)
     unwind = requirements(code,plan.rewrites)
     output.mkdir(parents=True)
@@ -33,7 +34,7 @@ def export(module: Path, executable: Path, output: Path) -> dict:
             (output/filename).write_bytes(edit.stub)
             item.update(stubAddress=hex(edit.stub_address),stubFile=filename,stubSha256=hashlib.sha256(edit.stub).hexdigest())
         edits.append(item)
-    report = {'status':'disabled_actor_300_preparation','deploymentAllowed':False,'coverageComplete':False,
+    report = {'status':f'disabled_actor_{actors}_preparation','deploymentAllowed':False,'coverageComplete':False,
               'executableSha256':code.executable_sha256,'moduleManifestSha256':MANIFEST_SHA256,
               'shape':asdict(layout.shape)|{'sentients':layout.capacity},
               'addressSpace':'Owned replay allocations against the pinned unpacked module. These are not admitted runtime addresses.',
@@ -53,5 +54,6 @@ if __name__=='__main__':
     parser.add_argument('--module',type=Path,required=True)
     parser.add_argument('--executable',type=Path,required=True)
     parser.add_argument('--output',type=Path,required=True)
+    parser.add_argument('--actors',type=int,choices=(300,500),default=500)
     args=parser.parse_args()
-    print(json.dumps(export(args.module,args.executable,args.output),indent=2))
+    print(json.dumps(export(args.module,args.executable,args.output,args.actors),indent=2))
