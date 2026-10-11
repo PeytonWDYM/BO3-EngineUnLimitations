@@ -51,6 +51,14 @@ ACTIVATION_GATES lists the exact remaining requirements.
 Actor-state stack arrays at rsp+0x40, +0x340, and +0x640 cannot accept a larger count alone.
 The temporal path also needs complete output, history producer, and restoration reader expansion.
 This temporal state path has no stream writer. Save framing is a separate requirement.
+temporal_layout.py derives the two vector arrays, validity flags, and twenty-row history extent from ActorShape.
+The 300-actor output contains 7,500 bytes. Each history row contains 7,804 bytes.
+temporal_restore.py prepares four guarded edits and one stub for the native restore function.
+It keeps the native loop-back compare in place and preserves the native record stride.
+Test-TemporalRestore.py checks stock64, rejected count-only300, boundary indices, all-valid, and none-valid cases.
+The relink endpoint is an authored callback. Vector bits, invalid records, flags, stack, and nonvolatile registers are checked.
+This restore preparation stays outside table_plan.py until its producer, caller buffers, history, and saves match.
+The proposed rewind frame exceeds one page and needs stack probing before allocation.
 ActorNum has a six-bit netfield. clonedFromActorNum has seven bits and stores source-index-plus-one.
 The separate actor packet number codec also uses six-bit absolute indices.
 These client and peer contracts need complete expansion before actor 299 can replicate correctly.
@@ -78,6 +86,8 @@ The comparison refuses 1,642 missing-depth, 78 missing-allocation, and 66 wrong-
 All owned registrations are deleted. The fixture never executes the stubs or game code.
 Unscaled XMM offsets at odd eight-byte phases still need runtime ABI admission.
 Native handler dispatch and game registration remain unverified.
+Test-NativeUnwind.ps1 -IncludeTemporalRestore adds the separate restore stub to the owned comparison.
+That run covers 79 continuations and 1,834 boundaries. The restore adds five contexts without temporary stack allocation.
 Continuation metadata must preserve the complete native frame and describe added stack phases.
 Grouped CHAININFO alone cannot describe an added fixed allocation that differs from the primary frame.
 Native handlers, partial prologs, epilogs, and game registration remain activation gates.

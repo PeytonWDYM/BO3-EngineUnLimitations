@@ -92,7 +92,7 @@ int wmain(int argc, wchar_t** argv) {
         const auto magic = Read<std::array<char,8>>(input);
         Require(magic == std::array<char,8>{'B','O','3','N','F','U','W','1'}, "Unknown native unwind fixture format.");
         const auto stubs = Read<std::uint32_t>(input);
-        Require(stubs == 78, "The guarded plan must contain 78 native continuations.");
+        Require(stubs == 78 || stubs == 79, "The owned plan must contain 78 continuations, with one optional temporal restore.");
         std::uint32_t probes{}, depthMutations{}, allocationMutations{}, saveMutations{};
         for (std::uint32_t stub = 0; stub < stubs; ++stub) {
             const auto header = Read<Header>(input);

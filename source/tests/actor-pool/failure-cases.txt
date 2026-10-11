@@ -65,3 +65,13 @@ Owned native continuation unwind
 52. Preserve the logical native procedure range when chaining a phase to its complete flattened frame. Rebase only branch addresses in the owned fixture.
 53. Verify original caller values for every native-saved GPR and XMM register. Do not accept matching reads of uninitialized stack data.
 54. Use captured native unwind bytes for the Windows oracle. Change only owned chain addresses and explicitly omitted handler flags.
+
+Temporal restore preparation
+55. Preserve the stock 64-actor restore in an owned replay. A count-only change must fail the 300-actor layout.
+56. Restore both vectors for actors 0, 63, 64, 199, and 299 at native record strides. Preserve invalid actors.
+57. Clear only consumed validity flags. Preserve state arrays, vector bits, following records, stack, and nonvolatile registers.
+58. Preserve the original loop-back target. Do not steal its compare instruction when widening the initial count.
+59. Guard the complete original restore function before preparing its four edits and one stub.
+60. Keep restore preparation separate until the producer, caller buffers, history, saves, and runtime admission are complete.
+61. A rewind frame larger than one page needs native stack probing before allocation. Count and displacement edits alone are insufficient.
+62. Compare every restore-stub boundary with the original native Windows frame before including it in the main actor plan.

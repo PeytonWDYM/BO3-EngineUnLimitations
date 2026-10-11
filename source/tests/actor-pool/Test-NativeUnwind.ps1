@@ -3,11 +3,14 @@ param(
     [Parameter(Mandatory)][string]$Output,
     [Parameter(Mandatory)][string]$Manifest,
     [Parameter(Mandatory)][string]$Executable,
-    [string]$Python = 'python'
+    [string]$Python = 'python',
+    [switch]$IncludeTemporalRestore
 )
 $ErrorActionPreference = 'Stop'
 $target = [IO.Path]::GetFullPath($Output)
-& $Python -B (Join-Path $PSScriptRoot 'Test-NativeUnwind.py') --module $Manifest --executable $Executable --output $target
+$arguments = @('-B', (Join-Path $PSScriptRoot 'Test-NativeUnwind.py'), '--module', $Manifest, '--executable', $Executable, '--output', $target)
+if ($IncludeTemporalRestore) { $arguments += '--include-temporal-restore' }
+& $Python @arguments
 if ($LASTEXITCODE -ne 0) { throw 'The guarded native-unwind export failed.' }
 $vswhere = Join-Path ${env:ProgramFiles(x86)} 'Microsoft Visual Studio/Installer/vswhere.exe'
 $installation = & $vswhere -latest -products '*' -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath

@@ -133,6 +133,9 @@ Another owned test compares 1,829 boundaries across all 78 continuations with th
 The comparison preserves five partial prologs and uses separate flattened frames for temporary stack phases.
 It omits native handlers and rebases branch addresses only inside the owned fixture.
 Runtime ABI admission, native handler dispatch, live registration, temporal history, combined saves, and client replication still block activation.
+A separate temporal restore preparation handles 300 records in five native replay cases and five additional Windows unwind contexts.
+It preserves the native loop target and stays outside the main plan until the producer, caller buffers, and history match.
+The proposed larger rewind frame also needs stack probing before allocation.
 No 300-actor, expanded-entity, network-capacity, higher-round, or player-count patch is active here.
 No new engine performance claim applies to this source work.
 
