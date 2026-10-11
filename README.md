@@ -156,7 +156,11 @@ Each exception runs its captured cleanup leaf once. The stale cookie word trigge
 The body, language CRT, cookie check, and destructor endpoints are authored. The game's CRT path remains unverified.
 Direct cookie-handler replay passes 108 cases and rejects sixty incomplete frame-translation candidates.
 Temporary stack phases need the original native frame address for both cookie lookup and decode.
-The test supplies that address directly. A runtime bridge, Windows exception dispatch, and C++ cleanup remain unimplemented or unverified.
+The direct replay supplies that address as an argument.
+A separate bridge prototype passes owned Windows exception tests at temporary depths 8, 16, 24, 32, and 40.
+Each depth covers stock and expanded frames, normal return, cleanup, outer catch, and native prolog handler suppression.
+Missing frame translation fails the cookie check. An untranslated stub code location skips C++ cleanup and triggers refusal.
+The prototype remains outside game registration. All native owners, the game CRT, catch blocks, and collided unwind remain unverified.
 No 300-actor, expanded-entity, network-capacity, higher-round, or player-count patch is active here.
 No new engine performance claim applies to this source work.
 

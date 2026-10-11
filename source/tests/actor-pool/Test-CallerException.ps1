@@ -3,11 +3,12 @@ param(
     [Parameter(Mandatory)][string]$Output,
     [Parameter(Mandatory)][string]$Manifest,
     [Parameter(Mandatory)][string]$Executable,
-    [string]$Python = 'python'
+    [string]$Python = 'python',
+    [ValidateSet(0, 8, 16, 24, 32, 40)][int]$TemporaryStack = 0
 )
 $ErrorActionPreference = 'Stop'
 $target = [IO.Path]::GetFullPath($Output)
-& $Python -B (Join-Path $PSScriptRoot 'Test-CallerException.py') --module $Manifest --executable $Executable --output $target
+& $Python -B (Join-Path $PSScriptRoot 'Test-CallerException.py') --module $Manifest --executable $Executable --output $target --temporary-stack $TemporaryStack
 if ($LASTEXITCODE -ne 0) { throw 'The guarded caller-exception export failed.' }
 $vswhere = Join-Path ${env:ProgramFiles(x86)} 'Microsoft Visual Studio/Installer/vswhere.exe'
 $installation = & $vswhere -latest -products '*' -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath
@@ -28,10 +29,23 @@ try {
     & $binary $input old-cookie
     $refusalCode = $LASTEXITCODE
     if ($refusalCode -ne 23) { throw "The stale caller cookie escaped its expected refusal: $refusalCode" }
-    @{passed = $true; staleCookieExitCode = $refusalCode; scope = 'The owned stale-cookie child exits before language cleanup or catch.'} | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $target 'refusal.json')
-    $paths = @($fixture, $PSCommandPath, $binary, (Join-Path $target 'input-receipt.json'), (Join-Path $target 'result.json'), (Join-Path $target 'refusal.json'))
+    $refusals = @{staleCookieExitCode = $refusalCode}
+    if ($TemporaryStack) {
+        & $binary $input old-frame
+        if ($LASTEXITCODE -ne 23) { throw 'Missing frame translation escaped cookie refusal.' }
+        $refusals.missingFrameExitCode = $LASTEXITCODE
+        & $binary $input old-pc
+        if ($LASTEXITCODE -ne 25) { throw 'An unmodified stub code location escaped cleanup refusal.' }
+        $refusals.unmodifiedControlPcExitCode = $LASTEXITCODE
+        & $binary $input suppress-prolog | Tee-Object -FilePath (Join-Path $target 'suppression.json')
+        if ($LASTEXITCODE -ne 0) { throw 'Native prolog handler suppression failed.' }
+    }
+    @{passed = $true; refusals = $refusals; scope = 'Owned stale-cookie, missing-frame and incorrect-code-location children exit at their expected refusals.'} | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath (Join-Path $target 'refusal.json')
+    $paths = @($fixture, $PSCommandPath, $binary, (Join-Path $PSScriptRoot '../../patches/actor_pool/handler_bridge.hpp'),
+        (Join-Path $target 'input-receipt.json'), (Join-Path $target 'result.json'), (Join-Path $target 'refusal.json'))
+    if ($TemporaryStack) { $paths += (Join-Path $target 'suppression.json') }
     $hashes = foreach ($path in $paths) { Get-FileHash -LiteralPath $path -Algorithm SHA256 | Select-Object Path, Hash }
-    @{passed = $true; scope = 'Owned Windows native cookie handlers and C++ cleanup with the fixture CRT. The game CRT, real body, handler bridges and live registration remain unverified.'; files = @($hashes)} | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $target 'receipt.json')
+    @{passed = $true; scope = 'Owned Windows native cookie handlers and C++ cleanup with the fixture CRT and optional bridge prototype. Game CRT, real body, all native owners and live binding remain unverified.'; files = @($hashes)} | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $target 'receipt.json')
 } finally {
     $env:INCLUDE = $savedInclude
     $env:LIB = $savedLib

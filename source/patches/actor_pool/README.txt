@@ -130,7 +130,17 @@ It rejects sixty untranslated-frame and shifted-offset-only candidates at nonzer
 The handler uses the native frame address for both cookie lookup and XOR decoding.
 A runtime bridge must preserve that address. Moving the cookie offset alone does not preserve the decode.
 The test supplies the translated address directly and authors the dispatcher, frame header, and final cookie check.
-It does not implement a bridge or verify Windows exception dispatch, native C++ cleanup, or partial-prolog handler suppression.
+That direct replay does not implement a bridge or verify Windows exception dispatch.
+handler_bridge.hpp provides a separate disabled runtime-binding prototype.
+It translates the fixed frame, code location, native function entry, image base, handler, and language data together.
+It keeps the Windows context pointer shared, forwards scope updates, and suppresses handlers inside the original incomplete prolog.
+Test-CallerException.ps1 -TemporaryStack <8|16|24|32|40> throws from a separate owned stub outside the native language state map.
+At each depth, stock and expanded frames pass normal returns, cleanup once, outer catch, and handler suppression.
+The five runs exercise thirty cookie checks, ten cleanup calls, and twenty translated handler calls.
+Suppression runs skip all twenty native handler calls. Missing frame and code-location translations fail at each depth.
+Odd eight-byte depths use unscaled XMM save offsets and an adapter that preserves call alignment.
+Every successful run deletes eighteen function records and releases both owned code allocations.
+The prototype does not bind game handlers. The game CRT, native catches, collided unwind, and all owner-specific frame phases remain unverified.
 Test-NativeUnwind.ps1 -IncludeTemporalRestore adds the separate restore stub to the owned comparison.
 That run covers 79 continuations and 1,834 boundaries. The restore adds five contexts without temporary stack allocation.
 Continuation metadata must preserve the complete native frame and describe added stack phases.

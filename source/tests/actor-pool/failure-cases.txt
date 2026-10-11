@@ -138,3 +138,12 @@ Owned caller exception dispatch
 107. Test both stock and expanded frames. Verify cookie checks, the cleanup object address and marker, all function-table deletions, and owned allocation release.
 108. An expanded frame with the old cookie word must exit with the fixture's refusal code before cleanup or catch.
 109. Do not admit the game's CRT, real caller body, firing paths, handler bridges, saves, or peers from an owned fixture with authored external endpoints.
+
+Temporary handler bridge
+110. Supply the native fixed frame address, original code location, original function entry, image base, handler and language data together.
+111. Preserve the Windows context pointer and scope updates. Suppress native handlers when the original code location is in its incomplete prolog.
+112. Throw real C++ exceptions from a separate owned stub at temporary depths 8, 16, 24, 32, and 40. Preserve ABI alignment at the authored throw endpoint.
+113. Describe every stub stack phase, adapter, and handler thunk with Windows unwind metadata. Preserve all explicit native save offsets at the temporary depth.
+114. Reject a missing frame translation through the cookie refusal. Reject an unmodified stub code location through missing language cleanup.
+115. Verify normal returns, cleanup exactly once, the outer catch, and complete successful registration/allocation cleanup at each depth.
+116. Keep this prototype outside runtime registration. Matching game CRT behavior, collided unwind, native catch blocks, all native owners, partial game prologs and live behavior remain unverified.

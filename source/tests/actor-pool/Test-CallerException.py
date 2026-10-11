@@ -5,14 +5,17 @@ import json
 from pathlib import Path
 import struct
 import sys
+from dataclasses import replace
 
 PATCHES = Path(__file__).resolve().parents[2] / 'patches/actor_pool'
 sys.path.insert(0, str(PATCHES))
 from captured_code import CapturedCode, CodeGuard
 from temporal_layout import TemporalLayout
 from temporal_caller import CALLER_FUNCTION, prepare_caller
+from temporal_caller import caller_frame
 from temporal_rewind import PROBE_FUNCTION
 from caller_unwind import CALLER_UNWIND, FUNCTION_INFO, CLEANUP_MAP, STATE_MAP, CLEANUP_LEAF, prepare_caller_unwind
+from native_unwind import Operation, read_frame, encode
 from capstone import Cs, CS_ARCH_X86, CS_MODE_64, CS_GRP_CALL, CS_GRP_JUMP
 from capstone.x86_const import X86_OP_IMM
 
@@ -40,7 +43,7 @@ def rebase(raw: bytes, origin: int, destination: int, targets: dict[int, int]) -
     return bytes(result)
 
 
-def run(module: Path, executable: Path, output: Path) -> dict:
+def run(module: Path, executable: Path, output: Path, temporary_stack: int = 0) -> dict:
     output = output.resolve()
     if (Path.home() / '.codex/labs/bo3-engine').resolve() not in output.parents or output.exists():
         raise ValueError('Use a new directory inside the private BO3 lab.')
@@ -56,7 +59,10 @@ def run(module: Path, executable: Path, output: Path) -> dict:
     struct.pack_into('<I', function_info, 24, 0x3050)
     cleanup_map = struct.pack('<iI', -1, 0x1300)
     state_map = b''.join(struct.pack('<Ii', control - CALLER_FUNCTION.rva, state) for control, state in struct.iter_unpack('<Ii', captured[STATE_MAP.rva]))
-    data = bytearray(b'BO3CEX01' + struct.pack('<I', 2))
+    if temporary_stack not in (0, 8, 16, 24, 32, 40):
+        raise ValueError('The owned temporary stack phase is unsupported.')
+    native_frame = read_frame(code, (CALLER_FUNCTION.rva, CALLER_FUNCTION.rva + CALLER_FUNCTION.size, CALLER_UNWIND.rva))
+    data = bytearray(b'BO3CEX02' + struct.pack('<I', 2))
     for expanded in (False, True):
         body = bytearray(captured[CALLER_FUNCTION.rva])
         if expanded:
@@ -74,15 +80,45 @@ def run(module: Path, executable: Path, output: Path) -> dict:
             # Make the stale-cookie negative case deterministic without touching the expanded cookie.
             authored += bytes.fromhex('48c78424203d000000000000')
         call = 0xAF + len(authored)
-        authored += b'\xe8' + struct.pack('<i', 0x1420 - (call + 5))
-        jump = 0xAF + len(authored)
-        authored += b'\xe9' + struct.pack('<i', 0x5DD - (jump + 5))
+        if temporary_stack:
+            authored += b'\xe9' + struct.pack('<i', 0x1800 - (call + 5))
+        else:
+            authored += b'\xe8' + struct.pack('<i', 0x1420 - (call + 5))
+            jump = 0xAF + len(authored)
+            authored += b'\xe9' + struct.pack('<i', 0x5DD - (jump + 5))
         body[0xAF:0xAF + len(authored)] = authored
         blobs = ((0, bytes(body)), (0x1000, handler), (0x1100, common), (0x1200, captured[PROBE_FUNCTION.rva]),
                  (0x1300, cleanup), (0x2000, bytes(metadata)), (0x2100, captured[HANDLER_UNWIND.rva]),
                  (0x2120, captured[COMMON_UNWIND.rva]), (0x2130, captured[PROBE_UNWIND.rva]),
                  (0x3000, bytes(function_info)), (0x3040, cleanup_map), (0x3050, state_map))
-        data += struct.pack('<II', int(expanded), len(blobs))
+        if temporary_stack:
+            # The actual stub lies outside the original language IP/state map.
+            stub = b'\x48\x83\xec' + bytes([temporary_stack])
+            stub += b'\xe8' + struct.pack('<i', 0x1600 - 0x1809)
+            stub += b'\x48\x83\xc4' + bytes([temporary_stack])
+            stub += b'\xe9' + struct.pack('<i', 0x5DD - 0x1812)
+            shifted = []
+            growth = caller_frame(TemporalLayout()).growth if expanded else 0
+            for operation in native_frame.operations:
+                if operation.opcode == 1:
+                    operation = replace(operation, value=operation.value + growth // 8)
+                elif operation.opcode in (4, 8):
+                    scale = 16 if operation.opcode == 8 else 8
+                    value = operation.value * scale + growth + temporary_stack
+                    short = value % scale == 0
+                    operation = replace(operation, opcode=operation.opcode if short else operation.opcode + 1,
+                                        value=value // scale if short else value)
+                shifted.append(operation)
+            flat = bytearray(encode((Operation(0, 2, temporary_stack // 8 - 1), *shifted)))
+            flat[0] = 0x19
+            flat += struct.pack('<II', 0x1500, 0)
+            native_chain = bytes.fromhex('21000000') + struct.pack('<III', 0, len(body), 0x2000)
+            stub_chain = bytes.fromhex('21000000') + struct.pack('<III', 0, len(body), 0x2300)
+            adapter_tag = 0x32 if temporary_stack % 16 else 0x42
+            blobs += ((0x1800, stub), (0x2140, bytes.fromhex('0104010004420000')),
+                      (0x2170, bytes((1, 4, 1, 0, 4, adapter_tag, 0, 0))),
+                      (0x2200, native_chain), (0x2220, stub_chain), (0x2300, bytes(flat)))
+        data += struct.pack('<III', int(expanded), len(blobs), temporary_stack)
         for rva, raw in blobs:
             data += struct.pack('<II', rva, len(raw)) + raw
     output.mkdir(parents=True)
@@ -92,6 +128,7 @@ def run(module: Path, executable: Path, output: Path) -> dict:
                'sourceFiles': {path.name: hashlib.sha256(path.read_bytes()).hexdigest() for path in
                                [PATCHES / 'caller_unwind.py', PATCHES / 'temporal_caller.py', Path(__file__)]},
                'gameWrites': 0, 'activationAllowed': False, 'gameCrtVerified': False}
+    receipt['temporaryStackBytes'] = temporary_stack
     (output / 'input-receipt.json').write_text(json.dumps(receipt, indent=2) + '\n')
     return {'output': str(output), 'variants': 2}
 
@@ -100,5 +137,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     for name in ('module', 'executable', 'output'):
         parser.add_argument('--' + name, type=Path, required=True)
+    parser.add_argument('--temporary-stack', type=int, choices=(0, 8, 16, 24, 32, 40), default=0)
     args = parser.parse_args()
-    print(json.dumps(run(args.module, args.executable, args.output), indent=2))
+    print(json.dumps(run(args.module, args.executable, args.output, args.temporary_stack), indent=2))
