@@ -23,18 +23,28 @@ def run(module: Path,executable: Path,output: Path,actors: int) -> dict:
     assert plan['deploymentAllowed'] is snapshots['deploymentAllowed'] is reset['deploymentAllowed'] is False
     assert len(reset['rewrites'])==len(reset['staticPEFrames'])==2
     assert [edit['rva'] for edit in reset['rewrites']]==['0x8f0ab4','0x92ec08']
-    assert [frame['codeBytes'] for frame in reset['staticPEFrames']]==[70,72]
+    assert [frame['codeBytes'] for frame in reset['staticPEFrames']]==[95,97]
     assert [frame['unwindInfo'] for frame in reset['staticPEFrames']]==['0107010007620000','0109010009620000']
     assembly=output/reset['staticTemplateFile']
     assert hashlib.sha256(assembly.read_bytes()).hexdigest()==reset['staticTemplateSha256']
     actor_banks=plan['clientActorPreparation']
     assert actor_banks['deploymentAllowed'] is actor_banks['nativeRootVerified'] is False
-    assert actor_banks['nativeRootKind']=='authored_owned_replay' and len(actor_banks['rewrites'])==42
+    assert actor_banks['nativeRootKind']=='preserved_native_allocation_return' and len(actor_banks['rewrites'])==42
     assert actor_banks['clientStride']==0x342720 and actor_banks['storageBytes']==2*0x342720
     assert actor_banks['actorsPerLocalClient']==actors and actor_banks['actorRecordBytes']==0xB00
-    edits=plan['rewrites']+plan['wirePreparation']['rewrites']+snapshots['rewrites']+reset['rewrites']+actor_banks['rewrites']
+    assert actor_banks['nativeActorOffset']==2*actor_banks['clientStride']
+    assert int(actor_banks['storageAddress'],0)==int(actor_banks['nativeRootAddress'],0)+actor_banks['nativeActorOffset']
+    allocation=actor_banks['allocationPreparation']
+    assert allocation['deploymentAllowed'] is allocation['nativeProviderVerified'] is False
+    assert allocation['localClientCounts']==[1,2] and allocation['additionalBytes']==2*actor_banks['clientStride']
+    assert len(allocation['rewrites'])==len(allocation['unwindRequirements'])==1
+    assert allocation['rewrites'][0]['rva']=='0x840922' and allocation['rewrites'][0]['size']==7
+    continuation=allocation['unwindRequirements'][0]
+    assert continuation['kind']=='native_frame_continuation' and continuation['runtimeAbiAdmitted'] is False
+    assert len(continuation['ownedContinuationPhases'])==7
+    edits=plan['rewrites']+plan['wirePreparation']['rewrites']+snapshots['rewrites']+reset['rewrites']+actor_banks['rewrites']+allocation['rewrites']
     native=sorted((int(edit['rva'],0),int(edit['rva'],0)+edit['size']) for edit in edits)
-    assert len(native)==206 and all(left[1]<=right[0] for left,right in zip(native,native[1:]))
+    assert len(native)==207 and all(left[1]<=right[0] for left,right in zip(native,native[1:]))
     storage=[(int(region['address'],0),int(region['address'],0)+region['bytes']) for region in plan['storageRegions']]
     storage.append((int(snapshots['storageAddress'],0),int(snapshots['storageAddress'],0)+snapshots['storageBytes']))
     storage.append((int(actor_banks['storageAddress'],0),int(actor_banks['storageAddress'],0)+actor_banks['storageBytes']))
@@ -46,6 +56,7 @@ def run(module: Path,executable: Path,output: Path,actors: int) -> dict:
         assert hashlib.sha256(body).hexdigest()==edit['stubSha256']
         address=int(edit['stubAddress'],0);code.append((address,address+len(body)))
     intervals=sorted(storage+code+[original_clients])
+    assert len(code)==100 and len(storage)==9
     assert all(left[1]<=right[0] for left,right in zip(intervals,intervals[1:]))
     assert all(frame['gameBindingVerified'] is False for frame in reset['staticPEFrames'])
     result={'passed':True,'actors':actors,'nativeEdits':len(native),'storageRegions':len(storage),

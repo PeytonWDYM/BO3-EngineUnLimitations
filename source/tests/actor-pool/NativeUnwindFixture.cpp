@@ -93,12 +93,14 @@ int wmain(int argc, wchar_t** argv) {
         Require(magic == std::array<char,8>{'B','O','3','N','F','U','W','1'}, "Unknown native unwind fixture format.");
         const auto stubs = Read<std::uint32_t>(input);
         const bool clientSnapshots = stubs == 2;
-        Require(clientSnapshots || stubs == 78 || stubs == 79, "Supply the complete client snapshot or server continuation plan.");
+        const bool clientAllocation = stubs == 1;
+        Require(clientSnapshots || clientAllocation || stubs == 78 || stubs == 79, "Supply a complete admitted client or server continuation plan.");
         std::uint32_t probes{}, depthMutations{}, allocationMutations{}, saveMutations{};
         for (std::uint32_t stub = 0; stub < stubs; ++stub) {
             const auto header = Read<Header>(input);
             Require(!clientSnapshots || header.site == (stub == 0 ? 0xfc57d5u : 0xfc57f2u),
                     "The client snapshot plan requires both exact sites in their fixed order.");
+            Require(!clientAllocation || header.site == 0x840922u, "The allocation comparison requires its exact native site.");
             Require(header.phaseCount && header.phaseCount < 1024 && header.returnOffset < 32768 && header.stackCount < 256, "Invalid owned frame extent.");
             auto referenceBytes = Bytes(input, header.referenceBytes), code = Bytes(input, header.codeBytes);
             Require(header.begin < header.end && header.end <= header.referenceBytes && header.control >= header.begin && header.control < header.end && header.unwind < header.referenceBytes, "Invalid owned native function.");

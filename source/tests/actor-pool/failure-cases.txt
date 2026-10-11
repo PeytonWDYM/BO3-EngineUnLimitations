@@ -246,3 +246,17 @@ Client actor records and resource lifetime
 200. Release each created resource exactly once and clear its record pointer. Check the other client's resources and adjacent fields throughout the cycle.
 201. Retain native root/allocation discovery, full bank resets, flag consumers, whole callers, every derived actor pointer, saves/demos/migration, and peer behavior as activation requirements.
 202. Export client actor operands as a separate disabled stage. Label its original client root as an authored replay binding. Check the complete banks against all other code/storage intervals and every combined native edit before claiming a valid export.
+
+Appended client actor banks
+203. Append banks inside the native client allocation instead of binding an unrelated runtime root. Keep each original client at its original spacing. Place actor bank zero at two native strides from the returned root.
+204. For one or two local clients, add two native strides to the original byte allocation. Preserve the native count in its original registers, alignment, allocation label, returned root, encoded pointer publication, and matching release path.
+205. Keep the original allocation product for zero, negative, or unsupported local-client counts in owned preparation. Prove actual local-client count admission before runtime actor activation.
+206. Guard the full allocator fragments, chained metadata, original multiplication, caller continuation, and pointer publication/release owners. Refuse altered versions or unreachable/aliased code before export.
+207. The allocation stub must preserve the native caller frame and stack. Compare every emitted instruction boundary with the original Windows frame and retain the native allocation CALL at its original address.
+208. Run the complete allocation/pointer encoding path and captured pointer decoder with matching owned TEB/PEB conditions. An arbitrary PEB branch applied to an existing captured ciphertext is not native root admission.
+209. Admit both one-client and two-client complete bank extents. Preserve sixteen-byte hunk alignment, untouched native client members, bank canaries, and exact native release of the original allocation root.
+210. The original complete client clear must also clear its entire appended actor bank. Coordinate this with the independent snapshot reset frame, including real static PE unwind, return pointers, volatile clobbering, both clients, and repeated reset cycles.
+211. Keep field relocation free of per-actor calls, stubs, or stack changes. Only allocation and reset paths may gain work. Do not make FPS claims without a game measurement.
+212. Keep the allocator/native hunk provider, complete roots/callers, configured local-client counts, resets, connection ring ownership, save/demo/migration and matching peers in runtime admission until verified.
+213. Admit a single-entry Windows comparison only for allocation site 0x840922. Reject a substituted site. Keep complete server and two-snapshot inventories unchanged.
+214. Export the appended allocation, its complete native frame, relocated fields, and full bank resets together. Keep native provider and game admission false. Check every combined edit and complete storage/code interval without overlaps.

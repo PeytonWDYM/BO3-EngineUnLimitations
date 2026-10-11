@@ -13,7 +13,7 @@ from shape import ActorShape
 from client_actors import ClientActors,prepare_client_actors
 
 
-def run(module: Path,executable: Path,dependencies: Path,output: Path,actors: int) -> dict:
+def run(module: Path,executable: Path,dependencies: Path,output: Path,actors: int,local_clients: int) -> dict:
     sys.path.insert(0,str(dependencies))
     import capstone
     from unicorn import Uc,UC_ARCH_X86,UC_MODE_64,UC_HOOK_CODE
@@ -22,19 +22,20 @@ def run(module: Path,executable: Path,dependencies: Path,output: Path,actors: in
     if (Path.home()/'.codex/labs/bo3-engine').resolve() not in output.parents or output.exists():
         raise ValueError('Use a new private BO3 lab result file.')
     code=CapturedCode(module,executable)
-    native,external,control,stack=0x10000000,0x18000000,0x20000000,0x30000000
-    layout=ClientActors(native+16,external,ActorShape(actors))
+    native,control,stack=0x10000000,0x20000000,0x30000000
+    external=native+16+2*0x342720
+    layout=ClientActors(native+16,external,ActorShape(actors),local_clients)
     edits=prepare_client_actors(code,layout)
     assert len(edits)==42 and all(len(edit.replacement)==edit.guard.size and not edit.stub for edit in edits)
     engine=Uc(UC_ARCH_X86,UC_MODE_64)
     for page in sorted({edit.guard.rva&~4095 for edit in edits}|{0x22C7000,0x22C8000}):
         engine.mem_map(code.base+page,4096);engine.mem_write(code.base+page,code.read(page,4096))
     for edit in edits:engine.mem_write(code.base+edit.guard.rva,edit.replacement)
-    native_bytes=2*layout.client_stride+32
-    for address,size in ((native,(native_bytes+4095)&~4095),
-                         (external,(layout.total_bytes+4095)&~4095),(control,0x300000),(stack,0x10000)):
+    native_bytes=external-native
+    complete_bytes=(local_clients+2)*layout.client_stride+32
+    for address,size in ((native,(complete_bytes+4095)&~4095),(control,0x300000),(stack,0x10000)):
         engine.mem_map(address,size)
-    engine.mem_write(native,b'\x5a'*native_bytes)
+    engine.mem_write(native,b'\x5a'*complete_bytes)
     engine.mem_write(external,b'\xa5'*layout.total_bytes)
     expected=bytearray(b'\xa5'*layout.total_bytes)
     decoder=capstone.Cs(capstone.CS_ARCH_X86,capstone.CS_MODE_64);decoder.detail=True
@@ -46,7 +47,7 @@ def run(module: Path,executable: Path,dependencies: Path,output: Path,actors: in
         operand=next((operand for operand in instruction.operands if operand.type==capstone.x86.X86_OP_MEM),None)
         original_offset=operand.mem.disp if operand is not None else instruction.operands[1].imm
         member=original_offset-0x2F84E0
-        for client in range(2):
+        for client in range(local_clients):
             for actor in sorted({0,63,64,299,actors-1}):
                 for index,name in enumerate(registers):engine.reg_write(register(name),0x11220000+index)
                 engine.reg_write(x64.UC_X86_REG_RSP,stack+0xFE00)
@@ -86,6 +87,7 @@ def run(module: Path,executable: Path,dependencies: Path,output: Path,actors: in
                 cases.append({'rva':hex(edit.guard.rva),'localClient':client,'actor':actor})
         assert engine.mem_read(native,native_bytes)==b'\x5a'*native_bytes
         assert engine.mem_read(external,layout.total_bytes)==expected
+        assert engine.mem_read(external+layout.total_bytes,16)==b'\x5a'*16
 
     resources=[];released=[];current_client=0
     def endpoint(current,address,size,unused):
@@ -104,7 +106,7 @@ def run(module: Path,executable: Path,dependencies: Path,output: Path,actors: in
     for rva in (0x22C7FE0,0x22C8B50):engine.hook_add(UC_HOOK_CODE,endpoint,begin=code.base+rva,end=code.base+rva)
     engine.mem_write(control+0x2E2BB0,struct.pack('<Q',control+0x100))
     cycles=[]
-    for client in range(2):
+    for client in range(local_clients):
         current_client=client
         for iteration in range(2):
             resources.clear();released.clear()
@@ -124,6 +126,7 @@ def run(module: Path,executable: Path,dependencies: Path,output: Path,actors: in
                 position=client*layout.client_stride+actor*0xB00+0xA88;expected[position:position+8]=bytes(8)
             assert engine.mem_read(external,layout.total_bytes)==expected
             assert engine.mem_read(native,native_bytes)==b'\x5a'*native_bytes
+            assert engine.mem_read(external+layout.total_bytes,16)==b'\x5a'*16
             cycles.append({'localClient':client,'iteration':iteration,'created':actors,'released':actors})
     class ChangedCode(CapturedCode):
         def read(self,rva: int,size: int) -> bytes:
@@ -147,12 +150,12 @@ def run(module: Path,executable: Path,dependencies: Path,output: Path,actors: in
     binary=output.with_suffix('.bank.bin');binary.write_bytes(expected)
     paths=(Path(__file__),PATCHES/'client_actors.py',PATCHES/'client_actor_inventory.json',
            PATCHES/'shape.py',PATCHES/'captured_code.py')
-    result={'passed':True,'actors':actors,'operandCases':len(cases),'operands':40,'resourceCycles':cycles,
+    result={'passed':True,'actors':actors,'localClients':local_clients,'operandCases':len(cases),'operands':40,'resourceCycles':cycles,
             'guardRefusals':len(guards),'addressRefusals':address_refusals,'externalBytes':layout.total_bytes,
             'rewrites':42,'emittedStubs':0,'activationAllowed':False,'gameWrites':0,
             'sources':{str(path):hashlib.sha256(path.read_bytes()).hexdigest() for path in paths},
             'artifact':{'path':str(binary),'sha256':hashlib.sha256(expected).hexdigest()},
-            'scope':'Owned native operand and resource-loop replay. Allocation/release endpoints and native client root are authored. Complete allocation/root discovery, resets, flag consumers and native callers remain.'}
+            'scope':'Owned native operands and resource loops in appended banks. Allocation/release endpoints and the complete heap are authored. Native providers, resets, flag consumers and game callers remain.'}
     output.write_text(json.dumps(result,indent=2)+'\n')
     return {key:result[key] for key in ('passed','actors','operandCases','guardRefusals','addressRefusals','rewrites','emittedStubs')}
 
@@ -161,4 +164,5 @@ if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__)
     for name in ('module','executable','dependencies','output'):parser.add_argument('--'+name,type=Path,required=True)
     parser.add_argument('--actors',type=int,choices=(300,500),default=500)
-    args=parser.parse_args();print(json.dumps(run(args.module,args.executable,args.dependencies,args.output,args.actors)))
+    parser.add_argument('--local-clients',type=int,choices=(1,2),default=2)
+    args=parser.parse_args();print(json.dumps(run(args.module,args.executable,args.dependencies,args.output,args.actors,args.local_clients)))

@@ -27,6 +27,7 @@ def run(module: Path,executable: Path,dependencies: Path,output: Path,actors: in
     frames=prepare_client_snapshot_resets(code,layout,helpers)
     cg,control,stack,stop=0x10000000,0x18000000,0x20000000,0x30000000
     native_bytes=0x342720
+    heap_bytes=4*native_bytes+32
     cases=[]
     for shutdown in (False,True):
         for client in range(2):
@@ -39,7 +40,7 @@ def run(module: Path,executable: Path,dependencies: Path,output: Path,actors: in
                 edit=frame.rewrite
                 engine.mem_write(code.base+edit.guard.rva,edit.replacement)
                 engine.mem_write(edit.stub_address,edit.stub)
-            for address,size in ((cg,0x700000),(control,4096),(stack,0x10000),(stop,4096),
+            for address,size in ((cg,(heap_bytes+4095)&~4095),(control,4096),(stack,0x10000),(stop,4096),
                                  (layout.base,(layout.total_bytes+4095)&~4095)):
                 engine.mem_map(address,size)
             clears=[]
@@ -61,7 +62,7 @@ def run(module: Path,executable: Path,dependencies: Path,output: Path,actors: in
             engine.hook_add(UC_HOOK_CODE,clear,begin=code.base+0x2BC53B0,end=code.base+0x2BC53B0)
             for iteration in range(2):
                 clears.clear()
-                engine.mem_write(cg,b'\x5a'*0x700000)
+                engine.mem_write(cg,b'\x5a'*heap_bytes)
                 engine.mem_write(layout.base,b'\xa5'*layout.total_bytes)
                 current_cg=cg+16+client*native_bytes
                 engine.reg_write(x64.UC_X86_REG_RSI,current_cg)
@@ -89,15 +90,17 @@ def run(module: Path,executable: Path,dependencies: Path,output: Path,actors: in
                     assert all(engine.reg_read(getattr(x64,'UC_X86_REG_'+name))==value for name,value in saved.items())
                 assert engine.reg_read(x64.UC_X86_REG_RAX)==current_cg
                 target=layout.base+client*layout.client_bytes
-                assert clears==[(current_cg,native_bytes),(target,layout.client_bytes)]
-                expected_cg=bytearray(b'\x5a'*0x700000)
+                actor_bank=current_cg+2*native_bytes
+                assert clears==[(current_cg,native_bytes),(target,layout.client_bytes),(actor_bank,native_bytes)]
+                expected_cg=bytearray(b'\x5a'*heap_bytes)
                 expected_cg[current_cg-cg:current_cg-cg+native_bytes]=bytes(native_bytes)
+                expected_cg[actor_bank-cg:actor_bank-cg+native_bytes]=bytes(native_bytes)
                 expected_snapshots=bytearray(b'\xa5'*layout.total_bytes)
                 expected_snapshots[client*layout.client_bytes:(client+1)*layout.client_bytes]=bytes(layout.client_bytes)
-                assert engine.mem_read(cg,0x700000)==expected_cg
+                assert engine.mem_read(cg,heap_bytes)==expected_cg
                 assert engine.mem_read(layout.base,layout.total_bytes)==expected_snapshots
                 cases.append({'case':'shutdown-tail' if shutdown else 'startup-call','localClient':client,
-                              'iteration':iteration,'completeClears':2,'otherClientIntact':True})
+                              'iteration':iteration,'completeClears':3,'otherClientIntact':True})
 
     class ChangedCode(CapturedCode):
         def read(self,rva: int,size: int) -> bytes:
@@ -122,7 +125,7 @@ def run(module: Path,executable: Path,dependencies: Path,output: Path,actors: in
             'snapshotBytesClearedPerLocalClient':layout.client_bytes,'gameWrites':0,'activationAllowed':False,
             'sources':{str(path):hashlib.sha256(path.read_bytes()).hexdigest() for path in
                        (Path(__file__),PATCHES/'client_snapshot_reset.py',PATCHES/'client_snapshots.py',
-                        PATCHES/'shape.py',PATCHES/'captured_code.py',PATCHES/'x64_table.py')},
+                        PATCHES/'shape.py',PATCHES/'captured_code.py',PATCHES/'x64_table.py',PATCHES/'client_actors.py')},
             'scope':'Owned replay of captured startup clear and shutdown epilogue. Native memset endpoint is authored. Complete native callers and game lifetime remain required.'}
     output.parent.mkdir(parents=True,exist_ok=True);output.write_text(json.dumps(result,indent=2)+'\n')
     return {'passed':True,'actors':actors,'cases':len(cases),'guardRefusals':len(mutations),'addressRefusals':refusals,'output':str(output)}

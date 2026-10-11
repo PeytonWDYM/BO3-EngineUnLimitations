@@ -223,11 +223,11 @@ The 300-actor shape passes the same native paths with its selected storage size.
 
 Both complete native client clears now have guarded reset preparation for the external snapshots.
 The startup call reads its local-client ID from the native register. The shutdown tail uses the original stack argument after register restoration.
-Each helper retains the original client clear and return pointer, then clears both complete snapshots for that client.
+Each helper retains the original client clear and return pointer, then clears both snapshots and the complete appended actor bank.
 Both shapes pass eight captured-path resets, seven changed-owner refusals, and six address refusals.
 
 An owned Windows DLL embeds both independent helper frames in its PE exception directory.
-All thirty instruction boundaries unwind correctly. Eight actual resets preserve the other client's storage, complete canaries, and every nonvolatile register.
+All forty instruction boundaries unwind correctly. Eight actual resets preserve the other client's storage, complete canaries, and every nonvolatile register.
 Template refusals leave code intact, and both function lookups disappear after DLL unload without runtime registration.
 The exported plan includes both reset bodies and their static frame metadata. These remain outside installer activation.
 
@@ -236,9 +236,15 @@ Two complete actor banks retain the original client spacing, so these rewrites a
 Both resource loops expand together. The 500-actor replay passes 400 operand cases and four complete creation/release cycles.
 Each cycle creates and releases all 500 resources once, clears their pointers, and preserves the other client and complete bank canaries.
 Ninety-two changed-owner refusals and six address refusals pass. The 300-actor replay covers the same paths.
-The exported native client root is an authored replay binding. Actual root discovery, allocation, complete bank resets, and flag consumers remain unverified.
+The allocation preparation appends two native strides inside the existing client allocation. It preserves the returned pointer and encoded pointer lifetime.
+One or two local clients retain their original spacing. Their relocated actor banks use the same fixed displacement.
+Zero, negative, and unsupported counts retain the original allocation product in owned preparation.
+Thirty-two captured allocation, pointer encoding/decoding, and release cases pass across all sixteen PEB branches and both local-client counts.
+The allocation stub passes seven Windows unwind boundaries against its original native frame. It adds no stack allocation or calls.
+The hunk providers and setup endpoints in these replays are authored. Actual provider reserves, configured counts, and complete game callers remain unverified.
+The combined export includes 207 native edits, 100 bodies, nine complete storage regions, and both static reset frames without overlaps.
 
-Every remaining snapshot copy path, connection ring ownership, client actor storage, complete caller execution, and matching peers still need verification.
+Remaining snapshot copies, connection ring ownership, actor flag/sentinel consumers, saves, complete caller execution, and matching peers still need verification.
 No 500-actor, expanded-entity, reliable-command, gamestate, higher-round, or player-count patch is active here.
 No new engine performance claim applies to this source work.
 

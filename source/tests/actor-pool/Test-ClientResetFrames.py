@@ -46,6 +46,7 @@ def export(module: Path,executable: Path,output: Path,actors: int) -> None:
     (output/'templates.bin').write_bytes(raw)
     paths=(Path(__file__),SOURCE/'patches/actor_pool/client_reset_frames.py',
            SOURCE/'patches/actor_pool/client_snapshot_reset.py',SOURCE/'patches/actor_pool/client_snapshots.py',
+           SOURCE/'patches/actor_pool/client_actors.py',
            SOURCE/'patches/actor_pool/shape.py',SOURCE/'patches/actor_pool/captured_code.py',
            SOURCE/'patches/actor_pool/x64_table.py',output/'ClientResetTemplates.asm',output/'templates.bin')
     result={'passed':True,'actors':actors,'snapshotBytesPerLocalClient':layout.client_bytes,

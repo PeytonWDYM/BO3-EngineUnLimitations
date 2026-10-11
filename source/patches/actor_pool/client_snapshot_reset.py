@@ -1,8 +1,9 @@
-"""Prepare independent snapshot-clear frames without changing native client frames."""
+"""Prepare independent snapshot and actor-bank clears without changing native client frames."""
 from dataclasses import dataclass
 import struct
 
 from captured_code import CapturedCode,CodeGuard,Rewrite
+from client_actors import NATIVE_CLIENT_STRIDE,ACTOR_BANK_OFFSET
 from client_snapshots import ClientSnapshots
 from x64_table import Emitter,rel32
 
@@ -22,7 +23,7 @@ class ClientResetFrame:
 
 def prepare_client_snapshot_resets(code: CapturedCode,layout: ClientSnapshots,
                                   helper_base: int) -> tuple[ClientResetFrame,...]:
-    """Retain each original memset and clear both external snapshots for its local client."""
+    """Retain each original memset and clear its snapshots and complete appended actor bank."""
     for guard in OWNER_GUARDS:code.guarded(guard)
     intervals=((layout.base,layout.base+layout.total_bytes),(helper_base,helper_base+512))
     image=(code.base,code.base+code.meta['imageSize'])
@@ -46,6 +47,9 @@ def prepare_client_snapshot_resets(code: CapturedCode,layout: ClientSnapshots,
         helper.put(bytes.fromhex('488b4c24284869c9')+struct.pack('<I',layout.client_bytes))
         helper.put(b'\x48\xb8'+struct.pack('<Q',layout.base))
         helper.put(bytes.fromhex('4801c133d241b8')+struct.pack('<I',layout.client_bytes))
+        helper.rip(b'\xe8',code.base+0x2BC53B0)
+        helper.put(bytes.fromhex('488b4c24204881c1')+struct.pack('<I',ACTOR_BANK_OFFSET))
+        helper.put(bytes.fromhex('33d241b8')+struct.pack('<I',NATIVE_CLIENT_STRIDE))
         helper.rip(b'\xe8',code.base+0x2BC53B0)
         helper.put(bytes.fromhex('488b4424204883c438c3'))
         # Independent 56-byte allocation; the prefix does not change the frame or nonvolatile registers.

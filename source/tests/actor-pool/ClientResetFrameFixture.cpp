@@ -38,6 +38,13 @@ void CheckBytes(const std::vector<unsigned char>& bytes,std::size_t first,std::s
     for(std::size_t i=0;i<bytes.size();++i)
         Require(bytes[i]==((i>=first && i<first+count) ? 0 : canary),"A complete client clear or canary differs.");
 }
+void CheckClientBanks(const std::vector<unsigned char>& bytes,std::uint32_t client) {
+    const std::size_t first=16+client*0x342720,bank=first+2*0x342720;
+    for(std::size_t i=0;i<bytes.size();++i) {
+        const bool cleared=(i>=first && i<first+0x342720) || (i>=bank && i<bank+0x342720);
+        Require(bytes[i]==(cleared ? 0 : 0xCC),"A native client or appended actor bank clear differs.");
+    }
+}
 }
 
 int wmain(int argc,wchar_t** argv) {
@@ -50,7 +57,7 @@ int wmain(int argc,wchar_t** argv) {
         std::array<Frame,2> frames{};
         for(std::size_t index=0;index<frames.size();++index) {
             const auto size=Read<std::uint32_t>(input),metadataSize=Read<std::uint32_t>(input);
-            Require(size==(index==0 ? 70u : 72u) && metadataSize==8,"Unsupported client reset frame layout.");
+            Require(size==(index==0 ? 95u : 97u) && metadataSize==8,"Unsupported client reset frame layout.");
             auto& frame=frames[index];frame.body.resize(size);frame.metadata.resize(metadataSize);
             input.read(reinterpret_cast<char*>(frame.body.data()),size);input.read(reinterpret_cast<char*>(frame.metadata.data()),metadataSize);
             Require(input.good(),"Incomplete client reset frame body.");
@@ -76,10 +83,10 @@ int wmain(int argc,wchar_t** argv) {
             Require(std::memcmp(reinterpret_cast<const void*>(moduleBase+function->UnwindData),frame.metadata.data(),8)==0,"Static client PE metadata differs.");
             const auto prefix=index==0 ? 3u : 5u;
             std::vector<unsigned int> offsets{0};
-            for(const auto offset:{0u,4u,9u,14u,19u,24u,31u,41u,44u,46u,52u,57u,62u,66u})offsets.push_back(prefix+offset);
+            for(const auto offset:{0u,4u,9u,14u,19u,24u,31u,41u,44u,46u,52u,57u,62u,69u,71u,77u,82u,87u,91u})offsets.push_back(prefix+offset);
             for(const auto offset:offsets) {
                 CONTEXT context{};context.ContextFlags=CONTEXT_ALL;context.Rip=reinterpret_cast<DWORD64>(frame.entry+offset);
-                context.Rsp=reinterpret_cast<DWORD64>(returnSlot)-((offset<=prefix || offset==prefix+66) ? 0 : 56);
+                context.Rsp=reinterpret_cast<DWORD64>(returnSlot)-((offset<=prefix || offset==prefix+91) ? 0 : 56);
                 context.Rbx=nonvolatile[0];context.Rbp=nonvolatile[1];context.Rsi=nonvolatile[2];context.Rdi=nonvolatile[3];
                 context.R12=nonvolatile[4];context.R13=nonvolatile[5];context.R14=nonvolatile[6];context.R15=nonvolatile[7];
                 PVOID handlerData{};DWORD64 establishedFrame{};
@@ -94,12 +101,12 @@ int wmain(int argc,wchar_t** argv) {
             Require(std::memcmp(frame.entry,frame.body.data(),frame.body.size())==0,"A refusal wrote client code.");
         }
         Require(refusals==4,"Client reset refusal count differs.");
-        std::vector<unsigned char> clients(2*0x342720+32,0xCC),snapshots(2*clientBytes+32,0xDD);
+        std::vector<unsigned char> clients(4*0x342720+32,0xCC),snapshots(2*clientBytes+32,0xDD);
         const auto snapshotAddress=reinterpret_cast<std::uintptr_t>(snapshots.data()+16);
         for(std::size_t index=0;index<frames.size();++index) {
             auto& frame=frames[index];Validate(frame.entry,frame.body,reinterpret_cast<std::uintptr_t>(&Clear));
             const auto prefix=index==0 ? 3u : 5u;auto replacement=frame.body;
-            for(const auto offset:{prefix+14,prefix+52}) {
+            for(const auto offset:{prefix+14,prefix+52,prefix+77}) {
                 const auto difference=reinterpret_cast<std::intptr_t>(relay)-reinterpret_cast<std::intptr_t>(frame.entry+offset+5);
                 Require(difference>=INT32_MIN && difference<=INT32_MAX,"Owned client clear relay is unreachable.");
                 const auto relative=static_cast<std::int32_t>(difference);std::memcpy(replacement.data()+offset+1,&relative,4);
@@ -114,9 +121,9 @@ int wmain(int argc,wchar_t** argv) {
             std::memset(clients.data(),0xCC,clients.size());std::memset(snapshots.data(),0xDD,snapshots.size());clears.clear();
             auto* cg=clients.data()+16+client*0x342720;auto* external=snapshots.data()+16+client*clientBytes;
             Require(call(cg,0,0x342720,client,bridges[index])==cg,"Client reset return differs.");
-            Require(clears==std::vector<std::pair<void*,std::size_t>>{{cg,0x342720},{external,clientBytes}},"Client reset order, ownership, or extent differs.");
+            Require(clears==std::vector<std::pair<void*,std::size_t>>{{cg,0x342720},{external,clientBytes},{cg+2*0x342720,0x342720}},"Client reset order, ownership, or extent differs.");
             Require(std::memcmp(witness,nonvolatile.data(),sizeof(nonvolatile))==0,"An actual client reset changed nonvolatile registers.");
-            CheckBytes(clients,16+client*0x342720,0x342720,0xCC);CheckBytes(snapshots,16+client*clientBytes,clientBytes,0xDD);++resets;
+            CheckClientBanks(clients,client);CheckBytes(snapshots,16+client*clientBytes,clientBytes,0xDD);++resets;
         }
         std::array<DWORD64,2> entries{reinterpret_cast<DWORD64>(frames[0].entry),reinterpret_cast<DWORD64>(frames[1].entry)};
         module.release();

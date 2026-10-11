@@ -2,6 +2,7 @@
 import struct
 
 from client_snapshot_reset import ClientResetFrame
+from client_actors import NATIVE_CLIENT_STRIDE,ACTOR_BANK_OFFSET
 
 
 def emit_client_reset_frames(frames: tuple[ClientResetFrame,...]) -> str:
@@ -16,13 +17,14 @@ def emit_client_reset_frames(frames: tuple[ClientResetFrame,...]) -> str:
         body=rewrite.stub[len(prefix):]
         instructions=((0,'4883ec38'),(4,'48894c2420'),(9,'4c894c2428'),(14,'e8'),
                       (19,'488b4c2428'),(24,'4869c9'),(31,'48b8'),(41,'4801c1'),
-                      (44,'33d2'),(46,'41b8'),(52,'e8'),(57,'488b442420'),(62,'4883c438c3'))
+                      (44,'33d2'),(46,'41b8'),(52,'e8'),(57,'488b4c2420'),(62,'4881c1'),
+                      (69,'33d2'),(71,'41b8'),(77,'e8'),(82,'488b442420'),(87,'4883c438c3'))
         prolog=len(prefix)+4
         expected_name='client_snapshot_startup_reset' if index==0 else 'client_snapshot_shutdown_reset'
         expected_site=0x8F0AB4 if index==0 else 0x92EC08
         if (rewrite.name!=expected_name or rewrite.guard.rva!=expected_site
                 or rewrite.stub_address is None or rewrite.stub_address<=0 or rewrite.stub_address&15
-                or rewrite.stub[:len(prefix)]!=prefix or len(body)!=67
+                or rewrite.stub[:len(prefix)]!=prefix or len(body)!=92
                 or frame.unwind!=bytes((1,prolog,1,0,prolog,0x62,0,0))
                 or any(body[offset:offset+len(bytes.fromhex(raw))]!=bytes.fromhex(raw) for offset,raw in instructions)):
             raise ValueError('A client reset template or static frame differs.')
@@ -30,9 +32,12 @@ def emit_client_reset_frames(frames: tuple[ClientResetFrame,...]) -> str:
         base=struct.unpack_from('<Q',body,33)[0]
         endpoint=rewrite.stub_address+len(prefix)+19+struct.unpack_from('<i',body,15)[0]
         endpoint2=rewrite.stub_address+len(prefix)+57+struct.unpack_from('<i',body,53)[0]
+        endpoint3=rewrite.stub_address+len(prefix)+82+struct.unpack_from('<i',body,78)[0]
         native_base=endpoint-0x2BC53B0
         if (count not in (1205184,1237184) or struct.unpack_from('<I',body,48)[0]!=count
-                or base<=0 or base&4095 or base+2*count>0x800000000000 or endpoint!=endpoint2
+                or base<=0 or base&4095 or base+2*count>0x800000000000 or endpoint!=endpoint2 or endpoint!=endpoint3
+                or struct.unpack_from('<I',body,65)[0]!=ACTOR_BANK_OFFSET
+                or struct.unpack_from('<I',body,73)[0]!=NATIVE_CLIENT_STRIDE
                 or native_base<=0 or len(rewrite.replacement)!=5
                 or rewrite.replacement[0]!=(0xE8 if index==0 else 0xE9)
                 or native_base+expected_site+5+struct.unpack_from('<i',rewrite.replacement,1)[0]!=rewrite.stub_address):

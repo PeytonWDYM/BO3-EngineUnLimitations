@@ -1,4 +1,4 @@
-"""Prepare fixed-width client actor operand relocation. Native root discovery remains gated."""
+"""Prepare fixed-width actor operands for owned banks. Native provider admission remains gated."""
 from dataclasses import dataclass
 import hashlib
 import json
@@ -9,6 +9,7 @@ from captured_code import CapturedCode,CodeGuard,Rewrite
 from shape import ActorShape
 
 NATIVE_CLIENT_STRIDE=0x342720
+ACTOR_BANK_OFFSET=2*NATIVE_CLIENT_STRIDE
 NATIVE_ACTOR_OFFSET=0x2F84E0
 INVENTORY_SHA256='304d8ac6cb83fb7dee69efeb6a6609dc9c0d0170298012d623337f126ec3fcdd'
 
@@ -18,12 +19,13 @@ class ClientActors:
     native_base: int
     base: int
     shape: ActorShape
+    local_clients: int = 2
 
     def __post_init__(self) -> None:
         native_end=self.native_base+self.total_bytes
         external_end=self.base+self.total_bytes
-        if (self.native_base<=0 or self.native_base&15 or native_end>0x800000000000
-                or self.base<=0 or self.base&4095 or external_end>0x800000000000
+        if (self.local_clients not in (1,2) or self.native_base<=0 or self.native_base&15 or native_end>0x800000000000
+                or self.base<=0 or self.base&15 or external_end>0x800000000000
                 or self.native_base<external_end and self.base<native_end
                 or not -(1<<31)<=self.actor_offset<=((1<<31)-1)-0xB00
                 or self.shape.secondary_actor_bytes>self.client_stride):
@@ -33,7 +35,7 @@ class ClientActors:
     def client_stride(self) -> int:return NATIVE_CLIENT_STRIDE
 
     @property
-    def total_bytes(self) -> int:return 2*self.client_stride
+    def total_bytes(self) -> int:return self.local_clients*self.client_stride
 
     @property
     def actor_offset(self) -> int:return self.base-self.native_base
