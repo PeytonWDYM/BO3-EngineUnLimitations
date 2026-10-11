@@ -28,11 +28,24 @@ jobs:
           python-version: '3.13'
       - name: Test owned Steam transactions
         run: python -B source/tests/Test-Installer.py --output "${{ runner.temp }}/installer-tests"
+      - name: Test client state codec on Linux
+        if: runner.os == 'Linux'
+        run: bash source/tests/client-vm/Test-ClientState-Linux.sh "${{ runner.temp }}/client-state-tests"
+      - name: Test Proton wrapper paths
+        if: runner.os == 'Linux'
+        run: python -B source/tests/proton/Test-WrapperPaths.py --output "${{ runner.temp }}/wrapper-path-tests"
+      - name: Test release path boundaries
+        shell: pwsh
+        run: ./source/tests/proton/Test-PlatformPaths.ps1 -OutputDirectory "${{ runner.temp }}/platform-path-tests"
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         if: always()
         with:
           name: installer-${{ matrix.os }}
-          path: ${{ runner.temp }}/installer-tests/result.json
+          path: |
+            ${{ runner.temp }}/installer-tests/result.json
+            ${{ runner.temp }}/client-state-tests/receipt.json
+            ${{ runner.temp }}/wrapper-path-tests/result.json
+            ${{ runner.temp }}/platform-path-tests/result.json
           if-no-files-found: warn
 
   native:
@@ -71,6 +84,7 @@ jobs:
         shell: pwsh
         run: |
           ./source/tests/vm-pool/Test-StateAdapter.ps1 -OutputDirectory (Join-Path $env:RUNNER_TEMP 'state-tests') -Python python
+          ./source/tests/client-vm/Test-ClientState.ps1 -Output (Join-Path $env:RUNNER_TEMP 'client-state-tests')
           ./source/tests/vm-migration/Build-Admission.ps1 -OutputDirectory (Join-Path $env:RUNNER_TEMP 'migration-tests') -Python python
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         if: always()
@@ -80,5 +94,6 @@ jobs:
             ${{ runner.temp }}/native-build/artifact-audit.json
             ${{ runner.temp }}/native-build/build-receipt.json
             ${{ runner.temp }}/state-tests/result.json
+            ${{ runner.temp }}/client-state-tests/receipt.json
             ${{ runner.temp }}/migration-tests/result.json
           if-no-files-found: warn

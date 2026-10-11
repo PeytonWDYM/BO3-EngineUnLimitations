@@ -39,7 +39,9 @@ function Invoke-Windows {
 # True when Path is Root or lies below it.
 function Test-WithinPath([string]$Path, [string]$Root) {
     $separator = [IO.Path]::DirectorySeparatorChar
-    $Root = $Root.TrimEnd($separator)
-    return $Path.Equals($Root, [StringComparison]::OrdinalIgnoreCase) -or
-        $Path.StartsWith($Root + $separator, [StringComparison]::OrdinalIgnoreCase)
+    $Path = [IO.Path]::GetFullPath($Path)
+    $Root = [IO.Path]::TrimEndingDirectorySeparator([IO.Path]::GetFullPath($Root))
+    $comparison = if ($IsWindows) { [StringComparison]::OrdinalIgnoreCase } else { [StringComparison]::Ordinal }
+    $prefix = if ($Root.EndsWith($separator)) { $Root } else { $Root + $separator }
+    return $Path.Equals($Root, $comparison) -or $Path.StartsWith($prefix, $comparison)
 }

@@ -5,7 +5,8 @@ fail() { printf '%s\n' "$*" >&2; exit 2; }
 [[ $# -ge 2 ]] || fail 'Use Launch-Private.sh <private-root> <Steam command...>.'
 root=$(realpath -e -- "$1") || fail 'The private root is absent.'
 shift
-game=$root/steamapps/common/BlackOps3
+game=$(realpath -e -- "${BO3_500K_GAME_PATH:-$root/steamapps/common/BlackOps3}") || fail 'The private game folder is absent.'
+[[ $(dirname -- "$game") == "$root/steamapps/common" ]] || fail 'The private game must be a direct folder in steamapps/common.'
 mode=${BO3_500K_MODE:-patch}
 if [[ -z ${BO3_500K_MODE:-} && -f $root/mode ]]; then mode=$(cat -- "$root/mode"); fi
 [[ $mode == patch || $mode == stock ]] || fail 'Private mode must be patch or stock.'

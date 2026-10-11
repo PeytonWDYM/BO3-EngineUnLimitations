@@ -12,12 +12,18 @@ The installer adds a reversible Steam launch option. Original game files stay un
 2. Extract the ZIP.
 3. Close Steam and Black Ops III.
 4. Start `BO3-500K-Setup.exe`.
-5. Select the game folder and click **Install**.
+5. Confirm the discovered game folder, or select another folder with **Browse**, then click **Install**.
 6. Open Steam and select **Play**, then select Zombies.
 
 Keep the launcher window open while playing. Closing it ends its game process.
 To remove the patch, close Steam and the game, start the installer, and click **Remove**.
 Removal restores your previous Steam launch options.
+
+The installer reads Steam library and app manifests, including custom game folder names.
+It supports secondary libraries, spaces, Unicode, and game folder aliases.
+Command-line `install` and `status` select a game automatically when Steam discovery finds exactly one installation.
+Use `--game <folder>` when discovery finds several installations or cannot read a manifest.
+The GUI retains `--game`, `--steam`, `--steam-user`, and `--state` options.
 
 Source-built launchers also accept `--skip-intro` after the game executable path.
 It skips the startup logo through a guarded engine instruction edit in the same
@@ -78,6 +84,9 @@ Set the game's Steam launch option to:
 
 Both paths must be accessible to Steam, including its Flatpak sandbox when applicable.
 The wrapper sets the private working directory and creates a separate Proton prefix in `compatdata`.
+For a different private game folder name, set `BO3_500K_GAME_PATH` to its absolute path.
+The resolved folder must remain directly inside `private-root/steamapps/common` so Workshop paths still work.
+The installed wrapper also accepts a Steam command that reaches the same executable through a folder alias.
 It defaults to patched mode. Put `stock` or `patch` in `private-root/mode` to select an unpatched or patched private run.
 Keep the launcher console open while playing. Restore your previous Steam launch option to remove this wrapper.
 
@@ -205,6 +214,51 @@ WINEPREFIX=~/private/wineprefix pwsh -NoProfile -File scripts/release/Build-Patc
 Under Wine the setup executable refuses every action, so the Linux packaged tests check that refusal.
 They do not open the setup window.
 Building on Linux does not validate a Proton release.
+
+### Further capacity work
+
+The client VM source contains a separate save codec for 250,000 and 500,000 usable slots.
+It preserves the stock client codec at 65,000 total slots and isolates client import state from server import state.
+The expanded client format uses its own identifier and contains no server player-root records.
+Captured native allocation and slot-codec replays exercise the larger capacities in owned memory.
+These checks do not establish game, save, peer, or migration compatibility.
+The production recipe and installer still select the stock client pool. Expanded client activation remains disabled.
+
+`source/patches/client_vm/exact_build_inventory.json` records the 19 client count instructions and their code guards.
+The replay tools require the pinned private capture and exact-build executable used for this audit.
+A new capture needs separate verification. The tools refuse other identities.
+Their output must stay outside Git.
+
+The shared codec and path fixtures also run on a Linux host without Wine or a game installation:
+
+```sh
+bash source/tests/client-vm/Test-ClientState-Linux.sh ~/private/client-state-tests
+python3 -B source/tests/proton/Test-WrapperPaths.py --output ~/private/wrapper-path-tests
+pwsh -NoProfile -File source/tests/proton/Test-PlatformPaths.ps1 -OutputDirectory ~/private/platform-path-tests
+```
+
+The codec fixture needs a C++20 compiler and uses owned callbacks.
+These host tests verify codec behavior and command paths. They do not validate the new native DLL under Proton.
+The earlier Proton session described above used the existing 500K build.
+
+The 300-zombie goal requires more than a larger actor allocation:
+
+| Target | Native dependency that still needs a complete patch |
+| --- | --- |
+| 300 actors | Inline sentient awareness tables, DObj arrays, actor iterators, save framing, and client replication |
+| About 5,120 active entities | Separate normal and fake ID ranges, dependent arrays, and snapshot serializers |
+| More reliable commands | Different server and client rings, an inline command arena, reset, demo, resend, and migration paths |
+| More gamestate text | The 64KiB character arena, complete state copies, reset, and matching client storage |
+| More clientfields | Packed set budgets, callback arrays, counter storage, schema hashes, and snapshot layouts |
+| Higher rounds | Script clamps and the shared 8-bit round-completion field, plus native statistics and UI checks |
+| More than 10 players | Map scripts, player state, peer behavior, and the existing 18-slot parser boundary |
+
+A native replay proves that sentient index 104 overwrites movement data in the stock layout.
+Index 299 writes beyond the stock sentient record.
+Changing the actor count or relocating only the outer sentient pool cannot support 300 actors.
+External awareness tables can preserve the native record stride, but their complete consumers and save format remain unverified.
+No 300-actor, expanded-entity, network-capacity, higher-round, or player-count patch is active here.
+No new engine performance claim applies to this source work.
 
 ## License
 

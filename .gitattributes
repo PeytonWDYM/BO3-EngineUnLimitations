@@ -5,3 +5,5 @@
 *.h text eol=lf
 *.asm text eol=lf
 *.ps1 text eol=lf
+# Shell scripts must also run when a Windows checkout supplies Linux packages.
+*.sh text eol=lf

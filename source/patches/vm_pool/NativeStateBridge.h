@@ -11,14 +11,16 @@ struct NativeStateBindings {
     NativeModePolicy modePolicy;
     WholeFunction originalClientReader, originalClientWriter;
     InsertFunction originalInsert;
+    std::uint32_t clientTotal;
 };
 static_assert(std::is_standard_layout_v<NativeStateBindings> && std::is_trivially_copyable_v<NativeStateBindings>);
-static_assert(sizeof(NativeStateBindings) == 48);
+static_assert(sizeof(NativeStateBindings) == 56);
 static_assert(offsetof(NativeStateBindings, total) == 8);
 static_assert(offsetof(NativeStateBindings, modePolicy) == 20);
 static_assert(offsetof(NativeStateBindings, originalClientReader) == 24);
 static_assert(offsetof(NativeStateBindings, originalClientWriter) == 32);
 static_assert(offsetof(NativeStateBindings, originalInsert) == 40);
+static_assert(offsetof(NativeStateBindings, clientTotal) == 48);
 extern "C" __declspec(dllexport) NativeStateBindings Bo3VmStateBindings;
 
 // The caller verifies all code ranges, pool capacity, and client allocation bounds before binding.

@@ -1,0 +1,33 @@
+Installer path failure cases, written before implementation:
+
+1. Steam puts BO3 in a secondary library with a custom installdir and Unicode.
+   Discovery must use appmanifest_311210.acf and retain the complete path.
+2. A legacy libraryfolders.vdf stores a numeric key with a quoted path.
+   Discovery must find the default game directory in that library.
+3. A commented library path or an empty game directory looks installed.
+   Discovery must ignore comments and require BlackOps3.exe.
+4. An appmanifest installdir leaves steamapps/common through '..'.
+   Discovery must refuse the manifest before any installer writes.
+5. Two library entries point to one library through a Windows junction.
+   Discovery must return one physical game directory.
+6. CLI install omits --game with exactly one discovered game.
+   Install must select that game and remove must restore the original config.
+7. CLI install omits --game with multiple discovered games.
+   Install must refuse before any receipt or payload writes.
+8. GUI launch includes --game, --steam, --steam-user, and --state.
+   GUI must use those options and restore the owned config after removal.
+9. Explicit game, state, and payload paths contain spaces and Unicode.
+   Install and removal must preserve the executable and original config bytes.
+10. A custom game folder is a Windows junction to a private game copy.
+    Install must admit the exact supported executable through the folder alias.
+    It must still refuse private payload paths inside the game or through links.
+    It must still refuse an unknown executable through the same folder alias.
+
+11. An appmanifest installdir is '/' or '\\'.
+    Discovery must refuse both rooted values before selecting a game path.
+
+12. A Linux CI host has no Tk or Windows junction support.
+    The shared transaction fixture must run without importing Windows GUI cases.
+    Its receipt must explicitly report that those path cases were not run.
+
+All fixture files and result.json stay outside Git. No Steam or game launches.

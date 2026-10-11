@@ -1,0 +1,46 @@
+Client VM expansion failure cases, written before patch logic.
+
+Admission: Reject an unknown executable hash, PE timestamp, image size, or native guard.
+Admission: Reject a partial or changed captured module before producing an inventory.
+Allocation: Reject activation after either client slots or client hash buckets exist.
+Allocation: Reject a count-only change when allocation, clearing, iteration, or free-list limits remain stock.
+Allocation: Keep slot zero reserved and allocate every slot, bucket, and auxiliary index.
+Index: Reject truncated 16-bit IDs, keys, links, collision IDs, roots, or serialized slot references.
+Hash: Preserve parent-key namespaces, divisor arithmetic, collisions, and table bounds for all client IDs.
+Mode: Preserve the server instance and refuse unsupported game modes before writes.
+State: Audit client whole-state read/write, individual slots, roots, associations, and shared hook dispatch.
+State: Refuse incompatible saved capacities before reading slot records.
+State: Preserve stock saves or document an explicit refusal before writes.
+State: Refuse stock or mismatched peers before migration and retain an expanded format identity.
+Lifetime: Verify restart, mod unload, map changes, and error cleanup free every expanded allocation.
+Transaction: Roll back every write after a guard failure or publication error while the process stays stopped.
+Integrity: Cover client instruction changes with the existing integrity transaction.
+Evidence: Do not claim Windows or Proton compatibility from static analysis or a fixture alone.
+Evidence: Do not activate a client expansion until the allocation, index, state, and lifetime audit is complete.
+
+Client save codec cases before implementation:
+Codec: Preserve original client reader/writer dispatch when the client capacity remains stock.
+Codec: Give expanded client state a distinct magic. Refuse server and unknown magic before slot writes.
+Codec: Refuse unsupported client format versions, saved capacities, and saved root counts before slot writes.
+Codec: Import all stock 64999 usable client slots and extend every new free link through the target sentinel.
+Codec: Translate both category-1 capacity-relative keys from65000 to250001 or500001.
+Codec: Retain other key categories, full DWORD IDs, collision chains, and high client roots.
+Codec: Retain separate server and client import contexts. A server import must not change a client key.
+Codec: Reject a nested import of the same VM before state writes.
+Codec: Preserve the expanded client header, all records, native association tail, and exact stream boundary on a round trip.
+Codec: Recheck migration output and compressed size bounds. Reject overflow before header publication.
+Codec: Admit each instance's capacity and format before stock delegation. An invalid client contract must not invoke native callbacks.
+Codec: A stock client pool must declare stockTotal65000 and client magic, even when its codec delegates.
+Bridge: A zero clientTotal binding must refuse state operations until the checked native plan assigns a supported capacity.
+Bridge: Client reads, insertion translation, slots, buckets, nine roots, and associations must use instance1 storage.
+Bridge: Client state operations must preserve instance0 slots, buckets, roots, and import context.
+Bridge: A native error reset must clear both import contexts. A later state operation must not retain a stale namespace.
+Bridge: Interrupt each VM import with an owned SEH exception that bypasses C++ scope cleanup. Both imports must remain nested until reset.
+Bridge: After the error reset, ordinary server and client insertions must retain both original capacity-relative keys.
+Codec: Refuse a server-format pool passed as instance1 and a client-format pool passed as instance0 before state writes.
+Mode: A ZombiesOnly expanded client codec must refuse other native modes before stream, slot, bucket, or tail writes.
+Mode: Preserve stock client native delegation in every mode.
+Tail: Client instance1 has no gclient root words. Require client roots0 and stock client roots0 in its pool contract and header.
+Tail: Native reader JNE at0x12d54ea and writer JNE at0x12d639c must skip the complete gclient root loops for instance1.
+Tail: Client legacy import must leave a following stream sentinel unread and every shared gclient root unchanged.
+Tail: Replay the captured client tail gates with native association count0. Require exactly one final DWORD after associations.

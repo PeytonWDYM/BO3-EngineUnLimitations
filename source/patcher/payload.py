@@ -68,7 +68,7 @@ def builds(resources: Path) -> list[Build]:
 def supported_build(resources: Path, game: Path) -> Build:
     # Any copy of a profiled build is accepted, whatever its file hash. Signed Steam downloads of one
     # build can differ outside the code. The launcher checks the code itself in memory before any write.
-    executable = game / 'BlackOps3.exe'
+    executable = game.resolve(strict=True) / 'BlackOps3.exe'
     reject_redirects(executable, private_files=True)
     identity = pe_identity(executable)
     for build in builds(resources):
@@ -87,6 +87,7 @@ def verify(folder: Path, hashes: dict[str, str]) -> None:
 
 
 def prepare(resources: Path, game: Path, *, tools_root: Path | None = None) -> Path:
+    game = game.resolve(strict=True)
     build = supported_build(resources, game)
     source = resources / 'native' / build['id']
     verify(source, build['files'])
