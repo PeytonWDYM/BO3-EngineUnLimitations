@@ -210,5 +210,18 @@ The complete instruction shape must match its admitted unwind metadata.
 The fixture uses authored clear endpoints and owned buffers. It makes no dynamic function-table registrations.
 This closes the owned called-reset frame test. Complete actor continuations, game handlers, and live binding remain required.
 
+actor_wire.py prepares five coordinated nine-bit actor packet and entity actor-index changes.
+The absolute removal writer, live-record writer, and client reader keep their original instruction sizes and call locations.
+Both named entity actor-index descriptors expand to nine bits, including room for the selected clone sentinel.
+The preparation guards the complete codec span, actor parser, class-three table, native field list, and named descriptors.
+Prepare-ActorPlan.py exports these five changes separately under wirePreparation. They remain outside activation.
+Test-ActorWire.py passes 61 native packet/field cases and thirteen guard refusals for each expanded shape.
+It round-trips all 500 records in reverse order through the captured actor writer, patched client number-reader call site, and actor payload reader.
+It verifies changes, forced unchanged records, omitted unchanged records, sparse removals, field payloads, padding, canaries, cookies, and nonvolatile registers.
+Both entity actor-index fields pass their captured generic field codecs at sparse boundaries and the selected clone sentinel.
+Stock high-ID packets and a mismatched six-bit reader fail the comparison. Consecutive IDs alone can hide that truncation.
+The clear, alternate field-table flag, and cookie endpoints are authored. Unicorn executes the captured codec bodies and stock class-three field selection.
+Expanded snapshot copies, client caches, sentinel consumers, demo/migration framing, alternate field selection, and real peer admission remain required.
+
 provenance.json records the owner's authorized local AAE prototype and original source hashes.
 This directory contains Python source and address/hash contracts. It contains no game executable or extracted game bodies.

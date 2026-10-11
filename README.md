@@ -205,6 +205,12 @@ An owned DLL embeds the called reset stub and its unwind data in the PE exceptio
 Windows finds its static function entry without runtime registration and unwinds all nine instruction boundaries correctly.
 Both shapes pass two complete owned resets, template/binding refusals, canary checks, and lookup removal after DLL unload.
 This validates the independent reset frame. Other actor stubs, game handlers, and live pool binding remain separate requirements.
+The separate actor wire preparation coordinates five nine-bit packet and entity actor-index changes.
+Both expanded shapes pass 61 native packet/field cases and thirteen guard refusals.
+The 500-actor case round-trips all records in reverse order through the captured writer, patched client number-reader call site, and payload reader.
+It covers changed/unchanged states, sparse removals, padding, record canaries, and both wider entity actor-index fields.
+Stock high-ID packets and a mismatched six-bit reader fail the Unicorn comparison. Clear, alternate field-table flag, and cookie endpoints are authored.
+Expanded client storage, snapshot copies, sentinel consumers, demos/migration, alternate field selection, and peer admission remain required.
 No 500-actor, expanded-entity, reliable-command, gamestate, higher-round, or player-count patch is active here.
 No new engine performance claim applies to this source work.
 

@@ -13,6 +13,7 @@ from storage_plan import StorageLayout
 from omissions import omission_inventory
 from unwind import requirements
 from shape import ActorShape
+from actor_wire import prepare_actor_wire
 
 
 def export(module: Path, executable: Path, output: Path, actors: int = 500) -> dict:
@@ -24,6 +25,7 @@ def export(module: Path, executable: Path, output: Path, actors: int = 500) -> d
     storage = StorageLayout(*(code.base+offset for offset in (0x24000000,0x26000000,0x28000000,0x2A000000,0x2C000000)))
     plan = prepare(code,layout,code.base+0x20000000,storage)
     unwind = requirements(code,plan.rewrites)
+    wire = prepare_actor_wire(code,layout.shape)
     output.mkdir(parents=True)
     edits = []
     for index,edit in enumerate(plan.rewrites):
@@ -43,6 +45,9 @@ def export(module: Path, executable: Path, output: Path, actors: int = 500) -> d
               'matrices':{'knowledgeEntryBytes':layout.entry_bytes,'knowledgeRowBytes':layout.row_bytes,'knowledgeBytes':layout.table_bytes,
                           'wordRowBytes':plan.word_table.row_bytes,'wordBytes':plan.word_table.table_bytes},
               'rewrites':edits,'omissions':omission_inventory(),'unwindRequirements':unwind,'activationGates':ACTIVATION_GATES,
+              'wirePreparation':{'bits':layout.shape.actors.bit_length(),'deploymentAllowed':False,
+                  'rewrites':[{'name':edit.name,'rva':hex(edit.guard.rva),'size':edit.guard.size,
+                               'sha256':edit.guard.sha256,'replacement':edit.replacement.hex()} for edit in wire]},
               'sourceFiles':{path.name:hashlib.sha256(path.read_bytes()).hexdigest()
                              for path in Path(__file__).parent.iterdir() if path.suffix in ('.py','.json','.txt')}}
     (output/'plan.json').write_text(json.dumps(report,indent=2)+'\n')

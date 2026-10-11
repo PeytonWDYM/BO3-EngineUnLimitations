@@ -195,3 +195,14 @@ Native handler-owner admission
 157. Verify module unload removes its function lookup. Do not call RtlAddFunctionTable or RtlDeleteFunctionTable for the static module template.
 158. This loader experiment does not bind actor continuations, game handlers, or live pools. Keep all existing actor activation gates until those paths pass.
 159. Refuse a reset body with the admitted size and outer stack instructions but altered middle instructions. Static unwind data must match the complete instruction shape.
+
+Actor wire preparation
+160. Guard the complete actor writer, actor reader, primitive codec span, class-three field table, and both named entity actor-index descriptors before preparing any width change.
+161. Move the actor writer's absolute removal width, live-record width, and client reader width from six to nine bits together. Preserve every owning function's instruction size and call location.
+162. Stock absolute actor ID 499 must decode incorrectly at six bits. Consecutive IDs alone must not establish an expanded codec.
+163. Round-trip all 500 actor records in reverse order through the captured complete actor writer and actor payload reader. Keep entity references and native record strides unchanged.
+164. Check additions, changes, removals, unchanged records, and mixed sparse IDs at 63/64, 127/128, 255/256, 299, and 499. Preserve record canaries and unregistered padding.
+165. Verify both named entity actor-index fields through the captured generic field writer and reader with nine-bit descriptors. Include the selected shape's clone sentinel.
+166. A stock reader paired with an expanded writer must fail the comparison. A mismatched peer needs separate admission before activation.
+167. Refuse altered owner code, changed operand instructions, changed descriptor names/layouts, and changed class-three table identity before export.
+168. Keep these wire rewrites outside activation until expanded client arrays, client caches, snapshot copies, demo/migration framing, sentinel consumers, and peer admission pass.
