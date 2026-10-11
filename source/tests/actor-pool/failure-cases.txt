@@ -75,3 +75,21 @@ Temporal restore preparation
 60. Keep restore preparation separate until the producer, caller buffers, history, saves, and runtime admission are complete.
 61. A rewind frame larger than one page needs native stack probing before allocation. Count and displacement edits alone are insufficient.
 62. Compare every restore-stub boundary with the original native Windows frame before including it in the main actor plan.
+
+Temporal producer preparation
+63. Replay the complete captured stock producer before comparing its expanded form. A count-only candidate must fail.
+64. Keep both selector results, interpolation, one-row fallbacks, duplicate rows, and absent-history behavior unchanged.
+65. Apply the original active, history-valid, entity-state, and actor-predicate conditions to every index through 299.
+66. Allocate both 300-byte temporary flag arrays without touching the stack cookie or saved nonvolatile registers.
+67. Preserve output and history markers, invalid output vectors, validity bytes, stack, cookie, and nonvolatile return values.
+68. Relocate every internal branch and native RIP-relative operand at complete instruction boundaries. Refuse an internal target inside a replaced span.
+69. Widen signed byte displacements and loop bounds explicitly. Refuse unsupported relative control encodings or unreachable rel32 targets.
+70. Guard the complete producer function before preparation. Keep handler dispatch, native history selection/recording, saves, callers, and activation gated.
+
+Temporal history preparation
+71. Preserve the recorder's eight-actor groups. For 300 actors, stop the final group after four lanes; an unchecked group overwrites the row timestamp.
+72. Record six vector components, active flags, state bytes, and time at native strides. Preserve inactive vectors and state bytes.
+73. Keep twenty complete rows, neighboring memory, the counter, and modulo selection correct across ring wraps.
+74. Execute the captured selector for negative, zero, sub-frame, exact-frame, and clamped old requests. Preserve its updated time argument.
+75. Replay recorder, native selector, producer, and restore together through actor 299. Author only the predicate, cookie, and relink endpoints.
+76. Guard both complete history functions. Keep storage lifetime, reset, save translation, Windows handlers, caller buffers, and runtime activation gated.

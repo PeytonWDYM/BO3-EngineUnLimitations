@@ -134,7 +134,13 @@ The comparison preserves five partial prologs and uses separate flattened frames
 It omits native handlers and rebases branch addresses only inside the owned fixture.
 Runtime ABI admission, native handler dispatch, live registration, temporal history, combined saves, and client replication still block activation.
 A separate temporal restore preparation handles 300 records in five native replay cases and five additional Windows unwind contexts.
-It preserves the native loop target and stays outside the main plan until the producer, caller buffers, and history match.
+It preserves the native loop target. The complete producer preparation passes fifteen owned replay cases.
+Its temporary flags and cookie use separate storage. A count-only candidate corrupts the stack.
+Eight further owned cases execute the captured history recorder, selector, producer, and restore together.
+They cover actor 299, filters, empty history, ring wraps, and time clamping, with authored predicate, cookie, and relink endpoints.
+The recorder keeps its eight-actor loop and handles the final four actors without overwriting the row timestamp.
+These preparations stay outside the main plan. History lifetime/reset, caller buffers, save framing, whole-function unwind metadata,
+native handlers, and game behavior remain unverified.
 The proposed larger rewind frame also needs stack probing before allocation.
 No 300-actor, expanded-entity, network-capacity, higher-round, or player-count patch is active here.
 No new engine performance claim applies to this source work.

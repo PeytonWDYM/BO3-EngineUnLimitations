@@ -49,7 +49,7 @@ These tests do not execute game startup, native save framing, Windows exception 
 PreparedTablePlan.require_activation() always refuses activation.
 ACTIVATION_GATES lists the exact remaining requirements.
 Actor-state stack arrays at rsp+0x40, +0x340, and +0x640 cannot accept a larger count alone.
-The temporal path also needs complete output, history producer, and restoration reader expansion.
+The temporal path also needs complete output, history storage, and caller expansion.
 This temporal state path has no stream writer. Save framing is a separate requirement.
 temporal_layout.py derives the two vector arrays, validity flags, and twenty-row history extent from ActorShape.
 The 300-actor output contains 7,500 bytes. Each history row contains 7,804 bytes.
@@ -57,7 +57,20 @@ temporal_restore.py prepares four guarded edits and one stub for the native rest
 It keeps the native loop-back compare in place and preserves the native record stride.
 Test-TemporalRestore.py checks stock64, rejected count-only300, boundary indices, all-valid, and none-valid cases.
 The relink endpoint is an authored callback. Vector bits, invalid records, flags, stack, and nonvolatile registers are checked.
-This restore preparation stays outside table_plan.py until its producer, caller buffers, history, and saves match.
+This restore preparation stays outside table_plan.py until its caller buffers, history storage, and saves match.
+temporal_producer.py relocates the complete guarded producer with two 300-byte flag arrays.
+Its 744-byte frame preserves the native cookie and saved registers without requiring a page-sized allocation.
+relocate_function.py widens local branches and displacements and rebases native calls and RIP operands.
+Test-TemporalProducer.py checks fifteen cases, including stock64, row fallbacks, filtering, and boundary indices.
+Its selector, predicate, and cookie endpoints are authored callbacks. A count-only candidate corrupts its stack.
+temporal_history.py prepares the native twenty-row recorder and selector for separate 156,080-byte storage.
+It preserves the native eight-actor loop and exits after four lanes in the final group.
+An unchecked final group overwrites the row timestamp with four extra validity bytes.
+Test-TemporalHistory.py runs eight complete recording, selection, interpolation, and restore cases.
+The tests cover actor 299, empty history, filtering, ring wraps, large counters, and selector time clamping.
+Only the predicate, cookie, and relink endpoints are authored in this combined replay.
+Both temporal preparations stay outside the main plan. History construction/reset, caller buffers, save framing,
+whole-function Windows unwind metadata, native handlers, and actual game behavior remain unverified.
 The proposed rewind frame exceeds one page and needs stack probing before allocation.
 ActorNum has a six-bit netfield. clonedFromActorNum has seven bits and stores source-index-plus-one.
 The separate actor packet number codec also uses six-bit absolute indices.
