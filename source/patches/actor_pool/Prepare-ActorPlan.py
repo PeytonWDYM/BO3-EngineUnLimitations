@@ -6,7 +6,7 @@ import hashlib
 import json
 from pathlib import Path
 
-from captured_code import CapturedCode, MANIFEST_SHA256
+from captured_code import CapturedCode, MANIFEST_SHA256,Rewrite
 from table_layout import TableLayout, NativeSentientAddress, ExternalTableAddress
 from table_plan import prepare, ACTIVATION_GATES
 from storage_plan import StorageLayout
@@ -15,6 +15,21 @@ from unwind import requirements
 from shape import ActorShape
 from actor_wire import prepare_actor_wire
 from client_snapshots import ClientSnapshots,prepare_client_snapshots
+from client_snapshot_reset import prepare_client_snapshot_resets
+from client_reset_frames import emit_client_reset_frames
+
+
+def export_rewrites(output: Path,prefix: str,rewrites: tuple[Rewrite,...]) -> list[dict]:
+    edits=[]
+    for index,edit in enumerate(rewrites):
+        item={'name':edit.name,'rva':hex(edit.guard.rva),'size':edit.guard.size,'sha256':edit.guard.sha256,
+              'replacement':edit.replacement.hex(),'ownerRegister':edit.owner_register}
+        if edit.stub:
+            filename=f'{prefix}-{index:03d}.bin'
+            (output/filename).write_bytes(edit.stub)
+            item.update(stubAddress=hex(edit.stub_address),stubFile=filename,stubSha256=hashlib.sha256(edit.stub).hexdigest())
+        edits.append(item)
+    return edits
 
 
 def export(module: Path, executable: Path, output: Path, actors: int = 500) -> dict:
@@ -30,25 +45,14 @@ def export(module: Path, executable: Path, output: Path, actors: int = 500) -> d
     snapshots = ClientSnapshots(code.base+0x2E000000,layout.shape)
     snapshot_edits = prepare_client_snapshots(code,snapshots,code.base+0x201C0000)
     snapshot_unwind = requirements(code,snapshot_edits)
+    snapshot_resets = prepare_client_snapshot_resets(code,snapshots,code.base+0x201D0000)
+    reset_assembly = emit_client_reset_frames(snapshot_resets)
     output.mkdir(parents=True)
-    edits = []
-    for index,edit in enumerate(plan.rewrites):
-        item = {'name':edit.name,'rva':hex(edit.guard.rva),'size':edit.guard.size,'sha256':edit.guard.sha256,
-                'replacement':edit.replacement.hex(),'ownerRegister':edit.owner_register}
-        if edit.stub:
-            filename = f'stub-{index:03d}.bin'
-            (output/filename).write_bytes(edit.stub)
-            item.update(stubAddress=hex(edit.stub_address),stubFile=filename,stubSha256=hashlib.sha256(edit.stub).hexdigest())
-        edits.append(item)
-    client_edits = []
-    for index,edit in enumerate(snapshot_edits):
-        item = {'name':edit.name,'rva':hex(edit.guard.rva),'size':edit.guard.size,'sha256':edit.guard.sha256,
-                'replacement':edit.replacement.hex()}
-        if edit.stub:
-            filename = f'snapshot-stub-{index:02d}.bin'
-            (output/filename).write_bytes(edit.stub)
-            item.update(stubAddress=hex(edit.stub_address),stubFile=filename,stubSha256=hashlib.sha256(edit.stub).hexdigest())
-        client_edits.append(item)
+    edits = export_rewrites(output,'stub',plan.rewrites)
+    client_edits = export_rewrites(output,'snapshot-stub',snapshot_edits)
+    reset_edits = export_rewrites(output,'snapshot-reset',tuple(frame.rewrite for frame in snapshot_resets))
+    template_file = output/'ClientResetTemplates.asm'
+    template_file.write_text(reset_assembly,encoding='ascii')
     report = {'status':f'disabled_actor_{actors}_preparation','deploymentAllowed':False,'coverageComplete':False,
               'executableSha256':code.executable_sha256,'moduleManifestSha256':MANIFEST_SHA256,
               'shape':asdict(layout.shape)|{'sentients':layout.capacity},
@@ -64,7 +68,11 @@ def export(module: Path, executable: Path, output: Path, actors: int = 500) -> d
               'clientSnapshotPreparation':{'deploymentAllowed':False,'storageAddress':hex(snapshots.base),
                   'localClients':2,'snapshotsPerLocalClient':2,'snapshotBytes':snapshots.snapshot_bytes,
                   'actorOffset':snapshots.actor_offset,'actorRecordBytes':80,'storageBytes':snapshots.total_bytes,
-                  'rewrites':client_edits,'unwindRequirements':snapshot_unwind},
+                  'rewrites':client_edits,'unwindRequirements':snapshot_unwind,
+                  'resetPreparation':{'deploymentAllowed':False,'rewrites':reset_edits,
+                      'staticTemplateFile':template_file.name,'staticTemplateSha256':hashlib.sha256(template_file.read_bytes()).hexdigest(),
+                      'staticPEFrames':[{'stubAddress':hex(frame.rewrite.stub_address),'codeBytes':len(frame.rewrite.stub),
+                                        'unwindInfo':frame.unwind.hex(),'gameBindingVerified':False} for frame in snapshot_resets]}},
               'sourceFiles':{path.name:hashlib.sha256(path.read_bytes()).hexdigest()
                              for path in Path(__file__).parent.iterdir() if path.suffix in ('.py','.json','.txt')}}
     (output/'plan.json').write_text(json.dumps(report,indent=2)+'\n')

@@ -221,7 +221,17 @@ Eleven owner and six address refusals pass. The comparison detects stock truncat
 Both slot stubs pass all nine Windows instruction boundaries and four incorrect allocation/save metadata comparisons.
 The 300-actor shape passes the same native paths with its selected storage size.
 
-All snapshot reset/copy paths, connection ring ownership, client actor storage, complete caller execution, and matching peers still need verification.
+Both complete native client clears now have guarded reset preparation for the external snapshots.
+The startup call reads its local-client ID from the native register. The shutdown tail uses the original stack argument after register restoration.
+Each helper retains the original client clear and return pointer, then clears both complete snapshots for that client.
+Both shapes pass eight captured-path resets, seven changed-owner refusals, and six address refusals.
+
+An owned Windows DLL embeds both independent helper frames in its PE exception directory.
+All thirty instruction boundaries unwind correctly. Eight actual resets preserve the other client's storage, complete canaries, and every nonvolatile register.
+Template refusals leave code intact, and both function lookups disappear after DLL unload without runtime registration.
+The exported plan includes both reset bodies and their static frame metadata. These remain outside installer activation.
+
+Every remaining snapshot copy path, connection ring ownership, client actor storage, complete caller execution, and matching peers still need verification.
 No 500-actor, expanded-entity, reliable-command, gamestate, higher-round, or player-count patch is active here.
 No new engine performance claim applies to this source work.
 

@@ -220,3 +220,17 @@ Client snapshot storage
 178. Compare each slot-selection stub instruction boundary with its original native frame through Windows RtlVirtualUnwind. Reject missing native allocation or incorrect saved-register metadata.
 179. Keep these preparations outside activation until client actor storage, complete snapshot reset/copy paths, connection actor-ring ownership, saves, demos/migration, and peer admission pass.
 180. Admit a two-entry Windows comparison only for both exact client snapshot sites in their fixed order. Refuse a missing, reversed, or substituted site.
+
+Client snapshot reset ownership
+181. Guard both complete native client-clear owners and their full unwind records before replacing the original call or tail jump.
+182. Keep the native client clear size, pointer, call location, tail return, and original caller frames unchanged. Add a separate called frame for the external storage clear.
+183. The startup clear reads its local-client ID from native r14d. The shutdown tail helper reads the original argument from its entry stack home slot at +8, after native register restoration.
+184. Preserve the original native client-pointer return. Keep the local-client ID in owned frame storage across both native memset calls. Do not depend on volatile registers after either call.
+185. Clear both complete snapshots for only the selected local client. Preserve the other local client's snapshots and client object, all metadata, and allocation canaries.
+186. Repeat startup and shutdown clears for both clients and both admitted shapes. Replay the captured shutdown epilogue and its real stack home-slot layout.
+187. Refuse altered clear call/jump instructions, native argument stores, full owner code, unwind records, aliased buffers, overlapping helpers, invalid alignment, and unreachable code before export.
+188. Embed both independent helper frames in a real owned DLL's PE exception directory. Compare every instruction boundary and both complete resets through the Windows loader.
+189. The static template must reject altered middle instructions even when its outer allocation and return match. Bind only admitted complete templates before executable writes.
+190. Preserve all nonvolatile registers through actual owned calls. Remove both helper lookups after DLL unload without dynamic function-table registration.
+191. Keep reset preparation outside activation until complete client actor storage, every snapshot copy path, connection ownership, native game execution, and peer behavior pass.
+192. Export both reset bodies, guards, independent frame metadata, and their static assembly together. Prepare every guarded stage before creating output. Check all combined native edits and complete code/storage intervals for overlaps.
