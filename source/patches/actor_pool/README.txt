@@ -71,7 +71,16 @@ The tests cover actor 299, empty history, filtering, ring wraps, large counters,
 Only the predicate, cookie, and relink endpoints are authored in this combined replay.
 Both temporal preparations stay outside the main plan. History construction/reset, caller buffers, save framing,
 whole-function Windows unwind metadata, native handlers, and actual game behavior remain unverified.
-The proposed rewind frame exceeds one page and needs stack probing before allocation.
+temporal_rewind.py prepares the complete rewind with a 7,624-byte frame and a guarded probe before allocation.
+It expands all temporary buffers, validity flags, output offsets, cookie, and saved-register addresses.
+Test-TemporalHistory.py --include-rewind adds five cases to the eight-case history replay.
+They exercise rewind and restore, filters, the short-history exit, time clamping, and a rejected missing-probe candidate.
+The captured probe executes against an owned thread-information block. This replay cannot test real guard-page faults.
+Test-StackProbe.ps1 also executes the complete guarded probe on three new Windows threads.
+Authored wrappers allocate 7,624, 15,824, and 21,728 bytes after the probe.
+Actual stack limits and committed pages match each allocation. All owned function tables are deleted.
+These wrappers do not execute the relocated game rewind or verify its complete Windows frame and handlers.
+The owning caller's adjacent actor and corpse buffers still need expansion without changing corpse capacity.
 ActorNum has a six-bit netfield. clonedFromActorNum has seven bits and stores source-index-plus-one.
 The separate actor packet number codec also uses six-bit absolute indices.
 These client and peer contracts need complete expansion before actor 299 can replicate correctly.

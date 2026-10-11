@@ -15,9 +15,9 @@ from temporal_restore import RESTORE_FUNCTION, prepare_restore
 from temporal_history import RECORDER_FUNCTION, SELECTOR_FUNCTION, prepare_history
 
 
-def run(module: Path, executable: Path, dependencies: Path, output: Path) -> dict:
+def run(module: Path, executable: Path, dependencies: Path, output: Path, include_rewind: bool = False) -> dict:
     sys.path.insert(0, str(dependencies))
-    from unicorn import Uc, UC_ARCH_X86, UC_MODE_64, UC_HOOK_CODE
+    from unicorn import Uc, UC_ARCH_X86, UC_MODE_64, UC_HOOK_CODE, UC_HOOK_MEM_WRITE
     import unicorn.x86_const as x64
     output = output.resolve()
     if (Path.home() / '.codex/labs/bo3-engine').resolve() not in output.parents or output.exists():
@@ -34,10 +34,17 @@ def run(module: Path, executable: Path, dependencies: Path, output: Path) -> dic
     restore_edits = prepare_restore(code, layout, restore_stub)
     functions = [RECORDER_FUNCTION, SELECTOR_FUNCTION, PRODUCER_FUNCTION, RESTORE_FUNCTION]
     callbacks = [code.base + rva for rva in (0x27BC4C0, 0x2BC3AA0, 0x2206F70)]
+    rewind = None
+    if include_rewind:
+        from temporal_rewind import REWIND_FUNCTION, PROBE_FUNCTION, prepare_rewind, rewind_frame
+        rewind = prepare_rewind(code, layout, code.base + 0x201E0000)
+        functions.extend((REWIND_FUNCTION, PROBE_FUNCTION))
+        callbacks.extend(code.base + rva for rva in (0x2BC53B0, 0x2260A70))
     nonvolatile_names = ('RBX', 'RBP', 'RSI', 'RDI', 'R12', 'R13', 'R14', 'R15')
     cases = []
 
-    def replay(name: str, mode: str, start_counter: int, frames: int, patterned: bool = False):
+    def replay(name: str, mode: str, start_counter: int, frames: int, patterned: bool = False,
+               use_rewind: bool = False, stack_offset: int = 0xF008, requested_age: int = 75):
         machine = Uc(UC_ARCH_X86, UC_MODE_64)
         count = 64 if mode == 'stock' else 300
         vector_bytes = count * 12
@@ -47,7 +54,7 @@ def run(module: Path, executable: Path, dependencies: Path, output: Path) -> dic
         history = native_history if mode == 'stock' else expanded_history
         blobs = [(code.base + guard.rva, code.guarded(guard)) for guard in functions]
         if mode != 'stock':
-            for edit in (*history_edits, producer, *restore_edits):
+            for edit in (*history_edits, producer, *restore_edits, *((rewind,) if use_rewind else ())):
                 blobs.append((code.base + edit.guard.rva, edit.replacement))
                 if edit.stub:
                     blob = edit.stub
@@ -56,10 +63,19 @@ def run(module: Path, executable: Path, dependencies: Path, output: Path) -> dic
                         assert blob.count(check) == 1
                         offset = blob.index(check)
                         blob = blob[:offset] + b'\x90' * 13 + blob[offset + 13:]
+                    if mode == 'no-probe' and edit.name == 'temporal_rewind':
+                        from capstone import Cs, CS_ARCH_X86, CS_MODE_64
+                        decoder = Cs(CS_ARCH_X86, CS_MODE_64)
+                        calls = [i for i in decoder.disasm(blob, edit.stub_address)
+                                 if i.mnemonic == 'call' and i.op_str == hex(code.base + PROBE_FUNCTION.rva)]
+                        assert len(calls) == 1
+                        offset = calls[0].address - edit.stub_address
+                        blob = blob[:offset] + b'\x90' * calls[0].size + blob[offset + calls[0].size:]
                     blobs.append((edit.stub_address, blob))
         regions = [(actors, 0x280000), (entities, 0x100000), (history - 16, row_bytes * 20 + 32),
                    (counter_address, 4), (time_address, 4), (code.base + 0xA1B0744, 4), (code.base + 0xA1B0798, 8),
-                   (code.base + 0x35EEA10, 8), (state, 0x4000), (argument, 0x1000), (stack, 0x10000), (stop, 0x1000),
+                   (code.base + 0x35EEA10, 8), (code.base + 0xA0377A0, 8), (0x52000000, 0x1000),
+                   (state, 0x4000), (argument, 0x1000), (stack, 0x10000), (stop, 0x1000),
                    *[(address, 1) for address in callbacks]]
         pages = set()
         for address, size in regions + [(address, len(data)) for address, data in blobs]:
@@ -75,6 +91,7 @@ def run(module: Path, executable: Path, dependencies: Path, output: Path) -> dic
         machine.mem_write(code.base + 0xA1B0744, struct.pack('<I', 0x55AA))
         cookie = 0x123456789ABCDEF0
         machine.mem_write(code.base + 0x35EEA10, struct.pack('<Q', cookie))
+        machine.reg_write(x64.UC_X86_REG_GS_BASE, 0x52000000)
         expected = bytearray(b'\xcc' * (row_bytes * 20))
         machine.mem_write(history - 16, b'\xcc' * (row_bytes * 20 + 32))
         # The stock counter is the first DWORD after its history array.
@@ -91,10 +108,18 @@ def run(module: Path, executable: Path, dependencies: Path, output: Path) -> dic
                 engine.reg_write(x64.UC_X86_REG_RAX, int(patterned and index % 7 == 0))
             elif address == callbacks[1]:
                 cookies.append(engine.reg_read(x64.UC_X86_REG_RCX))
-            else:
+            elif address == callbacks[2]:
                 entity = engine.reg_read(x64.UC_X86_REG_RCX)
                 assert (entity - entities) % 0x4F8 == 0
                 relinks.append((entity - entities) // 0x4F8)
+            elif address == code.base + 0x2BC53B0:
+                destination, size = engine.reg_read(x64.UC_X86_REG_RCX), engine.reg_read(x64.UC_X86_REG_R8)
+                assert destination == state and size == count * 25
+                assert engine.reg_read(x64.UC_X86_REG_RDX) == 0
+                engine.mem_write(destination, bytes(size))
+                engine.reg_write(x64.UC_X86_REG_RAX, destination)
+            else:
+                engine.reg_write(x64.UC_X86_REG_RAX, 1)
             rsp = engine.reg_read(x64.UC_X86_REG_RSP)
             engine.reg_write(x64.UC_X86_REG_RIP, struct.unpack('<Q', engine.mem_read(rsp, 8))[0])
             engine.reg_write(x64.UC_X86_REG_RSP, rsp + 8)
@@ -102,8 +127,28 @@ def run(module: Path, executable: Path, dependencies: Path, output: Path) -> dic
         for address in callbacks:
             machine.hook_add(UC_HOOK_CODE, endpoint, begin=address, end=address)
 
+        touched_pages, probe_registers = [], []
+        if include_rewind:
+            def probe_boundary(engine, address, size, unused):
+                if address == code.base + PROBE_FUNCTION.rva:
+                    assert engine.reg_read(x64.UC_X86_REG_RAX) == rewind_frame(layout).allocation
+                    names = ('RAX', 'RCX', 'RDX', 'R8', 'R9', 'R10', 'R11', 'RSP')
+                    probe_registers.append({getattr(x64, 'UC_X86_REG_' + name): engine.reg_read(getattr(x64, 'UC_X86_REG_' + name))
+                                            for name in names})
+                else:
+                    assert all(engine.reg_read(register) == value for register, value in probe_registers[-1].items())
+            machine.hook_add(UC_HOOK_CODE, probe_boundary, begin=code.base + PROBE_FUNCTION.rva, end=code.base + PROBE_FUNCTION.rva)
+            machine.hook_add(UC_HOOK_CODE, probe_boundary, begin=code.base + PROBE_FUNCTION.rva + PROBE_FUNCTION.size - 1,
+                             end=code.base + PROBE_FUNCTION.rva + PROBE_FUNCTION.size - 1)
+
+            def probe_write(engine, access, address, size, value, unused):
+                if engine.reg_read(x64.UC_X86_REG_RIP) == code.base + 0x2BC57D7:
+                    assert size == 1 and value == 0
+                    touched_pages.append(address)
+            machine.hook_add(UC_HOOK_MEM_WRITE, probe_write)
+
         def call(entry: int, args: tuple[int, ...] = ()) -> int:
-            initial_rsp = stack + 0xF008
+            initial_rsp = stack + stack_offset
             saved = {getattr(x64, 'UC_X86_REG_' + name): 0x100000000 + index for index, name in enumerate(nonvolatile_names)}
             saved.update({getattr(x64, 'UC_X86_REG_XMM' + str(index)): (index << 120) | 0x112233445566778899
                           for index in range(6, 16)})
@@ -111,6 +156,8 @@ def run(module: Path, executable: Path, dependencies: Path, output: Path) -> dic
                 machine.reg_write(register, value)
             machine.reg_write(x64.UC_X86_REG_RSP, initial_rsp)
             machine.mem_write(initial_rsp, struct.pack('<Q', stop))
+            committed = (initial_rsp - 16) if include_rewind and entry == REWIND_FUNCTION.rva else initial_rsp
+            machine.mem_write(0x52000010, struct.pack('<Q', committed & ~4095))
             for name, value in zip(('RCX', 'RDX', 'R8', 'R9'), args):
                 machine.reg_write(getattr(x64, 'UC_X86_REG_' + name), value)
             machine.emu_start(code.base + entry, stop, count=200000)
@@ -180,10 +227,49 @@ def run(module: Path, executable: Path, dependencies: Path, output: Path) -> dic
             machine.mem_write(entities + index * 0x4F8 + 0xC0, struct.pack('<H', states[index] if state_matches else states[index] + 1))
             if frames and active[index] and state_matches and (not patterned or index % 7 != 0):
                 accepted.append(index)
-                xyz = tuple(float((frames - 2.5) * 4096 + index * 8 + field) for field in range(6))
+                pose_frame = max(0, frames - 20, frames - 1 - min(requested_age, 1000) / 50) if use_rewind else frames - 2.5
+                xyz = tuple(float(pose_frame * 4096 + index * 8 + field) for field in range(6))
                 struct.pack_into('<3f', wanted, index * 12, *xyz[:3])
                 struct.pack_into('<3f', wanted, vector_bytes + index * 12, *xyz[3:])
                 wanted[vector_bytes * 2 + index] = 1
+        if use_rewind:
+            # The native rewind saves current poses in its output, then applies the historical poses.
+            if requested_age <= 50:
+                accepted = []
+            call(REWIND_FUNCTION.rva, (now - requested_age, state))
+            frame = rewind_frame(layout)
+            bottom = (stack + stack_offset - 16 - frame.allocation) & ~4095
+            expected_pages = list(range(((stack + stack_offset - 16) & ~4095) - 4096, bottom - 1, -4096))
+            if mode == 'no-probe':
+                assert not touched_pages and expected_pages
+                cases.append({'case': name, 'actors': count, 'missingProbeRefused': True,
+                              'requiredPages': [hex(page) for page in expected_pages]})
+                return
+            assert touched_pages == expected_pages
+            assert len(probe_registers) == 1 and cookies == ([cookie, cookie] if accepted else [cookie])
+            saved_output = bytearray(vector_bytes * 2 + count + 16)
+            saved_output[-16:] = b'\xcc' * 16
+            for index in range(count):
+                wanted_pose = (struct.unpack_from('<3f', wanted, index * 12) +
+                               struct.unpack_from('<3f', wanted, vector_bytes + index * 12)) if index in accepted else current
+                assert machine.mem_read(entities + index * 0x4F8 + 0x230, 24) == struct.pack('<6f', *wanted_pose)
+                if index in accepted:
+                    struct.pack_into('<3f', saved_output, index * 12, *current[:3])
+                    struct.pack_into('<3f', saved_output, vector_bytes + index * 12, *current[3:])
+                    saved_output[vector_bytes * 2 + index] = 1
+            assert machine.mem_read(state, len(saved_output)) == bytes(saved_output)
+            assert relinks == accepted
+            relinks.clear()
+            call(RESTORE_FUNCTION.rva, (state,))
+            assert relinks == accepted
+            assert all(machine.mem_read(entities + index * 0x4F8 + 0x230, 24) == struct.pack('<6f', *current) for index in range(count))
+            saved_output[vector_bytes * 2:vector_bytes * 2 + count] = bytes(count)
+            assert machine.mem_read(state, len(saved_output)) == bytes(saved_output)
+            assert machine.mem_read(history, len(expected)) == bytes(expected)
+            cases.append({'case': name, 'actors': count, 'nativeRewindAndRestoreMatch': True, 'restoredActors': len(accepted),
+                          'frameBytes': frame.allocation, 'nativeProbePages': [hex(page) for page in touched_pages],
+                          'probeRegistersPreserved': True, 'requestedAge': requested_age})
+            return
         assert call(PRODUCER_FUNCTION.rva, (now - 75, state, state + vector_bytes, state + vector_bytes * 2)) & 255 == int(frames != 0)
         assert cookies == [cookie]
         assert machine.mem_read(state, len(wanted)) == bytes(wanted)
@@ -208,13 +294,23 @@ def run(module: Path, executable: Path, dependencies: Path, output: Path) -> dic
     replay('wide300-full-history-wrap', 'prepared', 0, 25)
     replay('wide300-large-counter', 'prepared', 100003, 3)
     replay('unchecked-eight-lane-tail-refused', 'unchecked-tail', 0, 1)
+    if include_rewind:
+        replay('wide300-native-rewind', 'prepared', 0, 3, use_rewind=True)
+        replay('wide300-native-rewind-filtered', 'prepared', 19, 3, True, True, 0xE188)
+        replay('wide300-native-rewind-short-history', 'prepared', 0, 3, use_rewind=True, requested_age=25)
+        replay('wide300-native-rewind-time-clamp', 'prepared', 0, 25, use_rewind=True, requested_age=5000)
+        replay('wide300-missing-probe-refused', 'no-probe', 0, 3, use_rewind=True)
     result = {'passed': True, 'cases': cases,
-              'scope': 'Owned captured recorder, selector, producer and restore chain. Only predicate, cookie and relink endpoints are authored.',
+              'scope': 'Owned captured temporal chain. Predicate, cookie and relink endpoints are authored. Optional rewind also authors memset and its native helper endpoint.',
               'sourceFiles': {path.name: hashlib.sha256(path.read_bytes()).hexdigest() for path in
                               [PATCHES / 'temporal_history.py', PATCHES / 'temporal_producer.py', PATCHES / 'temporal_restore.py',
                                PATCHES / 'temporal_layout.py', PATCHES / 'relocate_function.py', Path(__file__)]},
               'gameWrites': 0, 'activationAllowed': False,
               'unverified': ['History construction and reset', 'Save translation', 'Rewind caller buffers', 'Windows unwind and handlers', 'Game behavior']}
+    if include_rewind:
+        path = PATCHES / 'temporal_rewind.py'
+        result['sourceFiles'][path.name] = hashlib.sha256(path.read_bytes()).hexdigest()
+        result['unverified'].append('Relocated game-frame guard-page faults. This replay uses committed emulator pages and a supplied TIB.')
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(result, indent=2) + '\n')
     return {'passed': True, 'cases': len(cases), 'output': str(output)}
@@ -224,5 +320,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     for name in ('module', 'executable', 'dependencies', 'output'):
         parser.add_argument('--' + name, type=Path, required=True)
+    parser.add_argument('--include-rewind', action='store_true')
     args = parser.parse_args()
-    print(json.dumps(run(args.module, args.executable, args.dependencies, args.output), indent=2))
+    print(json.dumps(run(args.module, args.executable, args.dependencies, args.output, args.include_rewind), indent=2))

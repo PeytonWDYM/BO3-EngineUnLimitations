@@ -141,7 +141,10 @@ They cover actor 299, filters, empty history, ring wraps, and time clamping, wit
 The recorder keeps its eight-actor loop and handles the final four actors without overwriting the row timestamp.
 These preparations stay outside the main plan. History lifetime/reset, caller buffers, save framing, whole-function unwind metadata,
 native handlers, and game behavior remain unverified.
-The proposed larger rewind frame also needs stack probing before allocation.
+The separate rewind preparation expands its temporary buffers and calls the guarded native stack probe before allocation.
+Five further owned cases cover rewind, restore, filters, time clamping, and refusal of a missing probe.
+The probe also executes on three owned Windows threads with real stack growth and complete function-table cleanup.
+These helper tests do not admit the relocated game frame, its handlers, or the caller's adjacent actor and corpse buffers.
 No 300-actor, expanded-entity, network-capacity, higher-round, or player-count patch is active here.
 No new engine performance claim applies to this source work.
 

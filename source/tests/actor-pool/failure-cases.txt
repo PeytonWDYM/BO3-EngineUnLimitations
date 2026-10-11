@@ -93,3 +93,18 @@ Temporal history preparation
 74. Execute the captured selector for negative, zero, sub-frame, exact-frame, and clamped old requests. Preserve its updated time argument.
 75. Replay recorder, native selector, producer, and restore together through actor 299. Author only the predicate, cookie, and relink endpoints.
 76. Guard both complete history functions. Keep storage lifetime, reset, save translation, Windows handlers, caller buffers, and runtime activation gated.
+
+Temporal rewind preparation
+77. Expand the rewind's angle, position, validity, cookie, and saved-register offsets together. Preserve its 1,000ms time clamp and short-history exit.
+78. Probe each required lower stack page before the expanded allocation. Execute the complete captured probe helper with an owned thread-information block.
+79. Keep all probe input registers and the preallocation stack correct. A candidate that omits the probe must fail, even if committed emulator pages hide the error.
+80. Clear all 300 temporary flags without touching the cookie. Preserve the caller's existing home-space save.
+81. Replay recording, selection, rewind, and restoration together. Rewind must save current poses, apply historical poses, and restore current poses through actor 299.
+82. Keep real Windows guard-page faults, full relocated frame metadata, caller actor/corpse buffers, native helpers, save framing, and activation gated.
+
+Owned Windows stack probe
+83. Refuse a changed executable, capture, or complete probe helper before exporting fixture bytes.
+84. Execute the guarded probe on a new Windows thread with a small reserved stack. Verify actual committed stack growth before the wrapper touches its frame.
+85. Register both owned wrapper and probe frames before execution. Verify runtime lookup, complete deletion, and released code storage after the thread exits.
+86. Check the wrapper's entry and body stack difference, page commitment, and real thread-information stack limits for each allocation.
+87. Do not describe an owned probe-wrapper test as admission of the relocated game frame, its language handlers, or its owning caller.
