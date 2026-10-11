@@ -139,12 +139,21 @@ Its temporary flags and cookie use separate storage. A count-only candidate corr
 Eight further owned cases execute the captured history recorder, selector, producer, and restore together.
 They cover actor 299, filters, empty history, ring wraps, and time clamping, with authored predicate, cookie, and relink endpoints.
 The recorder keeps its eight-actor loop and handles the final four actors without overwriting the row timestamp.
-These preparations stay outside the main plan. History lifetime/reset, caller buffers, save framing, whole-function unwind metadata,
+These preparations stay outside the main plan. History lifetime/reset, complete caller coverage, save framing, whole-function unwind metadata,
 native handlers, and game behavior remain unverified.
 The separate rewind preparation expands its temporary buffers and calls the guarded native stack probe before allocation.
 Five further owned cases cover rewind, restore, filters, time clamping, and refusal of a missing probe.
 The probe also executes on three owned Windows threads with real stack growth and complete function-table cleanup.
-These helper tests do not admit the relocated game frame, its handlers, or the caller's adjacent actor and corpse buffers.
+These helper tests do not admit the relocated game frame or its handlers.
+A separate caller preparation moves the adjacent corpse buffer and expands the frame to 21,728 bytes.
+Three complete no-fire caller replays verify stock64, prepared300, and refusal of an old corpse-buffer address.
+They preserve current poses, cookies, home-space arguments, saved registers, and separate 64-corpse storage.
+Corpse and external helper endpoints are authored. Firing paths and live behavior remain unverified.
+The caller metadata preparation moves its allocation, eleven register saves, and cookie word together.
+Owned Windows tests pass all 748 caller instruction-boundary contexts and reject both stale-metadata candidates.
+Two normal returns and two real C++ exceptions also pass through captured native cookie handlers in an owned fixture.
+Each exception runs its captured cleanup leaf once. The stale cookie word triggers the expected refusal.
+The body, language CRT, cookie check, and destructor endpoints are authored. The game's CRT path remains unverified.
 Direct cookie-handler replay passes 108 cases and rejects sixty incomplete frame-translation candidates.
 Temporary stack phases need the original native frame address for both cookie lookup and decode.
 The test supplies that address directly. A runtime bridge, Windows exception dispatch, and C++ cleanup remain unimplemented or unverified.

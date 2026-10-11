@@ -69,7 +69,7 @@ An unchecked final group overwrites the row timestamp with four extra validity b
 Test-TemporalHistory.py runs eight complete recording, selection, interpolation, and restore cases.
 The tests cover actor 299, empty history, filtering, ring wraps, large counters, and selector time clamping.
 Only the predicate, cookie, and relink endpoints are authored in this combined replay.
-Both temporal preparations stay outside the main plan. History construction/reset, caller buffers, save framing,
+Both temporal preparations stay outside the main plan. History construction/reset, complete caller coverage, save framing,
 whole-function Windows unwind metadata, native handlers, and actual game behavior remain unverified.
 temporal_rewind.py prepares the complete rewind with a 7,624-byte frame and a guarded probe before allocation.
 It expands all temporary buffers, validity flags, output offsets, cookie, and saved-register addresses.
@@ -80,7 +80,24 @@ Test-StackProbe.ps1 also executes the complete guarded probe on three new Window
 Authored wrappers allocate 7,624, 15,824, and 21,728 bytes after the probe.
 Actual stack limits and committed pages match each allocation. All owned function tables are deleted.
 These wrappers do not execute the relocated game rewind or verify its complete Windows frame and handlers.
-The owning caller's adjacent actor and corpse buffers still need expansion without changing corpse capacity.
+temporal_caller.py prepares 22 guarded edits to the complete owning caller.
+It keeps the actor buffer start, moves the adjacent corpse buffer, and expands the frame to 21,728 bytes.
+Corpse capacity remains 64. Absolute home-space argument and saved-register addresses remain unchanged.
+Test-TemporalCaller.py executes the complete no-fire caller with native temporal functions and probing in three owned cases.
+Stock64 and prepared300 restore current poses. Retaining the old corpse address corrupts actor restoration and fails the test contract.
+Cookies, home-space arguments, return stack, saved GPR/XMM registers, and corpse markers match.
+Corpse and external helper endpoints are authored. Firing paths and live behavior remain gated.
+caller_unwind.py guards the complete native metadata, C++ function-info, state map, cleanup map, and cleanup leaf.
+It moves the allocation, eleven explicit register saves, and cookie word. Native handler flags remain unchanged.
+The low-frame cleanup object and helper offsets remain unchanged. In-place instruction sizes preserve all language state boundaries.
+Test-CallerUnwind.ps1 checks all 748 stock and expanded instruction-boundary contexts through actual Windows virtual unwinding.
+It rejects unchanged allocation and unchanged save-offset metadata. Every owned registration is deleted.
+The fixture executes the prolog and epilog in an emulator. Body contexts reuse the complete frame. Windows handlers are omitted.
+Test-CallerException.ps1 executes both captured prologs and epilogs on Windows with an authored body and fixture CRT.
+Two normal returns and two real exceptions pass. Captured native cookie handlers preserve all six cookie checks.
+Each exception runs the captured cleanup leaf once and reaches the outer catch. A stale cookie word exits with refusal code 23.
+All eight function records are deleted and both owned code allocations are released on success.
+The language CRT, body, cookie check, and destructor endpoints are authored. The game CRT and real firing paths remain unverified.
 ActorNum has a six-bit netfield. clonedFromActorNum has seven bits and stores source-index-plus-one.
 The separate actor packet number codec also uses six-bit absolute indices.
 These client and peer contracts need complete expansion before actor 299 can replicate correctly.

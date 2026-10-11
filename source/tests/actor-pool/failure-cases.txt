@@ -114,3 +114,27 @@ Native handler frame translation
 89. A temporary stack phase must use the original native frame address for both cookie lookup and cookie XOR decoding.
 90. Detect an untranslated frame and a shifted-cookie-offset-only candidate. Neither can preserve the cookie at nonzero temporary depth.
 91. Distinguish direct handler replay with an authored dispatcher from actual Windows exception dispatch and complete C++ cleanup behavior.
+
+Temporal caller preparation
+92. Guard the complete caller before expanding its frame. Keep the actor buffer start and move the adjacent corpse buffer without increasing corpse capacity.
+93. Preserve the absolute addresses of caller home-space arguments and saved registers while moving the cookie and high frame data.
+94. Execute the complete no-fire caller through native history, rewind, and both restores. Verify current actor poses, corpse markers, cookie, return stack, and all saved GPR/XMM registers.
+95. A candidate that retains the old corpse-buffer address must fail actor restoration while remaining confined to owned memory.
+96. Keep language function-info, cleanup funclets, native unwind data, firing paths, live behavior, and runtime activation gated.
+
+Caller frame metadata
+97. Guard the complete caller unwind record, C++ function-info, state map, cleanup map, and leaf cleanup before metadata edits.
+98. Preserve native prolog offsets, pushed-register operations, handler identity, C++ state boundaries, and the low-frame cleanup object.
+99. Move the allocation, all eleven explicit saved-register offsets, and the cookie offset together. Preserve cookie-handler flag bits.
+100. Compare every caller instruction boundary with actual Windows virtual unwinding in owned storage, including partial prologs and the complete epilog.
+101. Reject unchanged allocation and unchanged save-offset metadata against the expanded frame. Delete every owned function-table registration.
+102. Keep actual C++ handler dispatch, firing paths, temporary stub handlers, saves, peers, and activation gated after this comparison.
+
+Owned caller exception dispatch
+103. Guard the complete captured GS+C++ handler, common cookie helper, probe, cleanup leaf, and their native unwind records before export.
+104. Execute the captured caller prolog and epilog in owned Windows storage. Replace only the body with an authored throw endpoint.
+105. Preserve the original language state transitions and cleanup object offset. Rebase language RVAs only for the owned fixture image.
+106. A real C++ exception must traverse the captured cookie handler, reach the fixture CRT language handler, run cleanup once, and reach the outer catch.
+107. Test both stock and expanded frames. Verify cookie checks, the cleanup object address and marker, all function-table deletions, and owned allocation release.
+108. An expanded frame with the old cookie word must exit with the fixture's refusal code before cleanup or catch.
+109. Do not admit the game's CRT, real caller body, firing paths, handler bridges, saves, or peers from an owned fixture with authored external endpoints.
