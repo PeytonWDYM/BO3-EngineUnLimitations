@@ -1,5 +1,5 @@
 #include "source/patches/clientfields/PendingProfile.h"
-#include "source/patches/clientfields/PendingStorage.h"
+#include "source/patches/clientfields/ClientfieldStorage.h"
 #include "PendingManifest.h"
 #include "source/patches/vm_startup/PausedPatch.h"
 #include "source/launch/preentry/Identity.h"
@@ -78,8 +78,8 @@ int wmain(int argc,wchar_t** argv) {
         const auto originalStock=vm_startup::ReadStopped(GetCurrentProcess(),stock,0x20008);
         std::uintptr_t rolledBack{};
         {
-            PendingStorage storage(GetCurrentProcess(),image);rolledBack=storage.Address();
-            Require(storage.Size()==524296,"The pending allocation size differs.");
+            ClientfieldStorage storage(GetCurrentProcess(),image);rolledBack=storage.Address();
+            Require(storage.Size()==kClientfieldStorageBytes,"The complete clientfield allocation size differs.");
             MEMORY_BASIC_INFORMATION memory{};
             Require(VirtualQuery(reinterpret_cast<void*>(storage.Address()),&memory,sizeof(memory))==sizeof(memory)
                 && memory.State==MEM_COMMIT && memory.Protect==PAGE_READWRITE
@@ -102,7 +102,7 @@ int wmain(int argc,wchar_t** argv) {
         Require(*pointer==stock && vm_startup::ReadStopped(GetCurrentProcess(),stock,0x20008)==originalStock,"The original callback backing changed.");
         std::uintptr_t committed{};
         {
-            PendingStorage storage(GetCurrentProcess(),image);committed=storage.Address();
+            ClientfieldStorage storage(GetCurrentProcess(),image);committed=storage.Address();
             auto edits=BuildPendingPlan(image,committed,admit());vm_startup::Receipt receipt;
             vm_startup::PausedPatch patch(GetCurrentProcess(),edits,receipt);patch.Apply();patch.Commit();storage.Commit();
         }

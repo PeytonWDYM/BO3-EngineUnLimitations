@@ -56,8 +56,8 @@ int wmain(int argc,wchar_t** argv) {
     try {
         Require(argc==4,"Use NativeAdmissionFixture <client-spans.bin> <server-spans.bin> <unknown.bin>.");
         LoadSpans(argv[1]);LoadSpans(argv[2]);
-        Require(bo3::enhanced::kClientTotal==250001 && bo3::enhanced::kNativeEdits==79,
-            "The fixture requires the default VM and callback capacity profile.");
+        Require(bo3::enhanced::kClientTotal==250001 && bo3::enhanced::kNativeEdits==90,
+            "The fixture requires the default VM and clientfield capacity profile.");
         auto* dos=reinterpret_cast<IMAGE_DOS_HEADER*>(headers.data());
         dos->e_magic=IMAGE_DOS_SIGNATURE;dos->e_lfanew=128;
         auto* pe=reinterpret_cast<IMAGE_NT_HEADERS64*>(headers.data()+128);

@@ -4,6 +4,7 @@
 
 Optional 500,000 server and 250,000 client script-variable slots for Steam Black Ops III Zombies.
 The launcher also expands each local client's pending clientfield callback queue from 2,048 to 8,192 entries.
+It expands the separate clientfield counter pool from 2,048 to 8,192 records.
 The launcher applies these patches in memory before the game allocates its script pools.
 The installer adds a reversible Steam launch option. Original game files stay unchanged.
 
@@ -32,7 +33,8 @@ This is a test release. Private Windows sessions reached Zombies with 500,000 se
 The callback queue passes native replay and Windows allocation tests.
 The owner loaded a Zombies map with AAE using the client250K/callback8192 candidate, ended the match, and closed BO3.
 Its startup receipt confirms all 1,158 native/checksum edits committed. That launcher did not persist its final exit code.
-The current launcher fixes final exit receipts. Full callback stress, high script IDs, saves, and peers remain unverified.
+The current launcher fixes final exit receipts and adds the separate 8,192-record counter pool.
+Full callback/counter stress, high script IDs, saves, and peers remain unverified.
 The actor limit retains its stock capacity while the expanded native actor patch is under development.
 Expanded host migration requires matching patched clients. Matching patches alone do not prove compatibility.
 
@@ -85,7 +87,7 @@ Captured native allocation and slot-codec replays exercise the larger capacities
 These checks do not establish game, save, peer, or migration compatibility.
 The default recipe and installer select 250,000 usable client slots.
 The recipe checks 40 client code guards and all 19 complete count instructions before writes.
-It keeps 500,000 usable server slots. The complete default recipe includes 79 native edits in the existing checksum transaction.
+It keeps 500,000 usable server slots. The complete default recipe includes 90 native edits in the existing checksum transaction.
 Startup receipts report the selected client capacity and required edit counts.
 The launcher retains the game lifetime and updates the receipt with its actual exit code after BO3 closes.
 `source/tests/launcher-lifetime/Test-GameExit.ps1` checks owned Windows children with zero and nonzero exits and receipt-write refusals.
@@ -117,7 +119,17 @@ The launcher refuses unexpected pointers, pending callbacks, or existing VM back
 Native storage and the checksum arena remain owned through rollback. Commit retains both before the job resumes.
 `source/tests/clientfields/Test-PendingCallbacks.py` checks 28 native replay cases, including full dispatch in both banks.
 `Test-PendingNative.ps1` checks 32 refusal cases, complete publication/rollback, original storage, and commit ownership with real Windows APIs.
-The pending queue does not change packed clientfield budgets, registered field counts, counter storage, or snapshot schemas.
+The pending queue does not change packed clientfield budgets, registered field counts, or snapshot schemas.
+
+The separate counter pool uses 8,192 native 24-byte records, with 196,608 bytes of complete backing storage.
+Eleven guarded edits relocate its base, end, final fallback record, diagnostic counts, and complete reset extent.
+The native counter consumer retains its packed-value behavior and per-frame increment limit.
+The full-table fallback retains stock behavior. It replaces the final record when diagnostics are disabled.
+The callback and counter pools share one 720,912-byte zeroed RW allocation.
+Their 29 edits join the native/checksum transaction. Startup receipts report both capacities and all 1,169 required edits.
+`source/tests/clientfields/Test-Counters.py` replays allocation, reuse, distinct pairs, fallback, counter wrapping, and reset.
+`Test-CountersNative.ps1` checks 26 refusals, publication, complete rollback, and commit ownership with real Windows APIs.
+These checks use owned memory. The current counter candidate still requires a manual Zombies test and high-counter stress.
 
 The 500-actor target requires coordinated native storage, codecs, and script limits:
 

@@ -1,12 +1,14 @@
 {
   "schemaVersion": 1,
-  "version": "0.3.0-test.3",
+  "version": "0.4.0-test.1",
   "status": "prerelease",
   "serverUsableSlots": 500000,
   "clientUsableSlots": 250000,
   "pendingCallbacksPerLocalClient": 8192,
+  "clientfieldCounters": 8192,
   "gameAllocationObserved": false,
   "callbackGameplayValidated": false,
+  "counterGameplayValidated": false,
   "multiplayerValidated": false,
   "protonSupported": false,
   "builds": [
@@ -15,7 +17,7 @@
       "gameSha256": "0b874dcc250848b7313ec13a0c76468dacc2009b5efa2bff4c587e169a9f77e0",
       "runtime": "windows",
       "files": {
-        "BO3-500K-Zombies.exe": "1f49f4499cf4e5b2f7d7450d163f9f1ea671c855049e20af0b3aa94f31f65581",
+        "BO3-500K-Zombies.exe": "8a32a22de1af1b25e59c697db3f29c827d80ccdb711e0bc38f911a275fa0a176",
         "Bo3EnhancedHelper.dll": "d90a3898d2145e952123651f2ebf5c4f376aa7fb1d0ec12568825270a5a6261c",
         "Bo3StartupGate.dll": "7bed6a07b7f8cc199bbddf4433c432def4987ccf52c4fa6c2e95bd5ae070a267",
         "Detours-LICENSE.md": "f854ae8aabc0404652b48a2b3bf7f21ec174c69d73f5596934c20884eb0639ef"

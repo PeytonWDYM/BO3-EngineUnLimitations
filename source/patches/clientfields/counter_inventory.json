@@ -1,0 +1,115 @@
+{
+  "executableSha256": "0b874dcc250848b7313ec13a0c76468dacc2009b5efa2bff4c587e169a9f77e0",
+  "captureSha256": "01d292edca086aeca406a9171feba2dac8aea80df2e867026ff78f441bab4511",
+  "imageSize": 494186496,
+  "poolRva": 68983856,
+  "stockCapacity": 2048,
+  "recordBytes": 24,
+  "instructions": [
+    {
+      "rva": 1258848,
+      "bytes": "488d0dc9660904",
+      "operandOffset": 3,
+      "operandSize": 4,
+      "kind": "pool",
+      "instruction": "lea rcx, [rip + 0x40966c9]"
+    },
+    {
+      "rva": 1258857,
+      "bytes": "41b800c00000",
+      "operandOffset": 2,
+      "operandSize": 4,
+      "kind": "bytes",
+      "instruction": "mov r8d, 0xc000"
+    },
+    {
+      "rva": 1260720,
+      "bytes": "488d05795f0904",
+      "operandOffset": 3,
+      "operandSize": 4,
+      "kind": "pool",
+      "instruction": "lea rax, [rip + 0x4095f79]"
+    },
+    {
+      "rva": 1260727,
+      "bytes": "488d0d721f0a04",
+      "operandOffset": 3,
+      "operandSize": 4,
+      "kind": "end",
+      "instruction": "lea rcx, [rip + 0x40a1f72]"
+    },
+    {
+      "rva": 1260809,
+      "bytes": "41b900080000",
+      "operandOffset": 2,
+      "operandSize": 4,
+      "kind": "capacity",
+      "instruction": "mov r9d, 0x800"
+    },
+    {
+      "rva": 1260830,
+      "bytes": "bd00080000",
+      "operandOffset": 1,
+      "operandSize": 4,
+      "kind": "capacity",
+      "instruction": "mov ebp, 0x800"
+    },
+    {
+      "rva": 1261060,
+      "bytes": "c744242000080000",
+      "operandOffset": 4,
+      "operandSize": 4,
+      "kind": "capacity",
+      "instruction": "mov dword ptr [rsp + 0x20], 0x800"
+    },
+    {
+      "rva": 1261088,
+      "bytes": "48893df11d0a04",
+      "operandOffset": 3,
+      "operandSize": 4,
+      "kind": "lastField",
+      "instruction": "mov qword ptr [rip + 0x40a1df1], rdi"
+    },
+    {
+      "rva": 1261095,
+      "bytes": "488935f21d0a04",
+      "operandOffset": 3,
+      "operandSize": 4,
+      "kind": "lastState",
+      "instruction": "mov qword ptr [rip + 0x40a1df2], rsi"
+    },
+    {
+      "rva": 1261102,
+      "bytes": "c705f01d0a0400000000",
+      "operandOffset": 2,
+      "operandSize": 4,
+      "kind": "lastCount",
+      "instruction": "mov dword ptr [rip + 0x40a1df0], 0"
+    },
+    {
+      "rva": 1261112,
+      "bytes": "488d05d91d0a04",
+      "operandOffset": 3,
+      "operandSize": 4,
+      "kind": "lastField",
+      "instruction": "lea rax, [rip + 0x40a1dd9]"
+    }
+  ],
+  "guards": [
+    {
+      "rva": 1258848,
+      "size": 20,
+      "sha256": "8945fbd89aa6a75546ec1320a59926b60bc883890d049460b88f04d686d58b41"
+    },
+    {
+      "rva": 1260704,
+      "size": 500,
+      "sha256": "68722c04c1f32ec2e0976cb8a35b5deb71f14508663cad73e9467dfe5f22a4fd"
+    },
+    {
+      "rva": 1262304,
+      "size": 224,
+      "sha256": "e89b4b35731e7b9526522d28aa5d311251cefd91a3049c19fd228562fa8e5c01"
+    }
+  ]
+}

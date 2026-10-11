@@ -16,12 +16,12 @@ try {
     $env:INCLUDE="$($compiler.FullName)/include;$sdkRoot/Include/$($sdk.Name)/um;$sdkRoot/Include/$($sdk.Name)/shared;$sdkRoot/Include/$($sdk.Name)/ucrt"
     $env:LIB="$($compiler.FullName)/lib/x64;$sdkRoot/Lib/$($sdk.Name)/um/x64;$sdkRoot/Lib/$($sdk.Name)/ucrt/x64"
     $flags=@('/nologo','/std:c++20','/EHsc','/W4','/WX','/MT','/O2',"/I$repo","/I$build","/I$repo/source/launch/enhanced")
-    $files=@('source/tests/clientfields/PendingNativeFixture.cpp','source/patches/clientfields/PendingProfile.cpp','source/patches/clientfields/PendingStorage.cpp','source/patches/vm_startup/PausedPatch.cpp','source/launch/enhanced/GameProfile.cpp','source/launch/preentry/Identity.cpp') | ForEach-Object {Join-Path $repo $_}
+    $files=@('source/tests/clientfields/PendingNativeFixture.cpp','source/patches/clientfields/PendingProfile.cpp','source/patches/clientfields/ClientfieldStorage.cpp','source/patches/vm_startup/PausedPatch.cpp','source/launch/enhanced/GameProfile.cpp','source/launch/preentry/Identity.cpp') | ForEach-Object {Join-Path $repo $_}
     $binary=Join-Path $target 'PendingNativeFixture.exe'
     & (Join-Path $compiler.FullName 'bin/Hostx64/x64/cl.exe') @flags @files "/Fo:$target/" "/Fe:$binary" /link bcrypt.lib /INCREMENTAL:NO /Brepro 2>&1 | Tee-Object -FilePath (Join-Path $target 'build.txt')
     if ($LASTEXITCODE -ne 0) {throw 'The callback native fixture build failed.'}
     & $binary $Spans | Tee-Object -FilePath (Join-Path $target 'result.json')
     if ($LASTEXITCODE -ne 0) {throw 'The callback native fixture failed.'}
-    $paths=@($files)+@($binary,$PSCommandPath,$Spans,(Join-Path $build 'PendingManifest.h'),(Join-Path $target 'result.json'))
+    $paths=@($files)+@($binary,$PSCommandPath,$Spans,(Join-Path $build 'PendingManifest.h'),(Join-Path $build 'CounterManifest.h'),(Join-Path $target 'result.json'))
     @{passed=$true;gameLaunches=0;files=@($paths | ForEach-Object {Get-FileHash -LiteralPath $_ | Select-Object Path,Hash})} | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $target 'receipt.json')
 } finally {$env:INCLUDE=$savedInclude;$env:LIB=$savedLib}

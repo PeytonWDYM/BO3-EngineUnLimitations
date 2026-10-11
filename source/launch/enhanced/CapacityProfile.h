@@ -4,9 +4,10 @@
 #include <string_view>
 
 namespace bo3::enhanced {
-// Every launcher build uses the same guarded VM and callback storage recipe.
+// Every launcher build uses the same guarded VM and clientfield storage recipe.
 inline constexpr std::uint32_t kClientTotal = 250001;
 inline constexpr std::uint32_t kPendingCallbacksPerLocalClient = 8192;
-inline constexpr std::size_t kNativeEdits = 79;
-inline constexpr std::string_view kCandidate = "0.3.0-test.3";
+inline constexpr std::uint32_t kClientfieldCounters = 8192;
+inline constexpr std::size_t kNativeEdits = 90;
+inline constexpr std::string_view kCandidate = "0.4.0-test.1";
 }

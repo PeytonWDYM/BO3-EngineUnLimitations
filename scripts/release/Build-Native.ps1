@@ -46,6 +46,8 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Client profile generation failed.' }
     & $Python -B (Join-Path $repo 'source/patches/clientfields/Generate-PendingProfile.py') --inventory (Join-Path $repo 'source/patches/clientfields/pending_inventory.json') --output (Join-Path $build 'PendingManifest.h')
     if ($LASTEXITCODE -ne 0) { throw 'Callback profile generation failed.' }
+    & $Python -B (Join-Path $repo 'source/patches/clientfields/Generate-CounterProfile.py') --inventory (Join-Path $repo 'source/patches/clientfields/counter_inventory.json') --output (Join-Path $build 'CounterManifest.h')
+    if ($LASTEXITCODE -ne 0) { throw 'Counter profile generation failed.' }
     & $Python -B (Join-Path $repo 'source/launch/job_startup/Generate-WaitProfile.py') --gate (Join-Path $build 'Bo3StartupGate.dll') --output (Join-Path $build 'GateWaitProfile.h')
     if ($LASTEXITCODE -ne 0) { throw 'Gate wait profile generation failed.' }
     & $Python -B (Join-Path $repo 'source/launch/job_startup/Generate-RuntimeProfile.py') --output (Join-Path $build 'RuntimeUnwindProfile.h')
@@ -67,11 +69,11 @@ try {
     $launcher+=@('Integration','Launcher') | ForEach-Object {Join-Path $repo "source/launch/early_startup/$_.cpp"}
     $launcher+=Join-Path $repo 'source/patches/early_integrity/Plan.cpp'
     $launcher += Join-Path $repo 'source/launch/enhanced/ClientProfile.cpp'
-    $launcher += @('PendingProfile','PendingStorage') | ForEach-Object {Join-Path $repo "source/patches/clientfields/$_.cpp"}
+    $launcher += @('PendingProfile','CounterProfile','ClientfieldStorage') | ForEach-Object {Join-Path $repo "source/patches/clientfields/$_.cpp"}
     & $compiler @flags /DBO3_JOB_STARTUP /DBO3_EARLY_STARTUP "/I$repo/source/patches/early_integrity" @launcher $library "/Fo:$build/" "/Fe:$build/BO3-500K-Zombies.exe" /link bcrypt.lib shell32.lib ole32.lib dbghelp.lib /OPT:REF /INCREMENTAL:NO /Brepro
     if ($LASTEXITCODE -ne 0) { throw '500K launcher compilation failed.' }
     Copy-Item -LiteralPath (Join-Path $DetoursRoot 'LICENSE.md') -Destination (Join-Path $build 'Detours-LICENSE.md')
     & $Python -B (Join-Path $repo 'source/launch/early_startup/Audit-Artifact.py') --directory $build
     if ($LASTEXITCODE -ne 0) { throw 'Native artifact audit failed.' }
-    @{status='unvalidated-source-build';gameSha256=$gameHash;serverUsableSlots=500000;clientTotal=250001;pendingCallbacksPerLocalClient=8192;nativeEdits=79;files=@(Get-ChildItem -LiteralPath $build -File | Where-Object Extension -in @('.exe','.dll') | Get-FileHash | Select-Object Path,Hash)} | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $build 'build-receipt.json') -Encoding utf8
+    @{status='unvalidated-source-build';gameSha256=$gameHash;serverUsableSlots=500000;clientTotal=250001;pendingCallbacksPerLocalClient=8192;clientfieldCounters=8192;nativeEdits=90;files=@(Get-ChildItem -LiteralPath $build -File | Where-Object Extension -in @('.exe','.dll') | Get-FileHash | Select-Object Path,Hash)} | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $build 'build-receipt.json') -Encoding utf8
 } finally { $env:INCLUDE=$savedInclude; $env:LIB=$savedLib }

@@ -11,7 +11,7 @@ $target = [IO.Path]::GetFullPath($Output)
 if ((Test-Path -LiteralPath $target) -or $target.Equals($repo, [StringComparison]::OrdinalIgnoreCase) -or $target.StartsWith($repo + '\', [StringComparison]::OrdinalIgnoreCase)) { throw 'Use a new output folder outside Git.' }
 $build = (Resolve-Path -LiteralPath $NativeBuild).Path
 $buildReceipt = Get-Content -LiteralPath (Join-Path $build 'build-receipt.json') -Raw | ConvertFrom-Json
-if ($buildReceipt.clientTotal -ne 250001 -or $buildReceipt.nativeEdits -ne 79) { throw 'Use the default VM and callback build.' }
+if ($buildReceipt.clientTotal -ne 250001 -or $buildReceipt.nativeEdits -ne 90) { throw 'Use the default VM and clientfield build.' }
 if ((Get-FileHash -LiteralPath $ClientSpans).Hash -ne 'A5E603E7B0A3519797262C86A91248A985596B6DF5C719EA14E04D5964FBF50C' -or (Get-FileHash -LiteralPath $ServerSpans).Hash -ne '2EC3591846D8710A920E0443F4A808AE1B7FDA5D7DE58BDBC49FF140761B9836') { throw 'Use the pinned client and normalized server guard spans.' }
 $vswhere = Join-Path ${env:ProgramFiles(x86)} 'Microsoft Visual Studio/Installer/vswhere.exe'
 $installation = & $vswhere -latest -products '*' -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath

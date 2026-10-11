@@ -18,11 +18,13 @@ def run(build: Path, executable: Path, output: Path) -> None:
     manifest = json.loads(release.read_text(encoding='utf-8'))
     profile = manifest['builds'][0]
     receipt = json.loads((build / 'build-receipt.json').read_text(encoding='utf-8-sig'))
-    assert receipt['clientTotal'] == 250001 and receipt['nativeEdits'] == 79
+    assert receipt['clientTotal'] == 250001 and receipt['nativeEdits'] == 90
     assert receipt['pendingCallbacksPerLocalClient'] == 8192
+    assert receipt['clientfieldCounters'] == 8192
     assert receipt['serverUsableSlots'] == 500000
     assert manifest['clientUsableSlots'] == 250000
     assert manifest['pendingCallbacksPerLocalClient'] == 8192
+    assert manifest['clientfieldCounters'] == 8192
     assert file_hash(executable) == profile['gameSha256']
     resources = output / 'resources'
     native = resources / 'native' / profile['id']

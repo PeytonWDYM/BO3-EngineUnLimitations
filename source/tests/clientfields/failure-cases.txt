@@ -13,3 +13,17 @@ Pending clientfield callback capacity, before implementation:
 11. Retain remote storage on commit. Restore code/data and release storage on refusal or rollback while the job stays frozen.
 12. Include every callback edit in the existing checksum transaction and report the active capacity. Do not claim packed-word, field-record, counter-pool, save, or peer capacity expansion.
 13. Keep native allocation ownership when checksum preparation adds its arena. Commit both resources before thaw. On failure, restore every edit before releasing either resource.
+
+Clientfield counter capacity, before implementation:
+
+14. Refuse changed complete reset, allocator, and counter-consumer guards. Refuse changed instruction bytes, unknown identities, or any existing native counter state before allocation.
+15. Replace all table references together: base, end, final fallback record, diagnostics, and reset extent. Keep the native 24-byte record layout and all packed word budgets.
+16. Replay native allocation at records 0, 2047, 2048, and 8191. Repeated field/state pairs must return the same record. Different pairs must remain separate.
+17. At 8192 occupied records, preserve the stock final-record fallback when diagnostics are disabled. Never write after the complete expanded table.
+18. Replay the native counter consumer for records above 2047, wrapping packed values and enforcing the field's per-frame increment limit. Preserve all unrelated state bits.
+19. Clear all 196608 counter bytes through the original reset entry. Preserve the adjacent callback allocation, source table, and both canaries. The old 49152-byte clear must fail.
+20. Own callback and counter storage in one complete 720912-byte zeroed RW allocation. Check native reach for every reference, including the last counter record.
+21. Publish all 29 callback/counter edits together in owned Windows memory. Restore every original byte before releasing storage on rollback. Retain complete storage on commit.
+22. Refuse missing guards, dirty first or last counter bytes, existing VM backing, invalid allocation intervals, image overlap, and unreachable references before publication.
+23. Supply all counter edits to the existing checksum exclusions. Report counter capacity and the new complete native edit count in the default startup receipt.
+24. These checks do not prove game, peer, save, or high-population behavior. Keep those claims separate from owned native replay and allocation results.

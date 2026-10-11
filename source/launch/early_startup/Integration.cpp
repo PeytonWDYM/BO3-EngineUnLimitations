@@ -52,6 +52,8 @@ void WriteReceipt(std::ostream& out,const Receipt& receipt) {
        <<",\"nativeEditsRequired\":"<<kNativeEdits
        <<",\"pendingCallbackCapacityPerLocalClient\":"<<enhanced::kPendingCallbacksPerLocalClient
        <<",\"pendingCallbackStorageBytes\":524296"
+       <<",\"clientfieldCounterCapacity\":"<<enhanced::kClientfieldCounters
+       <<",\"clientfieldCounterStorageBytes\":196608"
        <<",\"combinedEditsRequired\":"<<kNativeEdits+early_integrity::kPublicationCount
        <<",\"checksumReapplication\":false,\"aaeStoreSitesPreserved\":"<<(receipt.checksumAdmitted?"true":"false")<<'}';
     Require(out.good(),"Cannot write the early checksum receipt.");
