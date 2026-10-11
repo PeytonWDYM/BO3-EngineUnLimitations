@@ -56,8 +56,8 @@ int wmain(int argc,wchar_t** argv) {
     try {
         Require(argc==4,"Use NativeAdmissionFixture <client-spans.bin> <server-spans.bin> <unknown.bin>.");
         LoadSpans(argv[1]);LoadSpans(argv[2]);
-        Require(bo3::enhanced::kClientTotal==250001 && bo3::enhanced::kNativeEdits==61,
-            "The fixture requires the explicit experimental capacity profile.");
+        Require(bo3::enhanced::kClientTotal==250001 && bo3::enhanced::kNativeEdits==79,
+            "The fixture requires the default VM and callback capacity profile.");
         auto* dos=reinterpret_cast<IMAGE_DOS_HEADER*>(headers.data());
         dos->e_magic=IMAGE_DOS_SIGNATURE;dos->e_lfanew=128;
         auto* pe=reinterpret_cast<IMAGE_NT_HEADERS64*>(headers.data()+128);
@@ -97,11 +97,11 @@ int wmain(int argc,wchar_t** argv) {
         const auto server=bo3::enhanced::MakeGameProfile(bo3::enhanced::ExactGameManifest,500001);
         for(const auto& edit:server.edits)native.push_back({image+edit.rva,edit.original,edit.replacement});
         for(const auto& edit:profile.edits)native.push_back({image+edit.rva,edit.original,edit.replacement});
-        Require(native.size()==61,"The experimental native recipe does not contain 61 edits.");
+        Require(native.size()==61,"The VM and migration recipe does not contain 61 edits.");
         bo3::vm::NativeStateBindings bindings{};std::memcpy(&bindings,native[0].replacement.data(),sizeof(bindings));
         Require(bindings.total==500001 && bindings.clientTotal==250001,"The helper VM binding totals differ.");
         std::cout<<"{\"passed\":true,\"serverGuards\":82,\"clientGuards\":40,\"clientOriginals\":19,\"refusals\":"<<refused
-            <<",\"nativeEdits\":61,\"serverTotal\":500001,\"clientTotal\":250001,\"processWrites\":0,\"gameLaunches\":0}\n";
+            <<",\"vmAndMigrationEdits\":61,\"serverTotal\":500001,\"clientTotal\":250001,\"processWrites\":0,\"gameLaunches\":0}\n";
         return 0;
     }catch(const std::exception& error){std::cerr<<error.what()<<'\n';return 1;}
 }

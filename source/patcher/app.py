@@ -11,8 +11,9 @@ from patcher.errors import PatchError
 from patcher.steam_launch import SteamPlay
 from patcher.windows import steam_context, steam_installs
 
-VERSION = '0.3.0-test.1'
+VERSION = '0.3.0-test.2'
 NOTICE = ('500,000 server and 250,000 client script slots for Zombies. This is a test release. '
+          'The larger clientfield callback queue needs game testing. '
           'Multiplayer and host migration need validation. Proton is not supported yet.')
 
 

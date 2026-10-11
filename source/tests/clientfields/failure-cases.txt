@@ -1,0 +1,15 @@
+Pending clientfield callback capacity, before implementation:
+
+1. Refuse unknown executable identity, altered capture ranges, changed complete owner guards, and changed instruction bytes before export or publication.
+2. Expand both local-client banks from 2,048 to 8,192 records. Keep each record 32 bytes and keep the two counts after both banks.
+3. Allocate and verify all 524,296 bytes. Relocate both static base references. Preserve the adjacent schema and original buffer.
+4. Update both integer and float producers, bank shifts, count reads/writes, overflow comparisons, dispatch, diagnostic flush, initialization, and shutdown reset together.
+5. Replay native producers at entries 0, 2047, 2048, and 8191 in both banks. Refuse an 8192nd index before writing outside storage.
+6. Preserve the exact old/new values, field pointer, object number, local-client index, flags, and unused record bytes.
+7. Replay actual dispatch over both banks and confirm callback order and count reset. Do not alter the other bank.
+8. Verify initialization and shutdown clear the full expanded allocation and preserve the following canary.
+9. A count-only patch must fail the bank/record contract. Old counter offsets and old bank shifts must fail.
+10. Refuse an unexpected published backing pointer or pending callbacks before runtime allocation. Admit only zero or the original static pointer.
+11. Retain remote storage on commit. Restore code/data and release storage on refusal or rollback while the job stays frozen.
+12. Include every callback edit in the existing checksum transaction and report the active capacity. Do not claim packed-word, field-record, counter-pool, save, or peer capacity expansion.
+13. Keep native allocation ownership when checksum preparation adds its arena. Commit both resources before thaw. On failure, restore every edit before releasing either resource.

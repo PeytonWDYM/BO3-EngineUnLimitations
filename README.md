@@ -3,7 +3,8 @@
 # BO3 500K
 
 Optional 500,000 server and 250,000 client script-variable slots for Steam Black Ops III Zombies.
-The launcher applies both patches in memory before the game allocates its script pools.
+The launcher also expands each local client's pending clientfield callback queue from 2,048 to 8,192 entries.
+The launcher applies these patches in memory before the game allocates its script pools.
 The installer adds a reversible Steam launch option. Original game files stay unchanged.
 
 ## Install
@@ -28,6 +29,8 @@ The GUI retains `--game`, `--steam`, `--steam-user`, and `--state` options.
 ## Compatibility
 
 This is a test release. Private Windows sessions reached Zombies with 500,000 server and 250,000 client slots.
+The new callback queue passes native replay and Windows allocation tests. It still needs a manual game launch.
+The current combined candidate has no gameplay or peer validation.
 The actor limit retains its stock capacity while the expanded native actor patch is under development.
 Expanded host migration requires matching patched clients. Matching patches alone do not prove compatibility.
 
@@ -80,7 +83,7 @@ Captured native allocation and slot-codec replays exercise the larger capacities
 These checks do not establish game, save, peer, or migration compatibility.
 The default recipe and installer select 250,000 usable client slots.
 The recipe checks 40 client code guards and all 19 complete count instructions before writes.
-It keeps 500,000 usable server slots and includes all 61 native edits in the existing checksum transaction.
+It keeps 500,000 usable server slots. The complete default recipe includes 79 native edits in the existing checksum transaction.
 Startup receipts report the selected client capacity and required edit counts.
 The release installer checks the exact default payload hashes before staging these native files.
 
@@ -98,10 +101,19 @@ A new capture needs separate verification. The tools refuse other identities.
 Their output must stay outside Git.
 
 `source/tests/client-vm/Test-ClientAdmission.ps1` runs 146 refusal cases against pinned native guard spans.
-It also checks the complete 61-edit recipe and both helper pool capacities in owned memory.
+It also checks the 61 VM/migration edits and both helper pool capacities in owned memory.
 It requires the default native build and separate private client and normalized server span files.
 `source/tests/actor-pool/Test-LeafUnwind.ps1` checks the guarded leaf stubs with the Windows unwind APIs.
 Both tests produce repeatable result and source-hash receipts in new output folders.
+
+The callback queue uses two banks of 8,192 records with 524,296 bytes of complete, checked backing storage.
+Its 18 edits update both static references, both producers, bank offsets, overflow checks, dispatch, initialization, and shutdown.
+Seven complete native owner guards and all 17 instructions must match before allocation.
+The launcher refuses unexpected pointers, pending callbacks, or existing VM backing before allocating this storage.
+Native storage and the checksum arena remain owned through rollback. Commit retains both before the job resumes.
+`source/tests/clientfields/Test-PendingCallbacks.py` checks 28 native replay cases, including full dispatch in both banks.
+`Test-PendingNative.ps1` checks 32 refusal cases, complete publication/rollback, original storage, and commit ownership with real Windows APIs.
+The pending queue does not change packed clientfield budgets, registered field counts, counter storage, or snapshot schemas.
 
 The 500-actor target requires coordinated native storage, codecs, and script limits:
 
@@ -162,7 +174,7 @@ Missing frame translation fails the cookie check. An untranslated stub code loca
 The prototype remains outside game registration. All native owners, the game CRT, catch blocks, and collided unwind remain unverified.
 The existing plan's twenty handler sites use one GS-only handler across twelve native frame owners.
 Prepared recipes now guard both helper bodies and complete root metadata, including cookie words. Fifteen altered-owner or metadata cases refuse output.
-No 300-actor, expanded-entity, network-capacity, higher-round, or player-count patch is active here.
+No 500-actor, expanded-entity, reliable-command, gamestate, higher-round, or player-count patch is active here.
 No new engine performance claim applies to this source work.
 
 ## License

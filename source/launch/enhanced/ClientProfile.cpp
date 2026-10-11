@@ -9,7 +9,7 @@ namespace bo3::enhanced {
 vm_startup::Profile AdmitClientProfile(HANDLE process, std::uintptr_t image,
     const ClientManifest& client, std::uint32_t total) {
     Require(total == 250001 && client.counts.size() == 19 && client.guards.size() == 40,
-        "The exact experimental client250K inventory is required.");
+        "The exact client250K inventory is required.");
     auto guarded = ExactGameManifest;
     guarded.guards = client.guards;
     VerifyGameCode(process, image, guarded);
@@ -21,7 +21,7 @@ vm_startup::Profile AdmitClientProfile(HANDLE process, std::uintptr_t image,
     vm_startup::Profile result{ExactGameManifest.imageSize, 0x12df230, 0x5124680, 0x5124600, {}, {}};
     for (const auto& count : client.counts) {
         Require(count.size >= 5 && count.size <= count.bytes.size() && count.rva <= result.imageSize - count.size
-            && count.immediateOffset <= count.size - 4, "Invalid experimental client instruction.");
+            && count.immediateOffset <= count.size - 4, "Invalid client instruction.");
         std::uint32_t stock{};
         std::memcpy(&stock, count.bytes.data() + count.immediateOffset, sizeof(stock));
         Require(stock == 65000, "The original client count differs from stock.");

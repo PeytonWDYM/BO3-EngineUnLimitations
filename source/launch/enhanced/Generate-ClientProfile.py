@@ -1,4 +1,4 @@
-"""Generate the pinned client250K manifest for an explicit experimental build."""
+"""Generate the pinned client250K manifest for the default launcher."""
 import argparse
 import hashlib
 import json

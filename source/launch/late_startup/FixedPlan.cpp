@@ -3,9 +3,12 @@
 #include "GameManifest.h"
 #include "../enhanced/CapacityProfile.h"
 #include "ClientManifest.h"
+#include "../../patches/clientfields/PendingProfile.h"
+#include "../../patches/clientfields/PendingStorage.h"
 #include <algorithm>
 
 namespace bo3::late_startup {
+static_assert(enhanced::kPendingCallbacksPerLocalClient==clientfields::kPendingCapacity);
 PreparedPlan PrepareFixedPlan(HANDLE process,std::uintptr_t image,
     enhanced::MappedHelper& helper,const std::filesystem::path& helperFile) {
     constexpr std::uint32_t total=500001;
@@ -22,6 +25,7 @@ PreparedPlan PrepareFixedPlan(HANDLE process,std::uintptr_t image,
     const auto receiveSize=vm_startup::ReadStopped(process,image+0x16dbb640u,4);
     Require(std::all_of(receiveSize.begin(),receiveSize.end(),[](unsigned char value){return value==0;}),
         "Migration receive capacity already exists. Late activation refused.");
+    const auto callbacksPublished=clientfields::AdmitPendingCallbacks(process,image);
     const auto profile=enhanced::MakeGameProfile(manifest,total);
     for(const auto& check:profile.checks)
         Require(vm_startup::ReadStopped(process,image+check.rva,check.bytes.size())==check.bytes,
@@ -41,6 +45,10 @@ PreparedPlan PrepareFixedPlan(HANDLE process,std::uintptr_t image,
     result.edits.insert(result.edits.end(),std::make_move_iterator(migration.begin()),std::make_move_iterator(migration.end()));
     for(const auto& edit:profile.edits)result.edits.push_back({image+edit.rva,edit.original,edit.replacement});
     for(const auto& edit:client.edits)result.edits.push_back({image+edit.rva,edit.original,edit.replacement});
+    auto callbacks=std::make_shared<clientfields::PendingStorage>(process,image);
+    auto callbackEdits=clientfields::BuildPendingPlan(image,callbacks->Address(),callbacksPublished);
+    result.edits.insert(result.edits.end(),std::make_move_iterator(callbackEdits.begin()),std::make_move_iterator(callbackEdits.end()));
+    result.commitResources=[callbacks=std::move(callbacks)]() noexcept {callbacks->Commit();};
     Require(result.edits.size()==enhanced::kNativeEdits,"The selected native recipe is incomplete.");return result;
 }
 }
