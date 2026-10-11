@@ -5,11 +5,12 @@ import json
 from pathlib import Path
 import struct
 
-INVENTORY_SHA256 = 'ec1188ffb2be9f01c46b9ccfe624682a73f08095c452fa7f626e354f12c17a59'
+INVENTORY_SHA256 = 'ebef4676a7f935d93ea231adeec349ddad5d03de8fecdc3008898528c1875110'
 
 
 def generate(inventory_path: Path, output: Path) -> None:
-    raw = inventory_path.read_bytes()
+    # Git checkouts can change source line endings. Native guard digests remain exact binary digests.
+    raw = inventory_path.read_bytes().replace(b'\r\n', b'\n')
     if hashlib.sha256(raw).hexdigest() != INVENTORY_SHA256:
         raise ValueError('The client inventory differs from the reviewed exact-build profile.')
     inventory = json.loads(raw)

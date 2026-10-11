@@ -13,3 +13,4 @@ Experimental Windows client250K build cases, before recipe integration:
 11. Build both profiles and run the exact experimental profile in the authorized private game.
 12. Verify full client allocation, complete free chains, map load, map unload, and normal process exit.
 13. Do not infer high-ID script stress, saves, matching peers, or performance from a stock-map lifecycle.
+14. Admit the identical pinned source inventory with LF or CRLF lines. Refuse any other byte change before generated output.
