@@ -10,6 +10,7 @@ from leaf_frames import verify_leaves
 from leaf_unwind import prepare_leaf_phases
 from native_unwind import read_frame, active_operations
 from continuation_unwind import prepare_continuation_phases
+from native_handlers import prepare_native_handler
 
 
 def native_frames(code: CapturedCode) -> tuple[tuple[int,int,int], ...]:
@@ -65,6 +66,13 @@ def requirements(code: CapturedCode, edits: tuple[Rewrite, ...]) -> list[dict]:
                 'unwindBytes':extent,'unwindSha256':hashlib.sha256(native).hexdigest()},
                 requirement='Describe every stack phase and the complete original native frame. Added fixed allocations cannot use grouped CHAININFO alone.')
             frame = read_frame(code, owner)
+            if frame.has_handler:
+                handler = prepare_native_handler(code, frame)
+                record['preparedNativeHandler'] = {
+                    'kind': 'gs_only', 'imageBase': hex(handler.image_base), 'rootRuntime': [hex(value) for value in handler.runtime],
+                    'handlerAddress': hex(handler.handler_address), 'handlerDataAddress': hex(handler.handler_data_address),
+                    'prologBytes': handler.prolog_bytes, 'cookieOffset': handler.cookie_offset,
+                    'runtimeBindingVerified': False}
             phases = prepare_continuation_phases(edit, active_operations(frame, edit.guard.rva))
             lineage = []
             current = frame

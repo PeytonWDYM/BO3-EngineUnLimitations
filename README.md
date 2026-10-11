@@ -161,6 +161,8 @@ A separate bridge prototype passes owned Windows exception tests at temporary de
 Each depth covers stock and expanded frames, normal return, cleanup, outer catch, and native prolog handler suppression.
 Missing frame translation fails the cookie check. An untranslated stub code location skips C++ cleanup and triggers refusal.
 The prototype remains outside game registration. All native owners, the game CRT, catch blocks, and collided unwind remain unverified.
+The existing plan's twenty handler sites use one GS-only handler across twelve native frame owners.
+Prepared recipes now guard both helper bodies and complete root metadata, including cookie words. Fifteen altered-owner or metadata cases refuse output.
 No 300-actor, expanded-entity, network-capacity, higher-round, or player-count patch is active here.
 No new engine performance claim applies to this source work.
 

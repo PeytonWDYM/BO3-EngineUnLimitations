@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 import struct
 import sys
+from dataclasses import replace
 
 PATCHES = Path(__file__).resolve().parents[2] / 'patches/actor_pool'
 sys.path.insert(0, str(PATCHES))
@@ -13,10 +14,11 @@ from table_layout import TableLayout, NativeSentientAddress, ExternalTableAddres
 from storage_plan import StorageLayout
 from table_plan import prepare
 from unwind import native_frames
-from native_unwind import read_frame, active_operations, reference_image, stack_contract
+from native_unwind import NativeFrame, read_frame, active_operations, reference_image, stack_contract
 from continuation_unwind import prepare_continuation_phases
 from temporal_layout import TemporalLayout
 from temporal_restore import prepare_restore
+from native_handlers import prepare_native_handler
 import capstone
 
 
@@ -32,6 +34,39 @@ def run(module: Path, executable: Path, output: Path, include_temporal_restore: 
     if include_temporal_restore:
         edits += prepare_restore(code, TemporalLayout(layout.shape), code.base + 0x20180000)
     frames = native_frames(code)
+    handler_frames = [read_frame(code, owner) for owner in frames if owner[0] in
+                      (0x15147A0, 0x1646AB0, 0x16471A0, 0x1C3E150, 0x1C3E860, 0x24D2FC0,
+                       0x24EC870, 0x24F0BE0, 0x1C2F320, 0x24E7400, 0x24EA750, 0x24ED5F0)]
+    assert len(handler_frames) == 12
+    refusals = 0
+
+    def refuse(changed_code: CapturedCode, changed_frame: NativeFrame) -> None:
+        nonlocal refusals
+        try:
+            prepare_native_handler(changed_code, changed_frame)
+        except ValueError:
+            refusals += 1
+        else:
+            raise AssertionError('An unknown or altered native handler owner escaped refusal.')
+
+    first = handler_frames[0]
+    refuse(code, replace(first, runtime=(first.runtime[0] + 1, first.runtime[1], first.runtime[2])))
+
+    class ChangedCode(CapturedCode):
+        def read(self, rva: int, size: int) -> bytes:
+            raw = bytearray(super().read(rva, size))
+            if rva <= self.mutation < rva + size:
+                raw[self.mutation - rva] ^= 1
+            return bytes(raw)
+
+    for frame, mutation in [(first, 0x2BC3A04), (first, 0x2BC3A24),
+                            *((frame, frame.runtime[2] + 4 + ((code.read(frame.runtime[2], 4)[2] + 1) & ~1) * 2 + 4)
+                              for frame in handler_frames)]:
+        changed = object.__new__(ChangedCode)
+        changed.__dict__.update(code.__dict__)
+        changed.mutation = mutation
+        refuse(changed, frame)
+    assert refusals == 15
     expected = 79 if include_temporal_restore else 78
     data = bytearray(b'BO3NFUW1' + struct.pack('<I', expected))
     rows = []
@@ -42,6 +77,7 @@ def run(module: Path, executable: Path, output: Path, include_temporal_restore: 
         if owner is None:
             continue
         frame = read_frame(code, owner)
+        handler = prepare_native_handler(code, frame) if frame.has_handler else None
         operations = active_operations(frame, edit.guard.rva)
         reference, function, control = reference_image(code, frame, edit.guard.rva)
         stack, return_offset = stack_contract(operations)
@@ -83,6 +119,11 @@ def run(module: Path, executable: Path, output: Path, include_temporal_restore: 
                      'handlerOmittedForOwnedComparison': frame.has_handler,
                      'unscaledXmmPhasesNotRuntimeAdmitted': sum(phase.unscaled_xmm_phase for phase in phases),
                      'instructionBoundaryProbes': len(phases), 'nativeReturnOffset': return_offset})
+        if handler:
+            rows[-1]['nativeHandlerRecipe'] = {
+                'kind': 'gs_only', 'imageBase': hex(handler.image_base), 'runtime': [hex(value) for value in handler.runtime],
+                'handlerAddress': hex(handler.handler_address), 'handlerDataAddress': hex(handler.handler_data_address),
+                'prologBytes': handler.prolog_bytes, 'cookieOffset': handler.cookie_offset, 'runtimeBindingAllowed': False}
     if len(rows) != expected:
         raise ValueError('The guarded native continuation inventory is incomplete.')
     output.mkdir(parents=True)
@@ -90,9 +131,12 @@ def run(module: Path, executable: Path, output: Path, include_temporal_restore: 
     receipt = {'scope': 'Owned Windows native frame comparison only. Handler dispatch and game registration remain gated.',
                'continuations': rows, 'fixtureSha256': hashlib.sha256(data).hexdigest(),
                'includeTemporalRestore': include_temporal_restore,
+               'preparedNativeHandlerSites': sum('nativeHandlerRecipe' in row for row in rows),
+               'nativeHandlerAdmissionRefusals': refusals,
                'sourceFiles': {path.name: hashlib.sha256(path.read_bytes()).hexdigest()
                                for path in [PATCHES / 'native_unwind.py', PATCHES / 'continuation_unwind.py',
-                                            PATCHES / 'temporal_layout.py', PATCHES / 'temporal_restore.py', Path(__file__)]},
+                                            PATCHES / 'temporal_layout.py', PATCHES / 'temporal_restore.py',
+                                            PATCHES / 'native_handlers.py', PATCHES / 'native_handlers.json', Path(__file__)]},
                'moduleManifestSha256': hashlib.sha256(module.read_bytes()).hexdigest(), 'gameWrites': 0}
     (output / 'input-receipt.json').write_text(json.dumps(receipt, indent=2) + '\n')
     return {'output': str(output), 'continuations': len(rows), 'fixtureSha256': receipt['fixtureSha256']}

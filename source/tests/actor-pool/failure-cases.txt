@@ -147,3 +147,9 @@ Temporary handler bridge
 114. Reject a missing frame translation through the cookie refusal. Reject an unmodified stub code location through missing language cleanup.
 115. Verify normal returns, cleanup exactly once, the outer catch, and complete successful registration/allocation cleanup at each depth.
 116. Keep this prototype outside runtime registration. Matching game CRT behavior, collided unwind, native catch blocks, all native owners, partial game prologs and live behavior remain unverified.
+
+Native handler-owner admission
+117. Guard the full native handler, common helper, and complete root metadata including its cookie word before preparing a recipe.
+118. Admit only the twelve researched GS-only roots for the existing twenty continuation sites. Refuse an unknown owner or altered handler metadata.
+119. Preserve each original image base, root function, handler-data address, prolog extent, and cookie offset. Do not change the emitted actor-plan bytes.
+120. Distinguish the prepared owner recipe from verified live binding, complete owner-specific exception dispatch, and the separate C++ caller preparation.

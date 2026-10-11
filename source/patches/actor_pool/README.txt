@@ -141,6 +141,12 @@ Suppression runs skip all twenty native handler calls. Missing frame and code-lo
 Odd eight-byte depths use unscaled XMM save offsets and an adapter that preserves call alignment.
 Every successful run deletes eighteen function records and releases both owned code allocations.
 The prototype does not bind game handlers. The game CRT, native catches, collided unwind, and all owner-specific frame phases remain unverified.
+native_handlers.py guards the native GS-only handler, common helper, and twelve complete root metadata records including their cookie words.
+These roots cover all twenty handler sites in the existing continuation plan. The separate C++ temporal caller has a different contract.
+unwind.py exports each prepared root, prolog, image base, cookie offset, and handler-data address with runtime binding disabled.
+The native unwind export rejects an unknown owner, both changed helper bodies, and all twelve changed cookie words.
+Its 79-continuation Windows comparison still passes 1,834 contexts and 1,788 metadata refusals.
+The emitted actor-plan bytes remain unchanged. Prepared recipes do not establish actual owner-specific exception behavior.
 Test-NativeUnwind.ps1 -IncludeTemporalRestore adds the separate restore stub to the owned comparison.
 That run covers 79 continuations and 1,834 boundaries. The restore adds five contexts without temporary stack allocation.
 Continuation metadata must preserve the complete native frame and describe added stack phases.

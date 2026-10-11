@@ -1,0 +1,124 @@
+{
+  "schema": 1,
+  "scope": "Disabled GS-only native-owner recipes for twenty existing continuation sites. These do not admit runtime registration.",
+  "handler": {
+    "rva": "0x2bc3a04",
+    "size": 29,
+    "sha256": "53989c4a3df823fa742c0bebda04d4729c810916a7f81899cc2b885ae9c8997c"
+  },
+  "common": {
+    "rva": "0x2bc3a24",
+    "size": 99,
+    "sha256": "b17460e875c3ee6c6e0ea3ad52fa5c3b2d83c39f2a7a3547dcb87eb185dd1b0d"
+  },
+  "roots": [
+    {
+      "runtime": [
+        "0x15147a0",
+        "0x1514936",
+        "0x3146468"
+      ],
+      "size": 28,
+      "sha256": "e2789b54e5da05dc850ffa87c376ed851b323dd16304721d2a3f01d9d32c2bc6"
+    },
+    {
+      "runtime": [
+        "0x1646ab0",
+        "0x1646b7e",
+        "0x314dba0"
+      ],
+      "size": 32,
+      "sha256": "d0ef60693d580438d658dc0e14f8e192d1c26c5952e4f7717ff246b2ca85c5c3"
+    },
+    {
+      "runtime": [
+        "0x16471a0",
+        "0x1647274",
+        "0x314ddc8"
+      ],
+      "size": 20,
+      "sha256": "166954bbaee640ea6dba28d8b9540dd2c704be8ea00c93879e721dabb8a7e8fe"
+    },
+    {
+      "runtime": [
+        "0x1c3e150",
+        "0x1c3e198",
+        "0x3166c48"
+      ],
+      "size": 20,
+      "sha256": "28a90c90d91f5cfb68e56cfd730d3535dadc2a2f7282cdaece7060daf0dc40a0"
+    },
+    {
+      "runtime": [
+        "0x1c3e860",
+        "0x1c3e8b3",
+        "0x3166cd8"
+      ],
+      "size": 20,
+      "sha256": "1f4e3700c917f3274bdd80be80fb61029c4c78177de12df7315514115b2cebe5"
+    },
+    {
+      "runtime": [
+        "0x24d2fc0",
+        "0x24d30f1",
+        "0x31d103c"
+      ],
+      "size": 20,
+      "sha256": "bdf56271b94acc7d3b3d78e5786b2e91f953464c90d40e91334537b64c668c10"
+    },
+    {
+      "runtime": [
+        "0x24ec870",
+        "0x24ec8b6",
+        "0x31d1eb8"
+      ],
+      "size": 20,
+      "sha256": "313be85e87b41247ba21010dd781296732c5240a0c7a65f89b756e6f167d9b89"
+    },
+    {
+      "runtime": [
+        "0x24f0be0",
+        "0x24f0cbf",
+        "0x31d249c"
+      ],
+      "size": 20,
+      "sha256": "c7a6f832393abe2e4a95bb9caa0bc383276973d6ae635295a8900c05bc013eaa"
+    },
+    {
+      "runtime": [
+        "0x1c2f320",
+        "0x1c2f5e8",
+        "0x3166fe0"
+      ],
+      "size": 48,
+      "sha256": "9bd3241caf24ddbb575b888ad551b8186acedd1905b5963da55ebe69b07b62fe"
+    },
+    {
+      "runtime": [
+        "0x24e7400",
+        "0x24e743b",
+        "0x31d1d2c"
+      ],
+      "size": 48,
+      "sha256": "2679d0bb6901200eb353b9e9b86bd9ebc14100d24631ce8803e967e50274db51"
+    },
+    {
+      "runtime": [
+        "0x24ea750",
+        "0x24ea76f",
+        "0x31d20bc"
+      ],
+      "size": 24,
+      "sha256": "189da0ecdbd9aa339eca5446f8ad5e77b0f0a1b5c331190dc6a4f3acb1fb756b"
+    },
+    {
+      "runtime": [
+        "0x24ed5f0",
+        "0x24ed60f",
+        "0x31d2184"
+      ],
+      "size": 24,
+      "sha256": "189da0ecdbd9aa339eca5446f8ad5e77b0f0a1b5c331190dc6a4f3acb1fb756b"
+    }
+  ]
+}
