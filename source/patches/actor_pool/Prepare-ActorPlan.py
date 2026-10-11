@@ -17,6 +17,7 @@ from actor_wire import prepare_actor_wire
 from client_snapshots import ClientSnapshots,prepare_client_snapshots
 from client_snapshot_reset import prepare_client_snapshot_resets
 from client_reset_frames import emit_client_reset_frames
+from client_actors import ClientActors,prepare_client_actors
 
 
 def export_rewrites(output: Path,prefix: str,rewrites: tuple[Rewrite,...]) -> list[dict]:
@@ -47,10 +48,14 @@ def export(module: Path, executable: Path, output: Path, actors: int = 500) -> d
     snapshot_unwind = requirements(code,snapshot_edits)
     snapshot_resets = prepare_client_snapshot_resets(code,snapshots,code.base+0x201D0000)
     reset_assembly = emit_client_reset_frames(snapshot_resets)
+    # This root is an owned replay allocation. Discover and admit the actual native root before activation.
+    client_actors = ClientActors(code.base+0x30000000,code.base+0x32000000,layout.shape)
+    client_actor_edits = prepare_client_actors(code,client_actors)
     output.mkdir(parents=True)
     edits = export_rewrites(output,'stub',plan.rewrites)
     client_edits = export_rewrites(output,'snapshot-stub',snapshot_edits)
     reset_edits = export_rewrites(output,'snapshot-reset',tuple(frame.rewrite for frame in snapshot_resets))
+    client_actor_report = export_rewrites(output,'client-actor',client_actor_edits)
     template_file = output/'ClientResetTemplates.asm'
     template_file.write_text(reset_assembly,encoding='ascii')
     report = {'status':f'disabled_actor_{actors}_preparation','deploymentAllowed':False,'coverageComplete':False,
@@ -73,6 +78,12 @@ def export(module: Path, executable: Path, output: Path, actors: int = 500) -> d
                       'staticTemplateFile':template_file.name,'staticTemplateSha256':hashlib.sha256(template_file.read_bytes()).hexdigest(),
                       'staticPEFrames':[{'stubAddress':hex(frame.rewrite.stub_address),'codeBytes':len(frame.rewrite.stub),
                                         'unwindInfo':frame.unwind.hex(),'gameBindingVerified':False} for frame in snapshot_resets]}},
+              'clientActorPreparation':{'deploymentAllowed':False,'nativeRootVerified':False,
+                  'nativeRootKind':'authored_owned_replay','nativeRootAddress':hex(client_actors.native_base),
+                  'storageAddress':hex(client_actors.base),'storageBytes':client_actors.total_bytes,
+                  'clientStride':client_actors.client_stride,'localClients':2,'actorsPerLocalClient':actors,
+                  'actorRecordBytes':0xB00,'nativeActorOffset':client_actors.actor_offset,
+                  'rewrites':client_actor_report},
               'sourceFiles':{path.name:hashlib.sha256(path.read_bytes()).hexdigest()
                              for path in Path(__file__).parent.iterdir() if path.suffix in ('.py','.json','.txt')}}
     (output/'plan.json').write_text(json.dumps(report,indent=2)+'\n')

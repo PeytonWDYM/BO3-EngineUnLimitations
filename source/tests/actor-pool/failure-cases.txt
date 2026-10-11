@@ -234,3 +234,15 @@ Client snapshot reset ownership
 190. Preserve all nonvolatile registers through actual owned calls. Remove both helper lookups after DLL unload without dynamic function-table registration.
 191. Keep reset preparation outside activation until complete client actor storage, every snapshot copy path, connection ownership, native game execution, and peer behavior pass.
 192. Export both reset bodies, guards, independent frame metadata, and their static assembly together. Prepare every guarded stage before creating output. Check all combined native edits and complete code/storage intervals for overlaps.
+
+Client actor records and resource lifetime
+193. Preserve the native client-object stride and every non-actor member. Keep a complete, separate actor bank for each local client, with matching bank stride.
+194. Guard all forty verified base and folded first-record operands, their complete native owners, and original unwind chains before preparation. Do not treat obfuscated jump tables or RIP-relative displacements as actor members.
+195. Bind a fixed actor-region displacement only to an admitted native client root and complete external allocation. Refuse unknown native roots at runtime. The owned preparation is not runtime admission.
+196. Refuse overlapping native/external banks, image aliases, incomplete intervals, unaligned roots, noncanonical ends, or signed displacement overflow before exporting edits.
+197. Keep every original instruction width, register operand, branch location, and stack effect unchanged. Replay all forty changed operands for both local clients and boundary actor IDs.
+198. Check native record reads, writes, compares, and address calculations. Preserve the complete native client banks and all external bank canaries.
+199. Increase both resource creation and release loops with the record storage. Run complete captured loops for all actors and both clients, including repeat cycles and volatile-register clobbering at owned allocation/release endpoints.
+200. Release each created resource exactly once and clear its record pointer. Check the other client's resources and adjacent fields throughout the cycle.
+201. Retain native root/allocation discovery, full bank resets, flag consumers, whole callers, every derived actor pointer, saves/demos/migration, and peer behavior as activation requirements.
+202. Export client actor operands as a separate disabled stage. Label its original client root as an authored replay binding. Check the complete banks against all other code/storage intervals and every combined native edit before claiming a valid export.

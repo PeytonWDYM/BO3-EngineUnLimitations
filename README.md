@@ -231,6 +231,13 @@ All thirty instruction boundaries unwind correctly. Eight actual resets preserve
 Template refusals leave code intact, and both function lookups disappear after DLL unload without runtime registration.
 The exported plan includes both reset bodies and their static frame metadata. These remain outside installer activation.
 
+Separate client actor preparation relocates forty native base and folded member operands with their original instruction widths.
+Two complete actor banks retain the original client spacing, so these rewrites add no calls, stubs, or stack changes.
+Both resource loops expand together. The 500-actor replay passes 400 operand cases and four complete creation/release cycles.
+Each cycle creates and releases all 500 resources once, clears their pointers, and preserves the other client and complete bank canaries.
+Ninety-two changed-owner refusals and six address refusals pass. The 300-actor replay covers the same paths.
+The exported native client root is an authored replay binding. Actual root discovery, allocation, complete bank resets, and flag consumers remain unverified.
+
 Every remaining snapshot copy path, connection ring ownership, client actor storage, complete caller execution, and matching peers still need verification.
 No 500-actor, expanded-entity, reliable-command, gamestate, higher-round, or player-count patch is active here.
 No new engine performance claim applies to this source work.

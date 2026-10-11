@@ -1,4 +1,4 @@
-"""Check the complete guarded export, including both disabled client reset frames."""
+"""Check the complete guarded export, including client resets and actor operands."""
 import argparse
 import hashlib
 import json
@@ -27,18 +27,25 @@ def run(module: Path,executable: Path,output: Path,actors: int) -> dict:
     assert [frame['unwindInfo'] for frame in reset['staticPEFrames']]==['0107010007620000','0109010009620000']
     assembly=output/reset['staticTemplateFile']
     assert hashlib.sha256(assembly.read_bytes()).hexdigest()==reset['staticTemplateSha256']
-    edits=plan['rewrites']+plan['wirePreparation']['rewrites']+snapshots['rewrites']+reset['rewrites']
+    actor_banks=plan['clientActorPreparation']
+    assert actor_banks['deploymentAllowed'] is actor_banks['nativeRootVerified'] is False
+    assert actor_banks['nativeRootKind']=='authored_owned_replay' and len(actor_banks['rewrites'])==42
+    assert actor_banks['clientStride']==0x342720 and actor_banks['storageBytes']==2*0x342720
+    assert actor_banks['actorsPerLocalClient']==actors and actor_banks['actorRecordBytes']==0xB00
+    edits=plan['rewrites']+plan['wirePreparation']['rewrites']+snapshots['rewrites']+reset['rewrites']+actor_banks['rewrites']
     native=sorted((int(edit['rva'],0),int(edit['rva'],0)+edit['size']) for edit in edits)
-    assert len(native)==164 and all(left[1]<=right[0] for left,right in zip(native,native[1:]))
+    assert len(native)==206 and all(left[1]<=right[0] for left,right in zip(native,native[1:]))
     storage=[(int(region['address'],0),int(region['address'],0)+region['bytes']) for region in plan['storageRegions']]
     storage.append((int(snapshots['storageAddress'],0),int(snapshots['storageAddress'],0)+snapshots['storageBytes']))
+    storage.append((int(actor_banks['storageAddress'],0),int(actor_banks['storageAddress'],0)+actor_banks['storageBytes']))
+    original_clients=(int(actor_banks['nativeRootAddress'],0),int(actor_banks['nativeRootAddress'],0)+2*actor_banks['clientStride'])
     code=[]
     for edit in edits:
         if 'stubFile' not in edit:continue
         body=(output/edit['stubFile']).read_bytes()
         assert hashlib.sha256(body).hexdigest()==edit['stubSha256']
         address=int(edit['stubAddress'],0);code.append((address,address+len(body)))
-    intervals=sorted(storage+code)
+    intervals=sorted(storage+code+[original_clients])
     assert all(left[1]<=right[0] for left,right in zip(intervals,intervals[1:]))
     assert all(frame['gameBindingVerified'] is False for frame in reset['staticPEFrames'])
     result={'passed':True,'actors':actors,'nativeEdits':len(native),'storageRegions':len(storage),
