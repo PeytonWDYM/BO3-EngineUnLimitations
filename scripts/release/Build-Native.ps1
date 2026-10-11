@@ -1,5 +1,5 @@
 #Requires -Version 7.0
-param([Parameter(Mandatory)][string]$Output, [Parameter(Mandatory)][string]$DetoursRoot, [string]$Python='python')
+param([Parameter(Mandatory)][string]$Output, [Parameter(Mandatory)][string]$DetoursRoot, [string]$Python='python', [switch]$ExperimentalClient250K)
 $ErrorActionPreference='Stop'
 . (Join-Path $PSScriptRoot '../../source/launch/enhanced/PhysicalPath.ps1')
 $repo=PhysicalPath (Join-Path $PSScriptRoot '../..')
@@ -42,6 +42,10 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Native inventory merge failed.' }
     & $Python -B (Join-Path $repo 'source/launch/enhanced/Generate-GameProfile.py') --inventory (Join-Path $build 'merged-inventory.json') --output (Join-Path $build 'GameManifest.h')
     if ($LASTEXITCODE -ne 0) { throw 'Game profile generation failed.' }
+    if ($ExperimentalClient250K) {
+        & $Python -B (Join-Path $repo 'source/launch/enhanced/Generate-ClientProfile.py') --inventory (Join-Path $repo 'source/patches/client_vm/exact_build_inventory.json') --output (Join-Path $build 'ClientManifest.h')
+        if ($LASTEXITCODE -ne 0) { throw 'Experimental client profile generation failed.' }
+    }
     & $Python -B (Join-Path $repo 'source/launch/job_startup/Generate-WaitProfile.py') --gate (Join-Path $build 'Bo3StartupGate.dll') --output (Join-Path $build 'GateWaitProfile.h')
     if ($LASTEXITCODE -ne 0) { throw 'Gate wait profile generation failed.' }
     & $Python -B (Join-Path $repo 'source/launch/job_startup/Generate-RuntimeProfile.py') --output (Join-Path $build 'RuntimeUnwindProfile.h')
@@ -62,10 +66,17 @@ try {
     $launcher+=@('vm_startup/PausedPatch','vm_startup/NativePlan','vm_startup/NearRelay','vm_migration/MigrationPlan') | ForEach-Object {Join-Path $repo "source/patches/$_.cpp"}
     $launcher+=@('Integration','Launcher') | ForEach-Object {Join-Path $repo "source/launch/early_startup/$_.cpp"}
     $launcher+=Join-Path $repo 'source/patches/early_integrity/Plan.cpp'
-    & $compiler @flags /DBO3_JOB_STARTUP /DBO3_EARLY_STARTUP "/I$repo/source/patches/early_integrity" @launcher $library "/Fo:$build/" "/Fe:$build/BO3-500K-Zombies.exe" /link bcrypt.lib shell32.lib ole32.lib dbghelp.lib /OPT:REF /INCREMENTAL:NO /Brepro
+    $capacityFlags = @()
+    if ($ExperimentalClient250K) {
+        $capacityFlags += '/DBO3_EXPERIMENTAL_CLIENT_250K'
+        $launcher += Join-Path $repo 'source/launch/enhanced/ClientProfile.cpp'
+    }
+    & $compiler @flags @capacityFlags /DBO3_JOB_STARTUP /DBO3_EARLY_STARTUP "/I$repo/source/patches/early_integrity" @launcher $library "/Fo:$build/" "/Fe:$build/BO3-500K-Zombies.exe" /link bcrypt.lib shell32.lib ole32.lib dbghelp.lib /OPT:REF /INCREMENTAL:NO /Brepro
     if ($LASTEXITCODE -ne 0) { throw '500K launcher compilation failed.' }
     Copy-Item -LiteralPath (Join-Path $DetoursRoot 'LICENSE.md') -Destination (Join-Path $build 'Detours-LICENSE.md')
     & $Python -B (Join-Path $repo 'source/launch/early_startup/Audit-Artifact.py') --directory $build
     if ($LASTEXITCODE -ne 0) { throw 'Native artifact audit failed.' }
-    @{status='unvalidated-source-build';gameSha256=$gameHash;serverUsableSlots=500000;files=@(Get-ChildItem -LiteralPath $build -File | Where-Object Extension -in @('.exe','.dll') | Get-FileHash | Select-Object Path,Hash)} | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $build 'build-receipt.json') -Encoding utf8
+    $clientTotal = if ($ExperimentalClient250K) {250001} else {65000}
+    $nativeEdits = if ($ExperimentalClient250K) {61} else {42}
+    @{status='unvalidated-source-build';gameSha256=$gameHash;serverUsableSlots=500000;clientTotal=$clientTotal;nativeEdits=$nativeEdits;experimentalClient=[bool]$ExperimentalClient250K;files=@(Get-ChildItem -LiteralPath $build -File | Where-Object Extension -in @('.exe','.dll') | Get-FileHash | Select-Object Path,Hash)} | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $build 'build-receipt.json') -Encoding utf8
 } finally { $env:INCLUDE=$savedInclude; $env:LIB=$savedLib }

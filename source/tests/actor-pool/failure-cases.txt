@@ -1,0 +1,51 @@
+300 ACTOR / 340 SENTIENT PREPARATION FAILURE CASES
+
+Write these cases before implementation. Save replay results outside Git.
+
+Admission and storage
+1. Refuse an unknown executable hash, even when its PE timestamp matches.
+2. Refuse a changed captured range or a changed native instruction guard.
+3. Refuse overlapping, unaligned, wrapped, or unreachable storage addresses.
+4. Derive every actor count, sentient count, byte extent, and matrix stride from one shape.
+5. Preserve the native 0x2110 actor and 0x3088 sentient record strides.
+6. Include actors, secondary actors, sentients, both matrices, handle heads, and DObj pointers.
+7. Reject owner or target indices outside the matrix. Check 103, 104, 299, and 339.
+8. Do not truncate 300 or 340 into a signed imm8 comparison.
+9. Refuse activation while any native, save, unwind, startup, or peer gate remains open.
+
+Native instruction replay
+10. Keep unrelated registers, SIMD state, input flags, output flags, and the stack correct.
+11. Keep native sentient movement data unchanged when an external matrix member changes.
+12. Preserve each original memory operation, including folded producers and stolen instructions.
+13. Clear exactly one owner row at allocation and both matrices at map initialization.
+14. Preserve the native target-entry reset and the transient-table load reset.
+15. Reject actor allocation after 300 entries and sentient allocation after 340 entries.
+16. Construct and destroy exactly 300 actor records at their native stride.
+17. Redirect every proven DObj base and end reference. Include the cleanup count.
+18. Preserve iterator branch conditions when widening bounds to 300.
+19. Keep the actor-state stack arrays gated until their complete native frame is verified.
+20. Record the live admission scan and corpse-policy dependency separately.
+21. Preserve the sentinel64 instruction until the client and wire contract is verified.
+
+Activation gates
+22. Resolve all static, folded, returned-pointer, and cross-call table consumers.
+23. Keep legacy and VM-only saves at 64 actors, 104 sentients, and 64 secondary records.
+24. Admit a distinct combined save format before expanded native reads or writes.
+25. Preserve following save sections, attachments, import state, and migration framing.
+26. Register correct unwind metadata for each stub and preserve the complete native frame.
+27. Complete the startup storage transaction before native actor constructors run.
+28. Test actual Windows game, destruction, map reset, save, load, and matching peers.
+29. Do not describe Unicorn replay as Windows unwinding or game compatibility proof.
+30. Do not change FixedPlan, the installer, game files, or process memory in these tools.
+
+Owned Windows unwind
+31. Classify every original hook frame. A missing static pdata owner needs a verified leaf contract.
+32. Describe the stack before each stub instruction, including each temporary flag push and later restoration.
+33. Do not chain added PUSH or fixed stack allocations to a primary frame with a different allocation.
+34. Preserve caller nonvolatile registers and stack return addresses during RtlVirtualUnwind.
+35. Test prolog, body, restoration, return, and outgoing branch contexts in owned memory.
+36. Keep partial native prologs, native epilogs, dynamic frame tables, and unverified owners gated.
+37. Refuse frameless leaves that write any alias of a nonvolatile GPR, including BL, BH, and R12B.
+38. Refuse frameless leaves that write XMM6 through XMM15 or their wider register aliases.
+39. Refuse implicit vector clears and floating-point control changes with unclassified ABI effects.
+40. Refuse RET with a stack adjustment, far returns, privileged exits, and body fallthrough.

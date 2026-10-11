@@ -76,12 +76,38 @@ It preserves the stock client codec at 65,000 total slots and isolates client im
 The expanded client format uses its own identifier and contains no server player-root records.
 Captured native allocation and slot-codec replays exercise the larger capacities in owned memory.
 These checks do not establish game, save, peer, or migration compatibility.
-The production recipe and installer still select the stock client pool. Expanded client activation remains disabled.
+The default recipe and installer still select the stock client pool.
+
+An explicit developer build can select 250,000 usable client slots:
+
+```powershell
+pwsh -NoProfile -File scripts/release/Build-Native.ps1 -Output C:/private/bo3-client250K -DetoursRoot <Detours-v4.0.1-folder> -Python python -ExperimentalClient250K
+```
+
+Use this build only in a private game copy.
+The experimental recipe checks 40 client code guards and all 19 complete count instructions before writes.
+It keeps 500,000 usable server slots and includes all 61 native edits in the existing checksum transaction.
+Startup receipts report the selected client capacity and required edit counts.
+The release installer refuses these unapproved native payloads.
+
+Three private Windows runs allocated the full 16,000,064-byte client pool and loaded Shadows of Evil.
+One run used the explicit developer build from this source. Two runs used its preceding private prototype.
+Complete free chains passed before the map, during the map, and after return to the lobby.
+All three processes exited normally. Native arena checks confirmed the complete pool and fixed 65,536-bucket hash allocations.
+These runs used about 40,000 live client slots. They did not stress script IDs above the stock limit.
+High-ID script stress, complete native saves, companion ownership, and matching peers remain unverified.
+The experimental profile does not raise the actor or player limit.
 
 `source/patches/client_vm/exact_build_inventory.json` records the 19 client count instructions and their code guards.
 The replay tools require the pinned private capture and exact-build executable used for this audit.
 A new capture needs separate verification. The tools refuse other identities.
 Their output must stay outside Git.
+
+`source/tests/client-vm/Test-ClientAdmission.ps1` runs 146 refusal cases against pinned native guard spans.
+It also checks the complete 61-edit recipe and both helper pool capacities in owned memory.
+It requires the explicit developer build and separate private client and normalized server span files.
+`source/tests/actor-pool/Test-LeafUnwind.ps1` checks the guarded leaf stubs with the Windows unwind APIs.
+Both tests produce repeatable result and source-hash receipts in new output folders.
 
 The 300-zombie goal requires more than a larger actor allocation:
 
@@ -99,6 +125,11 @@ A native replay proves that sentient index 104 overwrites movement data in the s
 Index 299 writes beyond the stock sentient record.
 Changing the actor count or relocating only the outer sentient pool cannot support 300 actors.
 External awareness tables can preserve the native record stride, but their complete consumers and save format remain unverified.
+`source/patches/actor_pool` prepares a disabled 300-actor and 340-sentient plan with seven storage regions.
+Its 152 guarded rewrites and 95 stubs preserve the native actor and sentient record strides.
+Native replays cover matrix operations, actor construction and cleanup, DObj storage, and iterator bounds.
+Owned Windows tests verify stack unwinding at 352 instruction boundaries across seventeen leaf stubs.
+The 78 native frame continuations, temporal history, combined saves, and matching client replication still block activation.
 No 300-actor, expanded-entity, network-capacity, higher-round, or player-count patch is active here.
 No new engine performance claim applies to this source work.
 

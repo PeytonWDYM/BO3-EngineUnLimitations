@@ -67,6 +67,9 @@ jobs:
       - name: Rebuild and audit the native launcher
         shell: pwsh
         run: ./scripts/release/Build-Native.ps1 -Output (Join-Path $env:RUNNER_TEMP 'native-build') -DetoursRoot (Join-Path $env:RUNNER_TEMP 'Detours') -Python python
+      - name: Build the explicit experimental client250K profile
+        shell: pwsh
+        run: ./scripts/release/Build-Native.ps1 -Output (Join-Path $env:RUNNER_TEMP 'client250K-build') -DetoursRoot (Join-Path $env:RUNNER_TEMP 'Detours') -Python python -ExperimentalClient250K
       - name: Test expanded state and migration transactions
         shell: pwsh
         run: |
@@ -80,6 +83,8 @@ jobs:
           path: |
             ${{ runner.temp }}/native-build/artifact-audit.json
             ${{ runner.temp }}/native-build/build-receipt.json
+            ${{ runner.temp }}/client250K-build/artifact-audit.json
+            ${{ runner.temp }}/client250K-build/build-receipt.json
             ${{ runner.temp }}/state-tests/result.json
             ${{ runner.temp }}/client-state-tests/receipt.json
             ${{ runner.temp }}/migration-tests/result.json

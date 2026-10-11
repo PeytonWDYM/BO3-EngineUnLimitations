@@ -1,9 +1,10 @@
 #pragma once
 #include "../job_startup/Coordinator.h"
 #include "../../patches/early_integrity/Plan.h"
+#include "../enhanced/CapacityProfile.h"
 
 namespace bo3::early_startup {
-inline constexpr std::size_t kNativeEdits=42;
+using enhanced::kNativeEdits;
 inline constexpr std::string_view kStartupMethod="late-crt-job-freeze-early-checksum";
 struct Receipt {
     job_startup::Receipt job;

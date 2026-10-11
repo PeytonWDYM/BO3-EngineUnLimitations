@@ -12,7 +12,7 @@ void Coordinate(late_startup::OwnedChild& child,job_startup::OwnedJob& job,late_
     const auto combined=[&](HANDLE process,std::uintptr_t image,vm_startup::Receipt& patchReceipt) {
         auto plan=prepare(process,image,patchReceipt);
         Require(plan.edits.size()==kNativeEdits && plan.relay && !plan.commitResources,
-            "The original complete 42-edit native recipe is required.");
+            "The selected complete native recipe is required.");
         auto checksum=[&] {
             try {
 #ifdef BO3_EARLY_OWNED_TEST

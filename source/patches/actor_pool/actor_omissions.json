@@ -1,0 +1,111 @@
+{
+  "status": "Owned replay preparation. No activation.",
+  "sites": [
+    {
+      "rva": "0x19c39b0",
+      "size": 7,
+      "role": "actor_dobj_cleanup_base",
+      "sha256": "3ea7709aebf32a8888b8aa295fc425a744e48187a198dcd5f1faa21f1446c657",
+      "status": "prepared"
+    },
+    {
+      "rva": "0x19c39b7",
+      "size": 5,
+      "role": "actor_dobj_cleanup_count",
+      "sha256": "2b3a6ecec9cd756cffe7dbb660ba418e78983750d2c5c3a85c8c00f20db1e488",
+      "status": "prepared"
+    },
+    {
+      "rva": "0x19e131d",
+      "size": 7,
+      "role": "actor_dobj_setup_base",
+      "sha256": "b041f1b75234d07d05c27cb9980a59f073ec1bef27a826b3a3ade3708c751aae",
+      "status": "prepared"
+    },
+    {
+      "rva": "0x19e132a",
+      "size": 7,
+      "role": "actor_dobj_setup_end",
+      "sha256": "7e13e981905ccd5e5ece7e6ccae91aab64663c3b28cd7f645f32027b2cdbc277",
+      "status": "prepared"
+    },
+    {
+      "rva": "0x24b5ec4",
+      "size": 7,
+      "role": "actor_dobj_lookup_base",
+      "sha256": "88475bc8c6c43182162b69cc712703cbf883eeac7db3a251bffd745b94c349aa",
+      "status": "prepared"
+    },
+    {
+      "rva": "0x24ae625",
+      "size": 7,
+      "role": "actor_dobj_destructor_lookup",
+      "sha256": "abcd81246e7434f28d80a0b8613aeb9421ef49f7fe9bbd738b9e5abc226e061d",
+      "status": "prepared"
+    },
+    {
+      "rva": "0x24ae77f",
+      "size": 8,
+      "role": "entity_actor_index_sentinel64",
+      "sha256": "4db7fbfb7a4eddc1c61528408d7a578d2c5ccffe5ccbc0fd4f8bc64d0defde21",
+      "status": "blocked",
+      "reason": "Sentinel and entity-state actorNum/clonedFromActorNum client contracts remain unverified."
+    },
+    {
+      "rva": "0x24ac9ab",
+      "size": 6,
+      "role": "actor_iterator",
+      "sha256": "da1f23c0265dcdb2982d46c164dd07b57c36527c6de135d6116d13f5eeba416d",
+      "status": "prepared",
+      "branchTargetRva": "0x24ac984",
+      "condition": 140
+    },
+    {
+      "rva": "0x24aca19",
+      "size": 6,
+      "role": "actor_iterator",
+      "sha256": "2840afdf6d9123db10079a0df14536bc7e6b9ff1acc61784f78856551fc98ab4",
+      "status": "prepared",
+      "branchTargetRva": "0x24aca83",
+      "condition": 141
+    },
+    {
+      "rva": "0x24aca5b",
+      "size": 6,
+      "role": "actor_iterator",
+      "sha256": "db5e9699a61f1659a29eaf820d3963a8d9db53a6a9ca8d0d6368dae0aecc6ec7",
+      "status": "prepared",
+      "branchTargetRva": "0x24aca30",
+      "condition": 140
+    },
+    {
+      "rva": "0x1bf9a98",
+      "size": 3,
+      "role": "actor_state_loop64",
+      "sha256": "e33ed4b0c4bafe7f668d96dd0db7daa4b58d995229fcdfddd12d6dff065564d9",
+      "status": "blocked",
+      "reason": "Temporal actor transforms require complete output, history producer, restoration reader, and native stack expansion. A larger count alone corrupts the stack arrays.",
+      "nativeOwnerBeginRva": "0x1bf9940",
+      "nativeOwnerEndRva": "0x1bf9bc9",
+      "sampleProducerRva": "0x1bfde70",
+      "outputBytesStock": 1600,
+      "separateCorpsePathRva": "0x1bf9bd0"
+    },
+    {
+      "rva": "0x1b75de2",
+      "size": 4,
+      "role": "live_actor_admission_groups",
+      "sha256": "d33a3b4ddc55343088b1140231103101a58c6290454cdc57325a9bab51faa904",
+      "status": "prepared",
+      "limit": "Expands the actor scan only. Corpse capacity and global admission policy remain stock and unadmitted."
+    },
+    {
+      "rva": "0x19e13ee",
+      "size": 7,
+      "sha256": "08a942281ccade8586d114f9f4e66de493730ce77f13b878797ee8afad7dd2ae",
+      "role": "adjacent_static_array_boundary",
+      "status": "prepared",
+      "reason": "Restore r14 to native a588868 before the unrelated six-entry 0xee8-stride array loop."
+    }
+  ]
+}

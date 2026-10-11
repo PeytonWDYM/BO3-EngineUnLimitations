@@ -125,9 +125,10 @@ void Coordinate(late_startup::OwnedChild& child,OwnedJob& job,late_startup::Mapp
 }
 void WriteReceipt(std::ostream& out,const Receipt& r,std::string_view method) {
     const auto yes=[](bool value){return value?"true":"false";};
-    out<<"{\"schema\":1,\"candidate\":\"0.1.0-test.3\",\"startupMethod\":";JsonPath(out,std::wstring(method.begin(),method.end()));
+    out<<"{\"schema\":1,\"candidate\":\""<<enhanced::kCandidate<<"\",\"startupMethod\":";JsonPath(out,std::wstring(method.begin(),method.end()));
     out
-       <<",\"serverTotal\":500001,\"serverUsable\":500000,\"clientTotal\":65000,\"clientRoots\":18,\"stockClientRoots\":8,\"migrationBufferBytes\":33554432"
+       <<",\"serverTotal\":500001,\"serverUsable\":500000,\"clientTotal\":"<<enhanced::kClientTotal
+       <<",\"clientRoots\":18,\"stockClientRoots\":8,\"migrationBufferBytes\":33554432"
        <<",\"processId\":"<<r.processId<<",\"processCreatedFileTime\":"<<r.created<<",\"primaryThreadId\":"<<r.primaryThreadId
        <<",\"imagePath\":";JsonPath(out,r.image);
     out<<",\"executableSha256\":\""<<kGameHash<<"\",\"helperSha256\":\""<<kHelperHash<<"\",\"gateSha256\":\""<<kGateHash<<'"'
