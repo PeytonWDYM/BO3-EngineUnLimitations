@@ -29,8 +29,10 @@ The GUI retains `--game`, `--steam`, `--steam-user`, and `--state` options.
 ## Compatibility
 
 This is a test release. Private Windows sessions reached Zombies with 500,000 server and 250,000 client slots.
-The new callback queue passes native replay and Windows allocation tests. It still needs a manual game launch.
-The current combined candidate has no gameplay or peer validation.
+The callback queue passes native replay and Windows allocation tests.
+The owner loaded a Zombies map with AAE using the client250K/callback8192 candidate, ended the match, and closed BO3.
+Its startup receipt confirms all 1,158 native/checksum edits committed. That launcher did not persist its final exit code.
+The current launcher fixes final exit receipts. Full callback stress, high script IDs, saves, and peers remain unverified.
 The actor limit retains its stock capacity while the expanded native actor patch is under development.
 Expanded host migration requires matching patched clients. Matching patches alone do not prove compatibility.
 
@@ -85,6 +87,8 @@ The default recipe and installer select 250,000 usable client slots.
 The recipe checks 40 client code guards and all 19 complete count instructions before writes.
 It keeps 500,000 usable server slots. The complete default recipe includes 79 native edits in the existing checksum transaction.
 Startup receipts report the selected client capacity and required edit counts.
+The launcher retains the game lifetime and updates the receipt with its actual exit code after BO3 closes.
+`source/tests/launcher-lifetime/Test-GameExit.ps1` checks owned Windows children with zero and nonzero exits and receipt-write refusals.
 The release installer checks the exact default payload hashes before staging these native files.
 
 Three private Windows runs allocated the full 16,000,064-byte client pool and loaded Shadows of Evil.
@@ -179,6 +183,12 @@ Missing frame translation fails the cookie check. An untranslated stub code loca
 The prototype remains outside game registration. All native owners, the game CRT, catch blocks, and collided unwind remain unverified.
 The existing plan's twenty handler sites use one GS-only handler across twelve native frame owners.
 Prepared recipes now guard both helper bodies and complete root metadata, including cookie words. Fifteen altered-owner or metadata cases refuse output.
+The temporal save preparation writes the full selected history through the existing native stream-call location.
+Owned replay covers twelve write/import cases, preserves the following counter, and rejects a stale stock history extent.
+Legacy import preserves all twenty stock rows and initializes unused actors for both expanded shapes.
+Six address/guard and eight import refusals pass. Stream endpoints are authored. Root save binding and native compression remain unverified.
+The history reset preparation preserves the original complete level clear and clears all expanded rows afterward.
+Six repeated-reset replay cases and ten admission refusals pass for both shapes. Native memset and live registration remain unverified.
 No 500-actor, expanded-entity, reliable-command, gamestate, higher-round, or player-count patch is active here.
 No new engine performance claim applies to this source work.
 

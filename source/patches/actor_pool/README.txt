@@ -183,5 +183,24 @@ Each run refuses a stale cookie. Bridge depths also refuse missing frame transla
 Suppression runs preserve the native incomplete-prolog rule. Successful runs release all owned function records and code allocations.
 Actual game CRT, all native owners, and live registration remain unverified.
 
+temporal_save.py prepares the complete actor-history writer section without changing the owning frame.
+It retains the stream call at native RVA 0x1166C3 and preserves RBX for the following stock corpse-history section.
+The expanded write uses 156,080 bytes at 300 actors and 260,080 bytes at 500 actors, followed by the unchanged counter.
+The legacy importer consumes exactly 33,360 bytes and preserves all twenty stock rows, including raw vector and timestamp bits.
+It initializes every unused actor and preserves the following input section.
+Internal HistoryFormat values require separately admitted root context. They are not assigned save identifiers.
+Test-TemporalSave.py checks twelve native section/write/import cases, eight import refusals, and six address/guard refusals.
+The native stock writer runs both aligned and unaligned inline copies and the near-full general write path.
+The prepared writer uses an authored stream endpoint. Native compression, root header binding, complete attachments, and game saves remain unverified.
+These save preparations remain outside table_plan.py and the default launcher.
+
+temporal_reset.py preserves the complete 0x23A10-byte native level clear and adds the selected external history clear.
+The called stub returns the original level address and uses an independent 40-byte frame.
+Its ALLOC_SMALL40 metadata needs actual Windows verification and live registration before activation.
+Test-HistoryReset.py checks six stock, expanded, and rejected stale-extent cases with two resets each.
+Both expanded shapes clear the complete history, preserve allocation canaries, and retain nonvolatile registers and stack alignment.
+Ten altered-guard, invalid-address, overlap, and reach refusals pass. The memset endpoint is authored.
+The direct reference audit identifies the original level reset. Computed reset consumers and actual map transitions remain unverified.
+
 provenance.json records the owner's authorized local AAE prototype and original source hashes.
 This directory contains Python source and address/hash contracts. It contains no game executable or extracted game bodies.

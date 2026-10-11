@@ -174,3 +174,17 @@ Native handler-owner admission
 136. Run the 500-actor caller through actual Windows C++ exceptions with the captured cookie-handler bridge at temporary depths 0, 8, 16, 24, 32, and 40.
 137. Verify the 26,736-byte caller frame, complete cookie translation, cleanup once, outer catch, and normal return for every selected temporary depth.
 138. Preserve all earlier stale-cookie, frame-translation, and code-location refusal cases. Keep actual game CRT and runtime registration checks separate.
+139. Write the complete selected temporal history through the guarded native section. Preserve the following counter and separate stock corpse-history section.
+140. Exercise native inline and general stream-write paths. Preserve register RBX for the following stock section, including large and near-full buffers.
+141. Import all twenty stock history rows into 300- and 500-actor layouts. Preserve vector bytes, state, validity, timestamp bits, and zero every unused actor.
+142. Consume the admitted input extent exactly. Legacy input uses 33,360 history bytes. Expanded input uses its selected shape extent. Preserve following section bytes.
+143. Refuse unknown formats, mismatched shapes, and truncated history before changing the destination. Keep the outer save-format gate separate and required.
+144. Refuse altered native writer guards and incomplete, unaligned, overlapping, or unreachable destination addresses before export.
+145. Compare stock native writer output with the prepared writer and reject a stale stock history extent at 500 actors.
+146. Keep the temporal save preparation outside activation until the root format, complete native actor attachments, and actual saves and migration pass.
+147. Keep the temporal stream call at its original native instruction address. Do not move a potentially throwing call across the native language-state map.
+148. Preserve the complete original 0x23A10-byte level clear at 0x19D161C. Clear the full external temporal history after that original operation.
+149. Reset both 300- and 500-actor histories on repeated map initialization. Preserve the counter reset, both allocation canaries, and native memset return value.
+150. Reject a stale 33,360-byte external reset at the 500-actor shape. A larger recorder must never reuse uncleared high-index rows.
+151. Refuse changed native reset guards, overlapping storage/stub intervals, invalid addresses, and unreachable calls before output.
+152. Emit the called reset stub with an independent 40-byte frame. Keep its function-table registration and actual Windows/game reset validation required.

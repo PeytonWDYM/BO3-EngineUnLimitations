@@ -8,5 +8,5 @@ namespace bo3::enhanced {
 inline constexpr std::uint32_t kClientTotal = 250001;
 inline constexpr std::uint32_t kPendingCallbacksPerLocalClient = 8192;
 inline constexpr std::size_t kNativeEdits = 79;
-inline constexpr std::string_view kCandidate = "0.3.0-test.2";
+inline constexpr std::string_view kCandidate = "0.3.0-test.3";
 }

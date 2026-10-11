@@ -1,0 +1,7 @@
+Launcher exit receipt cases, written before the lifetime change.
+1. Keep the launcher alive until its owned child exits. Never record a final code while the child is active.
+2. Persist exited=true, the actual child exit code, and stage=exited for both zero and nonzero exits.
+3. Preserve startup commitment, edit counts, release state, and termination state in the final receipt.
+4. Refuse a failed process wait without inventing an exit code or calling the final receipt writer.
+5. Propagate a receipt-write error after the child exits. Do not reset the known child exit state.
+6. Close all fixture process/thread handles. Produce repeatable JSON and source-hash artifacts outside Git.

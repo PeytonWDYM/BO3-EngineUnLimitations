@@ -4,6 +4,7 @@
 #include "../enhanced/LaunchLease.h"
 #include "../preentry/Identity.h"
 #include "BuildIdentity.h"
+#include "GameLifetime.h"
 #include <array>
 #include <iostream>
 
@@ -34,8 +35,7 @@ int wmain(int argc,wchar_t** argv) {
         try {bo3::early_startup::Coordinate(child,job,gate,prepare,kVerifiedGameDigest,receipt);report.Write(receipt);}
         catch(...) {report.Write(receipt);throw;}
         std::wcout<<L"500K startup patch committed. Load full AAE and select Zombies. Receipt: "<<report.Path().wstring()<<L'\n';
-        Require(WaitForSingleObject(child.process.hProcess,INFINITE)==WAIT_OBJECT_0,"Cannot retain the owned game lifetime.");
-        DWORD exit{};Require(GetExitCodeProcess(child.process.hProcess,&exit),"Cannot read the owned game exit code.");
+        const auto exit=bo3::early_startup::RecordGameExit(child.process.hProcess,receipt.job,[&]{report.Write(receipt);});
         return static_cast<int>(exit);
     }catch(const std::exception& error){std::cerr<<error.what()<<'\n';return 2;}
 }

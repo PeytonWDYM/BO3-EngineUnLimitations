@@ -1,5 +1,5 @@
 {
-  "status": "admission_contract_only_not_implemented",
+  "status": "root_admission_contract_with_owned_temporal_section_preparation",
   "wireVersionAssigned": false,
   "families": [
     {
@@ -56,7 +56,7 @@
     "Retain native conditional prefixes, raw record widths, descriptors, variable attachments, secondary tags 0x26/0x27 and the following section position.",
     "Validate the shape before native load callbacks and prevent format switching or reentrant competing load contexts.",
     "Expand the raw temporal-history section read at 0xFF76C and written in the 0x11669E block. It contains twenty 0x684-byte legacy rows and must not reuse expanded row framing for legacy saves.",
-    "Translate legacy history row offsets 0/0x300/0x600/0x640/0x680 to expanded offsets 0/0xE10/0x1C20/0x1D4C/0x1E78, then initialize the unused actor records. The proposed 300-actor row is 0x1E7C bytes.",
+    "Translate legacy history row offsets 0/0x300/0x600/0x640/0x680 through TemporalLayout for the selected ActorShape. Initialize every unused actor before publication. temporal_save.py supplies an owned importer and writer-section preparation, without root binding.",
     "Complete streaming/migration budget and header integrity checks with root VM changes; prove legacy import and combined host transfer using exact native loops.",
     "Removal leaves combined saves distinguishable and refuses stock loading of combined data; conversion back to stock requires an explicit proven downgrade codec."
   ],
