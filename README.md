@@ -31,9 +31,9 @@ The GUI retains `--game`, `--steam`, `--steam-user`, and `--state` options.
 
 This is a test release. Private Windows sessions reached Zombies with 500,000 server and 250,000 client slots.
 The callback queue passes native replay and Windows allocation tests.
-The owner loaded a Zombies map with AAE using the client250K/callback8192 candidate, ended the match, and closed BO3.
-Its startup receipt confirms all 1,158 native/checksum edits committed. That launcher did not persist its final exit code.
-The current launcher fixes final exit receipts and adds the separate 8,192-record counter pool.
+The owner loaded a Zombies map with AAE using candidate 0.4.0-test.1, ended the match, and closed BO3.
+Its final receipt confirms all 1,169 native/checksum edits committed and game exit code 0.
+Both 8,192-entry clientfield pools were active in that session.
 Full callback/counter stress, high script IDs, saves, and peers remain unverified.
 The actor limit retains its stock capacity while the expanded native actor patch is under development.
 Expanded host migration requires matching patched clients. Matching patches alone do not prove compatibility.
@@ -129,7 +129,7 @@ The callback and counter pools share one 720,912-byte zeroed RW allocation.
 Their 29 edits join the native/checksum transaction. Startup receipts report both capacities and all 1,169 required edits.
 `source/tests/clientfields/Test-Counters.py` replays allocation, reuse, distinct pairs, fallback, counter wrapping, and reset.
 `Test-CountersNative.ps1` checks 26 refusals, publication, complete rollback, and commit ownership with real Windows APIs.
-These checks use owned memory. The current counter candidate still requires a manual Zombies test and high-counter stress.
+These checks use owned memory. The current candidate passes a manual Zombies map test. High-counter stress remains unverified.
 
 The 500-actor target requires coordinated native storage, codecs, and script limits:
 
@@ -200,7 +200,11 @@ Owned replay covers twelve write/import cases, preserves the following counter, 
 Legacy import preserves all twenty stock rows and initializes unused actors for both expanded shapes.
 Six address/guard and eight import refusals pass. Stream endpoints are authored. Root save binding and native compression remain unverified.
 The history reset preparation preserves the original complete level clear and clears all expanded rows afterward.
-Six repeated-reset replay cases and ten admission refusals pass for both shapes. Native memset and live registration remain unverified.
+Six repeated-reset replay cases and ten admission refusals pass for both shapes. Native memset and game reset behavior remain unverified.
+An owned DLL embeds the called reset stub and its unwind data in the PE exception directory.
+Windows finds its static function entry without runtime registration and unwinds all nine instruction boundaries correctly.
+Both shapes pass two complete owned resets, template/binding refusals, canary checks, and lookup removal after DLL unload.
+This validates the independent reset frame. Other actor stubs, game handlers, and live pool binding remain separate requirements.
 No 500-actor, expanded-entity, reliable-command, gamestate, higher-round, or player-count patch is active here.
 No new engine performance claim applies to this source work.
 

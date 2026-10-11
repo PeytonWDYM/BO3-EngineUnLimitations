@@ -188,3 +188,10 @@ Native handler-owner admission
 150. Reject a stale 33,360-byte external reset at the 500-actor shape. A larger recorder must never reuse uncleared high-index rows.
 151. Refuse changed native reset guards, overlapping storage/stub intervals, invalid addresses, and unreachable calls before output.
 152. Emit the called reset stub with an independent 40-byte frame. Keep its function-table registration and actual Windows/game reset validation required.
+153. Embed the guarded called reset stub and its exact unwind metadata in an owned DLL's PE exception directory. Lookup must return that module's entry without RtlAddFunctionTable.
+154. Compare actual Windows unwinding at every reset instruction boundary, including the unallocated prolog and restored epilog. Preserve the return address, stack, and nonvolatile registers.
+155. Refuse a changed DLL template or missing binding before modifying its code. Keep exact native reset guards in the source export.
+156. Bind only the owned clear endpoint and owned level/history buffers in the DLL test. Execute two complete resets, checking call order, all bytes, both canaries, and the original return value.
+157. Verify module unload removes its function lookup. Do not call RtlAddFunctionTable or RtlDeleteFunctionTable for the static module template.
+158. This loader experiment does not bind actor continuations, game handlers, or live pools. Keep all existing actor activation gates until those paths pass.
+159. Refuse a reset body with the admitted size and outer stack instructions but altered middle instructions. Static unwind data must match the complete instruction shape.

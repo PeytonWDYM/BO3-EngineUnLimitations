@@ -196,11 +196,19 @@ These save preparations remain outside table_plan.py and the default launcher.
 
 temporal_reset.py preserves the complete 0x23A10-byte native level clear and adds the selected external history clear.
 The called stub returns the original level address and uses an independent 40-byte frame.
-Its ALLOC_SMALL40 metadata needs actual Windows verification and live registration before activation.
+Its ALLOC_SMALL40 metadata describes that independent frame.
 Test-HistoryReset.py checks six stock, expanded, and rejected stale-extent cases with two resets each.
 Both expanded shapes clear the complete history, preserve allocation canaries, and retain nonvolatile registers and stack alignment.
 Ten altered-guard, invalid-address, overlap, and reach refusals pass. The memset endpoint is authored.
 The direct reference audit identifies the original level reset. Computed reset consumers and actual map transitions remain unverified.
+
+static_frames.py emits the independent reset stub in an owned DLL with static PE unwind data.
+Test-StaticFrames.ps1 checks actual Windows lookup and unwinding at all nine instruction boundaries.
+Both shapes pass two complete owned resets, buffer canaries, call order, return value, and lookup removal after DLL unload.
+Four unsupported template shapes and two changed-template/missing-binding cases refuse output or code writes.
+The complete instruction shape must match its admitted unwind metadata.
+The fixture uses authored clear endpoints and owned buffers. It makes no dynamic function-table registrations.
+This closes the owned called-reset frame test. Complete actor continuations, game handlers, and live binding remain required.
 
 provenance.json records the owner's authorized local AAE prototype and original source hashes.
 This directory contains Python source and address/hash contracts. It contains no game executable or extracted game bodies.
