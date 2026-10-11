@@ -14,3 +14,14 @@ Experimental Windows client250K build cases, before recipe integration:
 12. Verify full client allocation, complete free chains, map load, map unload, and normal process exit.
 13. Do not infer high-ID script stress, saves, matching peers, or performance from a stock-map lifecycle.
 14. Admit the identical pinned source inventory with LF or CRLF lines. Refuse any other byte change before generated output.
+
+Default client250K promotion cases, before launcher and installer changes:
+
+15. The default native build must select server500001, client250001, 61 native edits, and 1140 combined edits.
+16. Remove the alternate stock-client build branch. Do not require a developer switch for client expansion.
+17. The installer must stage the exact default launcher and both helpers, with verified payload hashes.
+18. An owned Steam install/update/remove transaction must retain unrelated launch arguments and restore the original configuration.
+19. Refuse an unknown game, each damaged payload file, and stale release hashes before Steam configuration writes.
+20. Execute the default launcher only with an owned unknown file. It must refuse before creating a game process.
+21. Report client capacity and remaining gameplay limits accurately. Do not claim actor, save, peer, or performance validation.
+22. Command-line package checks must run without opening a GUI or launching the game when GUI checks are disabled explicitly.

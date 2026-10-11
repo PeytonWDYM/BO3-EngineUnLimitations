@@ -1,5 +1,5 @@
 #Requires -Version 7.0
-param([Parameter(Mandatory)][string]$Output, [Parameter(Mandatory)][string]$NativeBuild, [string]$Python='python')
+param([Parameter(Mandatory)][string]$Output, [Parameter(Mandatory)][string]$NativeBuild, [string]$Python='python', [switch]$SkipGuiTests)
 $ErrorActionPreference='Stop'
 . (Join-Path $PSScriptRoot '../../source/launch/enhanced/PhysicalPath.ps1')
 $repo=PhysicalPath (Join-Path $PSScriptRoot '../..')
@@ -31,11 +31,13 @@ $exeVersion=& $exe --version
 if ($LASTEXITCODE -ne 0 -or $exeVersion -ne $manifest.version) { throw 'The packaged executable version differs from the release manifest.' }
 & $buildPython -B (Join-Path $PSScriptRoot 'Test-Executable.py') --executable $exe --output (Join-Path $build 'executable-tests')
 if ($LASTEXITCODE -ne 0) { throw 'Packaged executable E2E failed.' }
-& (Join-Path $PSScriptRoot 'Test-Gui.ps1') -Executable $exe -Output (Join-Path $build 'gui-tests')
-if ($LASTEXITCODE -ne 0) { throw 'Packaged GUI failed.' }
+if (!$SkipGuiTests) {
+    & (Join-Path $PSScriptRoot 'Test-Gui.ps1') -Executable $exe -Output (Join-Path $build 'gui-tests')
+    if ($LASTEXITCODE -ne 0) { throw 'Packaged GUI failed.' }
+}
 & $buildPython -B (Join-Path $PSScriptRoot 'Collect-Licenses.py') (Join-Path $dist 'licenses')
 if ($LASTEXITCODE -ne 0) { throw 'License collection failed.' }
 Copy-Item -LiteralPath (Join-Path $native 'Detours-LICENSE.md') -Destination (Join-Path $dist 'licenses/Detours-LICENSE.txt')
 Copy-Item -LiteralPath (Join-Path $repo 'README.md') -Destination (Join-Path $dist 'Readme.txt')
-@{version=$manifest.version;exeSha256=(Get-FileHash -LiteralPath $exe).Hash.ToLowerInvariant();manifestSha256=(Get-FileHash -LiteralPath (Join-Path $repo 'source/release.json')).Hash.ToLowerInvariant();gameplayValidated=$false;protonSupported=$false;files=@(Get-ChildItem -LiteralPath $dist -Recurse -File | ForEach-Object { @{path=[IO.Path]::GetRelativePath($dist,$_.FullName).Replace('\','/');sha256=(Get-FileHash -LiteralPath $_.FullName).Hash.ToLowerInvariant()} })} | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $dist 'build.json') -Encoding utf8
+@{version=$manifest.version;exeSha256=(Get-FileHash -LiteralPath $exe).Hash.ToLowerInvariant();manifestSha256=(Get-FileHash -LiteralPath (Join-Path $repo 'source/release.json')).Hash.ToLowerInvariant();gameplayValidated=$false;guiValidated=(!$SkipGuiTests);protonSupported=$false;files=@(Get-ChildItem -LiteralPath $dist -Recurse -File | ForEach-Object { @{path=[IO.Path]::GetRelativePath($dist,$_.FullName).Replace('\','/');sha256=(Get-FileHash -LiteralPath $_.FullName).Hash.ToLowerInvariant()} })} | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $dist 'build.json') -Encoding utf8
 Compress-Archive -LiteralPath (Get-ChildItem -LiteralPath $dist | ForEach-Object FullName) -DestinationPath (Join-Path $build "BO3-500K-$($manifest.version)-windows.zip")

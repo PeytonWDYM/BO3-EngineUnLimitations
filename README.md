@@ -2,8 +2,8 @@
 
 # BO3 500K
 
-An optional 500,000-slot server script-variable pool for Steam Black Ops III Zombies.
-The launcher applies the patch in memory before the game allocates its script pool.
+Optional 500,000 server and 250,000 client script-variable slots for Steam Black Ops III Zombies.
+The launcher applies both patches in memory before the game allocates its script pools.
 The installer adds a reversible Steam launch option. Original game files stay unchanged.
 
 ## Install
@@ -27,8 +27,8 @@ The GUI retains `--game`, `--steam`, `--steam-user`, and `--state` options.
 
 ## Compatibility
 
-This is a test release. One manual Windows session reached Zombies and verified 500,000 usable server slots.
-The client pool and actor limit retain their stock capacities.
+This is a test release. Private Windows sessions reached Zombies with 500,000 server and 250,000 client slots.
+The actor limit retains its stock capacity while the expanded native actor patch is under development.
 Expanded host migration requires matching patched clients. Matching patches alone do not prove compatibility.
 
 [Spawn pacing and actor-capacity research](research/zombie-spawn-limits.txt) describes the work needed for faster spawn batches and more than 200 zombies.
@@ -60,6 +60,8 @@ The setup executable contains the native launcher, both helpers, and their verif
 Users do not need Python or C++ tools.
 Use `scripts/release/Build-Native.ps1` to rebuild the native files from source with official Detours v4.0.1.
 New native builds need admission, rollback, startup, and peer checks before release.
+Use `-SkipGuiTests` for command-line package checks when desktop interaction is unavailable.
+The build receipt records that the GUI check did not run.
 
 ```powershell
 python -m pip install --require-hashes --only-binary=:all: -r scripts/release/requirements-native.txt
@@ -76,27 +78,19 @@ It preserves the stock client codec at 65,000 total slots and isolates client im
 The expanded client format uses its own identifier and contains no server player-root records.
 Captured native allocation and slot-codec replays exercise the larger capacities in owned memory.
 These checks do not establish game, save, peer, or migration compatibility.
-The default recipe and installer still select the stock client pool.
-
-An explicit developer build can select 250,000 usable client slots:
-
-```powershell
-pwsh -NoProfile -File scripts/release/Build-Native.ps1 -Output C:/private/bo3-client250K -DetoursRoot <Detours-v4.0.1-folder> -Python python -ExperimentalClient250K
-```
-
-Use this build only in a private game copy.
-The experimental recipe checks 40 client code guards and all 19 complete count instructions before writes.
+The default recipe and installer select 250,000 usable client slots.
+The recipe checks 40 client code guards and all 19 complete count instructions before writes.
 It keeps 500,000 usable server slots and includes all 61 native edits in the existing checksum transaction.
 Startup receipts report the selected client capacity and required edit counts.
-The release installer refuses these unapproved native payloads.
+The release installer checks the exact default payload hashes before staging these native files.
 
 Three private Windows runs allocated the full 16,000,064-byte client pool and loaded Shadows of Evil.
-One run used the explicit developer build from this source. Two runs used its preceding private prototype.
+One run used the integrated client250K recipe. Two runs used its preceding private prototype.
 Complete free chains passed before the map, during the map, and after return to the lobby.
 All three processes exited normally. Native arena checks confirmed the complete pool and fixed 65,536-bucket hash allocations.
 These runs used about 40,000 live client slots. They did not stress script IDs above the stock limit.
 High-ID script stress, complete native saves, companion ownership, and matching peers remain unverified.
-The experimental profile does not raise the actor or player limit.
+The client250K profile does not raise the actor or player limit.
 
 `source/patches/client_vm/exact_build_inventory.json` records the 19 client count instructions and their code guards.
 The replay tools require the pinned private capture and exact-build executable used for this audit.

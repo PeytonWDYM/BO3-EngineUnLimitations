@@ -2,9 +2,7 @@
 #include "../preentry/Identity.h"
 #include "GameManifest.h"
 #include "../enhanced/CapacityProfile.h"
-#ifdef BO3_EXPERIMENTAL_CLIENT_250K
 #include "ClientManifest.h"
-#endif
 #include <algorithm>
 
 namespace bo3::late_startup {
@@ -14,9 +12,7 @@ PreparedPlan PrepareFixedPlan(HANDLE process,std::uintptr_t image,
     const auto& manifest=enhanced::ExactGameManifest;
     Require(manifest.guards.size()==82 && manifest.counts.size()==19,"The fixed complete inventory is required.");
     enhanced::VerifyGameCode(process,image,manifest);
-#ifdef BO3_EXPERIMENTAL_CLIENT_250K
     const auto client=enhanced::AdmitClientProfile(process,image,enhanced::ExactClientManifest,enhanced::kClientTotal);
-#endif
     enhanced::VerifyMigrationUnallocated(process,image);
     for(const auto rva:{0x5124580u,0x5124500u,0x5124680u,0x5124600u,0x16dbb638u}) {
         const auto bytes=vm_startup::ReadStopped(process,image+rva,8);
@@ -44,9 +40,7 @@ PreparedPlan PrepareFixedPlan(HANDLE process,std::uintptr_t image,
         result.relay->Address()+64,total,18,32*1024*1024});
     result.edits.insert(result.edits.end(),std::make_move_iterator(migration.begin()),std::make_move_iterator(migration.end()));
     for(const auto& edit:profile.edits)result.edits.push_back({image+edit.rva,edit.original,edit.replacement});
-#ifdef BO3_EXPERIMENTAL_CLIENT_250K
     for(const auto& edit:client.edits)result.edits.push_back({image+edit.rva,edit.original,edit.replacement});
-#endif
     Require(result.edits.size()==enhanced::kNativeEdits,"The selected native recipe is incomplete.");return result;
 }
 }
