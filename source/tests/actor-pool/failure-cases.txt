@@ -108,3 +108,9 @@ Owned Windows stack probe
 85. Register both owned wrapper and probe frames before execution. Verify runtime lookup, complete deletion, and released code storage after the thread exits.
 86. Check the wrapper's entry and body stack difference, page commitment, and real thread-information stack limits for each allocation.
 87. Do not describe an owned probe-wrapper test as admission of the relocated game frame, its language handlers, or its owning caller.
+
+Native handler frame translation
+88. Guard the complete captured cookie handler and its common helper before direct replay.
+89. A temporary stack phase must use the original native frame address for both cookie lookup and cookie XOR decoding.
+90. Detect an untranslated frame and a shifted-cookie-offset-only candidate. Neither can preserve the cookie at nonzero temporary depth.
+91. Distinguish direct handler replay with an authored dispatcher from actual Windows exception dispatch and complete C++ cleanup behavior.

@@ -108,6 +108,12 @@ The comparison refuses 1,642 missing-depth, 78 missing-allocation, and 66 wrong-
 All owned registrations are deleted. The fixture never executes the stubs or game code.
 Unscaled XMM offsets at odd eight-byte phases still need runtime ABI admission.
 Native handler dispatch and game registration remain unverified.
+Test-HandlerCookie.py directly replays the captured cookie handler and its common helper in 108 cases.
+It rejects sixty untranslated-frame and shifted-offset-only candidates at nonzero temporary stack depth.
+The handler uses the native frame address for both cookie lookup and XOR decoding.
+A runtime bridge must preserve that address. Moving the cookie offset alone does not preserve the decode.
+The test supplies the translated address directly and authors the dispatcher, frame header, and final cookie check.
+It does not implement a bridge or verify Windows exception dispatch, native C++ cleanup, or partial-prolog handler suppression.
 Test-NativeUnwind.ps1 -IncludeTemporalRestore adds the separate restore stub to the owned comparison.
 That run covers 79 continuations and 1,834 boundaries. The restore adds five contexts without temporary stack allocation.
 Continuation metadata must preserve the complete native frame and describe added stack phases.

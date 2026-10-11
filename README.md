@@ -145,6 +145,9 @@ The separate rewind preparation expands its temporary buffers and calls the guar
 Five further owned cases cover rewind, restore, filters, time clamping, and refusal of a missing probe.
 The probe also executes on three owned Windows threads with real stack growth and complete function-table cleanup.
 These helper tests do not admit the relocated game frame, its handlers, or the caller's adjacent actor and corpse buffers.
+Direct cookie-handler replay passes 108 cases and rejects sixty incomplete frame-translation candidates.
+Temporary stack phases need the original native frame address for both cookie lookup and decode.
+The test supplies that address directly. A runtime bridge, Windows exception dispatch, and C++ cleanup remain unimplemented or unverified.
 No 300-actor, expanded-entity, network-capacity, higher-round, or player-count patch is active here.
 No new engine performance claim applies to this source work.
 
