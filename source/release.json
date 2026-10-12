@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "version": "0.5.0-test.3",
+  "version": "0.5.0-test.5",
   "status": "prerelease",
   "serverUsableSlots": 500000,
   "clientUsableSlots": 250000,
@@ -17,7 +17,7 @@
       "gameSha256": "0b874dcc250848b7313ec13a0c76468dacc2009b5efa2bff4c587e169a9f77e0",
       "runtime": "windows",
       "files": {
-        "BO3-500K-Zombies.exe": "13458aa5e7d5e8366a3ef8bba0ced611a66da8493aaf0b16d70b5e0a18fb3ec4",
+        "BO3-500K-Zombies.exe": "00f434a5f46058718731c975283a60caa2433708a8a396ff7fec9c2bc0cace0a",
         "Bo3EnhancedHelper.dll": "1ff40018b0fdec2d0be0d8c175386a115417ced847de9acd8d220c0b9c1163df",
         "Bo3StartupGate.dll": "f4efd8452f48bf9cb9495e5f9171fccf56981644e5a38cf807d2b192b77aec81",
         "Detours-LICENSE.md": "f854ae8aabc0404652b48a2b3bf7f21ec174c69d73f5596934c20884eb0639ef"
@@ -26,7 +26,7 @@
   ],
   "actorCapacity": 500,
   "sentientCapacity": 540,
-  "actorRuntimeFunctions": 2464,
-  "nativeEdits": 357,
+  "actorRuntimeFunctions": 2465,
+  "nativeEdits": 360,
   "actorGameplayValidated": false
 }

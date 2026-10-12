@@ -11,6 +11,7 @@ from client_snapshot_reset import prepare_client_snapshot_resets
 from client_actors import ClientActors,prepare_client_actors,ACTOR_BANK_OFFSET
 from client_allocator import prepare_client_allocation
 from client_actor_ring import prepare_client_actor_ring
+from entity_allocator import prepare_entity_allocator,ENTITY_ALLOCATOR_UNWIND
 from demo_writer import DemoWriter,prepare_demo_writer
 from demo_reader import prepare_demo_reader
 from temporal_layout import TemporalLayout
@@ -68,6 +69,8 @@ def prepare_recipe(source: CapturedCode,arena: int) -> RuntimeRecipe:
     replaced={edit.guard.rva for edit in dynamic}
     edits=[edit for edit in server.rewrites if edit.guard.rva not in replaced]
     edits.extend(dynamic)
+    entity_allocation=prepare_entity_allocator(code,arena+0x1A0000)
+    edits.append(entity_allocation)
     edits.extend(prepare_actor_wire(code,shape))
     snapshots=ClientSnapshots(arena+0x2800000,shape)
     edits.extend(prepare_client_snapshots(code,snapshots,arena+0x1C0000))
@@ -117,7 +120,9 @@ def prepare_recipe(source: CapturedCode,arena: int) -> RuntimeRecipe:
     banks=sorted(regions)
     if any(a<arena+CODE_BYTES+METADATA_BYTES or a+n>arena+ARENA_BYTES for a,n in banks) or any(a+n>b for (a,n),(b,_) in zip(banks,banks[1:])):
         raise ValueError('A combined actor storage interval exceeds or overlaps the complete data arena.')
-    independent=tuple((f.rewrite.stub_address,f.unwind) for f in resets)+((history_reset.rewrite.stub_address,history_reset.metadata),)
+    independent=tuple((f.rewrite.stub_address,f.unwind) for f in resets)+(
+        (history_reset.rewrite.stub_address,history_reset.metadata),
+        (entity_allocation.stub_address,ENTITY_ALLOCATOR_UNWIND))
     leaf=next(e for e in demo_edits if e.stub)
     independent+=((leaf.stub_address,bytes.fromhex('01000000')),)
     return RuntimeRecipe(arena,ARENA_BYTES,500,540,tuple(edits),tuple(sorted(code.guards.values(),key=lambda g:(g.rva,g.size))),

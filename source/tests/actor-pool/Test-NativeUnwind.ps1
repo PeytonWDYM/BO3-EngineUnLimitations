@@ -7,14 +7,15 @@ param(
     [switch]$IncludeTemporalRestore,
     [switch]$ClientSnapshots,
     [switch]$ClientAllocation,
+    [switch]$EntityAllocation,
     [ValidateSet(300,500)][int]$Actors=300
 )
 $ErrorActionPreference = 'Stop'
 $target = [IO.Path]::GetFullPath($Output)
-if (@($ClientSnapshots,$ClientAllocation,$IncludeTemporalRestore).Where({$_}).Count -gt 1) { throw 'Select one native unwind comparison.' }
-$generator = if ($ClientSnapshots) { 'Test-ClientSnapshotUnwind.py' } elseif ($ClientAllocation) { 'Test-ClientAllocationUnwind.py' } else { 'Test-NativeUnwind.py' }
+if (@($ClientSnapshots,$ClientAllocation,$EntityAllocation,$IncludeTemporalRestore).Where({$_}).Count -gt 1) { throw 'Select one native unwind comparison.' }
+$generator = if ($ClientSnapshots) { 'Test-ClientSnapshotUnwind.py' } elseif ($ClientAllocation) { 'Test-ClientAllocationUnwind.py' } elseif ($EntityAllocation) { 'Test-ActorEntityUnwind.py' } else { 'Test-NativeUnwind.py' }
 $arguments = @('-B', (Join-Path $PSScriptRoot $generator), '--module', $Manifest, '--executable', $Executable, '--output', $target)
-if (-not $ClientAllocation) {$arguments += @('--actors',$Actors)}
+if (-not ($ClientAllocation -or $EntityAllocation)) {$arguments += @('--actors',$Actors)}
 if ($IncludeTemporalRestore) { $arguments += '--include-temporal-restore' }
 & $Python @arguments
 if ($LASTEXITCODE -ne 0) { throw 'The guarded native-unwind export failed.' }

@@ -1,4 +1,4 @@
-"""Prepare storage relocation and fixed native counts; codec admission is unresolved."""
+"""Prepare guarded native storage bindings and fixed actor and sentient counts."""
 
 from dataclasses import dataclass
 import json
@@ -8,6 +8,12 @@ import struct
 from captured_code import CapturedCode, CodeGuard, Rewrite
 from table_layout import TableLayout
 from x64_table import Emitter, count_stub, rel32, continuation_jump
+from folded_sentients import prepare_folded_sentient_storage
+
+SECONDARY_MEMBER_GUARDS=(
+    CodeGuard(0x15C3670,6808,'bf9ecdfc6945e8192d8eaa03e1acc270219a44b8f8ebae9d59134a6525a28670'),
+    CodeGuard(0x3149210,8,'37cca59ce09d4c4b86dcb65c3d88ba663f80423fc3641c731b1aba874dc5fb49'),
+)
 
 
 @dataclass(frozen=True)
@@ -41,6 +47,8 @@ def prepare_storage(code: CapturedCode, table: TableLayout, storage: StorageLayo
     edits: list[Rewrite] = []
     cursor = stub_base
     shape = table.shape
+    edits.append(prepare_folded_sentient_storage(code,int(table.native_pool)))
+    for guard in SECONDARY_MEMBER_GUARDS:code.guarded(guard)
 
     def relative(name: str, item: dict, destination: int) -> None:
         guard = CodeGuard(int(item['rva'],0),item['size'],item['sha256'])
@@ -53,8 +61,11 @@ def prepare_storage(code: CapturedCode, table: TableLayout, storage: StorageLayo
         edits.append(Rewrite(name,guard,original[:-width]+value.to_bytes(width,'little')))
 
     for item in consumers['directStorageReferences']:
-        destination = table.native_pool if int(item['targetRva'],0) == 0xA037CD0 else storage.secondary_actors
-        relative('sentient_static_storage' if destination == table.native_pool else 'secondary_actor_storage',item,destination)
+        target=int(item['targetRva'],0)
+        sentient=target==0xA037CD0
+        # A direct member address must keep its offset within the relocated bank.
+        destination=table.native_pool if sentient else storage.secondary_actors+target-0xA1846C0
+        relative('sentient_static_storage' if sentient else 'secondary_actor_storage',item,destination)
     heads = consumers['sentientHandleHeads']
     for key in ('initialization','release','assignment'):
         relative('sentient_handle_heads',heads[key],storage.sentient_heads)

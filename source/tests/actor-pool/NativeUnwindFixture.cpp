@@ -103,7 +103,8 @@ int wmain(int argc, wchar_t** argv) {
             const auto header = Read<Header>(input);
             Require(!clientSnapshots || header.site == (stub == 0 ? 0xfc57d5u : 0xfc57f2u),
                     "The client snapshot plan requires both exact sites in their fixed order.");
-            Require(!clientAllocation || header.site == 0x840922u, "The allocation comparison requires its exact native site.");
+            Require(!clientAllocation || header.site == 0x840922u || header.site == 0x1b75227u,
+                    "The allocation comparison requires an admitted exact native site.");
             Require(header.phaseCount && header.phaseCount < 1024 && header.returnOffset < 32768 && header.stackCount < 256, "Invalid owned frame extent.");
             auto referenceBytes = Bytes(input, header.referenceBytes), code = Bytes(input, header.codeBytes);
             const auto source = sourceEntries ? Bytes(input,Read<std::uint32_t>(input)) : std::vector<unsigned char>{};

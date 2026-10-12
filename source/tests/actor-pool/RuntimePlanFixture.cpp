@@ -8,9 +8,42 @@
 #include <stdexcept>
 #include <string>
 #include <cstring>
+#include <array>
 
 namespace {
 void Require(bool value,const char* message) {if(!value)throw std::runtime_error(message);}
+
+// Compare the exact published allocator row with its original native frame at every stub boundary.
+void CheckEntityAllocatorFrame(const bo3::actors::RuntimeBindings& runtime,std::uintptr_t game,std::uintptr_t arena) {
+    auto native=*reinterpret_cast<const RUNTIME_FUNCTION*>(game+0x1A865450);
+    Require(native.BeginAddress==0x1B751E0&&native.EndAddress==0x1B75265&&native.UnwindData==0x31631D8,
+            "Fixture actor entity native frame differs.");
+    alignas(16) std::array<std::uintptr_t,32> stack{};
+    const auto rsp=reinterpret_cast<DWORD64>(stack.data());
+    stack[4]=0x123456789ABCDEF0ull;stack[5]=0x13579BDF2468ACE0ull;
+    CONTEXT seeded{};seeded.ContextFlags=CONTEXT_ALL;seeded.Rsp=rsp;seeded.Rbx=0x87654321;
+    seeded.Rip=game+0x1B75227;
+    auto expected=seeded;PVOID handler{};DWORD64 frame{};
+    RtlVirtualUnwind(UNW_FLAG_NHANDLER,game,expected.Rip,&native,&expected,&handler,&frame,nullptr);
+    Require(expected.Rsp==rsp+48&&expected.Rbx==stack[4]&&expected.Rip==stack[5],
+            "Fixture original actor entity stack contract differs.");
+    for(const auto offset:std::array<std::uintptr_t,11>{0,7,10,16,22,27,33,35,42,48,53}) {
+        auto actual=seeded;actual.Rip=arena+0x1A0000+offset;DWORD64 base{};
+        auto* function=RtlLookupFunctionEntry(actual.Rip,&base,nullptr);
+        bool published=false;
+        for(std::uint32_t index=0;index<runtime.functionCount;++index)if(function==runtime.functions+index)published=true;
+        Require(published,"Fixture actor entity row is outside the published table.");
+        Require(function&&base==game&&function->BeginAddress==arena+0x1A0000-game&&
+                function->EndAddress-function->BeginAddress==59,
+                "Fixture actor entity direct runtime row differs.");
+        const auto* metadata=reinterpret_cast<const unsigned char*>(game+function->UnwindData);
+        Require(metadata[0]==1&&metadata[1]==0&&metadata[2]==3,
+                "Fixture actor entity runtime row is not the direct active frame.");
+        RtlVirtualUnwind(UNW_FLAG_NHANDLER,game,actual.Rip,function,&actual,&handler,&frame,nullptr);
+        Require(std::memcmp(&actual,&expected,sizeof actual)==0,
+                "Fixture actor entity direct frame differs from native unwinding.");
+    }
+}
 }
 // A private sparse seed contains guard spans only. The fixture never starts the game.
 int main(int argc,char** argv) {
@@ -42,6 +75,8 @@ int main(int argc,char** argv) {
             "Fixture source protection failed.");
         const vm_startup::ImageRange game{reinterpret_cast<std::uintptr_t>(image),imageSize};
         const vm_startup::ImageRange module{reinterpret_cast<std::uintptr_t>(helper),0x10000};
+        auto* offlineArena=VirtualAlloc(reinterpret_cast<void*>(game.base+0x20000000),0x10000,MEM_RESERVE,PAGE_NOACCESS);
+        Require(offlineArena,"Fixture could not block the offline arena address.");
         const bo3::actors::HelperOffsets offsets{0x100,0x200,0x300,0x400,0x500,0x600,0x700,0x800,0x900,0xA00,0xB00,0xC00,0xD00,0xE00,0xF00};
         bool refused=false;try {auto rejected=bo3::actors::BuildRuntimePlan(process,{game.base,game.size-1},module,offsets);}catch(const std::exception&){refused=true;}
         Require(refused,"Fixture unknown image size passed.");
@@ -52,6 +87,16 @@ int main(int argc,char** argv) {
         Require(plan.edits.size()>254,"Fixture plan omitted source or helper edits.");
         auto arena=plan.arena->Base();
         Require(arena>=game.base+game.size&&arena+plan.arena->Size()<=game.base+0x7FFFFFFF,"Fixture arena exceeds relative reach.");
+        Require(arena-game.base!=0x20000000,"Fixture must use a different arena offset from offline preparation.");
+        bool getterFound=false;
+        for(const auto& edit:plan.edits)if(edit.address==game.base+0x1B14BC0) {
+            Require(edit.replacement.size()==8,"Fixture sentient getter extent differs.");
+            std::int32_t displacement{};std::memcpy(&displacement,edit.replacement.data()+4,4);
+            Require(static_cast<std::int64_t>(game.base)+displacement==static_cast<std::int64_t>(arena+0x400000-0x3088),
+                    "Fixture sentient getter uses the offline arena instead of the allocated arena.");
+            getterFound=true;
+        }
+        Require(getterFound,"Fixture sentient getter binding is missing.");
         MEMORY_BASIC_INFORMATION info{};
         for(const auto [offset,protection]:{std::pair<std::size_t,DWORD>{0,PAGE_EXECUTE_READ},{0x200000,PAGE_READONLY},{0x400000,PAGE_READWRITE}}) {
             Require(VirtualQuery(reinterpret_cast<void*>(arena+offset),&info,sizeof info)==sizeof info&&info.Protect==protection,"Fixture arena protection differs.");
@@ -98,6 +143,7 @@ int main(int argc,char** argv) {
             DWORD64 base{};
             Require(RtlLookupFunctionEntry(game.base+runtime.functions[index].BeginAddress,&base,nullptr)==runtime.functions+index&&base==game.base,"Fixture runtime lookup differs.");
         }
+        CheckEntityAllocatorFrame(runtime,game.base,arena);
         Require(RtlDeleteFunctionTable(runtime.functions)!=0,"Fixture runtime removal failed.");
         }
         Require(rollback.rollbackCompleted&&rollback.editsWritten==plan.edits.size(),"Fixture PausedPatch rollback failed.");
@@ -140,7 +186,7 @@ int main(int argc,char** argv) {
         Require(refused,"Fixture allocated sentient pool passed.");
         *reinterpret_cast<std::uintptr_t*>(static_cast<unsigned char*>(image)+0xA1B0790)=0;
         for(const auto& edit:plan.edits)Require(std::memcmp(reinterpret_cast<void*>(edit.address),edit.original.data(),edit.original.size())==0,"Fixture refusal changed publication bytes.");
-        VirtualFree(helper,0,MEM_RELEASE);VirtualFree(image,0,MEM_RELEASE);
+        VirtualFree(offlineArena,0,MEM_RELEASE);VirtualFree(helper,0,MEM_RELEASE);VirtualFree(image,0,MEM_RELEASE);
         std::ofstream(argv[2])<<"{\"passed\":true,\"sourceEdits\":"<<plan.edits.size()<<",\"gameBase\":"<<game.base<<",\"runtimeFunctions\":"<<std::size(bo3::actors::profile::Functions)+bo3::actors::profile::ExtraFunctionCount
             <<",\"phases\":"<<std::size(bo3::actors::profile::Phases)<<",\"transaction\":\"vm_startup::PausedPatch\",\"rollback\":true,\"commit\":true,\"removal\":true,\"pageBounded\":true,\"helperPageRefusal\":true,\"guardRefusal\":true,\"pointerRefusal\":true,\"poolRefusal\":true,\"gameLaunches\":0}\n";
         return 0;

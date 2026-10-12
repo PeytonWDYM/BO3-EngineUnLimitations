@@ -1037,6 +1037,15 @@
       "targetRva": "0xa037cd0",
       "role": "leaf_sentient_pointer_or_handle_conversion",
       "requiredRewrite": "Retarget static pool address. Update reciprocal/stride only if record layout changes."
+    },
+    {
+      "rva": "0x15c509e",
+      "size": 7,
+      "sha256": "971e7245bbc4168951a1f22c914e66f9c19a1f5a0e63c0893dea6e68e667f676",
+      "targetRva": "0xa184778",
+      "rootRva": "0x15c3670",
+      "role": "secondary_actor_member_address",
+      "requiredRewrite": "Retarget the secondary actor member address. Preserve the 0xB8 member offset and 0xB00 record stride."
     }
   ],
   "tableAccessor": {

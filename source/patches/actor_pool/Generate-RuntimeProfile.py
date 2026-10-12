@@ -51,7 +51,8 @@ def regenerate(module,executable,seed):
                 normalizations[field]=value-code.base
     templates=[]
     for edit in recipe.edits:
-        templates.append(dataclasses.asdict(make_template(code,recipe,'game',edit.guard.rva,edit.replacement)))
+        templates.append(dataclasses.asdict(make_template(code,recipe,'game',edit.guard.rva,edit.replacement,
+            image_relative_operands=edit.image_relative_operands)))
         if edit.stub:templates.append(dataclasses.asdict(make_template(code,recipe,'arena',edit.stub_address-recipe.arena,edit.stub,edit.instruction_map)))
     def json_bytes(value):
         if isinstance(value,bytes):return value.hex()
@@ -101,7 +102,8 @@ def generate(output):
             offset,_=blob(bytes.fromhex(p['data']))
             pieces.append((p['offset'],p['size'],p['source'] if p['source'] is not None else 0xFFFFFFFF,offset))
         for r in template['relocations']:
-            fixups.append((r['offset'],r['width'],int(r['target']['space']=='arena'),r['target']['offset'],r['next_offset'] if r['next_offset'] is not None else 0xFFFFFFFF))
+            fixups.append((r['offset'],r['width'],int(r['target']['space']=='arena'),r['target']['offset'],
+                r['next_offset'] if r['next_offset'] is not None else 0xFFFFFFFF,int(r['image_relative'])))
         templates.append((int(template['origin']['space']=='arena'),template['origin']['offset'],template['size'],first_piece,len(template['pieces']),first_fixup,len(template['relocations'])))
     functions=[]
     for f in inventory['functions']:
@@ -110,7 +112,7 @@ def generate(output):
     phases=[(p['control_rva'],p['native_row_rva'],p['handler_rva'],p['data_rva'],p['prolog'],p['temporary_bytes']) for p in inventory['phases']]
     text=['// Generated from runtime_inventory.json. Do not edit.','#pragma once','#include <cstdint>','namespace bo3::actors::profile {',
         'struct Guard {std::uint32_t rva,size,digest;};','struct Normalization {std::uint32_t rva,target;};',
-        'struct Piece {std::uint32_t offset,size,source,data;};','struct Fixup {std::uint32_t offset,width,arena,target,next;};',
+        'struct Piece {std::uint32_t offset,size,source,data;};','struct Fixup {std::uint32_t offset,width,arena,target,next,imageRelative;};',
         'struct Template {std::uint32_t arena,offset,size,pieceFirst,pieceCount,fixupFirst,fixupCount;};',
         'struct Function {std::uint32_t begin,end,data,size,parent;};','struct Phase {std::uint32_t control,owner,handler,data,prolog,stack;};',
         'struct Storage {std::uint32_t offset,size;};',f'inline constexpr std::uintptr_t CapturedBase={inventory["captured_base"]}ull;',

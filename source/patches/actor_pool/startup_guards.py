@@ -1,4 +1,6 @@
-"""Recover exact stock preimages from the pinned AAE crash capture during offline preparation."""
+"""Recover exact preallocation bytes from the pinned initialized AAE capture."""
+
+import hashlib
 
 # Both complete stock owners match two saved admitted startup dumps and the passive startup image.
 # These are offline source corrections. Runtime admission still hashes the complete native owners.
@@ -14,3 +16,14 @@ def stock_preimages(read):
         if read(rva,len(captured))!=captured:
             raise ValueError(f'The pinned AAE source hook differs at RVA {rva:#x}.')
     return tuple((rva,original) for rva,_,original in STOCK_PREIMAGES)
+
+
+def field_preimages(read):
+    """Admit the captured initialized field, then model its observed cold startup state.
+
+    The guarded CRT initializer constructs this descriptor after the launcher barrier.
+    This correction changes offline source reads only. The launcher never writes the descriptor.
+    """
+    if hashlib.sha256(read(0x33FFB20,32)).hexdigest()!='64c0656b327ba05cceb3a028d1f6e1f3431937b956decf2d2dd8b0f0efb81753':
+        raise ValueError('The captured initialized sentient field descriptor differs.')
+    return ((0x33FFB20,bytes(32)),)

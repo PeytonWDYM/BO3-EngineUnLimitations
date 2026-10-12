@@ -4,7 +4,7 @@ from dataclasses import dataclass
 import hashlib
 import json
 from pathlib import Path
-from startup_guards import stock_preimages
+from startup_guards import stock_preimages,field_preimages
 
 EXECUTABLE_SHA256 = '0b874dcc250848b7313ec13a0c76468dacc2009b5efa2bff4c587e169a9f77e0'
 MANIFEST_SHA256 = '01d292edca086aeca406a9171feba2dac8aea80df2e867026ff78f441bab4511'
@@ -34,6 +34,8 @@ class Rewrite:
     stub: bytes = b''
     owner_register: str | None = None
     instruction_map: tuple[tuple[int, int], ...] = ()
+    # Explicit native disp32 fields whose base register holds the game image base.
+    image_relative_operands: tuple[tuple[int, int], ...] = ()
 
 
 class CapturedCode:
@@ -47,7 +49,7 @@ class CapturedCode:
         if (self.meta['imageSize'],self.meta['timestamp']) != (494186496,1765634846):
             raise ValueError('The capture has an unsupported native layout.')
         self.cache: dict[str, bytes] = {}
-        self.startup_preimages=stock_preimages(self._read_captured)
+        self.startup_preimages=(*stock_preimages(self._read_captured),*field_preimages(self._read_captured))
 
     def _read_captured(self, rva: int, size: int) -> bytes:
         if rva < 0 or size <= 0 or rva+size > self.meta['imageSize']:
@@ -72,7 +74,7 @@ class CapturedCode:
         return b''.join(chunks)
 
     def read(self, rva: int, size: int) -> bytes:
-        """Read verified captured bytes with only the two pinned stock instruction preimages restored."""
+        """Read verified capture bytes with the exact hooks and deferred field in their preallocation state."""
         raw=bytearray(self._read_captured(rva,size))
         for address,original in self.startup_preimages:
             begin=max(rva,address);end=min(rva+size,address+len(original))
