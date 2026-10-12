@@ -31,3 +31,17 @@ Installer path failure cases, written before implementation:
     Its receipt must explicitly report that those path cases were not run.
 
 All fixture files and result.json stay outside Git. No Steam or game launches.
+
+Actor500 installer integration cases, written before changes:
+
+13. An explicit --skip-gui-tests option must omit all Tk imports and windows.
+    Keep every non-GUI Windows path case and report the skipped GUI case.
+14. Build-Patcher -SkipGuiTests must pass that option to the installer E2E.
+    The package receipt must report that GUI validation did not run.
+15. Refuse a stale native build receipt before package output.
+    Require 500 actors, 540 sentients, 2,464 runtime functions, and 355 native edits.
+    Retain 500,000 server slots, 250,000 client slots, and both 8,192-entry clientfield pools.
+16. The real-payload installer check must require matching release metadata and file hashes.
+    Install, repeat Install, and Remove must preserve the exact game and original configuration.
+17. The client admission fixture must accept the complete actor500 build identity.
+    Keep its separate 61-edit VM/migration check and do not claim actor admission coverage.

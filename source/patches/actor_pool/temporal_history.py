@@ -58,11 +58,13 @@ def prepare_history(code: CapturedCode, layout: TemporalLayout, history_address:
     offset = branch_address - recorder_address
     body[offset:offset + 6] = b'\x0f\x8d' + rel32(branch_address + 6, moved.addresses[code.base + 0x1BFBEA5])
     recorder_hook = b'\xe9' + rel32(code.base + RECORDER_FUNCTION.rva + 5, recorder_address) + b'\x90' * 2
-    recorder_edit = Rewrite('temporal_history_recorder', code.guard(RECORDER_FUNCTION.rva, 7), recorder_hook, recorder_address, bytes(body))
+    recorder_edit = Rewrite('temporal_history_recorder', code.guard(RECORDER_FUNCTION.rva, 7), recorder_hook, recorder_address, bytes(body),
+                            instruction_map=tuple(moved.addresses.items()))
     selector_changes = {
         code.base + 0x1BFDE10: (7, b'\x49\xba' + struct.pack('<Q', history_address)),
         code.base + 0x1BFDE3D: (7, b'\x48\x69\xc0' + struct.pack('<I', layout.history_row_bytes)),
     }
     selected = relocate_function(selector, code.base + SELECTOR_FUNCTION.rva, selector_address, selector_changes)
     selector_hook = b'\xe9' + rel32(code.base + SELECTOR_FUNCTION.rva + 5, selector_address)
-    return recorder_edit, Rewrite('temporal_history_selector', code.guard(SELECTOR_FUNCTION.rva, 5), selector_hook, selector_address, selected.code)
+    return recorder_edit, Rewrite('temporal_history_selector', code.guard(SELECTOR_FUNCTION.rva, 5), selector_hook, selector_address, selected.code,
+                                 instruction_map=tuple(selected.addresses.items()))

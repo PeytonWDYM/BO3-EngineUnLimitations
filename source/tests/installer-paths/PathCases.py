@@ -4,8 +4,6 @@ from pathlib import Path
 import subprocess
 import sys
 from unittest.mock import patch
-import tkinter as tk
-from tkinter import ttk
 
 from patcher import app
 from patcher.errors import PatchError
@@ -14,7 +12,7 @@ from patcher.vdf_span import quote
 from patcher.windows import SteamContext, steam_installs
 
 
-def run_path_cases(output: Path, resources: Path) -> list[dict]:
+def run_path_cases(output: Path, resources: Path, *, skip_gui_tests: bool = False) -> list[dict]:
     root = output.resolve(strict=True) / 'installer-paths'
     root.mkdir()
     cases = []
@@ -174,7 +172,21 @@ def run_path_cases(output: Path, resources: Path) -> list[dict]:
     assert manager.config.read_bytes() == original
     record('game-folder-junction-identity', game=str(alias), config=str(manager.config))
 
-    manager, game, tools, original = fixture('gui-explicit-options')
+    if not skip_gui_tests:
+        manager, game, tools, original = fixture('gui-explicit-options')
+        run_gui_case(manager, game, tools, original, resources)
+        record('gui-explicit-options-install-remove', config=str(manager.config), game=str(game))
+
+    (root / 'result.json').write_text(json.dumps({'passed': True, 'cases': cases,
+        'guiCases': 'not run: explicitly skipped' if skip_gui_tests else 'executed',
+        'scope': 'Private Windows Steam files and app actions. No Steam or game launch.'}, indent=2), encoding='utf-8')
+    return cases
+
+
+def run_gui_case(manager: SteamPlay, game: Path, tools: Path, original: bytes, resources: Path) -> None:
+    import tkinter as tk
+    from tkinter import ttk
+
     window = tk.Tk()
     window.withdraw()
 
@@ -213,8 +225,3 @@ def run_path_cases(output: Path, resources: Path) -> list[dict]:
             assert app.main() == 0
     finally:
         window.destroy()
-    record('gui-explicit-options-install-remove', config=str(manager.config), game=str(game))
-
-    (root / 'result.json').write_text(json.dumps({'passed': True, 'cases': cases,
-        'scope': 'Private Windows Steam files and app actions. No Steam or game launch.'}, indent=2), encoding='utf-8')
-    return cases

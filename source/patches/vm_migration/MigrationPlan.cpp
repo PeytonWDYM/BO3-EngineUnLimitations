@@ -1,4 +1,5 @@
 #include "MigrationPlan.h"
+#include "../actor_pool/LoadContext.h"
 #include <cstring>
 #include <stdexcept>
 
@@ -40,12 +41,14 @@ void ValidateEdits(const std::vector<AddressEdit>& edits) {
 std::vector<AddressEdit> BuildMigrationPlan(const MigrationPlanInput& input) {
     Require(input.image.size == 494186496 && input.total == 500001 && input.clientRoots == 18 &&
         input.bufferBytes == 32 * 1024 * 1024, "Migration admission requires the checked 500k/18-root/32-MiB policy.");
+    Require(input.actorFormat==ActorFormat::Legacy64 || input.actorFormat==ActorFormat::Expanded500,
+        "The migration actor format is unknown.");
     Require((input.relay & 15) == 0 && input.relay <= UINTPTR_MAX - 128, "Invalid migration relay storage.");
     const auto helper = [&](std::uint32_t offset) { return Address(input.helper, offset, 1); };
     const auto game = [&](std::uint32_t offset) { return Address(input.image, offset, 1); };
     const auto& offsets = input.exports;
     const auto original = [&](Hook hook) { return helper(offsets.originals[static_cast<std::size_t>(hook)]); };
-    const auto version = FormatVersion(input.total, input.clientRoots);
+    const auto version = input.actorFormat==ActorFormat::Expanded500 ? actors::Actor500Version : FormatVersion(input.total,input.clientRoots);
     const Bindings bindings{version, input.bufferBytes,
         reinterpret_cast<ClientHandler>(original(Hook::Header)), reinterpret_cast<ClientHandler>(original(Hook::Data)),
         reinterpret_cast<HeaderAckHandler>(original(Hook::HeaderAck)), reinterpret_cast<HeaderSender>(original(Hook::SendHeader)),

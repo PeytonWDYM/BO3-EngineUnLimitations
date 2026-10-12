@@ -1,4 +1,5 @@
 #include "../../patches/vm_migration/Admission.h"
+#include "../../patches/actor_pool/LoadContext.h"
 #define WIN32_LEAN_AND_MEAN
 #define NOMINMAX
 #include <Windows.h>
@@ -20,6 +21,8 @@ Header current;
 WrittenState written{nullptr, 0, 25000000};
 std::vector<std::byte> ack;
 std::vector<std::uint32_t> calls;
+bo3::actors::ReadCounts actorCounts=bo3::actors::LegacyCounts;
+bool checkActorLoad{},throwFromLoad{};
 void Check(bool value) { if (!value) throw std::runtime_error("migration fixture assertion"); }
 void CheckUnwind(void (*entry)(), std::uint32_t offset, bool dataFrame, bool flushFrame = false) {
     const auto pc = reinterpret_cast<DWORD64>(entry) + offset;
@@ -40,6 +43,12 @@ void CheckUnwind(void (*entry)(), std::uint32_t offset, bool dataFrame, bool flu
 }
 void Load(WrittenState** object, std::uint32_t* time) {
     Check(object != nullptr && *object == &written && time != nullptr && *time == 789); ++loaded;
+    if(checkActorLoad) {
+        Check(bo3::actors::ReaderAllowed(&written,GetCurrentThreadId()));
+        const auto expected=current.version==bo3::actors::Actor500Version ? bo3::actors::ExpandedCounts : bo3::actors::LegacyCounts;
+        Check(std::memcmp(&actorCounts,&expected,sizeof(expected))==0);
+        if(throwFromLoad)throw std::runtime_error("owned native load exception");
+    }
 }
 void Drop(const char*, int, int code, const char* format, ...) {
     Check(code == 2 && std::strcmp(format, "Migration state has an incompatible format or size") == 0); ++dropped;
@@ -153,6 +162,33 @@ int main() {
         WrittenState other{}; FlushMigrationState(&other); Check(flushed == 2);
         written.compressed = 0; FlushMigrationState(&written); Check(flushed == 3);
         std::cout << "migration-only-compressed-prefix-room-guard passed\n";
+        // The actor policy changes the outer format, not the legacy record count.
+        const auto actorVersion=bo3::actors::Actor500Version;
+        current=good;current.version=actorVersion;Check(!CanLoadMigrationState());
+        Check(TestMigrationVersion(actorVersion)==0);
+        Bo3MigrationBindings.wireVersion=actorVersion;
+        Check(TestMigrationVersion(3)==1 && TestMigrationVersion(version)==1 && TestMigrationVersion(actorVersion)==1);
+        Check(TestMigrationVersion(FormatVersion(1000001,18))==0 && TestMigrationVersion(actorVersion+1)==0);
+        auto beforeLoaded=loaded,beforeDropped=dropped;
+        LoadMigrationState(&object,&time);Check(loaded==beforeLoaded && dropped==beforeDropped+1);
+        bo3::actors::Bo3ActorLoadBindings={&actorCounts};checkActorLoad=true;
+        for(const auto inputVersion:std::array<std::uint32_t,3>{3,version,actorVersion}) {
+            current=good;current.version=inputVersion;Check(CanLoadMigrationState());
+            LoadMigrationState(&object,&time);
+            Check(bo3::actors::ReaderAllowed(&written,GetCurrentThreadId()));
+            // The captured game invokes its whole reader after file preparation returns.
+            Check(bo3::actors::EndLoad(&written,GetCurrentThreadId()));
+            Check(!bo3::actors::ReaderAllowed(&written,GetCurrentThreadId()));
+            Check(std::memcmp(&actorCounts,&bo3::actors::LegacyCounts,sizeof(actorCounts))==0);
+        }
+        throwFromLoad=true;current.version=actorVersion;bool caught=false;
+        try {LoadMigrationState(&object,&time);}catch(const std::runtime_error& error){caught=std::strcmp(error.what(),"owned native load exception")==0;}
+        Check(caught && !bo3::actors::ReaderAllowed(&written,GetCurrentThreadId()) && actorCounts.secondaryRecords==64);
+        throwFromLoad=false;LoadMigrationState(&object,&time);
+        Check(bo3::actors::ReaderAllowed(&written,GetCurrentThreadId()));
+        Check(bo3::actors::EndLoad(&written,GetCurrentThreadId()));
+        Check(loaded==beforeLoaded+5 && dropped==beforeDropped+1);
+        std::cout << "actor-root-native-wrapper-counts-normal-and-exception-cleanup passed\n";
         return 0;
     } catch (const std::exception& error) { std::cerr << error.what() << '\n'; return 1; }
 }

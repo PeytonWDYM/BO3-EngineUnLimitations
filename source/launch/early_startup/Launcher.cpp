@@ -30,11 +30,11 @@ int wmain(int argc,wchar_t** argv) {
         bo3::job_startup::OwnedJob job;bo3::late_startup::OwnedChild child(game,std::move(command),helpers);job.Assign(child);
         bo3::late_startup::PrivateReceipt report(child);bo3::early_startup::Receipt receipt;
         const auto prepare=[&](HANDLE process,std::uintptr_t image,vm_startup::Receipt&) {
-            return bo3::late_startup::PrepareFixedPlan(process,image,helper,helperFile);
+            return bo3::late_startup::PrepareFixedPlan(process,image,helper,helperFile,gate.ContinuationAddress());
         };
         try {bo3::early_startup::Coordinate(child,job,gate,prepare,kVerifiedGameDigest,receipt);report.Write(receipt);}
         catch(...) {report.Write(receipt);throw;}
-        std::wcout<<L"500K startup patch committed. Load full AAE and select Zombies. Receipt: "<<report.Path().wstring()<<L'\n';
+        std::wcout<<L"500-actor and 500K startup patch committed. Load AAE and select Zombies. Receipt: "<<report.Path().wstring()<<L'\n';
         const auto exit=bo3::early_startup::RecordGameExit(child.process.hProcess,receipt.job,[&]{report.Write(receipt);});
         return static_cast<int>(exit);
     }catch(const std::exception& error){std::cerr<<error.what()<<'\n';return 2;}

@@ -11,7 +11,7 @@ $target = [IO.Path]::GetFullPath($Output)
 if ((Test-Path -LiteralPath $target) -or $target.Equals($repo, [StringComparison]::OrdinalIgnoreCase) -or $target.StartsWith($repo + '\', [StringComparison]::OrdinalIgnoreCase)) { throw 'Use a new output folder outside Git.' }
 $build = (Resolve-Path -LiteralPath $NativeBuild).Path
 $buildReceipt = Get-Content -LiteralPath (Join-Path $build 'build-receipt.json') -Raw | ConvertFrom-Json
-if ($buildReceipt.clientTotal -ne 250001 -or $buildReceipt.nativeEdits -ne 90) { throw 'Use the default VM and clientfield build.' }
+if ($buildReceipt.clientTotal -ne 250001 -or $buildReceipt.nativeEdits -ne 355 -or $buildReceipt.actorCapacity -ne 500 -or $buildReceipt.sentientCapacity -ne 540 -or $buildReceipt.actorRuntimeFunctions -ne 2464 -or $buildReceipt.serverUsableSlots -ne 500000 -or $buildReceipt.pendingCallbacksPerLocalClient -ne 8192 -or $buildReceipt.clientfieldCounters -ne 8192) { throw 'Use the complete actor500 native build. This fixture checks only VM and migration admission.' }
 if ((Get-FileHash -LiteralPath $ClientSpans).Hash -ne 'A5E603E7B0A3519797262C86A91248A985596B6DF5C719EA14E04D5964FBF50C' -or (Get-FileHash -LiteralPath $ServerSpans).Hash -ne '2EC3591846D8710A920E0443F4A808AE1B7FDA5D7DE58BDBC49FF140761B9836') { throw 'Use the pinned client and normalized server guard spans.' }
 $vswhere = Join-Path ${env:ProgramFiles(x86)} 'Microsoft Visual Studio/Installer/vswhere.exe'
 $installation = & $vswhere -latest -products '*' -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath
@@ -34,7 +34,7 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'The native client admission fixture failed.' }
     $paths = @($files) + @($binary,$PSCommandPath,$ClientSpans,$ServerSpans,(Join-Path $build 'GameManifest.h'),(Join-Path $build 'ClientManifest.h'),(Join-Path $target 'result.json'))
     $hashes = foreach ($path in $paths) {Get-FileHash -LiteralPath $path -Algorithm SHA256 | Select-Object Path,Hash}
-    @{passed=$true; scope='Owned stopped-read fixture with exact captured guards. No process writes or game launch.'; files=@($hashes)} | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $target 'receipt.json')
+    @{passed=$true; scope='Owned stopped-read VM and migration fixture with exact captured guards. Actor admission is outside this fixture. No process writes or game launch.'; files=@($hashes)} | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $target 'receipt.json')
 } finally {
     $env:INCLUDE = $savedInclude
     $env:LIB = $savedLib

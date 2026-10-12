@@ -28,6 +28,16 @@
       "sha256": "145d55c14b123be92e0433a7482a3a3b6bb5dbeffaf639192dbe04ae55f84423"
     },
     {
+      "runtime": ["0x1bfde70", "0x1bfdf11", "0x3165f4c"],
+      "size": 28,
+      "sha256": "d757574ec97dc638b4aeadeb03bcf899f91d97972fdb9b222bf5b4ae91ce78f7"
+    },
+    {
+      "runtime": ["0x1bf9940", "0x1bf9a00", "0x3165d2c"],
+      "size": 20,
+      "sha256": "a73e3e4179f78ea5377aad338b4541eaa94952ea5e808f630e8a16b707954575"
+    },
+    {
       "runtime": [
         "0x15147a0",
         "0x1514936",

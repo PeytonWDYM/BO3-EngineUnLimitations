@@ -66,6 +66,12 @@ int main(int argc,char** argv) {
         std::size_t podBytes=0; for(std::size_t i=0;i<5;++i) podBytes+=migration[i].original.size(); Check(podBytes==168);
         Check(migration[5].original.size()==128 && migration[12].replacement[0]==0xe8 && migration[13].replacement[0]==0xe9);
         Check(migration[8].replacement.size()==8 && migration[8].replacement[5]==0x90 && migration[11].replacement.size()==6);
+        auto actorInput=input;actorInput.actorFormat=ActorFormat::Expanded500;
+        const auto actorMigration=BuildMigrationPlan(actorInput);Check(actorMigration.size()==migration.size());
+        std::uint32_t actorVersion{};std::memcpy(&actorVersion,actorMigration[0].replacement.data(),sizeof(actorVersion));
+        Check(actorVersion==0xC927A121);
+        std::memcpy(&actorVersion,actorMigration.back().replacement.data()+4,sizeof(actorVersion));Check(actorVersion==0xC927A121);
+        Refused([&]{auto bad=input;bad.actorFormat=static_cast<ActorFormat>(501);BuildMigrationPlan(bad);});
         Refused([&]{auto bad=input;bad.total=1000001;BuildMigrationPlan(bad);});
         Refused([&]{auto bad=input;bad.clientRoots=10;BuildMigrationPlan(bad);});
         Refused([&]{auto bad=input;bad.bufferBytes=39321600;BuildMigrationPlan(bad);});

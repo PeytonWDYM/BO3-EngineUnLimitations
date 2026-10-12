@@ -1,0 +1,26 @@
+Runtime plan failure cases. Write these cases before the backend.
+
+1. An unknown image size refuses preparation before allocation or writes.
+2. A changed native guard refuses preparation. All source and helper bytes stay unchanged.
+3. An image pointer must equal the actual image base plus its pinned target RVA.
+4. An exact relocated pointer passes the SHA-256 check after normalization.
+5. An allocated native actor or sentient pool refuses preparation.
+6. A missing source copy or incomplete instruction span refuses preparation.
+7. A relative operand outside its signed width refuses preparation.
+8. The complete arena must fit above the image and within signed relative reach.
+9. A failed preparation frees its unpublished arena.
+10. Code is RX, metadata is RO, and all storage is RW before publication.
+11. Every runtime function has complete metadata. Chained parents reference the new table.
+12. Every phase references its actual native .pdata row and native handler data.
+13. Reader and history hooks use near arena thunks. The history call retains its native return location.
+14. Rollback restores every source and helper byte before the arena owner releases its storage.
+15. Commit retains the arena. The fixture removes the retained reservation after its checks.
+16. The generated header reproduces the inventory without private game files.
+17. The fixture uses an owned process and private native seed. It does not start BO3.
+18. The whole-load hook must preserve the seven-byte SUB/TEST prefix and return through its native continuation.
+19. Whole-load helper bindings must include the deferred loader and its original reentry address.
+20. A source edit that crosses a page must split into complete, page-bounded publication records.
+21. The production PausedPatch transaction must accept, apply, roll back, commit, and remove the complete publication.
+22. Each helper POD export must fit one page. Refuse a crossing export before arena allocation.
+23. LF and CRLF copies of the complete source closure must generate identical runtime headers without private inputs.
+24. A source change other than line endings must still refuse profile generation.

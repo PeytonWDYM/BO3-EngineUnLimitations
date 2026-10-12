@@ -1,4 +1,4 @@
-"""Check the real client250K payload through an owned installer transaction. Never start BO3."""
+"""Check the real actor500 payload through an owned installer transaction. Never start BO3."""
 import argparse
 import json
 from pathlib import Path
@@ -18,13 +18,15 @@ def run(build: Path, executable: Path, output: Path) -> None:
     manifest = json.loads(release.read_text(encoding='utf-8'))
     profile = manifest['builds'][0]
     receipt = json.loads((build / 'build-receipt.json').read_text(encoding='utf-8-sig'))
-    assert receipt['clientTotal'] == 250001 and receipt['nativeEdits'] == 90
-    assert receipt['pendingCallbacksPerLocalClient'] == 8192
-    assert receipt['clientfieldCounters'] == 8192
-    assert receipt['serverUsableSlots'] == 500000
+    assert receipt['clientTotal'] == 250001
+    assert manifest['version'] == '0.5.0-test.1'
+    capacities = {'serverUsableSlots': 500000, 'pendingCallbacksPerLocalClient': 8192,
+                  'clientfieldCounters': 8192, 'actorCapacity': 500, 'sentientCapacity': 540,
+                  'actorRuntimeFunctions': 2464, 'nativeEdits': 355}
+    for name, expected in capacities.items():
+        assert receipt[name] == expected and manifest[name] == expected, name
+    assert receipt['gameSha256'] == profile['gameSha256']
     assert manifest['clientUsableSlots'] == 250000
-    assert manifest['pendingCallbacksPerLocalClient'] == 8192
-    assert manifest['clientfieldCounters'] == 8192
     assert file_hash(executable) == profile['gameSha256']
     resources = output / 'resources'
     native = resources / 'native' / profile['id']
@@ -51,7 +53,7 @@ def run(build: Path, executable: Path, output: Path) -> None:
         manager = SteamPlay(root / 'steam', active_user=42, state=root / 'state', process_running=lambda _: False)
         return manager, game, root / 'tools', original
 
-    manager, game, tools, original = fixture('install-update-remove')
+    manager, game, tools, original = fixture('install-repeat-remove')
     manager.enable(resources, game, tools_root=tools)
     assert manager.status(game, resources)['status'] == 'enabled'
     assert b'+set owned 1' in manager.config.read_bytes()
@@ -62,7 +64,7 @@ def run(build: Path, executable: Path, output: Path) -> None:
     manager.remove()
     assert manager.config.read_bytes() == original
     assert file_hash(game / 'BlackOps3.exe') == profile['gameSha256']
-    cases.append({'name': 'install-update-remove', 'passed': True})
+    cases.append({'name': 'install-repeat-remove', 'passed': True})
 
     for name in ('unknown-game', *PAYLOAD_NAMES):
         manager, game, tools, original = fixture('refuse-' + name, known=name != 'unknown-game')
@@ -87,8 +89,8 @@ def run(build: Path, executable: Path, output: Path) -> None:
     cases.append({'name': 'launcher-refuses-unknown-before-child', 'passed': True, 'stderr': refused.stderr})
     files = [release, Path(__file__), build / 'build-receipt.json', *[build / name for name in PAYLOAD_NAMES]]
     (output / 'result.json').write_text(json.dumps({
-        'passed': True, 'clientUsableSlots': 250000, 'serverUsableSlots': 500000,
-        'scope': 'Real default payload. Owned Steam configuration only. No game or GUI launch.',
+        'passed': True, 'clientUsableSlots': 250000, **capacities,
+        'scope': 'Real actor500 payload identity and owned Steam configuration. No game or GUI launch. Game behavior remains unverified.',
         'cases': cases, 'files': [{'path': str(path), 'sha256': file_hash(path)} for path in files],
     }, indent=2), encoding='utf-8')
 

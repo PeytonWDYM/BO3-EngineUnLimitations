@@ -2,6 +2,7 @@
 #include "Boot.h"
 #include "../../patches/vm_startup/NativePlan.h"
 #include "../../patches/vm_migration/MigrationPlan.h"
+#include "../../patches/actor_pool/RuntimePlan.h"
 #include <filesystem>
 
 namespace bo3::enhanced {
@@ -13,6 +14,7 @@ public:
     vm_startup::ImageRange image;
     vm_startup::HelperOffsets state;
     migration::HelperOffsets migration;
+    actors::HelperOffsets actors;
     explicit MappedHelper(const std::filesystem::path&);
     ~MappedHelper();
     void Admit(HANDLE process, const std::filesystem::path& file);

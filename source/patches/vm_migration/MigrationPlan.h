@@ -11,11 +11,13 @@ struct HelperOffsets {
     std::array<std::uint32_t, HookCount> handlers, originals; // Hook enum order.
     std::uint32_t sendAck, versionGate;
 };
+enum class ActorFormat : std::uint32_t { Legacy64=64, Expanded500=500 };
 struct MigrationPlanInput {
     vm_startup::ImageRange image, helper;
     HelperOffsets exports;
     std::uintptr_t relay; // Eight slots begin after the core plan's four slots.
     std::uint32_t total = 500001, clientRoots = 18, bufferBytes = 32 * 1024 * 1024;
+    ActorFormat actorFormat=ActorFormat::Legacy64;
 };
 // Pure checked preparation; the paused caller combines this with its core plan.
 std::vector<vm_startup::AddressEdit> BuildMigrationPlan(const MigrationPlanInput&);

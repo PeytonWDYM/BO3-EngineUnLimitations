@@ -55,6 +55,9 @@ void WriteReceipt(std::ostream& out,const Receipt& receipt) {
        <<",\"clientfieldCounterCapacity\":"<<enhanced::kClientfieldCounters
        <<",\"clientfieldCounterStorageBytes\":196608"
        <<",\"combinedEditsRequired\":"<<kNativeEdits+early_integrity::kPublicationCount
+       <<",\"actorCapacity\":"<<enhanced::kActors<<",\"sentientCapacity\":"<<enhanced::kSentients
+       <<",\"actorArenaBytes\":50331648,\"actorRuntimeFunctions\":"<<enhanced::kActorRuntimeFunctions
+       <<",\"actorWireVersion\":3374817569"
        <<",\"checksumReapplication\":false,\"aaeStoreSitesPreserved\":"<<(receipt.checksumAdmitted?"true":"false")<<'}';
     Require(out.good(),"Cannot write the early checksum receipt.");
 }

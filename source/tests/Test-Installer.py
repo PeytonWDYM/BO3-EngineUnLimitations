@@ -17,7 +17,7 @@ def digest(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
-def run(output: Path) -> None:
+def run(output: Path, *, skip_gui_tests: bool = False) -> None:
     output.mkdir(parents=True, exist_ok=False)
     resources = output / 'bundle'
     resources.mkdir()
@@ -133,14 +133,17 @@ def run(output: Path) -> None:
     if os.name == 'nt':
         sys.path.insert(0, str(Path(__file__).resolve().parent / 'installer-paths'))
         from PathCases import run_path_cases
-        cases.extend(run_path_cases(output, resources))
+        cases.extend(run_path_cases(output, resources, skip_gui_tests=skip_gui_tests))
     (output / 'result.json').write_text(json.dumps({'passed': True, 'cases': cases,
         'scope': 'Owned Steam configuration and payload files. No Steam or game launch.',
-        'windowsPathCases': 'executed' if os.name == 'nt' else 'not run: Windows junction and GUI cases'}, indent=2) + '\n')
+        'windowsPathCases': 'executed' if os.name == 'nt' else 'not run: Windows junction and GUI cases',
+        'guiCases': 'not run: explicitly skipped' if skip_gui_tests else 'executed' if os.name == 'nt' else 'not run: requires Windows'}, indent=2) + '\n')
     print(f'{len(cases)} installer E2E cases passed. Evidence: {output / "result.json"}')
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path, required=True)
-    run(parser.parse_args().output)
+    parser.add_argument('--skip-gui-tests', action='store_true', help='Keep Windows path checks but omit all Tk checks')
+    args = parser.parse_args()
+    run(args.output, skip_gui_tests=args.skip_gui_tests)

@@ -5,13 +5,16 @@
 #include "ClientManifest.h"
 #include "../../patches/clientfields/PendingProfile.h"
 #include "../../patches/clientfields/ClientfieldStorage.h"
+#include "RuntimeProfile.generated.h"
 #include <algorithm>
+#include <cstring>
 
 namespace bo3::late_startup {
 static_assert(enhanced::kPendingCallbacksPerLocalClient==clientfields::kPendingCapacity);
 static_assert(enhanced::kClientfieldCounters==clientfields::kCounterCapacity);
+static_assert(enhanced::kNativeEdits==90+actors::profile::EditCount+1);
 PreparedPlan PrepareFixedPlan(HANDLE process,std::uintptr_t image,
-    enhanced::MappedHelper& helper,const std::filesystem::path& helperFile) {
+    enhanced::MappedHelper& helper,const std::filesystem::path& helperFile,std::uintptr_t gateContinuation) {
     constexpr std::uint32_t total=500001;
     const auto& manifest=enhanced::ExactGameManifest;
     Require(manifest.guards.size()==82 && manifest.counts.size()==19,"The fixed complete inventory is required.");
@@ -43,7 +46,7 @@ PreparedPlan PrepareFixedPlan(HANDLE process,std::uintptr_t image,
     result.edits=vm_startup::BuildNativePlan({imageRange,helper.image,manifest.entries,helper.state,
         result.relay->Address(),total,18,8,bo3::vm::NativeModePolicy::ZombiesOnly,{},enhanced::kClientTotal});
     auto migration=bo3::migration::BuildMigrationPlan({imageRange,helper.image,helper.migration,
-        result.relay->Address()+64,total,18,32*1024*1024});
+        result.relay->Address()+64,total,18,32*1024*1024,migration::ActorFormat::Expanded500});
     result.edits.insert(result.edits.end(),std::make_move_iterator(migration.begin()),std::make_move_iterator(migration.end()));
     for(const auto& edit:profile.edits)result.edits.push_back({image+edit.rva,edit.original,edit.replacement});
     for(const auto& edit:client.edits)result.edits.push_back({image+edit.rva,edit.original,edit.replacement});
@@ -52,7 +55,13 @@ PreparedPlan PrepareFixedPlan(HANDLE process,std::uintptr_t image,
     result.edits.insert(result.edits.end(),std::make_move_iterator(callbackEdits.begin()),std::make_move_iterator(callbackEdits.end()));
     auto counterEdits=clientfields::BuildCounterPlan(image,storage->CounterAddress());
     result.edits.insert(result.edits.end(),std::make_move_iterator(counterEdits.begin()),std::make_move_iterator(counterEdits.end()));
-    result.commitResources=[storage=std::move(storage)]() noexcept {storage->Commit();};
+    auto actorPlan=actors::BuildRuntimePlan(process,imageRange,helper.image,helper.actors);
+    result.edits.insert(result.edits.end(),std::make_move_iterator(actorPlan.edits.begin()),std::make_move_iterator(actorPlan.edits.end()));
+    Require(gateContinuation!=0,"The actor runtime needs the admitted startup continuation.");
+    const auto activate=helper.image.base+helper.actors.activate;
+    std::vector<unsigned char> continuation(sizeof(activate));std::memcpy(continuation.data(),&activate,sizeof(activate));
+    result.edits.push_back({gateContinuation,std::vector<unsigned char>(sizeof(activate),0),std::move(continuation)});
+    result.commitResources=[storage=std::move(storage),actors=std::move(actorPlan.arena)]() noexcept {storage->Commit();actors->Commit();};
     Require(result.edits.size()==enhanced::kNativeEdits,"The selected native recipe is incomplete.");return result;
 }
 }

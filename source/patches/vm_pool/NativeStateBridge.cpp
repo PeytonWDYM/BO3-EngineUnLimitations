@@ -1,4 +1,5 @@
 #include "NativeStateBridge.h"
+#include "../actor_pool/LoadContext.h"
 #include <cstddef>
 #include <cstdint>
 
@@ -110,5 +111,5 @@ void InsertNativeStateKey(std::uint32_t instance, std::uint32_t id, std::uint64_
     }
     bindings.originalInsert(instance, id, key, parent);
 }
-void ClearNativeImportContext() { importing = {}; importingClient = {}; }
+void ClearNativeImportContext() { importing = {}; importingClient = {}; actors::ClearCurrentLoadContext(); }
 }

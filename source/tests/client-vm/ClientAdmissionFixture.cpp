@@ -56,8 +56,11 @@ int wmain(int argc,wchar_t** argv) {
     try {
         Require(argc==4,"Use NativeAdmissionFixture <client-spans.bin> <server-spans.bin> <unknown.bin>.");
         LoadSpans(argv[1]);LoadSpans(argv[2]);
-        Require(bo3::enhanced::kClientTotal==250001 && bo3::enhanced::kNativeEdits==90,
-            "The fixture requires the default VM and clientfield capacity profile.");
+        Require(bo3::enhanced::kClientTotal==250001 && bo3::enhanced::kNativeEdits==355
+            && bo3::enhanced::kActors==500 && bo3::enhanced::kSentients==540
+            && bo3::enhanced::kActorRuntimeFunctions==2464
+            && bo3::enhanced::kPendingCallbacksPerLocalClient==8192 && bo3::enhanced::kClientfieldCounters==8192,
+            "The fixture requires the actor500 capacity profile. It checks only VM and migration admission.");
         auto* dos=reinterpret_cast<IMAGE_DOS_HEADER*>(headers.data());
         dos->e_magic=IMAGE_DOS_SIGNATURE;dos->e_lfanew=128;
         auto* pe=reinterpret_cast<IMAGE_NT_HEADERS64*>(headers.data()+128);
@@ -101,7 +104,7 @@ int wmain(int argc,wchar_t** argv) {
         bo3::vm::NativeStateBindings bindings{};std::memcpy(&bindings,native[0].replacement.data(),sizeof(bindings));
         Require(bindings.total==500001 && bindings.clientTotal==250001,"The helper VM binding totals differ.");
         std::cout<<"{\"passed\":true,\"serverGuards\":82,\"clientGuards\":40,\"clientOriginals\":19,\"refusals\":"<<refused
-            <<",\"vmAndMigrationEdits\":61,\"serverTotal\":500001,\"clientTotal\":250001,\"processWrites\":0,\"gameLaunches\":0}\n";
+            <<",\"vmAndMigrationEdits\":61,\"actorAdmissionValidated\":false,\"serverTotal\":500001,\"clientTotal\":250001,\"processWrites\":0,\"gameLaunches\":0}\n";
         return 0;
     }catch(const std::exception& error){std::cerr<<error.what()<<'\n';return 1;}
 }

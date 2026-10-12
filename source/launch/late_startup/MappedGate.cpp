@@ -51,6 +51,9 @@ MappedGate::MappedGate(const std::filesystem::path& file):file_(file),local_(Loa
         const auto boot=reinterpret_cast<std::uintptr_t>(GetProcAddress(local_,"Bo3StartupGateBoot"))-reinterpret_cast<std::uintptr_t>(local_);
         Require(size_>=sizeof(enhanced::BootRecord) && boot<size_ && boot<=size_-sizeof(enhanced::BootRecord),"Missing bounded gate boot export.");
         bootRva_=static_cast<DWORD>(boot);
+        const auto continuation=reinterpret_cast<std::uintptr_t>(GetProcAddress(local_,"Bo3StartupGateContinuation"))-reinterpret_cast<std::uintptr_t>(local_);
+        Require(continuation<size_ && continuation<=size_-sizeof(startup_gate::StartupContinuation),"Missing bounded gate continuation export.");
+        continuationRva_=static_cast<DWORD>(continuation);
     } catch(...) {FreeLibrary(local_);throw;}
 }
 MappedGate::~MappedGate(){FreeLibrary(local_);}

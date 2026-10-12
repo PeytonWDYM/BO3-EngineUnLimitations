@@ -1,0 +1,28 @@
+Owned native load bridge failure cases, written before the bridge logic.
+
+1. A reader without a root scope must fail before its authored native callback.
+2. A wrong file must fail before its callback and clear its owning thread context.
+3. A wrong thread must fail before its callback without clearing the owner context.
+4. Legacy roots 3 and C727A121 must read 64 actors, 104 sentients, and 64 secondary records.
+5. Root C927A121 must read 500 actors, 540 sentients, and 500 secondary records.
+6. Legacy imports must clear every unused actor, sentient, and secondary record and restore exact actor constructor bytes.
+7. Sentient imports must clear complete awareness and indexed-word tables, including unused rows and columns.
+8. History imports must consume exactly 33,360 or 260,080 bytes and preserve the following marker.
+9. Legacy history translation must use hexadecimal legacy member offsets and a 0x684 row stride.
+10. History overflow must fail before publication and clear the owner context.
+11. A changed history call length or native destination must fail before its native read callback.
+12. Full allocation canaries must stay unchanged after each accepted import.
+13. Native callback errors must release the owning load context before they leave the bridge.
+14. Early file preparation must return with its admitted scope active for the later whole load.
+15. The actual whole load must admit later actor and sentient readers on the original file and thread.
+16. A tagged secondary reader that bypasses ReadSecondaryState must find its complete unused legacy tail clear.
+17. Normal actual whole completion must clear the scope and restore legacy counts.
+18. An actual whole callback error must clear the scope before it leaves the bridge.
+19. An actual whole call with no scope, the wrong file, or the wrong thread must fail before its callback.
+20. The whole reentry must replay SUB RSP,0x28 and TEST RCX,RCX without losing the native branch flags.
+21. The native null no-save path must call its original without creating, requiring, or ending an actor scope.
+22. The whole bridge must preserve the native Boolean return that its caller tests in AL.
+23. A nonnull authored whole callback that returns false must preserve that result after scope cleanup.
+24. Windows must unwind the whole reentry after SUB, after TEST, and at its register JMP with the complete 40-byte frame.
+
+All callbacks in the fixture are authored. These cases do not prove game, peer, or Proton compatibility.
