@@ -160,7 +160,7 @@ def run(module: Path,executable: Path,dependencies: Path,writer: Path,output: Pa
         except ValueError:pass
         else:raise AssertionError('An invalid complete demo storage interval escaped refusal.')
     output.parent.mkdir(parents=True,exist_ok=True);binary=output.with_suffix('.prior-records.bin');binary.write_bytes(final_storage)
-    paths=(Path(__file__),PATCHES/'demo_reader.py',PATCHES/'demo_writer.py',PATCHES/'actor_wire.py',PATCHES/'shape.py',PATCHES/'captured_code.py')
+    paths=(Path(__file__),PATCHES/'demo_reader.py',PATCHES/'demo_writer.py',PATCHES/'actor_wire.py',PATCHES/'native_unwind.py',PATCHES/'native_handlers.py',PATCHES/'native_handlers.json',PATCHES/'x64_table.py',PATCHES/'shape.py',PATCHES/'captured_code.py')
     result={'passed':True,'actors':actors,'cases':cases,'stockControlsRefused':controls,'guardRefusals':len(mutations),
             'addressRefusals':len(invalid_storage),
             'writerReceiptSha256':hashlib.sha256(writer.read_bytes()).hexdigest(),'writerArtifactSha256':hashlib.sha256(raw).hexdigest(),

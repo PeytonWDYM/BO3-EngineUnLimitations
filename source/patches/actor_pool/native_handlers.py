@@ -20,7 +20,7 @@ class NativeHandlerRecipe:
 
 def prepare_native_handler(code: CapturedCode, frame: NativeFrame) -> NativeHandlerRecipe:
     inventory = json.loads((Path(__file__).parent / 'native_handlers.json').read_text())
-    for name in ('handler', 'common'):
+    for name in ('handler', 'common', 'cookie'):
         item = inventory[name]
         code.guarded(CodeGuard(int(item['rva'], 0), item['size'], item['sha256']))
     while frame.parent is not None:

@@ -4,6 +4,7 @@ import struct
 
 from captured_code import CapturedCode,CodeGuard,Rewrite
 from native_unwind import read_frame
+from native_handlers import prepare_native_handler
 from shape import ActorShape
 from x64_table import rel32
 
@@ -64,6 +65,7 @@ def prepare_demo_writer(code: CapturedCode,layout: DemoWriter,helper: int) -> tu
     if code.read(0x25CEA6B,7)!=original:raise ValueError('The demo prior-record base differs.')
     edits.append(Rewrite('demo_writer_prior_records',code.guard(0x25CEA6B,7),original[:3]+rel32(code.base+0x25CEA72,layout.base)))
     native=read_frame(code,(WRITER.rva,WRITER.rva+WRITER.size,METADATA.rva))
+    prepare_native_handler(code,native)
     slot=saves=allocations=0
     for operation in native.operations:
         position=4+slot*2

@@ -3,6 +3,8 @@ import struct
 
 from captured_code import CapturedCode,CodeGuard,Rewrite
 from demo_writer import DemoWriter
+from native_unwind import read_frame
+from native_handlers import prepare_native_handler
 from x64_table import rel32
 
 NATIVE_ACTOR_OFFSET=0x56757C
@@ -17,6 +19,7 @@ OWNER_GUARDS=(
 def prepare_demo_reader(code: CapturedCode,storage: DemoWriter) -> tuple[Rewrite,...]:
     """Keep forty native record stores and both complete native frames. Their shared base carries the relocation."""
     for guard in OWNER_GUARDS:code.guarded(guard)
+    prepare_native_handler(code,read_frame(code,(0x25A4D40,0x25A5402,0x31DB6C0)))
     if storage.base<code.base+code.meta['imageSize'] and code.base<storage.base+storage.bytes:
         raise ValueError('Demo prior-record storage overlaps the native image.')
     edits=[]

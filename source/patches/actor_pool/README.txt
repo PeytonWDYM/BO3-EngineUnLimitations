@@ -264,8 +264,15 @@ Test-CallerUnwind.ps1 -DemoWriter -Actors 300 or 500 executes the guarded demo p
 Windows restores all 362 native instruction-boundary contexts and four called-leaf contexts through the expanded caller.
 Two stale allocation/save metadata controls fail. All owned function-table registrations disappear after the comparison.
 The existing temporal caller comparison still passes all 748 contexts with the shared fixture.
-The cookie/clear endpoints, demo context and mode, actor state exports, little-endian long dispatch, and field flags are authored.
-Native game handlers, whole callers, complete save behavior, runtime registrations, and game/peer lifecycle remain admission requirements.
+Both demo owners require exact GS metadata and complete native handler/common/security-cookie leaf guards before preparation.
+Test-DemoHandlers.py executes eighteen native handler cases, including untranslated frames, stale offsets, and invalid cookie high bits.
+Four valid frames return ExceptionContinueSearch; fourteen bad cases reach the native cookie failure branch. Six changed bindings refuse preparation.
+Test-DemoHandlerWindows.ps1 runs stock, 300-actor, and 500-actor native frame setup/teardown and complete GS helpers under actual Windows dispatch.
+Three normal returns and three exceptions pass; twelve owned function records disappear after deletion.
+Stale handler cookie data and invalid global cookie high bits reach the native failure branch in separate processes.
+This Windows fixture uses an authored body and owned cookie/exception/failure bindings. Real game registration remains unverified.
+The writer/reader packet tests still use authored cookie/clear endpoints, demo context and mode, actor state exports, little-endian long dispatch, and field flags.
+Whole game callers, complete save behavior, runtime registrations, and game/peer lifecycle remain admission requirements.
 No installed payload changes in these preparation tests.
 
 provenance.json records the owner's authorized local AAE prototype and original source hashes.

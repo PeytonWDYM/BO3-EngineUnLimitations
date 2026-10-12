@@ -139,7 +139,7 @@ def run(module: Path,executable: Path,dependencies: Path,output: Path,actors: in
         except ValueError:pass
         else:raise AssertionError('An altered demo writer frame escaped refusal.')
     output.parent.mkdir(parents=True,exist_ok=True);binary=output.with_suffix('.packet.bin');binary.write_bytes(packet)
-    paths=(Path(__file__),PATCHES/'demo_writer.py',PATCHES/'actor_wire.py',PATCHES/'native_unwind.py',PATCHES/'x64_table.py',PATCHES/'shape.py',PATCHES/'captured_code.py')
+    paths=(Path(__file__),PATCHES/'demo_writer.py',PATCHES/'actor_wire.py',PATCHES/'native_unwind.py',PATCHES/'native_handlers.py',PATCHES/'native_handlers.json',PATCHES/'x64_table.py',PATCHES/'shape.py',PATCHES/'captured_code.py')
     addresses=((code.base,helper),(storage.base,helper+1),(helper,helper),
                (storage.base,code.base+0x90000000),(code.base+0x90000000,helper),
                (0x800000000000-4096,helper),(0,helper),(storage.base,0))

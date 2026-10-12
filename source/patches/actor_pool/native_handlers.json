@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "scope": "Disabled GS-only native-owner recipes for twenty existing continuation sites. These do not admit runtime registration.",
+  "scope": "Disabled GS-only recipes for twenty existing continuation sites and two demo owners. These do not admit runtime registration.",
   "handler": {
     "rva": "0x2bc3a04",
     "size": 29,
@@ -11,7 +11,22 @@
     "size": 99,
     "sha256": "b17460e875c3ee6c6e0ea3ad52fa5c3b2d83c39f2a7a3547dcb87eb185dd1b0d"
   },
+  "cookie": {
+    "rva": "0x2bc3aa0",
+    "size": 31,
+    "sha256": "e2ffa4ae47cfda2452c6fe15fb18bc6a00332f427e5ead7fb5320cd7bc368cd7"
+  },
   "roots": [
+    {
+      "runtime": ["0x25ce9d0", "0x25cec89", "0x31dbb00"],
+      "size": 40,
+      "sha256": "48ef5b465c6b75a6337c03b160b50b12bed06a721b3db44de357ca0fdc2825ae"
+    },
+    {
+      "runtime": ["0x25a4d40", "0x25a5402", "0x31db6c0"],
+      "size": 36,
+      "sha256": "145d55c14b123be92e0433a7482a3a3b6bb5dbeffaf639192dbe04ae55f84423"
+    },
     {
       "runtime": [
         "0x15147a0",

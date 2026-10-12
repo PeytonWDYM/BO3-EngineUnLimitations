@@ -272,8 +272,13 @@ The native rebroadcast matches every incoming packet byte. Complete storage, can
 Count-only writer frames fail the cookie check. Stock reader widths or storage fail expanded playback.
 Both shapes pass 362 native Windows unwind boundaries, four called-leaf boundaries, and two stale allocation/save metadata refusals.
 The shared Windows fixture also retains its earlier 748-context caller comparison.
+Both demo owners now require guards for their exact GS metadata and the complete native handler, common helper, and security-cookie leaf.
+Eighteen native handler cases and six changed-binding refusals pass in owned memory.
+A separate Windows fixture executes the native frame setup, teardown, and all three GS helpers for stock, 300-actor, and 500-actor frames.
+All three normal returns and actual Windows exceptions pass. Stale cookie offsets and invalid cookies reach the native refusal branch.
+The Windows fixture uses an authored body and owned exception/failure bindings; actual game registration remains unverified.
 Demo context, state export, OS storage/clear, cookie, long-byte-order dispatch, demo mode, and field-flag endpoints are authored.
-Native game handlers, whole callers, save behavior, runtime registration, and real game/peer behavior remain unverified.
+Whole game callers, save behavior, runtime registration, and real game/peer behavior remain unverified.
 The combined export includes 221 native edits, 101 bodies, ten complete storage regions, and both static reset frames without overlaps.
 
 Remaining snapshot copies, game connection-ring ownership, actor flag/sentinel consumers, saves, complete caller execution, and matching peers still need verification.

@@ -74,7 +74,7 @@ def run(module: Path,executable: Path,dependencies: Path,output: Path,actors: in
         cases.append({'expanded':expanded,'contexts':len(contexts),'helperContexts':len(helper_controls),
                       'executedPrologEpilog':True,'bodyContextsUseCanonicalFrame':True})
     output.mkdir(parents=True);(output/'caller-unwind.bin').write_bytes(data)
-    paths=(Path(__file__),PATCHES/'demo_writer.py',PATCHES/'native_unwind.py',PATCHES/'shape.py',PATCHES/'captured_code.py')
+    paths=(Path(__file__),PATCHES/'demo_writer.py',PATCHES/'native_unwind.py',PATCHES/'native_handlers.py',PATCHES/'native_handlers.json',PATCHES/'x64_table.py',PATCHES/'shape.py',PATCHES/'captured_code.py')
     receipt={'passedExport':True,'cases':cases,'actors':actors,'fixtureSha256':hashlib.sha256(data).hexdigest(),
              'sourceFiles':{str(path):hashlib.sha256(path.read_bytes()).hexdigest() for path in paths},'gameWrites':0,'activationAllowed':False,
              'scope':'Captured native demo prolog/epilogue with original-width edits. Canonical body and leaf-call frames, omitted handlers, and authored cookie endpoint. Native game handler and game registration remain separate.'}
