@@ -7,11 +7,21 @@ from shape import ActorShape
 from x64_table import Emitter,continuation_jump
 
 OWNER_GUARDS=(
+    CodeGuard(0x616B00,96,'f5e0ca8ba4eb950432273e6aa18925d1bc95c859422ac2ffa0504cdf2578e3d7'),
+    CodeGuard(0x616B60,6631,'178bded61beaaf4a3ff608b22ccb6694b68a12d058c7bdc1d2ffbb771305b170'),
+    CodeGuard(0x618547,232,'b7e9cd8c9c3763712558a848e53712ac1a1deddd80f46810b1b927232feaef4a'),
+    CodeGuard(0x61862F,13912,'39ffebae566ea3485d8e4d7998fe7a121c7baeb199a9d533c484d28ec47ecbd0'),
     CodeGuard(0x1321250,0x780,'a39b1db9f4007c669c3ae34d218a95b37d120984a4b964e3efb84c12a1247b06'),
+    CodeGuard(0xFC7360,87780,'7abd952c8d8be3901042d7b6c746e12504f7511b9f8a0c3c18aee16f244fd717'),
     CodeGuard(0xFDCA50,0x1B27,'e6bd6a4a1733bfe0544224aa8f22acbbb4abfbe15c7e468218fd0d14d894ab00'),
     CodeGuard(0xFC26D0,0x319C,'c28c9ab6b295c9dbca798153cc161716df58f81999ba796008435c4c06a62702'),
     CodeGuard(0x3120D6C,16,'69e1ef0711bd452a74cae9b11beb6ef64708ab53c554d753d27ce7da81f358aa'),
     CodeGuard(0x3120D7C,24,'1fbce4f07f1dcb38c76c4805743b6c9b0c5aba628cd5aa532aec3bd09508d1c9'),
+    CodeGuard(0x3111338,20,'b177917bd19ad09968fdc45e3f71cbf1a07151d8a20c123a8b970cdec5857fa0'),
+    CodeGuard(0x311134C,40,'945cf318dc06da660d4c8ef90f539b5ef7b6b1a547e21c934a3398369ceaa12a'),
+    CodeGuard(0x3111374,28,'eb5d3d1a86cb70348854af4fe4b1bd7b4cf9c1a2b054c535eb0bc333f2ee2474'),
+    CodeGuard(0x3111390,28,'def0b4382ad05508bba0150bfad1148aa97f7d951a875aff22dd1749998b9985'),
+    CodeGuard(0x312075C,36,'735551dac0977adc7346a535626a1a44529282f7c0b6d5943522b7c5858ab7ef'),
 )
 
 
@@ -56,6 +66,8 @@ def prepare_client_snapshots(code: CapturedCode,layout: ClientSnapshots,stub_bas
         ('client_snapshot_actor_clamp',0x13218D6,'b940000000',1,layout.shape.actors),
         ('client_snapshot_export_actor_offset',0x13218F1,'4c8d8780af0800',3,layout.actor_offset),
         ('client_snapshot_consumer_actor_offset',0xFDCADF,'4881c680af0800',3,layout.actor_offset),
+        ('client_snapshot_entity_update_actor_offset',0xFCFDC0,'4c6384c384af0800',4,layout.actor_offset+4),
+        ('client_snapshot_entity_lookup_actor_offset',0x618687,'4c6384c184af0800',4,layout.actor_offset+4),
     ):
         original=bytes.fromhex(expected)
         if code.read(rva,len(original))!=original:

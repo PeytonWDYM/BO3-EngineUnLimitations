@@ -13,8 +13,8 @@ An optional engine patch for Steam Black Ops III Zombies. The Windows launcher s
 | Pending clientfield callbacks | 8,192 per local client |
 | Clientfield counters | 8,192 records |
 
-Candidate **0.5.0-test.2** includes the actor patch in the main launcher and installer.
-It applies 355 native edits and 1,079 checksum edits before game allocation.
+Candidate **0.5.0-test.3** includes the actor patch in the main launcher and installer.
+It applies 357 native edits and 1,079 checksum edits before game allocation.
 The installer adds a reversible Steam launch option. Original game files stay unchanged.
 The actor capacity does not change a map's script spawn cap or spawn 500 zombies automatically.
 
@@ -43,7 +43,11 @@ ended the match, and closed normally with the expanded script, callback, and cou
 That session used the stock actor capacity. Candidate 0.5.0-test.1 refused its first game startup before any patch writes.
 Three source guards used AAE hooks or randomized padding from a later crash capture.
 Candidate 0.5.0-test.2 uses the original startup instructions and complete packet function guards.
-Its guards match three saved startup captures. A new manual game test remains required.
+Its guards match three saved startup captures. The manual test passed startup and reached Der Eisendrache with AAE.
+The client then crashed at RVA `0x49E6F2` after it read a corrupt actor index. Test.2 is not ready for play.
+Test.3 moves the two remaining indexed snapshot readers with the expanded array.
+Native export and reader replays cover both local clients, both snapshot slots, and all exported actors.
+A new manual game test remains required.
 The native actor entity allocator still has 64 dedicated slots. The actor records and packet fields are expanded,
 but live populations above 64 need an allocation and cleanup repair. High-count testing is not ready.
 High actor counts, save/load, host migration, matching peers, and sustained performance need game tests.
@@ -70,7 +74,7 @@ Expanded actor saves use a distinct format identifier. The loader accepts the gu
 initializes unused records, and keeps the selected read counts active until the complete native load ends.
 Expanded sessions require matching patched peers; matching patches alone do not prove compatibility.
 
-The launcher checks 876 complete actor source guards. Its 264 actor publication records share the frozen startup
+The launcher checks 886 complete actor source guards. Its 266 actor publication records share the frozen startup
 transaction with the VM, clientfield, gate, and checksum patches. Failed publication restores bytes and page protections.
 The primary thread registers 2,464 runtime function rows before game entry continues.
 Owned Windows tests cover native frame metadata, handler translation, complete load scope, publication,

@@ -9,6 +9,6 @@ inline constexpr std::uint32_t kClientTotal = 250001;
 inline constexpr std::uint32_t kPendingCallbacksPerLocalClient = 8192;
 inline constexpr std::uint32_t kClientfieldCounters = 8192;
 inline constexpr std::uint32_t kActors=500,kSentients=540,kActorRuntimeFunctions=2464;
-inline constexpr std::size_t kNativeEdits = 355;
-inline constexpr std::string_view kCandidate = "0.5.0-test.2";
+inline constexpr std::size_t kNativeEdits = 357;
+inline constexpr std::string_view kCandidate = "0.5.0-test.3";
 }

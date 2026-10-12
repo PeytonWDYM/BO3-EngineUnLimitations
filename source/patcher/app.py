@@ -11,8 +11,9 @@ from patcher.errors import PatchError
 from patcher.steam_launch import SteamPlay
 from patcher.windows import steam_context, steam_installs
 
-VERSION = '0.5.0-test.2'
-NOTICE = ('500 actors, 540 sentients, 500,000 server and 250,000 client script slots for Zombies. '
+VERSION = '0.5.0-test.3'
+NOTICE = ('500 actor records, 540 sentients, 500,000 server and 250,000 client script slots for Zombies. '
+          'Live actor counts above 64 still need the entity allocation repair. '
           'This is an unverified game candidate. Actor behavior, saves, both 8,192-entry clientfield pools, '
           'multiplayer, and host migration need game tests. Proton is not supported.')
 

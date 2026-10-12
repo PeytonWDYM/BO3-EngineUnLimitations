@@ -19,10 +19,10 @@ def run(build: Path, executable: Path, output: Path) -> None:
     profile = manifest['builds'][0]
     receipt = json.loads((build / 'build-receipt.json').read_text(encoding='utf-8-sig'))
     assert receipt['clientTotal'] == 250001
-    assert manifest['version'] == '0.5.0-test.2'
+    assert manifest['version'] == '0.5.0-test.3'
     capacities = {'serverUsableSlots': 500000, 'pendingCallbacksPerLocalClient': 8192,
                   'clientfieldCounters': 8192, 'actorCapacity': 500, 'sentientCapacity': 540,
-                  'actorRuntimeFunctions': 2464, 'nativeEdits': 355}
+                  'actorRuntimeFunctions': 2464, 'nativeEdits': 357}
     for name, expected in capacities.items():
         assert receipt[name] == expected and manifest[name] == expected, name
     assert receipt['gameSha256'] == profile['gameSha256']
