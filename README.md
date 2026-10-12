@@ -13,8 +13,8 @@ An optional engine patch for Steam Black Ops III Zombies. The Windows launcher s
 | Pending clientfield callbacks | 8,192 per local client |
 | Clientfield counters | 8,192 records |
 
-Candidate **0.5.0-test.6** includes the actor patch in the main launcher and installer.
-It applies 365 native edits and 1,079 checksum edits before game allocation.
+Candidate **0.5.0-test.7** includes the actor patch in the main launcher and installer.
+It applies 372 native edits and 1,079 checksum edits before game allocation.
 The installer adds a reversible Steam launch option. Original game files stay unchanged.
 The actor capacity does not change a map's script spawn cap or spawn 500 zombies automatically.
 
@@ -38,39 +38,19 @@ No installer action starts the game.
 
 ## Compatibility and test status
 
-This is an experimental Windows candidate. Candidate 0.4.0-test.1 loaded a Zombies map with AAE,
-ended the match, and closed normally with the expanded script, callback, and counter pools.
-That session used the stock actor capacity. Candidate 0.5.0-test.1 refused its first game startup before any patch writes.
-Three source guards used AAE hooks or randomized padding from a later crash capture.
-Candidate 0.5.0-test.2 uses the original startup instructions and complete packet function guards.
-Its guards match three saved startup captures. The manual test passed startup and reached Der Eisendrache with AAE.
-The client then crashed at RVA `0x49E6F2` after it read a corrupt actor index. Test.2 is not ready for play.
-Test.3 moves the two remaining indexed snapshot readers with the expanded array.
-Native export and reader replays cover both local clients, both snapshot slots, and all exported actors.
-Test.3 then crashed in a server field getter at RVA `0x1B14BC8`, which still read the old sentient pool.
-Test.4 relocates that indexed getter and retains its zero-handle behavior.
-It also relocates the remaining secondary actor member reader.
-Its actor entity allocator uses normal free slots after the 64 dedicated slots fill.
-It keeps native reuse timing, exhaustion diagnostics, and actor cleanup.
-Native replay covers 500 simultaneous actor entity allocations and cleanup of all 436 normal slots.
-The exact published allocator frame passes Windows unwind checks at each instruction boundary.
-Test.4 refused a field descriptor before its native initializer ran. It wrote no patches.
-Test.5 checks the cold descriptor and its complete native initializer, registered callback, and field name.
-It also binds the indexed getter to the actual arena address. Replays cover different arena offsets and image bases.
-Test.5 reached Der Eisendrache with AAE and a 500 setting, but crashed at RVA `0x14C57A7`.
-The dump contains 69 allocated actors after the crash. This does not prove stable play above 64 actors.
-A separate frontend exit produced an execute access violation in an AAE relay.
-The AAE relay repair passed a low-count Der Eisendrache load, match end, and exit with no new dump.
-The actor crash comes from a client context callback that still writes into the old actor bank.
-At actor 64, that write overlaps the viewmodel pose cache.
-Test.6 relocates that callback and four related client and server references.
-Native replay covers both clients and actor boundaries through 499. Windows publication checks use the actual allocated arena.
-Test.6 reached a 96-zombie control, then crashed at RVA `0x23F8515`.
-A separate 83-row actor state allocation lacks storage for actor 77's row 95.
-Its allocator, fallback row, and lifecycle need expansion. Test.6 is not ready for high-count play.
-Typed actor and sentient pointer saves also retain stock bounds.
-Normal entity capacity still limits the population that each map can support.
-High actor counts, save/load, host migration, matching peers, and sustained performance need game tests.
+This is an experimental Windows candidate. The expanded script, callback, and counter profile passed a map load, match end, and exit.
+Those tests used the stock actor capacity. The separate AAE relay repair also passed a low-count Der Eisendrache session and exit.
+
+Earlier actor candidates exposed stale snapshot, sentient, and context references. The launcher now relocates those references with their storage.
+Test.6 fixed the viewmodel cache overlap at actor 64 but failed a 96-cap match at RVA `0x23F8515`.
+A separate physics pool still had 83 rows. Actor 77 selected row 95 outside that allocation.
+Test.7 expands the server and both client physics pools to 519 rows through their native sizing and allocation paths.
+Initialization, reset, time updates, and shutdown use the same expanded count. The special row moves from 82 to 518.
+
+Native replays cover the original fault, complete sizing constructors, actor boundaries through 499, and all revised row loops.
+Windows tests cover publication, rollback, ASLR, registration, and guard refusal. These checks support game testing.
+Typed actor and sentient pointer saves retain stock bounds. Normal entities still limit the population that each map can support.
+Measured high-count play, match end, exit, save/load, migration, peers, and sustained performance remain required.
 
 [Spawn pacing and actor-capacity research](research/zombie-spawn-limits.txt) describes the work needed for faster spawn batches and more than 200 zombies.
 The findings include native instruction replays. Gameplay validation remains pending.
@@ -89,12 +69,15 @@ The actor patch expands the server pools, inline sentient awareness storage, DOb
 It preserves native record strides. Its 48MiB arena also holds snapshot, demo, history, and save/load storage.
 Client actor banks use an expanded native hunk allocation. The connection ring retains 8,192 actor records per local client.
 Packet, clone, entity actor-index, and demo paths use nine-bit actor IDs and matching invalid values.
+Native physics banks retain 18 player rows, add 500 actor rows, and reserve one special row.
+Each bank uses 5,621,808 bytes. Native hunk sizing includes the full allocation before its allocation pass.
 
-Expanded actor saves use a distinct format identifier. The loader accepts the guarded legacy formats,
-initializes unused records, and keeps the selected read counts active until the complete native load ends.
+The save wrapper marks expanded actor storage with a distinct format identifier.
+The loader accepts guarded legacy formats, initializes unused records, and keeps selected read counts through the complete native load.
+This does not yet establish save/load compatibility at high actor counts.
 Expanded sessions require matching patched peers; matching patches alone do not prove compatibility.
 
-The launcher checks 934 complete actor source guards. Its 274 actor publication records share the frozen startup
+The launcher checks 1,096 exact actor source guards. Its 281 actor publication records share the frozen startup
 transaction with the VM, clientfield, gate, and checksum patches. Failed publication restores bytes and page protections.
 The primary thread registers 2,465 runtime function rows before game entry continues.
 Owned Windows tests cover native frame metadata, handler translation, complete load scope, publication,
