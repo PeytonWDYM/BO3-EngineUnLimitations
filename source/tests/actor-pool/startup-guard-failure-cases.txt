@@ -1,0 +1,10 @@
+1. Keep the exact executable and private capture identities before preparing startup guards.
+2. Refuse either captured AAE hook when any source byte differs from its pinned preimage.
+3. Restore only the two researched stock instructions during offline source preparation.
+4. Match both complete restored owners against each admitted saved stock startup image.
+5. Guard every complete packet writer, reader, field codec, direct branch owner, and leaf endpoint.
+6. Preserve split native runtime rows and their complete chained unwind metadata.
+7. Refuse a changed byte anywhere in the complete packet code guards.
+8. Keep every executable template copy inside an independent complete admitted source guard.
+9. Do not hash randomized padding or mask instruction bytes to accept a stock image.
+10. Keep private game bytes and repeatable result receipts outside Git. Do not start the game.

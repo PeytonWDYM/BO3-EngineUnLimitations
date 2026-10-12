@@ -19,7 +19,7 @@ def run(build: Path, executable: Path, output: Path) -> None:
     profile = manifest['builds'][0]
     receipt = json.loads((build / 'build-receipt.json').read_text(encoding='utf-8-sig'))
     assert receipt['clientTotal'] == 250001
-    assert manifest['version'] == '0.5.0-test.1'
+    assert manifest['version'] == '0.5.0-test.2'
     capacities = {'serverUsableSlots': 500000, 'pendingCallbacksPerLocalClient': 8192,
                   'clientfieldCounters': 8192, 'actorCapacity': 500, 'sentientCapacity': 540,
                   'actorRuntimeFunctions': 2464, 'nativeEdits': 355}

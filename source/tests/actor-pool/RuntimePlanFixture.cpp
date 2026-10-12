@@ -121,7 +121,12 @@ int main(int argc,char** argv) {
         for(const auto& edit:retained.edits)Require(std::memcmp(reinterpret_cast<void*>(edit.address),edit.original.data(),edit.original.size())==0,"Fixture removal bytes differ.");
         Require(VirtualFree(reinterpret_cast<void*>(arena),0,MEM_RELEASE)!=0,"Fixture retained arena removal failed.");
         auto* byte=static_cast<unsigned char*>(image)+0x19C00B0;*byte^=1;
-        refused=false;try {auto rejected=bo3::actors::BuildRuntimePlan(process,game,module,offsets);}catch(const std::exception&){refused=true;}
+        refused=false;try {auto rejected=bo3::actors::BuildRuntimePlan(process,game,module,offsets);}catch(const std::exception& error){
+            const std::string message=error.what();
+            Require(message.find("RVA 0x")!=std::string::npos && message.find("expected SHA256")!=std::string::npos &&
+                message.find("observed SHA256")!=std::string::npos,"Fixture guard refusal lacks its exact mismatch.");
+            refused=true;
+        }
         Require(refused,"Fixture changed guard passed.");*byte^=1;
         auto* pointer=reinterpret_cast<std::uintptr_t*>(static_cast<unsigned char*>(image)+0x33B1480);++*pointer;
         refused=false;try {auto rejected=bo3::actors::BuildRuntimePlan(process,game,module,offsets);}catch(const std::exception&){refused=true;}

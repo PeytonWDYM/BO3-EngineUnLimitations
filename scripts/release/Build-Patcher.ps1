@@ -8,7 +8,7 @@ if ((Test-Path -LiteralPath $build) -or $build.Equals($repo,[StringComparison]::
 $manifest=Get-Content -LiteralPath (Join-Path $repo 'source/release.json') -Raw | ConvertFrom-Json
 if ($manifest.schemaVersion -ne 1 -or $manifest.builds.Count -ne 1) { throw 'This builder requires one complete verified native profile.' }
 $receipt=Get-Content -LiteralPath (Join-Path $NativeBuild 'build-receipt.json') -Raw | ConvertFrom-Json
-if ($manifest.version -ne '0.5.0-test.1' -or $manifest.clientUsableSlots -ne 250000 -or $receipt.clientTotal -ne 250001) { throw 'Use the actor500 release and complete client250K native build.' }
+if ($manifest.version -ne '0.5.0-test.2' -or $manifest.clientUsableSlots -ne 250000 -or $receipt.clientTotal -ne 250001) { throw 'Use the actor500 release and complete client250K native build.' }
 $capacities=@{serverUsableSlots=500000;pendingCallbacksPerLocalClient=8192;clientfieldCounters=8192;actorCapacity=500;sentientCapacity=540;actorRuntimeFunctions=2464;nativeEdits=355}
 foreach ($entry in $capacities.GetEnumerator()) {
     if ($manifest.($entry.Key) -ne $entry.Value -or $receipt.($entry.Key) -ne $entry.Value) { throw "The release or native build capacity differs: $($entry.Key)" }

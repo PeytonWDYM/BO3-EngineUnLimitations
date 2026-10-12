@@ -1,11 +1,17 @@
 """Prepare coordinated actor packet widths and the native invalid ID. Runtime admission remains gated."""
 import struct
+import json
+from pathlib import Path
 
 from captured_code import CapturedCode,CodeGuard,Rewrite
 from shape import ActorShape
 
-OWNER_GUARDS=(
-    CodeGuard(0x20F0000,0x40000,'4f818c4de9d1c9e55918609c5404e16141a63098699d43032511f7a62ebdf066'),
+# Full packet/field-codec closure includes native split families, leaf endpoints, and unwind metadata.
+# The former sampled range also contained unrelated randomized protection padding.
+_CODEC_INVENTORY=json.loads((Path(__file__).parent/'wire_guard_inventory.json').read_text())
+CODEC_CODE_GUARDS=tuple(CodeGuard(**row) for row in _CODEC_INVENTORY['code'])
+CODEC_UNWIND_GUARDS=tuple(CodeGuard(**row) for row in _CODEC_INVENTORY['unwind'])
+OWNER_GUARDS=CODEC_CODE_GUARDS+CODEC_UNWIND_GUARDS+(
     CodeGuard(0x13655C0,0x3AE,'669a91c5d84aba1ac5aa753fac4ee46085448a009f03119c9ea027bbb03fd50c'),
     CodeGuard(0x33A3608,24,'e2aacee5dd08839a2752319eab3ca7659794a3c542cb83cecbd998e353624c07'),
     CodeGuard(0x2FC69F0,336,'d5437d724e45ca59b216430dea35e0ef6703d848651a19346ebdadbb995545b1'),

@@ -24,3 +24,6 @@ Runtime plan failure cases. Write these cases before the backend.
 22. Each helper POD export must fit one page. Refuse a crossing export before arena allocation.
 23. LF and CRLF copies of the complete source closure must generate identical runtime headers without private inputs.
 24. A source change other than line endings must still refuse profile generation.
+The first real startup can refuse a complete code guard before writes.
+The refusal must identify the guard RVA, byte count, expected SHA-256, and observed SHA-256.
+Keep the complete guard and refusal behavior. Do not admit a partial or unknown source.

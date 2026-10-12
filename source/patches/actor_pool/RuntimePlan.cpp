@@ -8,6 +8,7 @@
 #include <array>
 #include <cstring>
 #include <limits>
+#include <sstream>
 #include <stdexcept>
 #pragma comment(lib,"bcrypt.lib")
 
@@ -49,8 +50,18 @@ void Admit(HANDLE process,vm_startup::ImageRange game) {
             value=profile::CapturedBase+field.target;std::memcpy(bytes.data()+field.rva-guard.rva,&value,8);
         }
         const auto digest=Sha256(bytes);
-        if(std::memcmp(digest.data(),profile::Data+guard.digest,digest.size()))
-            throw std::runtime_error("The complete actor native source guard differs.");
+        if(std::memcmp(digest.data(),profile::Data+guard.digest,digest.size())) {
+            std::ostringstream message;
+            message<<"The complete actor native source guard differs at RVA 0x"<<std::hex<<guard.rva
+                <<" ("<<std::dec<<guard.size<<" bytes), expected SHA256 ";
+            auto writeDigest=[&](const unsigned char* value) {
+                constexpr char digits[]="0123456789abcdef";
+                for(std::size_t index=0;index<digest.size();++index)
+                    message<<digits[value[index]>>4]<<digits[value[index]&15];
+            };
+            writeDigest(profile::Data+guard.digest);message<<", observed SHA256 ";writeDigest(digest.data());
+            throw std::runtime_error(message.str());
+        }
     }
     for(const auto rva:{0xA1B0798u,0xA1B0790u}) {
         const auto bytes=Read(process,game.base+rva,8);
