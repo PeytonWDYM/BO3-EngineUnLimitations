@@ -14,7 +14,7 @@ from x64_table import MemberInstruction, REGISTERS, accessor_stub, member_stub, 
 ACTIVATION_GATES = (
     'Complete static, folded, leaf, returned-pointer and cross-call consumer coverage.',
     'Expand temporal output, history producers/readers, stack arrays, and their native frames.',
-    'Verify the six-bit actor packet codec, six/seven-bit netfields, client arrays, and sentinel 64.',
+    'Verify expanded actor codecs, one-based clone sources, invalid IDs, complete client arrays, and demo paths.',
     'Admit a distinct combined save format. Preserve stock64/104/64 and VM-only imports.',
     'Verify native attachments, following save sections, resets, and host migration.',
     'Register exact stub stack phases and complete native frames. Verify Windows unwinding and handlers.',

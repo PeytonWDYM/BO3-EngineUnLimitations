@@ -49,7 +49,7 @@
       "role": "entity_actor_index_sentinel64",
       "sha256": "4db7fbfb7a4eddc1c61528408d7a578d2c5ccffe5ccbc0fd4f8bc64d0defde21",
       "status": "blocked",
-      "reason": "Sentinel and entity-state actorNum/clonedFromActorNum client contracts remain unverified."
+      "reason": "The invalid actorNum rewrite is prepared in the separate wire stage. Full destructor/client flag contracts, saves, and peers remain unverified."
     },
     {
       "rva": "0x24ac9ab",

@@ -19,6 +19,9 @@ def run(module: Path,executable: Path,output: Path,actors: int) -> dict:
     assert process.returncode==0,process.stderr
     plan=json.loads((output/'plan.json').read_text())
     snapshots=plan['clientSnapshotPreparation']
+    assert len(plan['wirePreparation']['rewrites'])==6
+    assert plan['wirePreparation']['rewrites'][-1]['rva']=='0x24ae77f'
+    assert plan['wirePreparation']['rewrites'][-1]['size']==8
     reset=snapshots['resetPreparation']
     assert plan['deploymentAllowed'] is snapshots['deploymentAllowed'] is reset['deploymentAllowed'] is False
     assert len(reset['rewrites'])==len(reset['staticPEFrames'])==2
@@ -52,7 +55,7 @@ def run(module: Path,executable: Path,output: Path,actors: int) -> dict:
     assert all('stubFile' not in edit for edit in ring['rewrites'])
     edits=plan['rewrites']+plan['wirePreparation']['rewrites']+snapshots['rewrites']+reset['rewrites']+actor_banks['rewrites']+allocation['rewrites']+ring['rewrites']
     native=sorted((int(edit['rva'],0),int(edit['rva'],0)+edit['size']) for edit in edits)
-    assert len(native)==209 and all(left[1]<=right[0] for left,right in zip(native,native[1:]))
+    assert len(native)==210 and all(left[1]<=right[0] for left,right in zip(native,native[1:]))
     storage=[(int(region['address'],0),int(region['address'],0)+region['bytes']) for region in plan['storageRegions']]
     storage.append((int(snapshots['storageAddress'],0),int(snapshots['storageAddress'],0)+snapshots['storageBytes']))
     storage.append((int(actor_banks['storageAddress'],0),int(actor_banks['storageAddress'],0)+actor_banks['storageBytes']))

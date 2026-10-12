@@ -28,7 +28,7 @@ def run(module: Path,executable: Path,dependencies: Path,output: Path,actors: in
     data,stack,stop=0x10000000,0x20000000,0x30000000
     msg,buffer,info,old,new,destination=data,data+0x1000,data+0x21000,data+0x22000,data+0x23000,data+0x24000
     cases=[]
-    data_pages=(0x35EE000,0x33A3000,0x2FC6000,0x33B1000)
+    data_pages=(0x35EE000,0x33A3000,0x2FC6000,0x33B1000,0x24AE000)
     span=code.read(0x20F0000,0x40000)
 
     def machine(expanded: bool):

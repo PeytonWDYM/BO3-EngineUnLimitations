@@ -206,11 +206,18 @@ Windows finds its static function entry without runtime registration and unwinds
 Both shapes pass two complete owned resets, template/binding refusals, canary checks, and lookup removal after DLL unload.
 This validates the independent reset frame. Other actor stubs, game handlers, and live pool binding remain separate requirements.
 The separate actor wire preparation coordinates five nine-bit packet and entity actor-index changes.
+Its sixth rewrite moves the cleanup actorNum invalid value from 64 to the selected actor capacity.
+The clone field retains zero as no-clone and encodes its source as actor ID plus one.
 Both expanded shapes pass 61 native packet/field cases and thirteen guard refusals.
 The 500-actor case round-trips all records in reverse order through the captured writer, patched client number-reader call site, and payload reader.
 It covers changed/unchanged states, sparse removals, padding, record canaries, and both wider entity actor-index fields.
 Stock high-ID packets and a mismatched six-bit reader fail the Unicorn comparison. Clear, alternate field-table flag, and cookie endpoints are authored.
 Expanded client storage, snapshot copies, sentinel consumers, demos/migration, alternate field selection, and peer admission remain required.
+Separate entity contract tests pass twenty cases and eleven owner/metadata refusals per shape.
+Native field codecs feed the clone zero branch, source load, address calculation, and selected field copy for both clients, including the final actor.
+Complete appended banks and unchanged padding pass. The captured cleanup tail preserves its epilogue and restored registers.
+Its actual stock value collides with valid actor 64 in the expanded range; the prepared value stays outside that range and round-trips through the codec.
+The complete destructor and clone callers, other flag consumers, saves, and peers remain unverified.
 The separate client snapshot preparation provides two complete external snapshots for each of two local clients.
 It keeps native member offsets and appends space for all 500 actor records to each snapshot.
 Five guarded rewrites coordinate export, actor lookup, and slot selection. The native retry entry and client object layout stay intact.
@@ -254,7 +261,7 @@ Both shapes pass complete native cache/connection construction and 306 packet fr
 The native parser handles full updates, sparse removals, partial updates, empty lists, and ring wraps while retaining old snapshots and canaries.
 A stock ring fails the same history comparison. Count-only increases fail allocation-extent checks before packet writes. Thirteen changed-owner refusals pass.
 OS storage/clear/cookie endpoints and the outer packet-list terminator are authored. Demo consumers, cursor overflow, saves, and full game callers remain unverified.
-The combined export includes 209 native edits, 100 bodies, nine complete storage regions, and both static reset frames without overlaps.
+The combined export includes 210 native edits, 100 bodies, nine complete storage regions, and both static reset frames without overlaps.
 
 Remaining snapshot copies, game connection-ring ownership, actor flag/sentinel consumers, saves, complete caller execution, and matching peers still need verification.
 No 500-actor, expanded-entity, reliable-command, gamestate, higher-round, or player-count patch is active here.

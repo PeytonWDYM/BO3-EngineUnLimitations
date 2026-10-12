@@ -270,3 +270,8 @@ Appended client actor banks
 222. A stock ring must fail the same sixteen-snapshot history comparison. A count-only increase must fail backing-extent validation before parser writes.
 223. Guard complete connection constructor/parser owners and metadata before rewriting fixed-width operands. Keep saves, demo consumers, signed cursor overflow, full callers, and matching peers in runtime admission.
 224. Export both guarded ring rewrites with the other client actor stages. Bind its native hunk allocation extent and sixteen-snapshot capacity. Refuse constructor changes before output, and check every combined edit against storage, code, and checksum intervals.
+225. Move the native entity actorNum invalid value from 64 to the selected actor capacity. The old value must be detected as a valid actor collision in expanded preparation.
+226. Keep clonedFromActorNum zero as no-clone and encode every source as actor ID plus one. Round-trip zero, boundary, and final sources through native entity field codecs before using their captured clone consumer.
+227. Execute the native clone selection and field-copy blocks against complete appended banks for both local clients. Verify the source-minus-one calculation, selected fields, other client, and untouched padding/canaries.
+228. Execute the captured cleanup tail with the expanded invalid value and original epilogue. Preserve actor/entity data outside the native cleared members and every restored register. The full destructor and peer/save paths remain separate admission requirements.
+229. Guard complete cleanup and clone owners and their metadata before preparing the entity invalid-value rewrite. Keep its original instruction width and include it in the combined export/checksum audit.

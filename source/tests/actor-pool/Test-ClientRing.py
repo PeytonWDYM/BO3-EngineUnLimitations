@@ -41,7 +41,7 @@ def run(module: Path,executable: Path,dependencies: Path,output: Path,actors: in
                 if operand.type==capstone.x86.X86_OP_MEM and operand.mem.base==capstone.x86.X86_REG_RIP:
                     rva=instruction.address+instruction.size+operand.mem.disp-code.base
                     if 0<=rva<code.meta['imageSize']:pages.add(rva&~4095)
-    pages.update((0x495A000,0x17E82000,0x49B2000,0x4C98000,0x4C9F000,0x35EE000,0x33A3000,0x2FC6000,0x33B1000))
+    pages.update((0x495A000,0x17E82000,0x49B2000,0x4C98000,0x4C9F000,0x35EE000,0x33A3000,0x2FC6000,0x33B1000,0x24AE000))
     # The native connection constructor clears a complete static auxiliary table at this typed RIP binding.
     pages.update(range(0x56A3000,0x56BC000,4096))
     endpoints=(0x14ED6C0,0x135DC20,0x23F8200,0xB24C0,0x20C4E80,0x20C5EE0,0x20C4F10,
