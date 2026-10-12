@@ -44,6 +44,8 @@ That session used the stock actor capacity. Candidate 0.5.0-test.1 refused its f
 Three source guards used AAE hooks or randomized padding from a later crash capture.
 Candidate 0.5.0-test.2 uses the original startup instructions and complete packet function guards.
 Its guards match three saved startup captures. A new manual game test remains required.
+The native actor entity allocator still has 64 dedicated slots. The actor records and packet fields are expanded,
+but live populations above 64 need an allocation and cleanup repair. High-count testing is not ready.
 High actor counts, save/load, host migration, matching peers, and sustained performance need game tests.
 
 [Spawn pacing and actor-capacity research](research/zombie-spawn-limits.txt) describes the work needed for faster spawn batches and more than 200 zombies.
