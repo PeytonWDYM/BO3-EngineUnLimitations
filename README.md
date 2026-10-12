@@ -247,9 +247,16 @@ Sixty-four stock/expanded cases cover both client counts and all sixteen PEB bra
 Every native allocation fits that reserve. Complete canaries and caller registers remain intact without another reserve or commit.
 Thirty-nine changed caller/provider/dispatch cases refuse preparation. Two stale measured reserves reach the native exhaustion path.
 Outer components, OS allocation/clear APIs, and auxiliary initialization remain authored in this separate replay. Game behavior remains unverified.
-The combined export includes 207 native edits, 100 bodies, nine complete storage regions, and both static reset frames without overlaps.
+The connection actor ring preparation raises its complete native allocation from 1,024 to 8,192 records and updates its capacity together.
+Its two fixed-width operands add no helper calls or frame changes. The native two-pass hunk automatically measures the larger reserve.
+Each local client gains 573,440 bytes, enough to retain sixteen full 500-actor snapshots. The adjacent capacity stays at its verified stock value.
+Both shapes pass complete native cache/connection construction and 306 packet frames across both local-client counts and two PEB branches.
+The native parser handles full updates, sparse removals, partial updates, empty lists, and ring wraps while retaining old snapshots and canaries.
+A stock ring fails the same history comparison. Count-only increases fail allocation-extent checks before packet writes. Thirteen changed-owner refusals pass.
+OS storage/clear/cookie endpoints and the outer packet-list terminator are authored. Demo consumers, cursor overflow, saves, and full game callers remain unverified.
+The combined export includes 209 native edits, 100 bodies, nine complete storage regions, and both static reset frames without overlaps.
 
-Remaining snapshot copies, connection ring ownership, actor flag/sentinel consumers, saves, complete caller execution, and matching peers still need verification.
+Remaining snapshot copies, game connection-ring ownership, actor flag/sentinel consumers, saves, complete caller execution, and matching peers still need verification.
 No 500-actor, expanded-entity, reliable-command, gamestate, higher-round, or player-count patch is active here.
 No new engine performance claim applies to this source work.
 

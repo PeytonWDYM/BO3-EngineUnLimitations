@@ -19,6 +19,7 @@ from client_snapshot_reset import prepare_client_snapshot_resets
 from client_reset_frames import emit_client_reset_frames
 from client_actors import ClientActors,prepare_client_actors,ACTOR_BANK_OFFSET
 from client_allocator import prepare_client_allocation
+from client_actor_ring import prepare_client_actor_ring,RING_RECORDS
 
 
 def export_rewrites(output: Path,prefix: str,rewrites: tuple[Rewrite,...]) -> list[dict]:
@@ -55,12 +56,14 @@ def export(module: Path, executable: Path, output: Path, actors: int = 500) -> d
     client_actor_edits = prepare_client_actors(code,client_actors)
     client_allocation = (prepare_client_allocation(code,code.base+0x201E0000),)
     allocation_unwind = requirements(code,client_allocation)
+    client_ring = prepare_client_actor_ring(code,layout.shape)
     output.mkdir(parents=True)
     edits = export_rewrites(output,'stub',plan.rewrites)
     client_edits = export_rewrites(output,'snapshot-stub',snapshot_edits)
     reset_edits = export_rewrites(output,'snapshot-reset',tuple(frame.rewrite for frame in snapshot_resets))
     client_actor_report = export_rewrites(output,'client-actor',client_actor_edits)
     allocation_report = export_rewrites(output,'client-allocation',client_allocation)
+    ring_report = export_rewrites(output,'client-ring',client_ring)
     template_file = output/'ClientResetTemplates.asm'
     template_file.write_text(reset_assembly,encoding='ascii')
     report = {'status':f'disabled_actor_{actors}_preparation','deploymentAllowed':False,'coverageComplete':False,
@@ -92,6 +95,10 @@ def export(module: Path, executable: Path, output: Path, actors: int = 500) -> d
                   'allocationPreparation':{'deploymentAllowed':False,'nativeProviderVerified':False,
                       'localClientCounts':[1,2],'additionalBytes':ACTOR_BANK_OFFSET,
                       'rewrites':allocation_report,'unwindRequirements':allocation_unwind}},
+              'clientActorRingPreparation':{'deploymentAllowed':False,'gameBindingVerified':False,
+                  'records':RING_RECORDS,'actorRecordBytes':80,'retainedSnapshots':16,
+                  'storageBytesPerLocalClient':RING_RECORDS*80,'additionalBytesPerLocalClient':(RING_RECORDS-1024)*80,
+                  'storageProvider':'native_two_pass_hunk','adjacentCapacity':1024,'rewrites':ring_report},
               'sourceFiles':{path.name:hashlib.sha256(path.read_bytes()).hexdigest()
                              for path in Path(__file__).parent.iterdir() if path.suffix in ('.py','.json','.txt')}}
     (output/'plan.json').write_text(json.dumps(report,indent=2)+'\n')

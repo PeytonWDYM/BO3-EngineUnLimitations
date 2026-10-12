@@ -42,9 +42,17 @@ def run(module: Path,executable: Path,output: Path,actors: int) -> dict:
     continuation=allocation['unwindRequirements'][0]
     assert continuation['kind']=='native_frame_continuation' and continuation['runtimeAbiAdmitted'] is False
     assert len(continuation['ownedContinuationPhases'])==7
-    edits=plan['rewrites']+plan['wirePreparation']['rewrites']+snapshots['rewrites']+reset['rewrites']+actor_banks['rewrites']+allocation['rewrites']
+    ring=plan['clientActorRingPreparation']
+    assert ring['deploymentAllowed'] is ring['gameBindingVerified'] is False
+    assert ring['records']==8192 and ring['actorRecordBytes']==80 and ring['retainedSnapshots']==16
+    assert ring['storageBytesPerLocalClient']==655360 and ring['additionalBytesPerLocalClient']==573440
+    assert ring['storageProvider']=='native_two_pass_hunk' and ring['adjacentCapacity']==1024
+    assert [edit['rva'] for edit in ring['rewrites']]==['0x1349eb6','0x134b7b8']
+    assert [edit['size'] for edit in ring['rewrites']]==[5,7]
+    assert all('stubFile' not in edit for edit in ring['rewrites'])
+    edits=plan['rewrites']+plan['wirePreparation']['rewrites']+snapshots['rewrites']+reset['rewrites']+actor_banks['rewrites']+allocation['rewrites']+ring['rewrites']
     native=sorted((int(edit['rva'],0),int(edit['rva'],0)+edit['size']) for edit in edits)
-    assert len(native)==207 and all(left[1]<=right[0] for left,right in zip(native,native[1:]))
+    assert len(native)==209 and all(left[1]<=right[0] for left,right in zip(native,native[1:]))
     storage=[(int(region['address'],0),int(region['address'],0)+region['bytes']) for region in plan['storageRegions']]
     storage.append((int(snapshots['storageAddress'],0),int(snapshots['storageAddress'],0)+snapshots['storageBytes']))
     storage.append((int(actor_banks['storageAddress'],0),int(actor_banks['storageAddress'],0)+actor_banks['storageBytes']))
