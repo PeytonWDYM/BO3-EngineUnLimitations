@@ -53,6 +53,9 @@ Windows tests cover publication, rollback, ASLR, registration, and guard refusal
 Test.7 passed a 13.5-minute Der Eisendrache control with a 96-zombie cap and advancing server frames and time.
 Telemetry reached 101 allocated actors. Match end, lobby return, and normal exit passed with no new dump.
 
+A separate 500-cap test reached 384 actors before `G_Spawn: no free entities` ended the match.
+The normal entity high-water value reached its stock limit of 1,022. All three expanded physics banks remained valid.
+
 Typed actor and sentient pointer saves retain stock bounds. Normal entities still limit the population that each map can support.
 Measured 500 actors, save/load, migration, peers, and sustained performance remain required.
 
