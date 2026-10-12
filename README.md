@@ -49,8 +49,12 @@ Initialization, reset, time updates, and shutdown use the same expanded count. T
 
 Native replays cover the original fault, complete sizing constructors, actor boundaries through 499, and all revised row loops.
 Windows tests cover publication, rollback, ASLR, registration, and guard refusal. These checks support game testing.
+
+Test.7 passed a 13.5-minute Der Eisendrache control with a 96-zombie cap and advancing server frames and time.
+Telemetry reached 101 allocated actors. Match end, lobby return, and normal exit passed with no new dump.
+
 Typed actor and sentient pointer saves retain stock bounds. Normal entities still limit the population that each map can support.
-Measured high-count play, match end, exit, save/load, migration, peers, and sustained performance remain required.
+Measured 500 actors, save/load, migration, peers, and sustained performance remain required.
 
 [Spawn pacing and actor-capacity research](research/zombie-spawn-limits.txt) describes the work needed for faster spawn batches and more than 200 zombies.
 The findings include native instruction replays. Gameplay validation remains pending.
