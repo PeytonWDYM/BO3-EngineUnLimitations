@@ -65,7 +65,10 @@ The actor crash comes from a client context callback that still writes into the 
 At actor 64, that write overlaps the viewmodel pose cache.
 Test.6 relocates that callback and four related client and server references.
 Native replay covers both clients and actor boundaries through 499. Windows publication checks use the actual allocated arena.
-Test.6 still needs high-count game tests. Typed actor and sentient pointer saves also retain stock bounds.
+Test.6 reached a 96-zombie control, then crashed at RVA `0x23F8515`.
+A separate 83-row actor state allocation lacks storage for actor 77's row 95.
+Its allocator, fallback row, and lifecycle need expansion. Test.6 is not ready for high-count play.
+Typed actor and sentient pointer saves also retain stock bounds.
 Normal entity capacity still limits the population that each map can support.
 High actor counts, save/load, host migration, matching peers, and sustained performance need game tests.
 
