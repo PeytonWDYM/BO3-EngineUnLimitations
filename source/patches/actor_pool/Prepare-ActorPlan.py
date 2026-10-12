@@ -20,6 +20,8 @@ from client_reset_frames import emit_client_reset_frames
 from client_actors import ClientActors,prepare_client_actors,ACTOR_BANK_OFFSET
 from client_allocator import prepare_client_allocation
 from client_actor_ring import prepare_client_actor_ring,RING_RECORDS
+from demo_writer import DemoWriter,prepare_demo_writer
+from demo_reader import prepare_demo_reader
 
 
 def export_rewrites(output: Path,prefix: str,rewrites: tuple[Rewrite,...]) -> list[dict]:
@@ -57,6 +59,9 @@ def export(module: Path, executable: Path, output: Path, actors: int = 500) -> d
     client_allocation = (prepare_client_allocation(code,code.base+0x201E0000),)
     allocation_unwind = requirements(code,client_allocation)
     client_ring = prepare_client_actor_ring(code,layout.shape)
+    demo=DemoWriter(code.base+0x32000000,layout.shape)
+    demo_edits=prepare_demo_writer(code,demo,code.base+0x201F0000)+prepare_demo_reader(code,demo)
+    demo_leaf=next(edit for edit in demo_edits if edit.stub)
     output.mkdir(parents=True)
     edits = export_rewrites(output,'stub',plan.rewrites)
     client_edits = export_rewrites(output,'snapshot-stub',snapshot_edits)
@@ -64,6 +69,7 @@ def export(module: Path, executable: Path, output: Path, actors: int = 500) -> d
     client_actor_report = export_rewrites(output,'client-actor',client_actor_edits)
     allocation_report = export_rewrites(output,'client-allocation',client_allocation)
     ring_report = export_rewrites(output,'client-ring',client_ring)
+    demo_report = export_rewrites(output,'demo-actor',demo_edits)
     template_file = output/'ClientResetTemplates.asm'
     template_file.write_text(reset_assembly,encoding='ascii')
     report = {'status':f'disabled_actor_{actors}_preparation','deploymentAllowed':False,'coverageComplete':False,
@@ -99,6 +105,12 @@ def export(module: Path, executable: Path, output: Path, actors: int = 500) -> d
                   'records':RING_RECORDS,'actorRecordBytes':80,'retainedSnapshots':16,
                   'storageBytesPerLocalClient':RING_RECORDS*80,'additionalBytesPerLocalClient':(RING_RECORDS-1024)*80,
                   'storageProvider':'native_two_pass_hunk','adjacentCapacity':1024,'rewrites':ring_report},
+              'demoActorPreparation':{'deploymentAllowed':False,'gameBindingVerified':False,'nativeHandlerDispatchVerified':False,
+                  'storageAddress':hex(demo.base),'storageBytes':demo.bytes,'actorRecordBytes':80,
+                  'writerFrameBytes':demo.frame,'writerCookieOffset':demo.cookie,'readerActorBits':layout.shape.actors.bit_length(),
+                  'nativeFollowingCountRva':'0x196c89fc','rewrites':demo_report,
+                  'calledLeafFrame':{'stubAddress':hex(demo_leaf.stub_address),'codeBytes':len(demo_leaf.stub),
+                      'unwindInfo':'01000000','nativeReturnRva':'0x25cea3c','gameBindingVerified':False}},
               'sourceFiles':{path.name:hashlib.sha256(path.read_bytes()).hexdigest()
                              for path in Path(__file__).parent.iterdir() if path.suffix in ('.py','.json','.txt')}}
     (output/'plan.json').write_text(json.dumps(report,indent=2)+'\n')

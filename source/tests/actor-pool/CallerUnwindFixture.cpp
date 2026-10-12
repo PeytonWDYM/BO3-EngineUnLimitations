@@ -82,21 +82,30 @@ int wmain(int argc, wchar_t** argv) {
     try {
         Require(argc == 2, "Supply the owned caller-unwind fixture file.");
         std::ifstream input(argv[1], std::ios::binary);
-        Require(Read<std::array<char, 8>>(input) == std::array<char, 8>{'B','O','3','C','F','U','W','1'}, "Unknown caller fixture format.");
+        const auto magic = Read<std::array<char, 8>>(input);
+        const bool leafCalls = magic == std::array<char, 8>{'B','O','3','C','F','U','W','2'};
+        Require(leafCalls || magic == std::array<char, 8>{'B','O','3','C','F','U','W','1'}, "Unknown caller fixture format.");
         Require(Read<std::uint32_t>(input) == 2, "The caller fixture needs stock and expanded frames.");
-        unsigned int probes{}, mutations{};
+        unsigned int probes{}, mutations{}, helperProbes{};
         for (unsigned int variant = 0; variant < 2; ++variant) {
             const auto header = Read<Header>(input);
-            Require(header.codeBytes == 1599 && header.metadataBytes == 80 && header.oldMetadataBytes == 80 &&
-                    header.contexts == 374 && header.expanded == variant, "Invalid guarded caller fixture extent.");
+            const auto helperBytes = leafCalls ? Read<std::uint32_t>(input) : 0u;
+            const auto helperContexts = leafCalls ? Read<std::uint32_t>(input) : 0u;
+            const bool temporal = header.codeBytes == 1599 && header.metadataBytes == 80 &&
+                                  header.oldMetadataBytes == 80 && header.contexts == 374;
+            const bool demo = leafCalls && header.codeBytes == 697 && header.metadataBytes == 40 &&
+                              header.oldMetadataBytes == 40 && header.contexts == 181 &&
+                              helperBytes == 15 * variant && helperContexts == 4 * variant;
+            Require((temporal || demo) && header.expanded == variant, "Invalid guarded caller fixture extent.");
             const auto code = Bytes(input, header.codeBytes), metadata = Bytes(input, header.metadataBytes), original = Bytes(input, header.oldMetadataBytes);
             Allocation stack, image;
             const auto stackBytes = Bytes(input, 131072); std::memcpy(stack.data(), stackBytes.data(), stackBytes.size());
             std::memcpy(image.data(), code.data(), code.size());
-            constexpr unsigned int UnwindOffset = 1600;
-            std::memcpy(image.data() + UnwindOffset, metadata.data(), metadata.size());
-            image.data()[UnwindOffset] = 1; // Handler omission applies only to this owned comparison.
-            Registration table{{0, header.codeBytes, UnwindOffset}}; table.add(image.base());
+            const auto unwindOffset = (header.codeBytes + 3) & ~3u;
+            std::memcpy(image.data() + unwindOffset, metadata.data(), metadata.size());
+            image.data()[unwindOffset] = 1; // Handler omission applies only to this owned comparison.
+            Registration table{{0, header.codeBytes, unwindOffset}}; table.add(image.base());
+            CONTEXT helperCaller{};
             for (unsigned int index = 0; index < header.contexts; ++index) {
                 const auto control = Read<std::uint32_t>(input);
                 Require(control < header.codeBytes, "Caller context lies outside its function.");
@@ -109,6 +118,7 @@ int wmain(int argc, wchar_t** argv) {
                     Register(context, reg) = value;
                 }
                 std::memcpy(&context.Xmm0, xmm.data(), sizeof(xmm));
+                if (demo && control == 0x67) helperCaller = context;
                 DWORD64 foundBase{};
                 Require(RtlLookupFunctionEntry(context.Rip, &foundBase, nullptr) == &table.function && foundBase == image.base(), "Caller runtime lookup differs.");
                 auto actual = context; Unwind(image, table.function, actual);
@@ -117,23 +127,47 @@ int wmain(int argc, wchar_t** argv) {
                     throw std::runtime_error("Windows caller unwinding differs from the original return contract.");
                 }
                 ++probes;
-                if (variant && control == 0x9B) {
+                if (variant && control == (demo ? 0x31u : 0x9Bu)) {
                     for (bool allocation : {true, false}) {
                         Allocation mutant;
                         std::memcpy(mutant.data(), code.data(), code.size());
                         auto invalidMetadata = Mutate(metadata, original, allocation); invalidMetadata[0] = 1;
-                        std::memcpy(mutant.data() + UnwindOffset, invalidMetadata.data(), invalidMetadata.size());
+                        std::memcpy(mutant.data() + unwindOffset, invalidMetadata.data(), invalidMetadata.size());
                         auto invalid = context; invalid.Rip = mutant.base() + control;
                         Unwind(mutant, table.function, invalid);
                         Require(!Matches(invalid, stack.base()), "Unchanged caller metadata escaped detection."); ++mutations;
                     }
                 }
             }
+            if (helperContexts) {
+                const auto helper = Bytes(input, helperBytes);
+                constexpr unsigned int HelperOffset = 0x10000, HelperUnwindOffset = 0x10010;
+                std::memcpy(image.data() + HelperOffset, helper.data(), helper.size());
+                image.data()[HelperUnwindOffset] = 1;
+                Registration leaf{{HelperOffset, HelperOffset + helperBytes, HelperUnwindOffset}}; leaf.add(image.base());
+                Require(helperCaller.Rip == image.base() + 0x67, "The demo scan caller context is missing.");
+                const auto returnPc = image.base() + 0x6C;
+                std::memcpy(reinterpret_cast<void*>(helperCaller.Rsp - 8), &returnPc, sizeof(returnPc));
+                for (unsigned int index = 0; index < helperContexts; ++index) {
+                    const auto control = Read<std::uint32_t>(input);
+                    Require(control < helperBytes, "The demo helper context lies outside its leaf.");
+                    auto actual = helperCaller; actual.Rsp -= 8; actual.Rip = image.base() + HelperOffset + control;
+                    if (control == 14) actual.Rdi = 0xBAD00000;
+                    DWORD64 foundBase{};
+                    Require(RtlLookupFunctionEntry(actual.Rip, &foundBase, nullptr) == &leaf.function && foundBase == image.base(), "Demo leaf lookup differs.");
+                    Unwind(image, leaf.function, actual);
+                    Require(actual.Rip == returnPc && actual.Rsp == helperCaller.Rsp, "The demo leaf return differs.");
+                    Unwind(image, table.function, actual);
+                    Require(Matches(actual, stack.base()), "The expanded demo caller did not restore the leaf's native frame.");
+                    ++helperProbes;
+                }
+                leaf.remove(image.base() + HelperOffset);
+            }
             table.remove(image.base());
         }
         Require(input.peek() == std::char_traits<char>::eof() && mutations == 2, "Caller fixture coverage or framing differs.");
         std::cout << "{\"passed\":true,\"instructionBoundaryContexts\":" << probes << ",\"metadataMutationsRefused\":" << mutations
-                  << ",\"registrationsDeleted\":true,\"handlersExecuted\":false,\"gameWrites\":0}\n";
+                  << ",\"leafCallerContexts\":" << helperProbes << ",\"registrationsDeleted\":true,\"handlersExecuted\":false,\"gameWrites\":0}\n";
         return 0;
     } catch (const std::exception& error) { std::cerr << error.what() << '\n'; return 2; }
 }

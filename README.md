@@ -260,8 +260,21 @@ Each local client gains 573,440 bytes, enough to retain sixteen full 500-actor s
 Both shapes pass complete native cache/connection construction and 306 packet frames across both local-client counts and two PEB branches.
 The native parser handles full updates, sparse removals, partial updates, empty lists, and ring wraps while retaining old snapshots and canaries.
 A stock ring fails the same history comparison. Count-only increases fail allocation-extent checks before packet writes. Thirteen changed-owner refusals pass.
-OS storage/clear/cookie endpoints and the outer packet-list terminator are authored. Demo consumers, cursor overflow, saves, and full game callers remain unverified.
-The combined export includes 210 native edits, 100 bodies, nine complete storage regions, and both static reset frames without overlaps.
+OS storage/clear/cookie endpoints and the outer packet-list terminator are authored. Cursor overflow, saves, and full game callers remain unverified.
+
+The demo preparation moves complete prior records into separate storage and expands the writer's temporary actor-ID list.
+Its native allocation, register-save offsets, cookie locations, handler data, and epilogue change together.
+A call and conditional branch preserve Windows unwinding at the scan boundary. A direct jump failed the owned Windows comparison.
+The native reader keeps its forty record stores and relocates their shared base. Its actor ID reader expands to nine bits.
+The native reset clears the complete expanded prior-record allocation and preserves the other scratch arrays and following counts.
+Both shapes pass six full writer frames and twelve playback/rebroadcast frames, including removals, sparse updates, empty lists, and refill.
+The native rebroadcast matches every incoming packet byte. Complete storage, canaries, frame cookies, and restored registers pass.
+Count-only writer frames fail the cookie check. Stock reader widths or storage fail expanded playback.
+Both shapes pass 362 native Windows unwind boundaries, four called-leaf boundaries, and two stale allocation/save metadata refusals.
+The shared Windows fixture also retains its earlier 748-context caller comparison.
+Demo context, state export, OS storage/clear, cookie, long-byte-order dispatch, demo mode, and field-flag endpoints are authored.
+Native game handlers, whole callers, save behavior, runtime registration, and real game/peer behavior remain unverified.
+The combined export includes 221 native edits, 101 bodies, ten complete storage regions, and both static reset frames without overlaps.
 
 Remaining snapshot copies, game connection-ring ownership, actor flag/sentinel consumers, saves, complete caller execution, and matching peers still need verification.
 No 500-actor, expanded-entity, reliable-command, gamestate, higher-round, or player-count patch is active here.

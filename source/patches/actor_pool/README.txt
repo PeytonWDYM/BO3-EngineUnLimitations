@@ -242,5 +242,31 @@ Runtime registrations disappear after the owned comparison. The actual game perf
 Complete native caller execution, all snapshot reset/copy paths, connection ring allocation, client actor storage, saves, and real peers remain required.
 These snapshots stay outside activation and the default installer recipe.
 
+demo_writer.py prepares the complete writer frame and separate prior-record allocation for either supported actor shape.
+The expanded temporary ID list moves the native allocation, three register-save offsets, cookie save/read/data, and epilogue together.
+Its scan block uses an ordinary call and conditional branch. A direct jump at the comparison failed Windows epilogue detection.
+The called leaf compares EAX and reads the following native prior count only when the scan finishes.
+demo_reader.py coordinates the separate six-bit ID reader, forty stores through their shared base, and complete prior-record reset.
+Its fixed-width edits retain both native frames. The writer uses dense prior records; playback uses actor-ID-indexed records.
+Prepare-ActorPlan.py exports all eleven changes, complete storage, writer frame data, and a separate called-leaf frame with runtime binding false.
+The combined plan checks 221 native edits, 101 bodies, and ten complete storage regions without overlaps.
+
+Test-DemoWriter.py executes six complete native writer frames per shape and verifies native framing/parser output, complete copied records, and preserved frames.
+It includes removals, sparse updates, unchanged lists, an empty list, and refill. A count-only frame loses its native cookie.
+Ten writer/metadata guards and eight invalid code/storage intervals refuse preparation.
+The packet artifact contains actual writer packets and separate authored source records for repeatable playback comparison.
+Test-DemoReader.py consumes that artifact through the complete native reset, playback, and rebroadcast paths for demo modes zero and two.
+Twelve frames per shape preserve complete ring/prior-record storage, following counts/cursors, native scratch arrays, and canaries.
+Every rebroadcast packet matches its input byte for byte. Stock ID width or record storage fails playback.
+Nine reader/reset owner and metadata refusals plus five invalid complete storage intervals pass.
+
+Test-CallerUnwind.ps1 -DemoWriter -Actors 300 or 500 executes the guarded demo prolog/epilogue and compares canonical body frames.
+Windows restores all 362 native instruction-boundary contexts and four called-leaf contexts through the expanded caller.
+Two stale allocation/save metadata controls fail. All owned function-table registrations disappear after the comparison.
+The existing temporal caller comparison still passes all 748 contexts with the shared fixture.
+The cookie/clear endpoints, demo context and mode, actor state exports, little-endian long dispatch, and field flags are authored.
+Native game handlers, whole callers, complete save behavior, runtime registrations, and game/peer lifecycle remain admission requirements.
+No installed payload changes in these preparation tests.
+
 provenance.json records the owner's authorized local AAE prototype and original source hashes.
 This directory contains Python source and address/hash contracts. It contains no game executable or extracted game bodies.

@@ -53,12 +53,22 @@ def run(module: Path,executable: Path,output: Path,actors: int) -> dict:
     assert [edit['rva'] for edit in ring['rewrites']]==['0x1349eb6','0x134b7b8']
     assert [edit['size'] for edit in ring['rewrites']]==[5,7]
     assert all('stubFile' not in edit for edit in ring['rewrites'])
-    edits=plan['rewrites']+plan['wirePreparation']['rewrites']+snapshots['rewrites']+reset['rewrites']+actor_banks['rewrites']+allocation['rewrites']+ring['rewrites']
+    demo=plan['demoActorPreparation']
+    assert demo['deploymentAllowed'] is demo['gameBindingVerified'] is False
+    assert demo['actorRecordBytes']==80 and demo['storageBytes']==actors*80
+    assert demo['writerFrameBytes']==0x170+(actors-64)*4 and demo['writerCookieOffset']==0x160+(actors-64)*4
+    assert demo['readerActorBits']==9 and demo['nativeFollowingCountRva']=='0x196c89fc'
+    assert len(demo['rewrites'])==11 and [edit['size'] for edit in demo['rewrites']]==[7,8,8,8,12,7,40,5,7,7,6]
+    leaf=demo['calledLeafFrame']
+    assert leaf['codeBytes']==15 and leaf['unwindInfo']=='01000000' and leaf['nativeReturnRva']=='0x25cea3c'
+    assert leaf['gameBindingVerified'] is False and demo['nativeHandlerDispatchVerified'] is False
+    edits=plan['rewrites']+plan['wirePreparation']['rewrites']+snapshots['rewrites']+reset['rewrites']+actor_banks['rewrites']+allocation['rewrites']+ring['rewrites']+demo['rewrites']
     native=sorted((int(edit['rva'],0),int(edit['rva'],0)+edit['size']) for edit in edits)
-    assert len(native)==210 and all(left[1]<=right[0] for left,right in zip(native,native[1:]))
+    assert len(native)==221 and all(left[1]<=right[0] for left,right in zip(native,native[1:]))
     storage=[(int(region['address'],0),int(region['address'],0)+region['bytes']) for region in plan['storageRegions']]
     storage.append((int(snapshots['storageAddress'],0),int(snapshots['storageAddress'],0)+snapshots['storageBytes']))
     storage.append((int(actor_banks['storageAddress'],0),int(actor_banks['storageAddress'],0)+actor_banks['storageBytes']))
+    storage.append((int(demo['storageAddress'],0),int(demo['storageAddress'],0)+demo['storageBytes']))
     original_clients=(int(actor_banks['nativeRootAddress'],0),int(actor_banks['nativeRootAddress'],0)+2*actor_banks['clientStride'])
     code=[]
     for edit in edits:
@@ -67,7 +77,7 @@ def run(module: Path,executable: Path,output: Path,actors: int) -> dict:
         assert hashlib.sha256(body).hexdigest()==edit['stubSha256']
         address=int(edit['stubAddress'],0);code.append((address,address+len(body)))
     intervals=sorted(storage+code+[original_clients])
-    assert len(code)==100 and len(storage)==9
+    assert len(code)==101 and len(storage)==10
     assert all(left[1]<=right[0] for left,right in zip(intervals,intervals[1:]))
     assert all(frame['gameBindingVerified'] is False for frame in reset['staticPEFrames'])
     result={'passed':True,'actors':actors,'nativeEdits':len(native),'storageRegions':len(storage),

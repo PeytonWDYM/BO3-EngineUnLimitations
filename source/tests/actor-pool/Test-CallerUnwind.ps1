@@ -4,11 +4,16 @@ param(
     [Parameter(Mandatory)][string]$Manifest,
     [Parameter(Mandatory)][string]$Executable,
     [Parameter(Mandatory)][string]$Dependencies,
-    [string]$Python = 'python'
+    [string]$Python = 'python',
+    [switch]$DemoWriter,
+    [ValidateSet(300,500)][int]$Actors=500
 )
 $ErrorActionPreference = 'Stop'
 $target = [IO.Path]::GetFullPath($Output)
-& $Python -B (Join-Path $PSScriptRoot 'Test-CallerUnwind.py') --module $Manifest --executable $Executable --dependencies $Dependencies --output $target
+$generator = if ($DemoWriter) { 'Test-DemoWriterUnwind.py' } else { 'Test-CallerUnwind.py' }
+$arguments = @('-B', (Join-Path $PSScriptRoot $generator), '--module', $Manifest, '--executable', $Executable, '--dependencies', $Dependencies, '--output', $target)
+if ($DemoWriter) { $arguments += @('--actors',$Actors) }
+& $Python @arguments
 if ($LASTEXITCODE -ne 0) { throw 'The guarded caller-unwind export failed.' }
 $vswhere = Join-Path ${env:ProgramFiles(x86)} 'Microsoft Visual Studio/Installer/vswhere.exe'
 $installation = & $vswhere -latest -products '*' -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath
@@ -27,7 +32,7 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'The Windows caller-unwind fixture failed.' }
     $paths = @($fixture, $PSCommandPath, $binary, (Join-Path $target 'input-receipt.json'), (Join-Path $target 'result.json'))
     $hashes = foreach ($path in $paths) { Get-FileHash -LiteralPath $path -Algorithm SHA256 | Select-Object Path, Hash }
-    @{passed = $true; scope = 'Owned Windows caller virtual unwinding. Native handlers, firing paths, and game registration remain unverified.'; files = @($hashes)} | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $target 'receipt.json')
+    @{passed = $true; scope = 'Owned Windows caller virtual unwinding. Native handlers, full game paths, and game registration remain unverified.'; files = @($hashes)} | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $target 'receipt.json')
 } finally {
     $env:INCLUDE = $savedInclude
     $env:LIB = $savedLib
