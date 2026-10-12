@@ -2,7 +2,7 @@
 import struct
 from captured_code import CapturedCode,CodeGuard,Rewrite
 from client_actors import NATIVE_CLIENT_STRIDE as CLIENT_STRIDE,ACTOR_BANK_OFFSET as BANK_OFFSET
-from x64_table import Emitter,rel32
+from x64_table import Emitter,continuation_jump
 
 OWNER_GUARDS=(
     CodeGuard(0x8408F0,13024,'afd659eb40367f31d01072232d9d6c66ecdc6bf003f0b62c2e9e8136673850ac'),
@@ -71,6 +71,6 @@ def prepare_client_allocation(code: CapturedCode,helper_address: int) -> Rewrite
     helper.put(bytes.fromhex('4883c202'))
     helper.put(original)
     helper.rip(b'\xe9',code.base+0x840929)
-    replacement=b'\xe9'+rel32(code.base+0x840922+5,helper_address)+b'\x90\x90'
+    replacement=continuation_jump(code.base+0x840922,helper_address,7)
     return Rewrite('client_appended_actor_bank_allocation',code.guard(0x840922,7),replacement,
                    helper_address,bytes(helper.code))

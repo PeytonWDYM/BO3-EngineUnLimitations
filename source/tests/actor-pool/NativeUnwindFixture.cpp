@@ -38,6 +38,7 @@ struct Registration {
         DWORD64 unused{}; Require(RtlLookupFunctionEntry(base + table->BeginAddress, &unused, nullptr) == nullptr, "An owned registration survived deletion.");
     }
 };
+#include "BranchExecution.h"
 DWORD64& Register(CONTEXT& context, std::uint32_t index) {
     switch (index) {
     case 3:return context.Rbx; case 5:return context.Rbp; case 6:return context.Rsi; case 7:return context.Rdi;
@@ -90,12 +91,14 @@ int wmain(int argc, wchar_t** argv) {
         Require(argc == 2, "Supply the owned native-unwind fixture file.");
         std::ifstream input(argv[1], std::ios::binary);
         const auto magic = Read<std::array<char,8>>(input);
-        Require(magic == std::array<char,8>{'B','O','3','N','F','U','W','1'}, "Unknown native unwind fixture format.");
+        const bool sourceEntries = magic == std::array<char,8>{'B','O','3','N','F','U','W','2'};
+        Require(sourceEntries || magic == std::array<char,8>{'B','O','3','N','F','U','W','1'}, "Unknown native unwind fixture format.");
+        const auto cpuBranches = sourceEntries ? CheckBranchExecution() : 0;
         const auto stubs = Read<std::uint32_t>(input);
         const bool clientSnapshots = stubs == 2;
         const bool clientAllocation = stubs == 1;
         Require(clientSnapshots || clientAllocation || stubs == 78 || stubs == 79, "Supply a complete admitted client or server continuation plan.");
-        std::uint32_t probes{}, depthMutations{}, allocationMutations{}, saveMutations{};
+        std::uint32_t probes{}, depthMutations{}, allocationMutations{}, saveMutations{}, entryProbes{}, entryMutations{};
         for (std::uint32_t stub = 0; stub < stubs; ++stub) {
             const auto header = Read<Header>(input);
             Require(!clientSnapshots || header.site == (stub == 0 ? 0xfc57d5u : 0xfc57f2u),
@@ -103,6 +106,7 @@ int wmain(int argc, wchar_t** argv) {
             Require(!clientAllocation || header.site == 0x840922u, "The allocation comparison requires its exact native site.");
             Require(header.phaseCount && header.phaseCount < 1024 && header.returnOffset < 32768 && header.stackCount < 256, "Invalid owned frame extent.");
             auto referenceBytes = Bytes(input, header.referenceBytes), code = Bytes(input, header.codeBytes);
+            const auto source = sourceEntries ? Bytes(input,Read<std::uint32_t>(input)) : std::vector<unsigned char>{};
             Require(header.begin < header.end && header.end <= header.referenceBytes && header.control >= header.begin && header.control < header.end && header.unwind < header.referenceBytes, "Invalid owned native function.");
             Allocation reference; std::memcpy(reference.data(), referenceBytes.data(), referenceBytes.size());
             RUNTIME_FUNCTION native{header.begin,header.end,header.unwind};
@@ -133,6 +137,30 @@ int wmain(int argc, wchar_t** argv) {
                 const M128A value{(savedVectors[reg] ? 0x400000000ull : 0x200000000ull) + reg,
                                   (savedVectors[reg] ? 0x410000000ll : 0x210000000ll) + reg};
                 Require(std::memcmp(&(&expected.Xmm0)[reg], &value, sizeof(value)) == 0, "The original Windows frame did not restore its native vector save.");
+            }
+            if (sourceEntries) {
+                Require(source.size() >= 6 && header.control + source.size() <= header.end, "The complete source replacement exceeds its native frame.");
+                Require(source[0]==0x40 && source[1]==0xE9,"The source continuation lacks its admitted neutral prefix.");
+                std::memcpy(reference.data()+header.control,source.data(),source.size());
+                auto actual = Seed(reference.base()+header.control,nativeRsp);
+                Unwind(reference.base(),native,actual);
+                if (!Same(expected,actual)) {
+                    std::cerr << "sourceSite=" << std::hex << header.site << " expectedRip=" << expected.Rip << " actualRip=" << actual.Rip << '\n';
+                    throw std::runtime_error("The actual source branch lost its active native frame.");
+                }
+                ++entryProbes;
+                Allocation stale;
+                std::memcpy(stale.data(),referenceBytes.data(),referenceBytes.size());
+                auto* branch = stale.data()+header.control;
+                *branch++ = 0xE9;
+                std::int32_t displacement{};
+                std::memcpy(&displacement,source.data()+2,4);
+                Require(displacement < INT32_MAX,"The owned source mutation exceeds relative reach.");
+                ++displacement;std::memcpy(branch,&displacement,4);
+                auto invalid = Seed(stale.base()+header.control,nativeRsp);
+                Unwind(stale.base(),native,invalid);
+                Require(!Same(expected,invalid),"The plain external source jump escaped epilogue detection.");
+                ++entryMutations;
             }
             constexpr std::uint32_t codeOffset = 0x10000;
             std::memcpy(reference.data() + codeOffset, code.data(), code.size());
@@ -203,6 +231,9 @@ int wmain(int argc, wchar_t** argv) {
         }
         Require(input.peek() == std::char_traits<char>::eof(), "The owned fixture has trailing data.");
         std::cout << "{\"passed\":true,\"nativeContinuations\":" << stubs << ",\"instructionBoundaryProbes\":" << probes
+                  << ",\"sourceEntryProbes\":" << entryProbes
+                  << ",\"plainEntryMutationsRefused\":" << entryMutations
+                  << ",\"cpuBranchComparisons\":" << cpuBranches
                   << ",\"wrongDepthMutationsRefused\":" << depthMutations << ",\"missingNativeAllocationMutationsRefused\":" << allocationMutations
                   << ",\"wrongNativeSaveMutationsRefused\":" << saveMutations << ",\"registrationsDeleted\":true,\"gameWrites\":0}\n";
         return 0;

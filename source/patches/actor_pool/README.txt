@@ -275,5 +275,17 @@ The writer/reader packet tests still use authored cookie/clear endpoints, demo c
 Whole game callers, complete save behavior, runtime registrations, and game/peer lifecycle remain admission requirements.
 No installed payload changes in these preparation tests.
 
+continuation_jump emits a neutral REX-prefixed relative jump inside each existing active-frame source window.
+Plain external E9 entries can be recognized as completed epilogues even though the native allocation remains active.
+The failing source comparison was separate from the earlier successful helper instruction comparisons.
+The corrected entry preserves the original target, flags, registers, stack, and guarded extent without an extra call.
+The exact five-byte LEA/RET terminal leaf at 0x2505b9b retains its separate plain transfer contract.
+Short or unknown active-frame windows refuse preparation; no extra native byte is stolen.
+BO3NFUW2 adds the complete actual source replacement to the existing owned Windows fixture.
+Each shape passes all 79 server entry comparisons and two snapshot entries; the allocation entry also passes.
+The corresponding plain-jump mutations fail. All 1,834 server helper, nine snapshot, and seven allocation boundaries still pass.
+Ten real CPU comparisons execute forward/backward plain and prefixed jumps and preserve the selected argument and arithmetic flags.
+Exact game registration, handler bridges, saves, remaining consumers, and real peer behavior remain unverified.
+
 provenance.json records the owner's authorized local AAE prototype and original source hashes.
 This directory contains Python source and address/hash contracts. It contains no game executable or extracted game bodies.

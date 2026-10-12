@@ -3,7 +3,7 @@ import struct
 
 from captured_code import CapturedCode, CodeGuard, Rewrite
 from temporal_layout import TemporalLayout
-from x64_table import Emitter, rel32
+from x64_table import Emitter, continuation_jump
 
 RESTORE_FUNCTION = CodeGuard(0x1BDEF50, 0xA6, 'b3885b7ab2ec36e3d62d15fcf326ee726557488931a3e27b43d7038853c80872')
 
@@ -17,7 +17,7 @@ def prepare_restore(code: CapturedCode, layout: TemporalLayout, stub_address: in
     emitter.put(b'\xbd' + struct.pack('<I', layout.shape.actors))
     # The native loop returns to its compare at 0x1BDEF77. Keep that instruction in place.
     emitter.rip(b'\xe9', code.base + 0x1BDEF77)
-    hook = b'\xe9' + rel32(code.base + 0x1BDEF64 + 5, stub_address) + b'\x90' * (len(prefix) - 5)
+    hook = continuation_jump(code.base+0x1BDEF64,stub_address,len(prefix))
     edits = [Rewrite('temporal_restore_prefix', code.guard(0x1BDEF64, len(prefix)), hook, stub_address, bytes(emitter.code))]
     for rva, displacement in ((0x1BDEF88, -layout.vector_bytes - 8),
                               (0x1BDEF94, -layout.vector_bytes - 4), (0x1BDEFA0, -layout.vector_bytes)):

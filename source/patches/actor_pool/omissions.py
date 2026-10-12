@@ -6,7 +6,7 @@ import struct
 
 from captured_code import CapturedCode, CodeGuard, Rewrite
 from shape import ActorShape
-from x64_table import Emitter, count_stub, rel32
+from x64_table import Emitter, count_stub, rel32, continuation_jump
 
 
 def omission_inventory() -> list[dict]:
@@ -31,7 +31,7 @@ def prepare_omissions(code: CapturedCode, shape: ActorShape, dobj: int, stub_bas
         elif role == 'actor_iterator':
             stub = count_stub(cursor,shape.actors,code.base+int(site['branchTargetRva'],0),
                               code.base+guard.rva+guard.size,'r8',site['condition'])
-            replacement = b'\xe9'+rel32(code.base+guard.rva+5,cursor)+b'\x90'
+            replacement = continuation_jump(code.base+guard.rva,cursor,guard.size)
         elif role == 'live_actor_admission_groups':
             replacement = original[:-1]+bytes([shape.four_actor_groups])
         elif role == 'adjacent_static_array_boundary':
@@ -42,7 +42,7 @@ def prepare_omissions(code: CapturedCode, shape: ActorShape, dobj: int, stub_bas
             emitter.rip(original[:3],destination)
             emitter.rip(b'\xe9',code.base+guard.rva+guard.size)
             stub = bytes(emitter.code)
-            replacement = b'\xe9'+rel32(code.base+guard.rva+5,cursor)+b'\x90'*(guard.size-5)
+            replacement = continuation_jump(code.base+guard.rva,cursor,guard.size)
         else:
             raise ValueError(f'No admitted omission emitter exists for {role}.')
         edits.append(Rewrite(role,guard,replacement,cursor if stub else None,stub))

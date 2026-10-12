@@ -33,7 +33,7 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'The Windows native-unwind fixture build failed.' }
     & $binary (Join-Path $target 'native-unwind.bin') | Tee-Object -FilePath (Join-Path $target 'result.json')
     if ($LASTEXITCODE -ne 0) { throw 'The Windows native-unwind fixture failed.' }
-    $paths = @($fixture, $PSCommandPath, $binary, (Join-Path $target 'input-receipt.json'), (Join-Path $target 'result.json'))
+    $paths = @($fixture, (Join-Path $PSScriptRoot 'BranchExecution.h'), $PSCommandPath, $binary, (Join-Path $target 'input-receipt.json'), (Join-Path $target 'result.json'))
     $hashes = foreach ($path in $paths) { Get-FileHash -LiteralPath $path -Algorithm SHA256 | Select-Object Path, Hash }
     @{passed = $true; scope = 'Owned original-frame comparison and Windows virtual unwinding. Handler dispatch and game registration remain unverified.'; files = @($hashes)} | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $target 'receipt.json')
 } finally {

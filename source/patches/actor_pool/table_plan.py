@@ -9,7 +9,7 @@ from table_layout import TableLayout, ExternalTableAddress
 from captured_code import CapturedCode, CodeGuard, Rewrite
 from storage_plan import StorageLayout, prepare_storage
 from omissions import prepare_omissions
-from x64_table import MemberInstruction, REGISTERS, accessor_stub, member_stub, clear_stub, load_entry_stub, count_stub, rel32
+from x64_table import MemberInstruction, REGISTERS, accessor_stub, member_stub, clear_stub, load_entry_stub, count_stub, rel32, continuation_jump
 
 ACTIVATION_GATES = (
     'Complete static, folded, leaf, returned-pointer and cross-call consumer coverage.',
@@ -99,7 +99,12 @@ def prepare(code: CapturedCode, layout: TableLayout, stub_base: int, storage: St
         nonlocal cursor
         if size < 5 or len(body) > 0x1000:
             raise ValueError('The guarded hook extent or stub size is invalid.')
-        replacement = b'\xe9'+rel32(code.base+start+5,cursor)+b'\x90'*(size-5)
+        if size == 5:
+            if start != 0x2505B9B:
+                raise ValueError('Only the exact terminal LEA/RET leaf admits a five-byte transfer.')
+            replacement = b'\xe9'+rel32(code.base+start+5,cursor)
+        else:
+            replacement = continuation_jump(code.base+start,cursor,size)
         rewrites.append(Rewrite(name,code.guard(start,size),replacement,cursor,body,owner))
         cursor += 0x1000
 

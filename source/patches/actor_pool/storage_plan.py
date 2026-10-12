@@ -7,7 +7,7 @@ import struct
 
 from captured_code import CapturedCode, CodeGuard, Rewrite
 from table_layout import TableLayout
-from x64_table import Emitter, count_stub, rel32
+from x64_table import Emitter, count_stub, rel32, continuation_jump
 
 
 @dataclass(frozen=True)
@@ -73,7 +73,7 @@ def prepare_storage(code: CapturedCode, table: TableLayout, storage: StorageLayo
             capacity = shape.sentients if item['capacity'] == 'sentients' else shape.actors
             body = count_stub(cursor,capacity,code.base+int(item['targetRva'],0),
                               code.base+guard.rva+guard.size,item['register'],item['condition'])
-            edits.append(Rewrite(role,guard,b'\xe9'+rel32(code.base+guard.rva+5,cursor)+b'\x90',cursor,body))
+            edits.append(Rewrite(role,guard,continuation_jump(code.base+guard.rva,cursor,guard.size),cursor,body))
             cursor += 0x1000
         elif role == 'sentient_eligibility_count':
             guard = CodeGuard(int(item['rva'],0),item['size'],item['sha256'])
@@ -82,7 +82,7 @@ def prepare_storage(code: CapturedCode, table: TableLayout, storage: StorageLayo
             e = Emitter(cursor)
             e.put(original[:3]+b'\x45\x8d\x88'+struct.pack('<I',shape.sentients))
             e.rip(b'\xe9',code.base+guard.rva+guard.size)
-            edits.append(Rewrite(role,guard,b'\xe9'+rel32(code.base+guard.rva+5,cursor)+b'\x90'*(guard.size-5),cursor,bytes(e.code)))
+            edits.append(Rewrite(role,guard,continuation_jump(code.base+guard.rva,cursor,guard.size),cursor,bytes(e.code)))
             cursor += 0x1000
         else:
             values = {'actor_record_extent':shape.actor_bytes,'sentient_record_extent':shape.sentient_bytes,

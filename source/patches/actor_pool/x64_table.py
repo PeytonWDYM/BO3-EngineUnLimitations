@@ -16,6 +16,13 @@ def rel32(source_end: int, destination: int) -> bytes:
     return struct.pack('<i', displacement)
 
 
+def continuation_jump(address: int, destination: int, size: int) -> bytes:
+    """A neutral REX keeps Windows from treating the transfer as a completed native epilogue."""
+    if size < 6:
+        raise ValueError('An active-frame continuation needs a complete six-byte source window.')
+    return b'\x40\xe9'+rel32(address+6,destination)+b'\x90'*(size-6)
+
+
 class Emitter:
     def __init__(self, address: int):
         self.address = address

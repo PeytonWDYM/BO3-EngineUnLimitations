@@ -280,6 +280,11 @@ The Windows fixture uses an authored body and owned exception/failure bindings; 
 Demo context, state export, OS storage/clear, cookie, long-byte-order dispatch, demo mode, and field-flag endpoints are authored.
 Whole game callers, save behavior, runtime registration, and real game/peer behavior remain unverified.
 The combined export includes 221 native edits, 101 bodies, ten complete storage regions, and both static reset frames without overlaps.
+Active-frame entry jumps use a neutral REX prefix within their existing guarded windows.
+Plain external jumps fail Windows epilogue detection at the source, even when their helper frames pass.
+The corrected entries pass 79 server, two snapshot, and one allocation source comparisons, with corresponding plain-jump refusals.
+Ten owned CPU comparisons preserve branch targets, the register argument, and arithmetic flags in both directions.
+The exact five-byte terminal leaf keeps its original transfer contract. No entry window grows and these paths add no calls.
 
 Remaining snapshot copies, game connection-ring ownership, actor flag/sentinel consumers, saves, complete caller execution, and matching peers still need verification.
 No 500-actor, expanded-entity, reliable-command, gamestate, higher-round, or player-count patch is active here.

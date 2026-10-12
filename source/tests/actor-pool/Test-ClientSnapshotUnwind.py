@@ -28,7 +28,7 @@ def run(module: Path,executable: Path,output: Path,actors: int) -> dict:
     frames=native_frames(code)
     decoder=capstone.Cs(capstone.CS_ARCH_X86,capstone.CS_MODE_64)
     decoder.detail=True
-    data=bytearray(b'BO3NFUW1'+struct.pack('<I',len(edits)))
+    data=bytearray(b'BO3NFUW2'+struct.pack('<I',len(edits)))
     rows=[]
     for edit in edits:
         owner=next(frame for frame in frames if frame[0]<=edit.guard.rva<frame[1])
@@ -56,6 +56,10 @@ def run(module: Path,executable: Path,output: Path,actors: int) -> dict:
         data+=struct.pack('<11I',edit.guard.rva,len(reference),*function,control,len(stack),return_offset,
                           len(edit.stub),len(phases),procedure_end)
         data+=reference+rebased
+        source=bytearray(edit.replacement)
+        assert source[:2]==b'\x40\xe9'
+        struct.pack_into('<i',source,2,0x10000-(control+6))
+        data+=struct.pack('<I',len(source))+source
         for offset,width,register in stack:data+=struct.pack('<III',offset,width,register)
         for phase in phases:
             assert phase.stack_bytes==0 and not phase.saved_registers and not phase.unscaled_xmm_phase

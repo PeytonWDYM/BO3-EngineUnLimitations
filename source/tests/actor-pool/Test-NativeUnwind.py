@@ -69,7 +69,7 @@ def run(module: Path, executable: Path, output: Path, include_temporal_restore: 
         refuse(changed, frame)
     assert refusals == 15
     expected = 79 if include_temporal_restore else 78
-    data = bytearray(b'BO3NFUW1' + struct.pack('<I', expected))
+    data = bytearray(b'BO3NFUW2' + struct.pack('<I', expected))
     rows = []
     for edit in edits:
         if not edit.stub:
@@ -106,6 +106,17 @@ def run(module: Path, executable: Path, output: Path, include_temporal_restore: 
         data += struct.pack('<11I', edit.guard.rva, len(reference), *function, control,
                             len(stack), return_offset, len(edit.stub), len(phases), procedure_end)
         data += reference + rebased
+        source = bytearray(edit.replacement)
+        decoded = list(decoder.disasm(source, code.base + edit.guard.rva))
+        if sum(instruction.size for instruction in decoded) != len(source):
+            raise ValueError('The complete native replacement does not decode.')
+        for instruction in decoded:
+            if instruction.group(capstone.CS_GRP_JUMP):
+                target = 0x10000 if instruction.operands[0].imm == edit.stub_address else instruction.operands[0].imm - code.base - origin
+                offset = instruction.address - code.base - edit.guard.rva
+                struct.pack_into('<i', source, offset + instruction.imm_offset,
+                                 target - (control + offset + instruction.size))
+        data += struct.pack('<I',len(source)) + source
         for offset, width, register in stack:
             data += struct.pack('<III', offset, width, register)
         for phase in phases:

@@ -42,10 +42,14 @@ def run(module: Path,executable: Path,output: Path) -> dict:
             assert target.imm==code.base+0x840929
             destination=target.imm-code.base-owner[0]
         struct.pack_into('<i',rebased,offset+instruction.imm_offset,destination-(0x10000+offset+instruction.size))
-    data=bytearray(b'BO3NFUW1'+struct.pack('<I',1))
+    data=bytearray(b'BO3NFUW2'+struct.pack('<I',1))
     data+=struct.pack('<11I',edit.guard.rva,len(reference),*function,control,len(stack),return_offset,
                       len(edit.stub),len(phases),owner[1]-owner[0])
     data+=reference+rebased
+    source=bytearray(edit.replacement)
+    assert source[:2]==b'\x40\xe9'
+    struct.pack_into('<i',source,2,0x10000-(control+6))
+    data+=struct.pack('<I',len(source))+source
     for offset,width,register in stack:data+=struct.pack('<III',offset,width,register)
     for phase in phases:
         assert phase.stack_bytes==0 and not phase.saved_registers and not phase.unscaled_xmm_phase

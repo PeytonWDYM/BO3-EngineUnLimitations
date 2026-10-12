@@ -4,7 +4,7 @@ import struct
 
 from captured_code import CapturedCode,CodeGuard,Rewrite
 from shape import ActorShape
-from x64_table import Emitter,rel32
+from x64_table import Emitter,continuation_jump
 
 OWNER_GUARDS=(
     CodeGuard(0x1321250,0x780,'a39b1db9f4007c669c3ae34d218a95b37d120984a4b964e3efb84c12a1247b06'),
@@ -81,6 +81,6 @@ def prepare_client_snapshots(code: CapturedCode,layout: ClientSnapshots,stub_bas
         expected=bytes.fromhex(original)
         if code.read(rva,len(expected))!=expected:
             raise ValueError('The native snapshot slot selection differs.')
-        replacement=b'\xe9'+rel32(code.base+rva+5,emitter.address)+b'\x90'*(len(expected)-5)
+        replacement=continuation_jump(code.base+rva,emitter.address,len(expected))
         edits.append(Rewrite(name,code.guard(rva,len(expected)),replacement,emitter.address,bytes(emitter.code)))
     return tuple(edits)
