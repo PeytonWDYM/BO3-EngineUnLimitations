@@ -37,6 +37,7 @@ $changedSource=Join-Path (Join-Path $target 'closure-LF') 'table_plan.py'
 [IO.File]::AppendAllText($changedSource,"`n# A material source change.`n",[Text.UTF8Encoding]::new($false))
 & $Python -B (Join-Path (Join-Path $target 'closure-LF') 'Generate-RuntimeProfile.py') --output (Join-Path $target 'changed-source-refused.h') 2>&1 | Set-Content -LiteralPath (Join-Path $target 'source-change-refusal.txt')
 if($LASTEXITCODE -eq 0) {throw 'The runtime source closure admitted a material source change.'}
+$global:LASTEXITCODE=0
 if($SourceClosureOnly) {
     $paths=@($PSCommandPath,$generated,$repeated,(Join-Path $patches 'Generate-RuntimeProfile.py'),(Join-Path $patches 'runtime_inventory.json'))+$closureHeaders
     @{passed=$true;sourceClosureLineEndings=@('LF','CRLF');materialSourceChangeRefused=$true;scope='Runtime source closure and generated header reproduce without private game inputs.';files=@($paths | Get-FileHash | Select-Object Path,Hash)} | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $target 'receipt.json')

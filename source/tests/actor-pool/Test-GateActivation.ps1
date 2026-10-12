@@ -25,6 +25,8 @@ try {
     if ($LASTEXITCODE -ne 0) {throw 'The gate returned without actor registration.'}
     & $binary refuse (Join-Path $target 'refuse.json')
     if ([uint32]([int64]$LASTEXITCODE -band 0xFFFFFFFFL) -ne 0xE0427606L -or (Test-Path -LiteralPath (Join-Path $target 'refuse.json'))) {throw 'Failed actor registration returned to its native caller.'}
+    # The deliberate refusal passed. Do not return its child exit code to the CI shell.
+    $global:LASTEXITCODE=0
     $paths=@($fixture,$gate,$binding,$PSCommandPath,$binary,(Join-Path $target 'ProbeProfile.h'),(Join-Path $target 'success.json'),(Join-Path $PSScriptRoot '../../launch/startup_gate/GateContract.h'),(Join-Path $PSScriptRoot '../../patches/actor_pool/RuntimeBinding.h'))
     @{passed=$true;registrationFailureExit='0xe0427606';scope='Actual gate and runtime callback with authored admission/observation and owned memory. No game caller or game registration.';files=@($paths | Get-FileHash | Select-Object Path,Hash)} | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $target 'receipt.json')
 }finally {$env:INCLUDE=$savedInclude;$env:LIB=$savedLib}
