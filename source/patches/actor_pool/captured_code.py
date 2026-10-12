@@ -36,6 +36,8 @@ class Rewrite:
     instruction_map: tuple[tuple[int, int], ...] = ()
     # Explicit native disp32 fields whose base register holds the game image base.
     image_relative_operands: tuple[tuple[int, int], ...] = ()
+    # Native context members subtract a fixed image RVA from a real relocated storage target.
+    context_relative_operands: tuple[tuple[int, int, int], ...] = ()
 
 
 class CapturedCode:

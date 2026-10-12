@@ -169,7 +169,8 @@ def run(args):
             if edit.stub:bodies.append(('arena',edit.stub_address-recipe.arena,edit.stub,edit.instruction_map))
             for space,offset,body,instruction_map in bodies:
                 template=make_template(code,recipe,space,offset,body,instruction_map,
-                    edit.image_relative_operands if space=='game' else ())
+                    edit.image_relative_operands if space=='game' else (),
+                    edit.context_relative_operands if space=='game' else ())
                 for piece in template.pieces:
                     if piece.source is None:continue
                     copied+=piece.size

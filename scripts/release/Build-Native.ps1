@@ -78,5 +78,5 @@ try {
     Copy-Item -LiteralPath (Join-Path $DetoursRoot 'LICENSE.md') -Destination (Join-Path $build 'Detours-LICENSE.md')
     & $Python -B (Join-Path $repo 'source/launch/early_startup/Audit-Artifact.py') --directory $build
     if ($LASTEXITCODE -ne 0) { throw 'Native artifact audit failed.' }
-    @{status='unvalidated-source-build';gameSha256=$gameHash;serverUsableSlots=500000;clientTotal=250001;pendingCallbacksPerLocalClient=8192;clientfieldCounters=8192;actorCapacity=500;sentientCapacity=540;actorRuntimeFunctions=2465;nativeEdits=360;files=@(Get-ChildItem -LiteralPath $build -File | Where-Object Extension -in @('.exe','.dll') | Get-FileHash | Select-Object Path,Hash)} | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $build 'build-receipt.json') -Encoding utf8
+    @{status='unvalidated-source-build';gameSha256=$gameHash;serverUsableSlots=500000;clientTotal=250001;pendingCallbacksPerLocalClient=8192;clientfieldCounters=8192;actorCapacity=500;sentientCapacity=540;actorRuntimeFunctions=2465;nativeEdits=365;files=@(Get-ChildItem -LiteralPath $build -File | Where-Object Extension -in @('.exe','.dll') | Get-FileHash | Select-Object Path,Hash)} | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $build 'build-receipt.json') -Encoding utf8
 } finally { $env:INCLUDE=$savedInclude; $env:LIB=$savedLib }

@@ -52,7 +52,7 @@ def regenerate(module,executable,seed):
     templates=[]
     for edit in recipe.edits:
         templates.append(dataclasses.asdict(make_template(code,recipe,'game',edit.guard.rva,edit.replacement,
-            image_relative_operands=edit.image_relative_operands)))
+            image_relative_operands=edit.image_relative_operands,context_relative_operands=edit.context_relative_operands)))
         if edit.stub:templates.append(dataclasses.asdict(make_template(code,recipe,'arena',edit.stub_address-recipe.arena,edit.stub,edit.instruction_map)))
     def json_bytes(value):
         if isinstance(value,bytes):return value.hex()
@@ -103,7 +103,7 @@ def generate(output):
             pieces.append((p['offset'],p['size'],p['source'] if p['source'] is not None else 0xFFFFFFFF,offset))
         for r in template['relocations']:
             fixups.append((r['offset'],r['width'],int(r['target']['space']=='arena'),r['target']['offset'],
-                r['next_offset'] if r['next_offset'] is not None else 0xFFFFFFFF,int(r['image_relative'])))
+                r['next_offset'] if r['next_offset'] is not None else 0xFFFFFFFF,int(r['image_relative']),r.get('image_anchor',0)))
         templates.append((int(template['origin']['space']=='arena'),template['origin']['offset'],template['size'],first_piece,len(template['pieces']),first_fixup,len(template['relocations'])))
     functions=[]
     for f in inventory['functions']:
@@ -112,10 +112,11 @@ def generate(output):
     phases=[(p['control_rva'],p['native_row_rva'],p['handler_rva'],p['data_rva'],p['prolog'],p['temporary_bytes']) for p in inventory['phases']]
     text=['// Generated from runtime_inventory.json. Do not edit.','#pragma once','#include <cstdint>','namespace bo3::actors::profile {',
         'struct Guard {std::uint32_t rva,size,digest;};','struct Normalization {std::uint32_t rva,target;};',
-        'struct Piece {std::uint32_t offset,size,source,data;};','struct Fixup {std::uint32_t offset,width,arena,target,next,imageRelative;};',
+        'struct Piece {std::uint32_t offset,size,source,data;};','struct Fixup {std::uint32_t offset,width,arena,target,next,imageRelative,imageAnchor;};',
         'struct Template {std::uint32_t arena,offset,size,pieceFirst,pieceCount,fixupFirst,fixupCount;};',
         'struct Function {std::uint32_t begin,end,data,size,parent;};','struct Phase {std::uint32_t control,owner,handler,data,prolog,stack;};',
         'struct Storage {std::uint32_t offset,size;};',f'inline constexpr std::uintptr_t CapturedBase={inventory["captured_base"]}ull;',
+        f'inline constexpr std::uint32_t ImageSize={inventory["image_size"]};',
         f'inline constexpr std::uint32_t SourceEditCount={inventory["source_edit_count"]};',
         f'inline constexpr std::uint32_t SourcePublicationCount={inventory["source_publication_count"]};',
         'inline constexpr std::uint32_t HelperPublicationCount=4;',

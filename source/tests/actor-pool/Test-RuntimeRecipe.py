@@ -56,7 +56,7 @@ def run(module: Path,executable: Path,output: Path) -> dict:
                 assert all(a==b for (_,a),(b,_) in zip(selected,selected[1:])),edit.name
             key=(edit.guard.rva,'replacement')
             if not shift:canonical[key]=make_template(current,recipe,'game',edit.guard.rva,edit.replacement,
-                image_relative_operands=edit.image_relative_operands)
+                image_relative_operands=edit.image_relative_operands,context_relative_operands=edit.context_relative_operands)
             replacement=canonical[key]
             assert render_template(replacement,current,current.base,recipe.arena)==edit.replacement,edit.name
             if edit.stub:

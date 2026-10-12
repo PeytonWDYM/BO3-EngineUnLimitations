@@ -13,6 +13,20 @@
 namespace {
 void Require(bool value,const char* message) {if(!value)throw std::runtime_error(message);}
 
+// Resolve the published native operands against the independently published helper bank.
+void CheckServerContextBindings(std::uintptr_t game,const bo3::actors::NativeBindings& bindings) {
+    const auto target=reinterpret_cast<std::uintptr_t>(bindings.secondaryActors)+0xA88;
+    for(const auto& [rva,opcode]:std::array{
+        std::pair{std::uintptr_t{0x1B64993},std::array<unsigned char,4>{0x4C,0x89,0xA4,0x08}},
+        std::pair{std::uintptr_t{0x24B25D2},std::array<unsigned char,4>{0x48,0x89,0x84,0x11}}}) {
+        const auto* instruction=reinterpret_cast<const unsigned char*>(game+rva);
+        Require(std::memcmp(instruction,opcode.data(),opcode.size())==0,"Fixture server context opcode differs.");
+        std::int32_t displacement{};std::memcpy(&displacement,instruction+4,4);
+        Require(static_cast<std::int64_t>(game+0xA173A90)+displacement==static_cast<std::int64_t>(target),
+                "Fixture server context does not resolve to the actual helper secondary bank.");
+    }
+}
+
 // Compare the exact published allocator row with its original native frame at every stub boundary.
 void CheckEntityAllocatorFrame(const bo3::actors::RuntimeBindings& runtime,std::uintptr_t game,std::uintptr_t arena) {
     auto native=*reinterpret_cast<const RUNTIME_FUNCTION*>(game+0x1A865450);
@@ -114,6 +128,7 @@ int main(int argc,char** argv) {
         const auto& counts=*reinterpret_cast<const bo3::actors::LoadBindings*>(module.base+offsets.countBindings)->counts;
         Require(std::memcmp(&counts,&bo3::actors::LegacyCounts,sizeof counts)==0,"Fixture initial load counts differ.");
         const auto& bindings=*reinterpret_cast<const bo3::actors::NativeBindings*>(module.base+offsets.nativeBindings);
+        CheckServerContextBindings(game.base,bindings);
         const auto& branches=*reinterpret_cast<const bo3::actors::ReadBranches*>(module.base+offsets.readBranches);
         Require(reinterpret_cast<std::uintptr_t>(bindings.whole)==module.base+offsets.wholeReentry&&branches.whole==game.base+0x19C3277,"Fixture whole-load binding differs.");
         for(std::uint32_t actor=0;actor<500;++actor) {
@@ -188,7 +203,7 @@ int main(int argc,char** argv) {
         for(const auto& edit:plan.edits)Require(std::memcmp(reinterpret_cast<void*>(edit.address),edit.original.data(),edit.original.size())==0,"Fixture refusal changed publication bytes.");
         VirtualFree(offlineArena,0,MEM_RELEASE);VirtualFree(helper,0,MEM_RELEASE);VirtualFree(image,0,MEM_RELEASE);
         std::ofstream(argv[2])<<"{\"passed\":true,\"sourceEdits\":"<<plan.edits.size()<<",\"gameBase\":"<<game.base<<",\"runtimeFunctions\":"<<std::size(bo3::actors::profile::Functions)+bo3::actors::profile::ExtraFunctionCount
-            <<",\"phases\":"<<std::size(bo3::actors::profile::Phases)<<",\"transaction\":\"vm_startup::PausedPatch\",\"rollback\":true,\"commit\":true,\"removal\":true,\"pageBounded\":true,\"helperPageRefusal\":true,\"guardRefusal\":true,\"pointerRefusal\":true,\"poolRefusal\":true,\"gameLaunches\":0}\n";
+            <<",\"phases\":"<<std::size(bo3::actors::profile::Phases)<<",\"transaction\":\"vm_startup::PausedPatch\",\"rollback\":true,\"commit\":true,\"removal\":true,\"pageBounded\":true,\"helperPageRefusal\":true,\"guardRefusal\":true,\"pointerRefusal\":true,\"poolRefusal\":true,\"serverContextBindings\":true,\"gameLaunches\":0}\n";
         return 0;
     } catch(const std::exception& error) {std::cerr<<error.what()<<'\n';return 1;}
 }

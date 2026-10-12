@@ -13,8 +13,8 @@ An optional engine patch for Steam Black Ops III Zombies. The Windows launcher s
 | Pending clientfield callbacks | 8,192 per local client |
 | Clientfield counters | 8,192 records |
 
-Candidate **0.5.0-test.5** includes the actor patch in the main launcher and installer.
-It applies 360 native edits and 1,079 checksum edits before game allocation.
+Candidate **0.5.0-test.6** includes the actor patch in the main launcher and installer.
+It applies 365 native edits and 1,079 checksum edits before game allocation.
 The installer adds a reversible Steam launch option. Original game files stay unchanged.
 The actor capacity does not change a map's script spawn cap or spawn 500 zombies automatically.
 
@@ -57,7 +57,16 @@ The exact published allocator frame passes Windows unwind checks at each instruc
 Test.4 refused a field descriptor before its native initializer ran. It wrote no patches.
 Test.5 checks the cold descriptor and its complete native initializer, registered callback, and field name.
 It also binds the indexed getter to the actual arena address. Replays cover different arena offsets and image bases.
-Game testing remains required. Normal entity capacity still limits the population that each map can support.
+Test.5 reached Der Eisendrache with AAE and a 500 setting, but crashed at RVA `0x14C57A7`.
+The dump contains 69 allocated actors after the crash. This does not prove stable play above 64 actors.
+A separate frontend exit produced an execute access violation in an AAE relay.
+The AAE relay repair passed a low-count Der Eisendrache load, match end, and exit with no new dump.
+The actor crash comes from a client context callback that still writes into the old actor bank.
+At actor 64, that write overlaps the viewmodel pose cache.
+Test.6 relocates that callback and four related client and server references.
+Native replay covers both clients and actor boundaries through 499. Windows publication checks use the actual allocated arena.
+Test.6 still needs high-count game tests. Typed actor and sentient pointer saves also retain stock bounds.
+Normal entity capacity still limits the population that each map can support.
 High actor counts, save/load, host migration, matching peers, and sustained performance need game tests.
 
 [Spawn pacing and actor-capacity research](research/zombie-spawn-limits.txt) describes the work needed for faster spawn batches and more than 200 zombies.
@@ -82,7 +91,7 @@ Expanded actor saves use a distinct format identifier. The loader accepts the gu
 initializes unused records, and keeps the selected read counts active until the complete native load ends.
 Expanded sessions require matching patched peers; matching patches alone do not prove compatibility.
 
-The launcher checks 912 complete actor source guards. Its 269 actor publication records share the frozen startup
+The launcher checks 934 complete actor source guards. Its 274 actor publication records share the frozen startup
 transaction with the VM, clientfield, gate, and checksum patches. Failed publication restores bytes and page protections.
 The primary thread registers 2,465 runtime function rows before game entry continues.
 Owned Windows tests cover native frame metadata, handler translation, complete load scope, publication,

@@ -9,6 +9,7 @@ from actor_wire import prepare_actor_wire
 from client_snapshots import ClientSnapshots,prepare_client_snapshots
 from client_snapshot_reset import prepare_client_snapshot_resets
 from client_actors import ClientActors,prepare_client_actors,ACTOR_BANK_OFFSET
+from context_aliases import prepare_context_aliases
 from client_allocator import prepare_client_allocation
 from client_actor_ring import prepare_client_actor_ring
 from entity_allocator import prepare_entity_allocator,ENTITY_ALLOCATOR_UNWIND
@@ -80,6 +81,7 @@ def prepare_recipe(source: CapturedCode,arena: int) -> RuntimeRecipe:
     model=arena+0x2E00000
     clients=ClientActors(model,model+ACTOR_BANK_OFFSET,shape)
     edits.extend(prepare_client_actors(code,clients))
+    edits.extend(prepare_context_aliases(code,clients,storage.secondary_actors))
     edits.append(prepare_client_allocation(code,arena+0x1E0000))
     edits.extend(prepare_client_actor_ring(code,shape))
     demo=DemoWriter(arena+0x2B00000,shape)

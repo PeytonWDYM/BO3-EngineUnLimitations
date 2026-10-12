@@ -23,6 +23,7 @@ class Relocation:
     target: Address
     next_offset: int | None
     image_relative: bool = False
+    image_anchor: int = 0
 
 @dataclass(frozen=True)
 class Template:
@@ -31,7 +32,7 @@ class Template:
     pieces: tuple[Piece,...]
     relocations: tuple[Relocation,...]
 
-def make_template(code,recipe,space: str,offset: int,body: bytes,instruction_map=(),image_relative_operands=()) -> Template:
+def make_template(code,recipe,space: str,offset: int,body: bytes,instruction_map=(),image_relative_operands=(),context_relative_operands=()) -> Template:
     if space not in ('game','arena') or not body:raise ValueError('The runtime template origin or extent is invalid.')
     pieces=[]
     if instruction_map:
@@ -76,12 +77,14 @@ def make_template(code,recipe,space: str,offset: int,body: bytes,instruction_map
                     value=operand.imm&((1<<64)-1)
                     if code.base<=value<code.base+code.meta['imageSize'] or recipe.arena<=value<recipe.arena+recipe.arena_bytes:
                         relocations.append(Relocation(start+instruction.imm_offset,8,target(value),None))
-        for field,value in image_relative_operands:
+        for field,value,anchor in (*((field,value,0) for field,value in image_relative_operands),*context_relative_operands):
             owners=[i for i in instructions if i.address-address+i.disp_offset==field and i.disp_size==4
                     and any(o.type==X86_OP_MEM and o.mem.base!=X86_REG_RIP for o in i.operands)]
-            if space!='game' or len(owners)!=1 or struct.unpack_from('<i',body,field)[0]!=value-code.base:
+            if not 0<=anchor<code.meta['imageSize']:
+                raise ValueError('A native context anchor exceeds the executable image.')
+            if space!='game' or len(owners)!=1 or struct.unpack_from('<i',body,field)[0]!=value-code.base-anchor:
                 raise ValueError('The image-base-relative operand differs from its admitted native displacement.')
-            relocations.append(Relocation(field,4,target(value),None,True))
+            relocations.append(Relocation(field,4,target(value),None,True,anchor))
     return Template(Address(space,offset),len(body),tuple(pieces),tuple(relocations))
 
 def render_template(template: Template,code,game: int,arena: int) -> bytes:
@@ -94,10 +97,15 @@ def render_template(template: Template,code,game: int,arena: int) -> bytes:
     if not all(covered):raise ValueError('A runtime body has an uninitialized instruction span.')
     origin=bases[template.origin.space]+template.origin.offset
     for field in template.relocations:
+        if not 0<=field.image_anchor<code.meta['imageSize'] or field.image_anchor and not field.image_relative:
+            raise ValueError('A runtime context anchor exceeds its admitted image-relative operand.')
         value=bases[field.target.space]+field.target.offset
-        if field.image_relative:value-=game
+        if field.image_relative:value-=game+field.image_anchor
         elif field.next_offset is not None:value-=origin+field.next_offset
         if field.width not in (1,4,8) or not 0<=field.offset<=len(body)-field.width:
             raise ValueError('A runtime relocation exceeds its complete operand.')
+        if field.image_relative or field.next_offset is not None:
+            limit=1<<(field.width*8-1)
+            if not -limit<=value<limit:raise ValueError('A runtime relocation exceeds its signed operand width.')
         body[field.offset:field.offset+field.width]=value.to_bytes(field.width,'little',signed=field.image_relative or field.next_offset is not None)
     return bytes(body)

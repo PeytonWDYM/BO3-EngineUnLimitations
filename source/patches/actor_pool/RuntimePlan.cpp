@@ -91,12 +91,14 @@ Bytes Render(HANDLE process,const profile::Template& body,std::uintptr_t game,st
         const auto& fixup=profile::Fixups[body.fixupFirst+i];
         if(fixup.offset>bytes.size() || fixup.width>bytes.size()-fixup.offset || (fixup.width!=1&&fixup.width!=4&&fixup.width!=8))
             throw std::runtime_error("The actor operand exceeds its complete body.");
+        if(fixup.imageAnchor>=profile::ImageSize || (fixup.imageAnchor&&!fixup.imageRelative))
+            throw std::runtime_error("The actor context anchor exceeds its image-relative operand.");
         const auto target=(fixup.arena?arena:game)+fixup.target;
         if(fixup.next==NoIndex&&!fixup.imageRelative) {
             if(fixup.width!=8)throw std::runtime_error("The actor absolute operand has an invalid width.");
             std::memcpy(bytes.data()+fixup.offset,&target,8);
         } else {
-            const auto reference=fixup.imageRelative?game:origin+fixup.next;
+            const auto reference=fixup.imageRelative?game+fixup.imageAnchor:origin+fixup.next;
             const auto value=static_cast<std::int64_t>(target)-static_cast<std::int64_t>(reference);
             if(fixup.width==8)throw std::runtime_error("The actor relative operand has an invalid width.");
             const auto limit=std::int64_t{1}<<(fixup.width*8-1);
