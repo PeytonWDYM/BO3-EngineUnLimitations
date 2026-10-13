@@ -10,6 +10,7 @@ Payload status failure cases, written before status verification:
 - External Steam edits must retain externally-changed and must not inspect another launch route.
 - Payload links and hard links must not bypass the existing private-path checks.
 - Unsupported game versions must retain the existing gameSupported refusal result.
+- Removal retains payload folders. Corruption instructions must identify that folder and explain how to move it aside before Install.
 
 1. Steam puts BO3 in a secondary library with a custom installdir and Unicode.
    Discovery must use appmanifest_311210.acf and retain the complete path.

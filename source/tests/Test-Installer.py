@@ -169,6 +169,8 @@ def run(output: Path, *, skip_gui_tests: bool = False) -> None:
             assert 'message' in result and 'Remove' in result['message'] and 'Install' in result['message']
         if mutation == 'older':
             assert result['expectedVersion'] == 'owned-newer' and 'installedVersion' not in result
+        if expected == 'missing-or-corrupt':
+            assert result['payloadFolder'] == str(folder) and 'move' in result['message']
         after = {str(path): path.read_bytes() for root in (manager.steam, manager.state, tools)
                  for path in root.rglob('*') if path.is_file()}
         assert before == after

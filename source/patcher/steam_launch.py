@@ -209,6 +209,7 @@ class SteamPlay:
                     raise PatchError('The installed Steam launcher path is invalid.')
                 installations = (self.steam, game.resolve(strict=True))
                 folder = private_path(launcher.parent, installations=installations)
+                support['payloadFolder'] = str(folder)
                 if {path.name for path in folder.iterdir()} != set(PAYLOAD_NAMES):
                     raise PatchError('The installed launcher folder is incomplete or has unexpected files.')
                 actual = {name: file_hash(private_path(folder, name, installations)) for name in PAYLOAD_NAMES}
@@ -217,7 +218,11 @@ class SteamPlay:
                     raise PatchError('The installed payload differs from its original folder identity.')
             except (PatchError, OSError) as error:
                 status = 'missing-or-corrupt'
-                support['message'] = f'{error} Close Steam and Black Ops III. Select Remove, then Install.'
+                support['message'] = f'{error} Close Steam and Black Ops III. Select Remove. '
+                if 'payloadFolder' in support:
+                    support['message'] += f'If this private folder exists, move it aside before Install: {support["payloadFolder"]}.'
+                else:
+                    support['message'] += 'Use Install from a clean package.'
             else:
                 if actual == build['files'] and folder.name == folder_name(build['id'], build['files']):
                     support['installedVersion'] = version
