@@ -112,6 +112,25 @@ int main(int argc,char** argv) {
             getterFound=true;
         }
         Require(getterFound,"Fixture sentient getter binding is missing.");
+        bool cacheCapacityFound=false,cacheBackingFound=false;
+        for(const auto& edit:plan.edits) {
+            if(edit.address==game.base+0x1D6147) {
+                const unsigned char expected[]={0xBA,0x00,0x00,0x20,0x00};
+                Require(edit.replacement.size()==sizeof expected&&std::memcmp(edit.replacement.data(),expected,sizeof expected)==0,
+                        "Fixture cache capacity differs from the admitted 2 MiB bank.");
+                cacheCapacityFound=true;
+            }
+            if(edit.address==game.base+0x1D6162) {
+                const unsigned char prefix[]={0x48,0x8D,0x0D};
+                Require(edit.replacement.size()==7&&std::memcmp(edit.replacement.data(),prefix,sizeof prefix)==0,
+                        "Fixture cache backing instruction differs.");
+                std::int32_t displacement{};std::memcpy(&displacement,edit.replacement.data()+3,4);
+                Require(static_cast<std::int64_t>(game.base+0x1D6169)+displacement==static_cast<std::int64_t>(arena+0x2D00000),
+                        "Fixture cache backing uses the offline arena instead of the allocated arena.");
+                cacheBackingFound=true;
+            }
+        }
+        Require(cacheCapacityFound&&cacheBackingFound,"Fixture cache constructor bindings are missing.");
         MEMORY_BASIC_INFORMATION info{};
         for(const auto [offset,protection]:{std::pair<std::size_t,DWORD>{0,PAGE_EXECUTE_READ},{0x200000,PAGE_READONLY},{0x400000,PAGE_READWRITE}}) {
             Require(VirtualQuery(reinterpret_cast<void*>(arena+offset),&info,sizeof info)==sizeof info&&info.Protect==protection,"Fixture arena protection differs.");
@@ -203,18 +222,18 @@ int main(int argc,char** argv) {
         *reinterpret_cast<std::uintptr_t*>(static_cast<unsigned char*>(image)+0xA1B0790)=0;
         for(const auto& [rva,size]:std::array{
             std::pair{0x1767A408u,8u},std::pair{0x1767A3C8u,4u},
-            std::pair{0x1767A460u,8u},std::pair{0x1767A3B0u,4u}}) {
+            std::pair{0x1767A460u,8u},std::pair{0x1767A3B0u,4u},std::pair{0x421F650u,8u}}) {
             auto* state=static_cast<unsigned char*>(image)+rva;
-            Require(std::all_of(state,state+size,[](auto value){return value==0;}),"Fixture server actor snapshot state is not cold.");
+            Require(std::all_of(state,state+size,[](auto value){return value==0;}),"Fixture native allocation state is not cold.");
             *state=1;
             refused=false;
             try {auto rejected=bo3::actors::BuildRuntimePlan(process,game,module,offsets);}
             catch(const std::exception& error) {
                 Require(std::string(error.what()).find("already initialized")!=std::string::npos,
-                        "Fixture server actor snapshot refusal has a different cause.");
+                        "Fixture native allocation refusal has a different cause.");
                 refused=true;
             }
-            Require(refused,"Fixture existing server actor snapshot state passed.");
+            Require(refused,"Fixture existing native allocation state passed.");
             *state=0;
             for(const auto& edit:plan.edits)Require(std::memcmp(reinterpret_cast<void*>(edit.address),edit.original.data(),edit.original.size())==0,
                 "Fixture server actor snapshot refusal changed publication bytes.");
@@ -222,7 +241,7 @@ int main(int argc,char** argv) {
         for(const auto& edit:plan.edits)Require(std::memcmp(reinterpret_cast<void*>(edit.address),edit.original.data(),edit.original.size())==0,"Fixture refusal changed publication bytes.");
         VirtualFree(offlineArena,0,MEM_RELEASE);VirtualFree(helper,0,MEM_RELEASE);VirtualFree(image,0,MEM_RELEASE);
         std::ofstream(argv[2])<<"{\"passed\":true,\"sourceEdits\":"<<plan.edits.size()<<",\"gameBase\":"<<game.base<<",\"runtimeFunctions\":"<<std::size(bo3::actors::profile::Functions)+bo3::actors::profile::ExtraFunctionCount
-            <<",\"phases\":"<<std::size(bo3::actors::profile::Phases)<<",\"transaction\":\"vm_startup::PausedPatch\",\"rollback\":true,\"commit\":true,\"removal\":true,\"pageBounded\":true,\"helperPageRefusal\":true,\"guardRefusal\":true,\"pointerRefusal\":true,\"poolRefusal\":true,\"snapshotColdRefusals\":4,\"serverContextBindings\":true,\"gameLaunches\":0}\n";
+            <<",\"phases\":"<<std::size(bo3::actors::profile::Phases)<<",\"transaction\":\"vm_startup::PausedPatch\",\"rollback\":true,\"commit\":true,\"removal\":true,\"pageBounded\":true,\"helperPageRefusal\":true,\"guardRefusal\":true,\"pointerRefusal\":true,\"poolRefusal\":true,\"snapshotColdRefusals\":4,\"cacheColdRefusals\":1,\"serverContextBindings\":true,\"gameLaunches\":0}\n";
         return 0;
     } catch(const std::exception& error) {std::cerr<<error.what()<<'\n';return 1;}
 }

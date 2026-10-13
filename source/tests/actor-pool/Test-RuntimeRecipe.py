@@ -45,6 +45,8 @@ def run(module: Path,executable: Path,output: Path) -> dict:
         banks=sorted(recipe.storage)
         assert all(a>=recipe.arena and a+n<=recipe.arena+recipe.arena_bytes for a,n in banks)
         assert all(a+n<=b for (a,n),(b,_) in zip(banks,banks[1:]))
+        assert (recipe.arena+0x2D00000,0x200000) in recipe.storage
+        assert {e.name for e in recipe.edits}>={'client_cache_heap_capacity','client_cache_heap_backing'}
         assert {e.name for e in recipe.edits}>={'actor_load_extent','sentient_load_extent','secondary_load_count',
             'tagged_secondary_load_count','temporal_history_save_write','temporal_history_level_reset',
             'temporal_producer','temporal_rewind','temporal_history_recorder','temporal_history_selector',

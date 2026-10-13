@@ -57,7 +57,8 @@ class Emitter:
     def row_address(self, owner_register: str, pool_pointer: int, layout: TableLayout) -> None:
         self.mov('rax', owner_register)
         self.rip(b'\x48\x2b\x05', pool_pointer)
-        self.put(b'\x31\xd2\xb9'+struct.pack('<I', NATIVE_SENTIENT_BYTES)+b'\x48\xf7\xf1')
+        # Exact unsigned quotient by 12424: high64(value * ceil(2**77 / 12424)) >> 13.
+        self.put(b'\x48\xb9'+struct.pack('<Q',0xA8CC67855B7CC91C)+b'\x48\xf7\xe1\x48\x89\xd0\x48\xc1\xe8\x0d')
         self.put(b'\x48\x69\xc0'+struct.pack('<I', layout.row_bytes))
         self.put(b'\x48\xb9'+struct.pack('<Q', layout.external_table)+b'\x48\x01\xc8')
 

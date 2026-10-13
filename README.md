@@ -13,8 +13,8 @@ An optional engine patch for Steam Black Ops III Zombies. The Windows launcher s
 | Pending clientfield callbacks | 8,192 per local client |
 | Clientfield counters | 8,192 records |
 
-Candidate **0.5.0-test.9** includes the actor patch in the main launcher and installer.
-It applies 710 native edits and 1,079 checksum edits before game allocation.
+Candidate **0.5.0-test.10** includes the actor patch in the main launcher and installer.
+It applies 712 native edits and 1,079 checksum edits before game allocation.
 The installer adds a reversible Steam launch option. Original game files stay unchanged.
 The actor capacity does not change a map's script spawn cap or spawn 500 zombies automatically.
 
@@ -78,6 +78,12 @@ Native null fields and nullable sentient-word handles retain their original fram
 The native descriptor replay covers all three paired families, exact four-byte writes, relocated destination pools, and native returns.
 Windows checks cover all six compare stubs and their complete native frames.
 Whole-game high-count saves and host migration still need game tests.
+Test.10 relocates the native client transform-cache heap from 96 KiB to a guarded 2 MiB bank.
+The stock native replay fails after 219 allocations at the same null 384-byte clear seen in the Test.9 crash.
+The new bank admits all 3,584 supported centity owners. Native release, fragmentation, coalescing, reset, and reuse pass.
+Startup refuses an initialized cache root before it publishes the two constructor operands. Native frames and refusal paths stay unchanged.
+Test.10 also replaces awareness-table integer division with an exact reciprocal multiply and shift.
+An isolated Windows benchmark reduced row-address time by about 70%. Game FPS and complete map teardown remain unverified.
 Normal entities still limit the population that each map can support.
 Measured 500 actors, save/load, migration, peers, and sustained performance remain required.
 
@@ -106,9 +112,9 @@ The loader accepts guarded legacy formats, initializes unused records, and keeps
 This does not yet establish save/load compatibility at high actor counts.
 Expanded sessions require matching patched peers; matching patches alone do not prove compatibility.
 
-The launcher checks 1,490 exact actor source guards. Its 619 actor publication records share the frozen startup
+The launcher checks 1,508 exact actor source guards. Its 621 actor publication records share the frozen startup
 transaction with the VM, clientfield, gate, and checksum patches. Failed publication restores bytes and page protections.
-The primary thread registers 2,532 runtime function rows before game entry continues.
+The primary thread registers 2,613 runtime function rows before game entry continues.
 Owned Windows tests cover native frame metadata, handler translation, complete load scope, publication,
 rollback, allocation ownership, and registration at three image bases. Their repeatable results stay outside Git.
 These tests support candidate testing; they do not establish game or peer compatibility.
