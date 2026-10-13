@@ -43,7 +43,8 @@ Do not treat the approximate 250 threshold as proof of an eight-bit wrap.
 - Refuse changed owner bytes or incomplete allocations before publication.
 - Separate native replay results from the next high-count game test.
 
-The source repair has passed focused native replay. Runtime integration and installation remain pending.
+The repair has passed focused native replay, runtime integration, and private installer upgrades.
+Gameplay confirmation remains pending.
 
 ## Reproduced session evidence
 
@@ -86,6 +87,12 @@ Repeated replacement can still exhaust a generation. The native null refusal and
 The replay covers both wrappers, all 16 encoded-root selector branches, constructor invalidation, and generation wrap.
 The exact viewmodel pose owner also follows its native refusal path with its lock and unlock.
 Windows execution verifies both bank selections, register and flag behavior, and all five leaf unwind boundaries.
+
+The combined runtime verifies one complete 192 MiB allocation at three image bases.
+Both banks retain writable committed storage under that same allocation owner.
+Startup refuses an initialized skeletal root before allocation or publication.
+Runtime registration, publication, rollback, commit, and removal pass.
+Two private packaged Test.10 to Test.11 upgrades preserve existing and absent launch settings and all four payload hashes.
 
 Full model construction, concurrent reset and allocation, native exception dispatch, and live gameplay remain outside these proofs.
 The storage size follows the bounded native object domain. It does not follow only the captured high-water value.
