@@ -13,8 +13,8 @@ An optional engine patch for Steam Black Ops III Zombies. The Windows launcher s
 | Pending clientfield callbacks | 8,192 per local client |
 | Clientfield counters | 8,192 records |
 
-Candidate **0.5.0-test.10** includes the actor patch in the main launcher and installer.
-It applies 712 native edits and 1,079 checksum edits before game allocation.
+Candidate **0.5.0-test.11** includes the actor patch in the main launcher and installer.
+It applies 714 native edits and 1,079 checksum edits before game allocation.
 The installer adds a reversible Steam launch option. Original game files stay unchanged.
 The actor capacity does not change a map's script spawn cap or spawn 500 zombies automatically.
 
@@ -80,10 +80,23 @@ Windows checks cover all six compare stubs and their complete native frames.
 Whole-game high-count saves and host migration still need game tests.
 Test.10 relocates the native client transform-cache heap from 96 KiB to a guarded 2 MiB bank.
 The stock native replay fails after 219 allocations at the same null 384-byte clear seen in the Test.9 crash.
-The new bank admits all 3,584 supported centity owners. Native release, fragmentation, coalescing, reset, and reuse pass.
+The new bank admits all 3,584 owners in the two centity banks. Native release, fragmentation, coalescing, reset, and reuse pass.
 Startup refuses an initialized cache root before it publishes the two constructor operands. Native frames and refusal paths stay unchanged.
 Test.10 also replaces awareness-table integer division with an exact reciprocal multiply and shift.
 An isolated Windows benchmark reduced row-address time by about 70%. Game FPS and complete map teardown remain unverified.
+
+Test.10 reached 300 allocated actors on Der Eisendrache. The owner reported distorted hands and missing weapon geometry near 250 actors.
+A separate reproduction recorded skeletal allocation refusal. The stock CPU skeletal buffer has about 1 MiB of usable storage.
+Test.11 gives each local client a separate 72 MiB skeletal bank in the same owned arena.
+This size follows the physical DObj pool, maximum bone count, and native double-copy mode.
+It retains the native context layout, atomic reservation, generation, reuse, and finite refusal.
+The native replay reproduces stock refusal after 246 requests of 133 bones.
+The new banks admit 3,071 maximum-size requests per local client. Replacement, generation wrap, null refusal, and reset recovery pass.
+Windows checks cover bank ownership, startup refusal, ABI, leaf unwind, publication, rollback, and three image bases.
+These checks support testing. The hand repair still needs a new high-count game test.
+
+The same 300-actor Storm Bow test ended with `G_Spawn: no free entities`.
+That error comes from the separate ordinary entity limit, which Test.11 does not expand.
 Normal entities still limit the population that each map can support.
 Measured 500 actors, save/load, migration, peers, and sustained performance remain required.
 
@@ -101,7 +114,7 @@ The startup backend requires Windows job freezing. Proton needs a verified repla
 ## Actor patch
 
 The actor patch expands the server pools, inline sentient awareness storage, DObj tables, and iterators together.
-It preserves native record strides. Its 48MiB arena also holds snapshot, demo, history, and save/load storage.
+It preserves native record strides. Its 192 MiB arena also holds skeletal, snapshot, demo, history, and save/load storage.
 Client actor banks use an expanded native hunk allocation. The connection ring retains 8,192 actor records per local client.
 Packet, clone, entity actor-index, and demo paths use nine-bit actor IDs and matching invalid values.
 Native physics banks retain 18 player rows, add 500 actor rows, and reserve one special row.
@@ -112,9 +125,9 @@ The loader accepts guarded legacy formats, initializes unused records, and keeps
 This does not yet establish save/load compatibility at high actor counts.
 Expanded sessions require matching patched peers; matching patches alone do not prove compatibility.
 
-The launcher checks 1,508 exact actor source guards. Its 621 actor publication records share the frozen startup
+The launcher checks 1,553 exact actor source guards. Its 623 actor publication records share the frozen startup
 transaction with the VM, clientfield, gate, and checksum patches. Failed publication restores bytes and page protections.
-The primary thread registers 2,613 runtime function rows before game entry continues.
+The primary thread registers 2,614 runtime function rows before game entry continues.
 Owned Windows tests cover native frame metadata, handler translation, complete load scope, publication,
 rollback, allocation ownership, and registration at three image bases. Their repeatable results stay outside Git.
 These tests support candidate testing; they do not establish game or peer compatibility.

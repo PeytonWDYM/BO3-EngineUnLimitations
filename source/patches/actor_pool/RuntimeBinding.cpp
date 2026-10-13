@@ -1,4 +1,5 @@
 #include "RuntimeBinding.h"
+#include "ActorArena.h"
 
 namespace bo3::actors {
 extern "C" {__declspec(dllexport) constinit RuntimeBindings Bo3ActorRuntimeBindings{};}
@@ -7,7 +8,7 @@ bool ActivateActorRuntime() {
     const auto& binding=Bo3ActorRuntimeBindings;
     if(!binding.image || !binding.arena || !binding.functions || !binding.functionCount ||
             !binding.phases || !binding.phaseCount)return false;
-    if(binding.arena<binding.image+494186496 || binding.arena-binding.image>0x7FFFFFFFull-0x3000000)return false;
+    if(binding.arena<binding.image+494186496 || binding.arena-binding.image>0x7FFFFFFFull-ActorArena::Bytes)return false;
     const auto begin=binding.arena-binding.image,end=begin+0x400000;
     for(std::uint32_t index=0;index<binding.functionCount;++index) {
         const auto& row=binding.functions[index];

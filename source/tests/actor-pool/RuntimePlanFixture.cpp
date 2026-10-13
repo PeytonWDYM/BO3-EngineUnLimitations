@@ -59,6 +59,40 @@ void CheckEntityAllocatorFrame(const bo3::actors::RuntimeBindings& runtime,std::
                 "Fixture actor entity direct frame differs from native unwinding.");
     }
 }
+
+void CheckSkeletalLeaf(std::uintptr_t game,std::uintptr_t arena) {
+    const auto* reset=reinterpret_cast<const unsigned char*>(game+0x135C82C);
+    constexpr std::array<unsigned char,6> tail{0x48,0x83,0xE0,0xF0,0x90,0x90};
+    Require(reset[0]==0xE8&&std::memcmp(reset+5,tail.data(),tail.size())==0,"Fixture skeletal reset differs.");
+    std::int32_t call{};std::memcpy(&call,reset+1,4);
+    const auto leaf=game+0x135C831+call;
+    Require(leaf==arena+0x1E1000,"Fixture skeletal reset does not call the allocated selector.");
+    const auto* body=reinterpret_cast<const unsigned char*>(leaf);
+    constexpr std::array<unsigned char,6> head{0x48,0x3B,0x5D,0x18,0x48,0xB8};
+    constexpr std::array<unsigned char,4> branch{0x74,0x0A,0x48,0xB8};
+    Require(std::memcmp(body,head.data(),head.size())==0&&std::memcmp(body+14,branch.data(),branch.size())==0&&body[26]==0xC3,
+            "Fixture skeletal selector instructions differ.");
+    std::uintptr_t first{},second{};std::memcpy(&first,body+6,8);std::memcpy(&second,body+18,8);
+    Require(first==arena+0x3000000&&second==arena+0x7800000,"Fixture skeletal banks use an offline address.");
+    constexpr std::array<unsigned char,6> limit{0x81,0xFF,0xF0,0xFF,0x7F,0x04};
+    Require(std::memcmp(reinterpret_cast<void*>(game+0x13C84BF),limit.data(),limit.size())==0,"Fixture skeletal finite limit differs.");
+    alignas(16) std::array<std::uintptr_t,16> stack{};stack[0]=game+0x135C831;
+    for(const auto offset:std::array<std::uintptr_t,5>{0,4,14,16,26}) {
+        DWORD64 base{};auto* function=RtlLookupFunctionEntry(leaf+offset,&base,nullptr);
+        Require(function&&base==game&&function->BeginAddress==leaf-game&&function->EndAddress-function->BeginAddress==27,
+                "Fixture skeletal leaf registration differs.");
+        constexpr std::array<unsigned char,4> empty{1,0,0,0};
+        Require(std::memcmp(reinterpret_cast<void*>(game+function->UnwindData),empty.data(),4)==0,"Fixture skeletal leaf frame differs.");
+        CONTEXT context{};context.ContextFlags=CONTEXT_ALL;context.Rip=leaf+offset;
+        context.Rsp=reinterpret_cast<DWORD64>(stack.data());context.Rbx=11;context.Rbp=12;
+        context.Rsi=13;context.Rdi=14;context.R12=15;context.R13=16;context.R14=17;context.R15=18;
+        const auto expected=context;PVOID handler{};DWORD64 frame{};
+        RtlVirtualUnwind(UNW_FLAG_NHANDLER,game,context.Rip,function,&context,&handler,&frame,nullptr);
+        Require(context.Rip==stack[0]&&context.Rsp==expected.Rsp+8&&context.Rbx==11&&context.Rbp==12&&
+                context.Rsi==13&&context.Rdi==14&&context.R12==15&&context.R13==16&&context.R14==17&&context.R15==18,
+                "Fixture skeletal leaf did not recover its native caller.");
+    }
+}
 }
 // A private sparse seed contains guard spans only. The fixture never starts the game.
 int main(int argc,char** argv) {
@@ -101,6 +135,7 @@ int main(int argc,char** argv) {
         auto plan=bo3::actors::BuildRuntimePlan(process,game,module,offsets);
         Require(plan.edits.size()>254,"Fixture plan omitted source or helper edits.");
         auto arena=plan.arena->Base();
+        Require(plan.arena->Size()==0xC000000,"Fixture complete skeletal arena is missing.");
         Require(arena>=game.base+game.size&&arena+plan.arena->Size()<=game.base+0x7FFFFFFF,"Fixture arena exceeds relative reach.");
         Require(arena-game.base!=0x20000000,"Fixture must use a different arena offset from offline preparation.");
         bool getterFound=false;
@@ -135,6 +170,10 @@ int main(int argc,char** argv) {
         for(const auto [offset,protection]:{std::pair<std::size_t,DWORD>{0,PAGE_EXECUTE_READ},{0x200000,PAGE_READONLY},{0x400000,PAGE_READWRITE}}) {
             Require(VirtualQuery(reinterpret_cast<void*>(arena+offset),&info,sizeof info)==sizeof info&&info.Protect==protection,"Fixture arena protection differs.");
         }
+        for(const auto offset:std::array<std::size_t,4>{0x3000000,0x77FFFFF,0x7800000,0xBFFFFFF})
+            Require(VirtualQuery(reinterpret_cast<void*>(arena+offset),&info,sizeof info)==sizeof info&&
+                    info.AllocationBase==reinterpret_cast<void*>(arena)&&info.State==MEM_COMMIT&&info.Protect==PAGE_READWRITE,
+                    "Fixture skeletal bank has a different allocation owner or protection.");
         for(const auto& edit:plan.edits) {
             Require(edit.original.size()==edit.replacement.size(),"Fixture edit extent differs.");
             Require(edit.address/0x1000==(edit.address+edit.replacement.size()-1)/0x1000,"Fixture publication crosses a page.");
@@ -179,6 +218,7 @@ int main(int argc,char** argv) {
             Require(RtlLookupFunctionEntry(game.base+runtime.functions[index].BeginAddress,&base,nullptr)==runtime.functions+index&&base==game.base,"Fixture runtime lookup differs.");
         }
         CheckEntityAllocatorFrame(runtime,game.base,arena);
+        CheckSkeletalLeaf(game.base,arena);
         Require(RtlDeleteFunctionTable(runtime.functions)!=0,"Fixture runtime removal failed.");
         }
         Require(rollback.rollbackCompleted&&rollback.editsWritten==plan.edits.size(),"Fixture PausedPatch rollback failed.");
@@ -222,7 +262,7 @@ int main(int argc,char** argv) {
         *reinterpret_cast<std::uintptr_t*>(static_cast<unsigned char*>(image)+0xA1B0790)=0;
         for(const auto& [rva,size]:std::array{
             std::pair{0x1767A408u,8u},std::pair{0x1767A3C8u,4u},
-            std::pair{0x1767A460u,8u},std::pair{0x1767A3B0u,4u},std::pair{0x421F650u,8u}}) {
+            std::pair{0x1767A460u,8u},std::pair{0x1767A3B0u,4u},std::pair{0x421F650u,8u},std::pair{0x535D188u,8u}}) {
             auto* state=static_cast<unsigned char*>(image)+rva;
             Require(std::all_of(state,state+size,[](auto value){return value==0;}),"Fixture native allocation state is not cold.");
             *state=1;
@@ -241,7 +281,7 @@ int main(int argc,char** argv) {
         for(const auto& edit:plan.edits)Require(std::memcmp(reinterpret_cast<void*>(edit.address),edit.original.data(),edit.original.size())==0,"Fixture refusal changed publication bytes.");
         VirtualFree(offlineArena,0,MEM_RELEASE);VirtualFree(helper,0,MEM_RELEASE);VirtualFree(image,0,MEM_RELEASE);
         std::ofstream(argv[2])<<"{\"passed\":true,\"sourceEdits\":"<<plan.edits.size()<<",\"gameBase\":"<<game.base<<",\"runtimeFunctions\":"<<std::size(bo3::actors::profile::Functions)+bo3::actors::profile::ExtraFunctionCount
-            <<",\"phases\":"<<std::size(bo3::actors::profile::Phases)<<",\"transaction\":\"vm_startup::PausedPatch\",\"rollback\":true,\"commit\":true,\"removal\":true,\"pageBounded\":true,\"helperPageRefusal\":true,\"guardRefusal\":true,\"pointerRefusal\":true,\"poolRefusal\":true,\"snapshotColdRefusals\":4,\"cacheColdRefusals\":1,\"serverContextBindings\":true,\"gameLaunches\":0}\n";
+            <<",\"phases\":"<<std::size(bo3::actors::profile::Phases)<<",\"transaction\":\"vm_startup::PausedPatch\",\"rollback\":true,\"commit\":true,\"removal\":true,\"pageBounded\":true,\"helperPageRefusal\":true,\"guardRefusal\":true,\"pointerRefusal\":true,\"poolRefusal\":true,\"snapshotColdRefusals\":4,\"cacheColdRefusals\":1,\"skeletalColdRefusals\":1,\"skeletalArenaBytes\":201326592,\"skeletalLeafUnwindBoundaries\":5,\"serverContextBindings\":true,\"gameLaunches\":0}\n";
         return 0;
     } catch(const std::exception& error) {std::cerr<<error.what()<<'\n';return 1;}
 }

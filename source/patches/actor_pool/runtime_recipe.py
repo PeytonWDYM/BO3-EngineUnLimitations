@@ -13,6 +13,7 @@ from context_aliases import prepare_context_aliases
 from physics_state import prepare_physics_state
 from client_allocator import prepare_client_allocation
 from client_cache_heap import prepare_client_cache_heap, HEAP_OFFSET, HEAP_BYTES
+from skeletal_storage import prepare_skeletal_storage, BANK_OFFSET, BANK_BYTES, ARENA_END, LEAF_UNWIND
 from client_actor_ring import prepare_client_actor_ring
 from entity_allocator import prepare_entity_allocator,ENTITY_ALLOCATOR_UNWIND
 from demo_writer import DemoWriter,prepare_demo_writer
@@ -31,7 +32,7 @@ from save_handles import prepare_save_handles
 from unwind import native_frames
 from native_unwind import read_frame
 
-ARENA_BYTES=0x3000000
+ARENA_BYTES=ARENA_END
 CODE_BYTES=0x200000
 METADATA_OFFSET=0x200000
 METADATA_BYTES=0x200000
@@ -96,6 +97,8 @@ def prepare_recipe(source: CapturedCode,arena: int) -> RuntimeRecipe:
     edits.extend(prepare_context_aliases(code,clients,storage.secondary_actors))
     edits.extend(prepare_physics_state(code))
     edits.extend(prepare_client_cache_heap(code,arena))
+    skeletal=prepare_skeletal_storage(code,arena+BANK_OFFSET,arena+0x1E1000)
+    edits.extend(skeletal)
     edits.append(prepare_client_allocation(code,arena+0x1E0000))
     edits.extend(prepare_client_actor_ring(code,shape))
     demo=DemoWriter(arena+0x2B00000,shape)
@@ -133,7 +136,7 @@ def prepare_recipe(source: CapturedCode,arena: int) -> RuntimeRecipe:
         raise ValueError('A combined actor body exceeds or overlaps the complete code arena.')
     regions=tuple(storage.regions(table))+((snapshots.base,snapshots.total_bytes),(demo.base,demo.bytes),
         (history,temporal.history_bytes),(counts.base,24),(arena+0x2C50000,temporal.history_bytes),
-        (arena+HEAP_OFFSET,HEAP_BYTES))
+        (arena+HEAP_OFFSET,HEAP_BYTES),(arena+BANK_OFFSET,BANK_BYTES),(arena+BANK_OFFSET+BANK_BYTES,BANK_BYTES))
     banks=sorted(regions)
     if any(a<arena+CODE_BYTES+METADATA_BYTES or a+n>arena+ARENA_BYTES for a,n in banks) or any(a+n>b for (a,n),(b,_) in zip(banks,banks[1:])):
         raise ValueError('A combined actor storage interval exceeds or overlaps the complete data arena.')
@@ -141,7 +144,7 @@ def prepare_recipe(source: CapturedCode,arena: int) -> RuntimeRecipe:
         (history_reset.rewrite.stub_address,history_reset.metadata),
         (entity_allocation.stub_address,ENTITY_ALLOCATOR_UNWIND))
     leaf=next(e for e in demo_edits if e.stub)
-    independent+=((leaf.stub_address,bytes.fromhex('01000000')),)
+    independent+=((leaf.stub_address,bytes.fromhex('01000000')),(skeletal[0].stub_address,LEAF_UNWIND))
     phases=tuple(PhaseFunction(probe.begin,probe.end,probe.metadata) for probe in pose.probes)
     return RuntimeRecipe(arena,ARENA_BYTES,500,540,tuple(edits),tuple(sorted(code.guards.values(),key=lambda g:(g.rva,g.size))),
                          regions,independent,phases,counts.base,storage.actors,history)

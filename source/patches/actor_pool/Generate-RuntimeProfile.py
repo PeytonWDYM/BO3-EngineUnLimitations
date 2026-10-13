@@ -18,6 +18,7 @@ def regenerate(module,executable,seed):
     from native_unwind import read_frame
     from server_snapshot_actors import PREALLOCATION_GLOBALS
     from client_cache_heap import PREALLOCATION_GLOBALS as CACHE_PREALLOCATION_GLOBALS
+    from skeletal_storage import PREALLOCATION_GLOBALS as SKELETAL_PREALLOCATION_GLOBALS
     import pefile
     code=CapturedCode(module,executable)
     recipe=prepare_recipe(code,code.base+0x20000000)
@@ -72,7 +73,7 @@ def regenerate(module,executable,seed):
         'normalizations':[{'rva':rva,'target':target} for rva,target in sorted(normalizations.items())],
         'templates':templates,'functions':[{'begin':f.begin-recipe.arena,'end':f.end-recipe.arena,'metadata':f.metadata.hex(),'parent':f.parent} for f in frames.functions],
         'phases':phase_rows,'storage':[(address-recipe.arena,size) for address,size in recipe.storage],
-        'preallocation_zero_spans':[(0xA1B0798,8),(0xA1B0790,8),*PREALLOCATION_GLOBALS,*CACHE_PREALLOCATION_GLOBALS],'source_edit_count':len(recipe.edits),
+        'preallocation_zero_spans':[(0xA1B0798,8),(0xA1B0790,8),*PREALLOCATION_GLOBALS,*CACHE_PREALLOCATION_GLOBALS,*SKELETAL_PREALLOCATION_GLOBALS],'source_edit_count':len(recipe.edits),
         'source_publication_count':sum((edit.guard.rva%0x1000+len(edit.replacement)+0xFFF)//0x1000 for edit in recipe.edits),
         'body_count':sum(bool(e.stub) for e in recipe.edits)}
     INVENTORY.write_text(json.dumps(inventory,default=json_bytes,separators=(',',':'))+'\n')

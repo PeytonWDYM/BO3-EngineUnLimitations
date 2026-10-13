@@ -37,6 +37,9 @@ def run(module: Path,executable: Path,output: Path) -> dict:
     for shift,arena_delta in ((0,0x20000000),(0x100000000,0x24000000),(-0x100000000,0x28000000)):
         current=RebasedCode(code,shift)
         recipe=prepare_recipe(current,current.base+arena_delta)
+        assert recipe.arena_bytes==0xC000000
+        assert (recipe.arena+0x3000000,0x4800000) in recipe.storage
+        assert (recipe.arena+0x7800000,0x4800000) in recipe.storage
         assert recipe.actors==500 and recipe.sentients==540
         assert len(recipe.edits)>221 and len(recipe.storage)>=12
         assert len(recipe.guards)>100
@@ -76,6 +79,9 @@ def run(module: Path,executable: Path,output: Path) -> dict:
             slot+=2 if operation.opcode in (1,4,8) else 1
         assert not any(e.name in ('sentient_load_record_count',) for e in recipe.edits)
         for guard in recipe.guards:code.guarded(guard)
+        skeletal=next(e for e in recipe.edits if e.name=='skeletal_reset_backing')
+        assert (skeletal.stub_address,bytes.fromhex('01000000')) in recipe.independent_frames
+        assert skeletal.stub_address==recipe.arena+0x1E1000
         frames=prepare_runtime_frames(current,recipe)
         assert len(frames.functions)>1900 and frames.handlers
         records=sorted((f.begin,f.end) for f in frames.functions)

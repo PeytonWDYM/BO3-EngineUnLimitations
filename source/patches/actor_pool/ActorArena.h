@@ -12,7 +12,7 @@
 namespace bo3::actors {
 class ActorArena final {
 public:
-    static constexpr std::size_t Bytes=0x3000000;
+    static constexpr std::size_t Bytes=0xC000000;
     ActorArena(HANDLE process,std::uintptr_t game,std::uint32_t imageBytes);
     ~ActorArena();
     ActorArena(const ActorArena&)=delete;
