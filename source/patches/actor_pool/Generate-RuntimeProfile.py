@@ -16,6 +16,7 @@ def regenerate(module,executable,seed):
     from runtime_templates import make_template
     from unwind import native_frames
     from native_unwind import read_frame
+    from server_snapshot_actors import PREALLOCATION_GLOBALS
     import pefile
     code=CapturedCode(module,executable)
     recipe=prepare_recipe(code,code.base+0x20000000)
@@ -70,7 +71,7 @@ def regenerate(module,executable,seed):
         'normalizations':[{'rva':rva,'target':target} for rva,target in sorted(normalizations.items())],
         'templates':templates,'functions':[{'begin':f.begin-recipe.arena,'end':f.end-recipe.arena,'metadata':f.metadata.hex(),'parent':f.parent} for f in frames.functions],
         'phases':phase_rows,'storage':[(address-recipe.arena,size) for address,size in recipe.storage],
-        'unallocated_pointers':[0xA1B0798,0xA1B0790],'source_edit_count':len(recipe.edits),
+        'preallocation_zero_spans':[(0xA1B0798,8),(0xA1B0790,8),*PREALLOCATION_GLOBALS],'source_edit_count':len(recipe.edits),
         'source_publication_count':sum((edit.guard.rva%0x1000+len(edit.replacement)+0xFFF)//0x1000 for edit in recipe.edits),
         'body_count':sum(bool(e.stub) for e in recipe.edits)}
     INVENTORY.write_text(json.dumps(inventory,default=json_bytes,separators=(',',':'))+'\n')
@@ -115,7 +116,7 @@ def generate(output):
         'struct Piece {std::uint32_t offset,size,source,data;};','struct Fixup {std::uint32_t offset,width,arena,target,next,imageRelative,imageAnchor;};',
         'struct Template {std::uint32_t arena,offset,size,pieceFirst,pieceCount,fixupFirst,fixupCount;};',
         'struct Function {std::uint32_t begin,end,data,size,parent;};','struct Phase {std::uint32_t control,owner,handler,data,prolog,stack;};',
-        'struct Storage {std::uint32_t offset,size;};',f'inline constexpr std::uintptr_t CapturedBase={inventory["captured_base"]}ull;',
+        'struct Storage {std::uint32_t offset,size;};','struct ColdState {std::uint32_t rva,size;};',f'inline constexpr std::uintptr_t CapturedBase={inventory["captured_base"]}ull;',
         f'inline constexpr std::uint32_t ImageSize={inventory["image_size"]};',
         f'inline constexpr std::uint32_t SourceEditCount={inventory["source_edit_count"]};',
         f'inline constexpr std::uint32_t SourcePublicationCount={inventory["source_publication_count"]};',
@@ -130,6 +131,7 @@ def generate(output):
     array('Normalization','Normalizations',[(n['rva'],n['target']) for n in inventory['normalizations']])
     array('Piece','Pieces',pieces);array('Fixup','Fixups',fixups);array('Template','Templates',templates)
     array('Function','Functions',functions);array('Phase','Phases',phases);array('Storage','StorageSpans',inventory['storage'])
+    array('ColdState','PreallocationZeroSpans',inventory['preallocation_zero_spans'])
     text.append('inline constexpr unsigned char Data[]={')
     text.extend(','.join(str(b) for b in data[i:i+32])+',' for i in range(0,len(data),32));text.extend(['};','}'])
     output.parent.mkdir(parents=True,exist_ok=True);output.write_text('\n'.join(text)+'\n')

@@ -63,10 +63,10 @@ void Admit(HANDLE process,vm_startup::ImageRange game) {
             throw std::runtime_error(message.str());
         }
     }
-    for(const auto rva:{0xA1B0798u,0xA1B0790u}) {
-        const auto bytes=Read(process,game.base+rva,8);
+    for(const auto& state:profile::PreallocationZeroSpans) {
+        const auto bytes=Read(process,game.base+state.rva,state.size);
         if(std::any_of(bytes.begin(),bytes.end(),[](auto byte){return byte!=0;}))
-            throw std::runtime_error("The native actor pool is already allocated.");
+            throw std::runtime_error("The native actor storage is already initialized.");
     }
 }
 bool AdmittedCopy(std::uint32_t rva,std::uint32_t size) {

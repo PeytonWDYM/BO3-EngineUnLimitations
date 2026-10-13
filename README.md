@@ -13,8 +13,8 @@ An optional engine patch for Steam Black Ops III Zombies. The Windows launcher s
 | Pending clientfield callbacks | 8,192 per local client |
 | Clientfield counters | 8,192 records |
 
-Candidate **0.5.0-test.7** includes the actor patch in the main launcher and installer.
-It applies 372 native edits and 1,079 checksum edits before game allocation.
+Candidate **0.5.0-test.8** includes the actor patch in the main launcher and installer.
+It applies 704 native edits and 1,079 checksum edits before game allocation.
 The installer adds a reversible Steam launch option. Original game files stay unchanged.
 The actor capacity does not change a map's script spawn cap or spawn 500 zombies automatically.
 
@@ -56,6 +56,21 @@ Telemetry reached 101 allocated actors. Match end, lobby return, and normal exit
 A separate 500-cap test reached 384 actors before `G_Spawn: no free entities` ended the match.
 The normal entity high-water value reached its stock limit of 1,022. All three expanded physics banks remained valid.
 
+A later Test.7 Der Eisendrache session failed a stack-cookie check.
+The actor pose backup helpers visit 500 actors, but some callers still allocate a 64-actor stack object.
+The saved crash frame contains position data where its stack cookie should be.
+Test.8 expands the complete pose object and all six native stack frames to 500 actors.
+It preserves each native exception handler, cleanup object, stack cookie, and register save.
+The shared temporal caller includes both buffer expansions. New stack probes have complete unwind records.
+Native replay passes with 100, 284, 300, and 500 active actors, including actor index 499.
+Windows fixtures cover stack growth, normal returns, exceptions, cleanup, and stale-cookie refusal in all six frames.
+
+The server snapshot producer also retained a separate 64-actor loop, which hid higher actors from clients.
+Test.8 expands that loop, both native snapshot allocations, the staging stride, and the internal worker actor decoder together.
+Native replay emits all 500 exact actor records and verifies history wrap, staging wrap, adjacent canaries, and teardown.
+These checks do not prove the reported tornado failure or visibility repair in a real match.
+Test.8 still needs a high-count game test, a clean exit, and a matching-peer test.
+
 Typed actor and sentient pointer saves retain stock bounds. Normal entities still limit the population that each map can support.
 Measured 500 actors, save/load, migration, peers, and sustained performance remain required.
 
@@ -84,9 +99,9 @@ The loader accepts guarded legacy formats, initializes unused records, and keeps
 This does not yet establish save/load compatibility at high actor counts.
 Expanded sessions require matching patched peers; matching patches alone do not prove compatibility.
 
-The launcher checks 1,096 exact actor source guards. Its 281 actor publication records share the frozen startup
+The launcher checks 1,479 exact actor source guards. Its 613 actor publication records share the frozen startup
 transaction with the VM, clientfield, gate, and checksum patches. Failed publication restores bytes and page protections.
-The primary thread registers 2,465 runtime function rows before game entry continues.
+The primary thread registers 2,500 runtime function rows before game entry continues.
 Owned Windows tests cover native frame metadata, handler translation, complete load scope, publication,
 rollback, allocation ownership, and registration at three image bases. Their repeatable results stay outside Git.
 These tests support candidate testing; they do not establish game or peer compatibility.
@@ -94,6 +109,12 @@ These tests support candidate testing; they do not establish game or peer compat
 Normal entity capacity, reliable-command buffers, gamestate strings, packed clientfield budgets, round counters,
 and player count retain their current limits. The patch makes no measured frame-rate claim.
 A map must raise its own ordinary-zombie spawn cap to test 200–300 concurrent zombies.
+
+`source/patches/entity_pool` contains preparation code for a private 2,048 ordinary-entity layout.
+It does not change the installed or packaged runtime.
+That layout retains the two ordinary sentinel holes and moves fake entities above the ordinary range.
+Its complete physical pool needs 3,072 records, with separate client-only storage and wider paired reference codecs.
+Native reference-head replays do not establish a complete entity-capacity patch or game compatibility.
 
 ## Build and contribute
 

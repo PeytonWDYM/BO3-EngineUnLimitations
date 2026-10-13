@@ -39,10 +39,18 @@ class RuntimeFrames:
     guards: tuple[CodeGuard,...]
 
 def prepare_runtime_frames(source,recipe: RuntimeRecipe) -> RuntimeFrames:
-    code=GuardedCode(source);native=native_frames(code);functions=[];handlers=[]
+    code=GuardedCode(source);native=native_frames(code);handlers=[]
+    functions=[RuntimeFunction(row.begin,row.end,row.metadata) for row in recipe.phase_functions]
+    if any(row.metadata[0]>>3 for row in recipe.phase_functions):
+        raise ValueError('An explicit partial-prolog phase has a language handler.')
     independent=dict(recipe.independent_frames)
     for edit in recipe.edits:
         if not edit.stub:continue
+        explicit=sorted((row for row in recipe.phase_functions if edit.stub_address<=row.begin<edit.stub_address+len(edit.stub)),key=lambda row:row.begin)
+        if explicit:
+            if explicit[0].begin!=edit.stub_address or explicit[-1].end!=edit.stub_address+len(edit.stub) or any(a.end!=b.begin for a,b in zip(explicit,explicit[1:])):
+                raise ValueError('The explicit partial-prolog phases do not cover the complete body.')
+            continue
         if edit.stub_address in independent:
             functions.append(RuntimeFunction(edit.stub_address,edit.stub_address+len(edit.stub),independent[edit.stub_address]));continue
         if edit.instruction_map:

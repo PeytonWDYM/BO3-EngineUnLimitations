@@ -21,8 +21,8 @@ from temporal_history import prepare_history
 from temporal_producer import prepare_producer
 from temporal_rewind import prepare_rewind
 from temporal_restore import prepare_restore
-from temporal_caller import prepare_caller
-from caller_unwind import prepare_caller_unwind
+from crash_frame import prepare_crash_frames
+from server_snapshot_actors import prepare_server_snapshot_actors
 from temporal_save import prepare_history_write
 from temporal_reset import prepare_history_reset
 from load_counts import LoadCounts,prepare_load_counts
@@ -35,6 +35,12 @@ METADATA_OFFSET=0x200000
 METADATA_BYTES=0x200000
 
 @dataclass(frozen=True)
+class PhaseFunction:
+    begin: int
+    end: int
+    metadata: bytes
+
+@dataclass(frozen=True)
 class RuntimeRecipe:
     arena: int
     arena_bytes: int
@@ -44,6 +50,7 @@ class RuntimeRecipe:
     guards: tuple[CodeGuard,...]
     storage: tuple[tuple[int,int],...]
     independent_frames: tuple[tuple[int,bytes],...]
+    phase_functions: tuple[PhaseFunction,...]
     count_address: int
     actor_address: int
     history_address: int
@@ -73,6 +80,7 @@ def prepare_recipe(source: CapturedCode,arena: int) -> RuntimeRecipe:
     edits.extend(dynamic)
     entity_allocation=prepare_entity_allocator(code,arena+0x1A0000)
     edits.append(entity_allocation)
+    edits.extend(prepare_server_snapshot_actors(code,shape,arena+0x1A1000))
     edits.extend(prepare_actor_wire(code,shape))
     snapshots=ClientSnapshots(arena+0x2800000,shape)
     edits.extend(prepare_client_snapshots(code,snapshots,arena+0x1C0000))
@@ -94,8 +102,8 @@ def prepare_recipe(source: CapturedCode,arena: int) -> RuntimeRecipe:
     edits.append(prepare_producer(code,temporal,arena+0x140000))
     edits.append(prepare_rewind(code,temporal,arena+0x150000))
     edits.extend(prepare_restore(code,temporal,arena+0x180000))
-    edits.extend(prepare_caller(code,temporal))
-    edits.append(prepare_caller_unwind(code,temporal))
+    pose=prepare_crash_frames(code,temporal,arena+0x1B0000)
+    edits.extend(pose.edits)
     edits.append(prepare_history_write(code,temporal,history))
     history_reset=prepare_history_reset(code,temporal,history,arena+0x190000)
     edits.append(history_reset.rewrite)
@@ -129,5 +137,6 @@ def prepare_recipe(source: CapturedCode,arena: int) -> RuntimeRecipe:
         (entity_allocation.stub_address,ENTITY_ALLOCATOR_UNWIND))
     leaf=next(e for e in demo_edits if e.stub)
     independent+=((leaf.stub_address,bytes.fromhex('01000000')),)
+    phases=tuple(PhaseFunction(probe.begin,probe.end,probe.metadata) for probe in pose.probes)
     return RuntimeRecipe(arena,ARENA_BYTES,500,540,tuple(edits),tuple(sorted(code.guards.values(),key=lambda g:(g.rva,g.size))),
-                         regions,independent,counts.base,storage.actors,history)
+                         regions,independent,phases,counts.base,storage.actors,history)

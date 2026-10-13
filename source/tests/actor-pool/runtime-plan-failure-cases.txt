@@ -28,3 +28,8 @@ Runtime plan failure cases. Write these cases before the backend.
 The first real startup can refuse a complete code guard before writes.
 The refusal must identify the guard RVA, byte count, expected SHA-256, and observed SHA-256.
 Keep the complete guard and refusal behavior. Do not admit a partial or unknown source.
+26. Reject either nonzero server actor snapshot pointer before arena allocation.
+27. Reject either nonzero server actor snapshot capacity before arena allocation.
+28. Keep every source and helper byte unchanged after each snapshot cold-state refusal.
+29. Register every pose probe phase without a language handler before the native cookie exists.
+30. Compose both expanded buffers in the shared temporal and pose caller exactly once.

@@ -9,6 +9,7 @@
 #include <string>
 #include <cstring>
 #include <array>
+#include <algorithm>
 
 namespace {
 void Require(bool value,const char* message) {if(!value)throw std::runtime_error(message);}
@@ -200,10 +201,28 @@ int main(int argc,char** argv) {
         refused=false;try {auto rejected=bo3::actors::BuildRuntimePlan(process,game,module,offsets);}catch(const std::exception&){refused=true;}
         Require(refused,"Fixture allocated sentient pool passed.");
         *reinterpret_cast<std::uintptr_t*>(static_cast<unsigned char*>(image)+0xA1B0790)=0;
+        for(const auto& [rva,size]:std::array{
+            std::pair{0x1767A408u,8u},std::pair{0x1767A3C8u,4u},
+            std::pair{0x1767A460u,8u},std::pair{0x1767A3B0u,4u}}) {
+            auto* state=static_cast<unsigned char*>(image)+rva;
+            Require(std::all_of(state,state+size,[](auto value){return value==0;}),"Fixture server actor snapshot state is not cold.");
+            *state=1;
+            refused=false;
+            try {auto rejected=bo3::actors::BuildRuntimePlan(process,game,module,offsets);}
+            catch(const std::exception& error) {
+                Require(std::string(error.what()).find("already initialized")!=std::string::npos,
+                        "Fixture server actor snapshot refusal has a different cause.");
+                refused=true;
+            }
+            Require(refused,"Fixture existing server actor snapshot state passed.");
+            *state=0;
+            for(const auto& edit:plan.edits)Require(std::memcmp(reinterpret_cast<void*>(edit.address),edit.original.data(),edit.original.size())==0,
+                "Fixture server actor snapshot refusal changed publication bytes.");
+        }
         for(const auto& edit:plan.edits)Require(std::memcmp(reinterpret_cast<void*>(edit.address),edit.original.data(),edit.original.size())==0,"Fixture refusal changed publication bytes.");
         VirtualFree(offlineArena,0,MEM_RELEASE);VirtualFree(helper,0,MEM_RELEASE);VirtualFree(image,0,MEM_RELEASE);
         std::ofstream(argv[2])<<"{\"passed\":true,\"sourceEdits\":"<<plan.edits.size()<<",\"gameBase\":"<<game.base<<",\"runtimeFunctions\":"<<std::size(bo3::actors::profile::Functions)+bo3::actors::profile::ExtraFunctionCount
-            <<",\"phases\":"<<std::size(bo3::actors::profile::Phases)<<",\"transaction\":\"vm_startup::PausedPatch\",\"rollback\":true,\"commit\":true,\"removal\":true,\"pageBounded\":true,\"helperPageRefusal\":true,\"guardRefusal\":true,\"pointerRefusal\":true,\"poolRefusal\":true,\"serverContextBindings\":true,\"gameLaunches\":0}\n";
+            <<",\"phases\":"<<std::size(bo3::actors::profile::Phases)<<",\"transaction\":\"vm_startup::PausedPatch\",\"rollback\":true,\"commit\":true,\"removal\":true,\"pageBounded\":true,\"helperPageRefusal\":true,\"guardRefusal\":true,\"pointerRefusal\":true,\"poolRefusal\":true,\"snapshotColdRefusals\":4,\"serverContextBindings\":true,\"gameLaunches\":0}\n";
         return 0;
     } catch(const std::exception& error) {std::cerr<<error.what()<<'\n';return 1;}
 }
