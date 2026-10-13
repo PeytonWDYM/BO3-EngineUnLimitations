@@ -1,0 +1,148 @@
+Zombie spawn pacing and more than 200 simultaneous zombies
+Research checkpoint: October 9, 2026
+
+Result
+
+Both features cannot come from an AAE command edit alone.
+The command clamp belongs to AAE. Actor capacity belongs to the native engine.
+Normal spawn pacing also includes a stock script wait outside AAE's delay setting.
+This checkpoint records research. It adds no active patch or gameplay compatibility claim.
+
+Peyton reports bursts of three or four zombies across all maps, in solo and co-op.
+The inspected code proves extra waits and fixed capacities.
+It does not establish the exact cause or timing of those visible bursts.
+There is no verified universal native three-zombie batch limit in this research.
+
+Spawn pacing
+
+Stock scripts/zm/_zm.gsc calls zombie_utility::spawn_zombie synchronously.
+After a successful spawn, it waits on zombie_spawn_delay or a separate 0.1-second respawn branch.
+The loop then calls util::wait_network_frame, including when the configured delay is zero.
+Capacity, missing-location, pause, migration, and custom-spawn paths add separate waits.
+
+The public util_shared.gsc implementation waits 0.1 seconds when no remote clients exist.
+With remote clients, it waits until snapshots receive acknowledgments.
+This is more than a simple yield to the next rendered frame.
+Those semantics explain a remaining pacing floor. They do not prove the reported half-second burst cadence.
+The exact loaded utility and each active custom callback still need runtime attribution.
+
+The independently decompiled AAE spawn utility also waits while getfreeactorcount is zero.
+Its retry interval is 0.05 seconds. It calls a native spawner or level.overridezombiespawn.
+Removing the configured delay does not remove this capacity wait or either callback's internal work.
+Visible ground-rise and window-entry animations also differ from native actor creation.
+
+The existing AAE Enhanced automatic-zero prototype retains wait_network_frame after every ordinary spawn.
+It therefore does not meet the requested burst-spawn behavior.
+Its stock fastfile target is removal-only after earlier signed-asset investigation.
+AAE's core archive does not already contain the stock _zm.gsc target.
+Adding an override needs verified asset delivery or a safe loaded-script patch boundary.
+The existing opcode guards alone do not establish that boundary.
+
+A useful next candidate would create a bounded batch per server scheduling interval.
+It must recheck remaining round zombies and real native capacity before each spawn.
+It must yield when a spawn fails, capacity runs out, or the batch budget ends.
+Keep migration, pause, custom enemy callbacks, cleanup, and round cancellation intact.
+Replace ordinary per-zombie pacing at the consumer. Do not globally disable wait_network_frame or the VM scheduler.
+Batch size, scheduling interval, and co-op acknowledgment policy need measurement.
+No measured spawn-rate improvement exists at this checkpoint.
+
+The zm_limit command
+
+AAE's commands script assigns both zombie_ai_limit and zombie_actor_limit.
+With elmg_cheats enabled, four GetByte operands clamp and display values at 64.
+Without that setting, the inspected command already accepts values above 23 without the same upper clamp.
+Thus a displayed value above 200 does not establish matching actor capacity.
+
+The earlier private command prototype changes those four operands to 200.
+It does not satisfy a request for more than 200, and it does not expand native storage.
+A byte operand can represent 201 through 255. Larger values require a different script encoding.
+Choose the command maximum only after the native capacity and actor-ID widths are verified.
+
+Native capacity
+
+The supported profile identifies this Steam executable:
+SHA-256: 0b874dcc250848b7313ec13a0c76468dacc2009b5efa2bff4c587e169a9f77e0
+PE timestamp: 1765634846
+Image size: 494186496 bytes
+All addresses below are RVAs for that profile, not offsets for other builds.
+
+Actor allocator: 0x24ab010. Stock count: 64. Record stride: 0x2110.
+Free-actor counter: 0x24b15e0. It scans sixteen groups of four records.
+Sentient allocator: 0x2505cf0. Stock count: 104. Record stride: 0x3088.
+Secondary actor state uses a separate 64-record array with stride 0xb00.
+Actor iterators, construction, destruction, clear loops, and codecs also contain fixed counts.
+
+Repeated native replays supplied 200 owned records with the first 64 actors occupied.
+The counter returned zero. The actor allocator refused the free extended records.
+The sentient allocator also ignored records above its stock boundary.
+These results execute captured x64 instructions in Unicorn. They do not execute allocation initialization or BO3.
+
+An immediate-byte edit from 64 to 200 is also incorrect for the native actor comparison.
+That instruction sign-extends the byte, making 200 mean negative 56.
+Changing a count alone also leaves fixed sentient-indexed tables inside each record.
+The captured reset writes into unrelated fields at sentient index 104 and outside the owner record at index 199.
+Complete relocation must cover the backing arrays, indexed tables, handles, lifecycle consumers, and serialization together.
+
+The existing AAE Enhanced native prototype targets 200 actors and 240 sentients.
+Its activation gate still refuses use. Save framing, consumer coverage, unwind records, and startup admission remain incomplete.
+More than 200 actors needs a new verified capacity choice, at least 201.
+The historical prototype's 40 extra sentients are a sizing hypothesis, not a measured requirement.
+The 500K script-variable patch does not expand these actor or sentient pools.
+
+Checksum handling and implementation ownership
+
+Reuse source/patches/early_integrity and the existing stopped-process transaction for future native edits.
+That route already corrects chained checksums while preserving AAE's checksum installation sites.
+Its guards check exact code identity and edit overlap before publication.
+source/launch/early_startup/Integration.cpp currently requires the complete 42-edit VM recipe.
+A new actor plan must update that explicit recipe contract with focused transaction and rollback checks.
+Checksum handling is available. It does not solve storage bounds, actor IDs, or save and network formats.
+
+Shared native actor expansion belongs in BO3 Engine Unlimitations.
+AAE-specific command changes belong in All Around Enhancement Enhanced.
+The spawn controller needs a verified stock-script delivery path before final project placement.
+The public Workshop item has changed since the inspected full-AAE v3.9.5 files.
+Do not admit the newer files through old offsets or weaken exact-version guards.
+
+Failure cases before implementation
+
+1. A setting accepts 201 or more while the native allocator still stops at 64.
+2. A native comparison sign-extends the new capacity into a negative value.
+3. A table or array retains the stock size while an index uses the expanded size.
+4. An actor or sentient ID truncates in client state, a bitset, save data, or migration.
+5. A spawn batch exceeds native headroom or the remaining round count.
+6. A failed spawn spins indefinitely or prevents other server scripts from running.
+7. A custom enemy callback, pause, round end, or migration loses its original control flow.
+8. Spawn-killing or repeated map changes leak actors, entities, handles, or script variables.
+9. Co-op clients miss creation, deletion, or reused actor IDs during bursts.
+10. Checksum publication, allocation, or startup fails after a partial transaction.
+11. Removal leaves expanded pointers, allocations, or incompatible saved state.
+12. An unknown executable or Workshop version passes admission.
+
+Next repeatable game evidence
+
+Use a private game copy and retain artifacts outside Git.
+Record server-frame times, native allocations, free actors, visible entry times, and remaining round zombies.
+Compare stock, AAE zero delay, and the bounded batch candidate under the same map and round conditions.
+Include both solo and co-op, with actor capacity available and exhausted.
+Then verify more than 200 live actors, repeated kills and replacement, map changes, saves, and peer migration.
+Report multiplayer and Proton compatibility only after those environments pass their own tests.
+
+Sources and repeat instructions
+
+Public script source, pinned to commit 07cbfcd113fb5031dc717296f73b371478d4eb77:
+https://github.com/shiversoftdev/t7-source/blob/07cbfcd113fb5031dc717296f73b371478d4eb77/scripts/zm/_zm.gsc#L3825
+https://github.com/shiversoftdev/t7-source/blob/07cbfcd113fb5031dc717296f73b371478d4eb77/scripts/shared/util_shared.gsc#L34
+https://github.com/shiversoftdev/t7-source/blob/07cbfcd113fb5031dc717296f73b371478d4eb77/scripts/shared/ai/zombie_utility.gsc#L2083
+These public decompilations support script semantics. They do not admit a newer build.
+
+AAE Enhanced research and replay source, commit 688facf4c081429a47de845a01965ed3aa40fb8f:
+https://github.com/PeytonWDYM/All-Around-Enhancement-Enhanced/tree/688facf4c081429a47de845a01965ed3aa40fb8f
+Read research/gameplay-features.txt, research/actor-pool-expansion.txt, and source/patches/actor_pool/README.txt.
+Run the two existing CLI replays from that checkout:
+python -B source/tests/gameplay/Test-ActorCapacity.py --module <private-module.json> --dependencies <unicorn-directory> --output <new-private-result.json>
+python -B source/tests/actor-pool/Test-ActorAllocators.py --module <private-module.json> --dependencies <unicorn-directory> --output <another-new-private-result.json>
+The current replays require result paths inside the caller's private .codex/labs/bo3-engine directory.
+Use ACTS gscd -g -a -H -L -o <private-output> <private-compiled-script> for independent decompilation.
+The commands require owned captures. This repository does not distribute game scripts or module bytes.
+research/zombie-spawn-limits-evidence.json records input hashes, replay results, and validation limits.

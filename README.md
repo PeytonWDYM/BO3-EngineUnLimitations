@@ -25,6 +25,9 @@ This is a test release. One manual Windows session reached Zombies and verified 
 The client pool and actor limit retain their stock capacities.
 Expanded host migration requires matching patched clients. Matching patches alone do not prove compatibility.
 
+[Spawn pacing and actor-capacity research](research/zombie-spawn-limits.txt) describes the work needed for faster spawn batches and more than 200 zombies.
+The findings include native instruction replays. Gameplay validation remains pending.
+
 The current profile accepts only the executable from Steam depot `311211`, manifest `7651791086710252932`.
 Its SHA-256 is `0b874dcc250848b7313ec13a0c76468dacc2009b5efa2bff4c587e169a9f77e0`.
 The package includes no game executable or downgrade files.
