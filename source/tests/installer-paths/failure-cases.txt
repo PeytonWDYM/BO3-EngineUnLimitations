@@ -1,5 +1,16 @@
 Installer path failure cases, written before implementation:
 
+Payload status failure cases, written before status verification:
+- An enabled receipt and matching Steam field must not hide an older payload.
+- A missing launcher or helper must report missing-or-corrupt.
+- Changed launcher, helper, gate, or license bytes must report missing-or-corrupt.
+- A matching current payload must retain enabled and report the verified package version.
+- An intact older payload must report update-required without claiming an unverified installed version.
+- Status must not create files, repair pending receipts, replace payloads, or alter Steam configuration.
+- External Steam edits must retain externally-changed and must not inspect another launch route.
+- Payload links and hard links must not bypass the existing private-path checks.
+- Unsupported game versions must retain the existing gameSupported refusal result.
+
 1. Steam puts BO3 in a secondary library with a custom installdir and Unicode.
    Discovery must use appmanifest_311210.acf and retain the complete path.
 2. A legacy libraryfolders.vdf stores a numeric key with a quoted path.

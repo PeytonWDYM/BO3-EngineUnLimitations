@@ -6,7 +6,7 @@ import os
 from pathlib import Path
 
 from patcher.coordination import StateLock
-from patcher.payload import prepare, PAYLOAD_NAMES, supported_build
+from patcher.payload import prepare, PAYLOAD_NAMES, supported_build, file_hash, folder_name
 from patcher.errors import PatchError
 from patcher.paths import private_path, reject_redirects
 from patcher.storage import replace_bytes
@@ -195,6 +195,35 @@ class SteamPlay:
         status = 'enabled' if phase == 'enabled' and field.value == receipt['installed'] else phase
         if phase == 'enabled' and field.value != receipt['installed']:
             status = 'externally-changed'
+        if status == 'enabled' and support['gameSupported']:
+            version = json.loads((resources / 'release.json').read_text(encoding='utf-8'))['version']
+            support['expectedVersion'] = version
+            # Decode only the exact route written by enable. Never parse or run arbitrary shell commands.
+            suffix = '" %command%' + (' ' + receipt['original']['value'] if receipt['original']['value'] else '')
+            installed = receipt['installed']
+            try:
+                if not installed.startswith('"') or not installed.endswith(suffix):
+                    raise PatchError('The installed Steam launch route differs from the setup contract.')
+                launcher = Path(installed[1:-len(suffix)])
+                if not launcher.is_absolute() or launcher.name != PAYLOAD_NAMES[0]:
+                    raise PatchError('The installed Steam launcher path is invalid.')
+                installations = (self.steam, game.resolve(strict=True))
+                folder = private_path(launcher.parent, installations=installations)
+                if {path.name for path in folder.iterdir()} != set(PAYLOAD_NAMES):
+                    raise PatchError('The installed launcher folder is incomplete or has unexpected files.')
+                actual = {name: file_hash(private_path(folder, name, installations)) for name in PAYLOAD_NAMES}
+                # The folder name records the original complete payload hash. A changed file must not look like an update.
+                if folder.name != folder_name(folder.name.rsplit('-', 1)[0], actual):
+                    raise PatchError('The installed payload differs from its original folder identity.')
+            except (PatchError, OSError) as error:
+                status = 'missing-or-corrupt'
+                support['message'] = f'{error} Close Steam and Black Ops III. Select Remove, then Install.'
+            else:
+                if actual == build['files'] and folder.name == folder_name(build['id'], build['files']):
+                    support['installedVersion'] = version
+                else:
+                    status = 'update-required'
+                    support['message'] = f'The installed payload does not match version {version}. Close Steam and Black Ops III. Select Remove, then Install.'
         return {'status': status, 'receiptFolder': str(self.state), **support}
 
     def remove(self) -> dict:

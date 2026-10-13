@@ -130,6 +130,70 @@ def run(output: Path, *, skip_gui_tests: bool = False) -> None:
     assert manager.config.read_bytes() == original
     record('updated-game-status', manager, original)
 
+    # Status checks the actual installed payload without changing any route, receipt, or payload bytes.
+    for name, mutation, expected in (
+        ('status-older-payload', 'older', 'update-required'),
+        ('status-current-payload', None, 'enabled'),
+        ('status-missing-launcher', 'missing-launcher', 'missing-or-corrupt'),
+        ('status-missing-helper', 'missing-helper', 'missing-or-corrupt'),
+        *((f'status-corrupt-{index}', payload, 'missing-or-corrupt') for index, payload in enumerate(PAYLOAD_NAMES)),
+    ):
+        manager, game, tools, original = fixture(name)
+        installed = manager.enable(resources, game, tools_root=tools)
+        folder = Path(installed['launcher']).parent
+        bundle = resources
+        if mutation == 'older':
+            import shutil
+            bundle = output / 'newer-status-bundle'
+            shutil.copytree(resources, bundle)
+            path = bundle / 'native/owned-1/BO3-500K-Zombies.exe'
+            path.write_bytes(b'Owned newer non-executable launcher')
+            manifest = json.loads((bundle / 'release.json').read_text())
+            manifest['version'] = 'owned-newer'
+            manifest['builds'][0]['files'][PAYLOAD_NAMES[0]] = digest(path.read_bytes())
+            (bundle / 'release.json').write_text(json.dumps(manifest))
+        elif mutation == 'missing-launcher':
+            (folder / PAYLOAD_NAMES[0]).unlink()
+        elif mutation == 'missing-helper':
+            (folder / PAYLOAD_NAMES[1]).unlink()
+        elif mutation:
+            (folder / mutation).write_bytes(b'Corrupt installed payload')
+        before = {str(path): path.read_bytes() for root in (manager.steam, manager.state, tools)
+                  for path in root.rglob('*') if path.is_file()}
+        result = manager.status(game, bundle)
+        assert result['status'] == expected, (name, result)
+        assert result['gameSupported'] is True and result['build'] == 'owned-1'
+        if expected == 'enabled':
+            assert result['installedVersion'] == 'owned'
+        else:
+            assert 'message' in result and 'Remove' in result['message'] and 'Install' in result['message']
+        if mutation == 'older':
+            assert result['expectedVersion'] == 'owned-newer' and 'installedVersion' not in result
+        after = {str(path): path.read_bytes() for root in (manager.steam, manager.state, tools)
+                 for path in root.rglob('*') if path.is_file()}
+        assert before == after
+        cases.append({'name': name, 'passed': True, 'result': result, 'statusReadOnly': True,
+                      'configSha256': digest(manager.config.read_bytes())})
+
+    for phase in ('externally-changed', 'pending'):
+        manager, game, tools, original = fixture('status-' + phase)
+        installed = manager.enable(resources, game, tools_root=tools)
+        Path(installed['launcher']).unlink()
+        if phase == 'externally-changed':
+            manager.config.write_bytes(manager.config.read_bytes().replace(b'%command%', b'%command% +external'))
+        else:
+            receipt = manager._receipt()
+            receipt['phase'] = 'pending'
+            receipt['pending'] = {'action': 'enable', 'previous': 'restored', 'before': receipt['original'],
+                                  'after': launch_field(manager.config.read_bytes()).snapshot()}
+            manager._save(receipt)
+        config_before = manager.config.read_bytes()
+        receipt_before = (manager.state / 'receipt.json').read_bytes()
+        assert manager.status(game, resources)['status'] == phase
+        assert manager.config.read_bytes() == config_before
+        assert (manager.state / 'receipt.json').read_bytes() == receipt_before
+        cases.append({'name': 'status-' + phase, 'passed': True, 'statusReadOnly': True})
+
     if os.name == 'nt':
         sys.path.insert(0, str(Path(__file__).resolve().parent / 'installer-paths'))
         from PathCases import run_path_cases
