@@ -1,0 +1,20 @@
+Typed actor and sentient save-handle failures. Written before patch logic.
+
+1. Reject a changed executable, native descriptor owner, switch table, frame, or compare window.
+2. Native writers refuse actor handles above 64 and sentient handles above 104 before the repair.
+3. Expanded writers and readers must preserve one-based actor handles through 500 and sentient handles through 540.
+4. Legacy and VM-only readers must retain actor bound 64 and sentient bound 104.
+5. Reject a zero encoded handle when the native raw pointer field is nonzero.
+6. Retain the native null-field branch. It consumes no attachment bytes.
+7. Refuse the first out-of-range handle before publishing a reconstructed pointer.
+8. Refuse a pointer one record before the current pool on write.
+9. Retain four-byte framing and the exact following section offset.
+10. Decode against the current relocated pool after a saved-state or host-transfer roundtrip.
+11. Preserve native record strides, nonvolatile registers, stack return, and untouched field bytes.
+12. Retain paired immutable per-load counts and reset the legacy bounds after normal or error completion.
+13. Keep ordinary entities, secondary pointer families, and their format policies unchanged.
+14. Register every compare-stub instruction phase with its actual native owning frame.
+15. Publish all compare hooks in the existing transaction. Refusal or rollback changes no source or helper bytes.
+
+Native descriptor replays use explicit scalar-I/O and diagnostic endpoints.
+These checks do not establish complete game saves, host migration, or peer compatibility.

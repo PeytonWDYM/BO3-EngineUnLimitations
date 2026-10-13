@@ -13,8 +13,8 @@ An optional engine patch for Steam Black Ops III Zombies. The Windows launcher s
 | Pending clientfield callbacks | 8,192 per local client |
 | Clientfield counters | 8,192 records |
 
-Candidate **0.5.0-test.8** includes the actor patch in the main launcher and installer.
-It applies 704 native edits and 1,079 checksum edits before game allocation.
+Candidate **0.5.0-test.9** includes the actor patch in the main launcher and installer.
+It applies 710 native edits and 1,079 checksum edits before game allocation.
 The installer adds a reversible Steam launch option. Original game files stay unchanged.
 The actor capacity does not change a map's script spawn cap or spawn 500 zombies automatically.
 
@@ -71,7 +71,14 @@ Native replay emits all 500 exact actor records and verifies history wrap, stagi
 These checks do not prove the reported tornado failure or visibility repair in a real match.
 Test.8 still needs a high-count game test, a clean exit, and a matching-peer test.
 
-Typed actor and sentient pointer saves retain stock bounds. Normal entities still limit the population that each map can support.
+Test.9 expands the paired native actor pointer, sentient pointer, and sentient-word save-handle bounds.
+Expanded reads accept 500 actor handles and 540 sentient handles. Legacy and VM-only reads retain their original 64 and 104 bounds.
+Nonnull pointer fields reject encoded zero and out-of-range handles before pointer publication.
+Native null fields and nullable sentient-word handles retain their original framing.
+The native descriptor replay covers all three paired families, exact four-byte writes, relocated destination pools, and native returns.
+Windows checks cover all six compare stubs and their complete native frames.
+Whole-game high-count saves and host migration still need game tests.
+Normal entities still limit the population that each map can support.
 Measured 500 actors, save/load, migration, peers, and sustained performance remain required.
 
 [Spawn pacing and actor-capacity research](research/zombie-spawn-limits.txt) describes the work needed for faster spawn batches and more than 200 zombies.
@@ -99,9 +106,9 @@ The loader accepts guarded legacy formats, initializes unused records, and keeps
 This does not yet establish save/load compatibility at high actor counts.
 Expanded sessions require matching patched peers; matching patches alone do not prove compatibility.
 
-The launcher checks 1,479 exact actor source guards. Its 613 actor publication records share the frozen startup
+The launcher checks 1,490 exact actor source guards. Its 619 actor publication records share the frozen startup
 transaction with the VM, clientfield, gate, and checksum patches. Failed publication restores bytes and page protections.
-The primary thread registers 2,500 runtime function rows before game entry continues.
+The primary thread registers 2,532 runtime function rows before game entry continues.
 Owned Windows tests cover native frame metadata, handler translation, complete load scope, publication,
 rollback, allocation ownership, and registration at three image bases. Their repeatable results stay outside Git.
 These tests support candidate testing; they do not establish game or peer compatibility.

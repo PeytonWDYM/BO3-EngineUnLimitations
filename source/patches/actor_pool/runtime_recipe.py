@@ -26,6 +26,7 @@ from server_snapshot_actors import prepare_server_snapshot_actors
 from temporal_save import prepare_history_write
 from temporal_reset import prepare_history_reset
 from load_counts import LoadCounts,prepare_load_counts
+from save_handles import prepare_save_handles
 from unwind import native_frames
 from native_unwind import read_frame
 
@@ -78,6 +79,7 @@ def prepare_recipe(source: CapturedCode,arena: int) -> RuntimeRecipe:
     replaced={edit.guard.rva for edit in dynamic}
     edits=[edit for edit in server.rewrites if edit.guard.rva not in replaced]
     edits.extend(dynamic)
+    edits.extend(prepare_save_handles(code,counts,arena+0x1A2000))
     entity_allocation=prepare_entity_allocator(code,arena+0x1A0000)
     edits.append(entity_allocation)
     edits.extend(prepare_server_snapshot_actors(code,shape,arena+0x1A1000))
