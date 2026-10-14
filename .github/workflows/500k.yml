@@ -67,11 +67,27 @@ jobs:
       - name: Rebuild and audit the native launcher
         shell: pwsh
         run: ./scripts/release/Build-Native.ps1 -Output (Join-Path $env:RUNNER_TEMP 'native-build') -DetoursRoot (Join-Path $env:RUNNER_TEMP 'Detours') -Python python
+      - name: Check source manifest checkout variants
+        run: python -B source/tests/client-vm/Test-ClientManifest.py --output "${{ runner.temp }}/client-manifest-tests"
       - name: Test expanded state and migration transactions
         shell: pwsh
         run: |
           ./source/tests/vm-pool/Test-StateAdapter.ps1 -OutputDirectory (Join-Path $env:RUNNER_TEMP 'state-tests') -Python python
+          ./source/tests/client-vm/Test-ClientState.ps1 -Output (Join-Path $env:RUNNER_TEMP 'client-state-tests')
           ./source/tests/vm-migration/Build-Admission.ps1 -OutputDirectory (Join-Path $env:RUNNER_TEMP 'migration-tests') -Python python
+      - name: Test actor load scope and primary-thread activation
+        shell: pwsh
+        run: |
+          $actorLab = Join-Path $env:USERPROFILE '.codex/labs/bo3-engine'
+          ./source/tests/actor-pool/Test-RuntimePlan.ps1 -Output (Join-Path $actorLab 'runtime-closure') -Python python -SourceClosureOnly
+          ./source/tests/actor-pool/Test-LoadContext.ps1 -Output (Join-Path $actorLab 'load-context')
+          ./source/tests/actor-pool/Test-NativeLoadBridge.ps1 -Output (Join-Path $actorLab 'native-load')
+          ./source/tests/actor-pool/Test-GateActivation.ps1 -Output (Join-Path $actorLab 'gate-activation')
+          $receipts = Join-Path $env:RUNNER_TEMP 'actor-receipts'
+          New-Item -ItemType Directory -Path $receipts | Out-Null
+          foreach ($name in 'runtime-closure','load-context','native-load','gate-activation') {
+            Copy-Item -LiteralPath (Join-Path $actorLab "$name/receipt.json") -Destination (Join-Path $receipts "$name.json")
+          }
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         if: always()
         with:
@@ -79,6 +95,9 @@ jobs:
           path: |
             ${{ runner.temp }}/native-build/artifact-audit.json
             ${{ runner.temp }}/native-build/build-receipt.json
+            ${{ runner.temp }}/client-manifest-tests/receipt.json
             ${{ runner.temp }}/state-tests/result.json
+            ${{ runner.temp }}/client-state-tests/receipt.json
             ${{ runner.temp }}/migration-tests/result.json
+            ${{ runner.temp }}/actor-receipts/*.json
           if-no-files-found: warn

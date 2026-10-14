@@ -1,4 +1,5 @@
 #include "NativeStateBridge.h"
+#include "../actor_pool/LoadContext.h"
 #include <cstddef>
 #include <cstdint>
 
@@ -9,6 +10,7 @@ __declspec(dllexport) constinit NativeStateBindings Bo3VmStateBindings{};
 namespace {
 constinit NativeStateBindings& bindings = Bo3VmStateBindings;
 __declspec(thread) constinit ImportContext importing{false, 0, 0, 0};
+__declspec(thread) constinit ImportContext importingClient{false, 0, 0, 0};
 
 template<class T> T& Global(std::uintptr_t rva) {
     return *reinterpret_cast<T*>(bindings.imageBase + rva);
@@ -20,9 +22,9 @@ using ReadFunction = void (*)(void*, std::uint32_t, void*);
 using WriteFunction = void (*)(void*, std::uint32_t);
 void ReadSlot(std::uint32_t instance, void* file, std::uint32_t id) {
     Function<SlotFunction>(0x12d5590)(instance, file, id);
-    auto& slot = Global<Slot*>(0x5124580)[id];
+    auto& slot = Global<Slot*>(0x5124580 + instance * 0x100)[id];
     // Records without a saved hash entry must still retain the translated namespace.
-    slot.key = TranslateImportedKey(importing, slot, slot.key);
+    slot.key = TranslateImportedKey(instance == 1 ? importingClient : importing, slot, slot.key);
 }
 std::uint32_t Read32(void* file) {
     std::uint32_t value;
@@ -47,10 +49,13 @@ void ReadTail(std::uint32_t instance, void* file, std::uint32_t savedClients) {
         *reinterpret_cast<std::uint32_t*>(tables + index * 0x20 + 4) = Read32(file);
     }
     Function<WholeFunction>(0x1611c0)(instance, file);
-    for (std::uint32_t index = 0; index < savedClients; ++index)
-        ClientRoot(index) = Read32(file);
-    for (auto index = savedClients; index < bindings.clientRoots; ++index)
-        ClientRoot(index) = 0;
+    // Both native whole-state routines skip the server client-root list for instance 1.
+    if (instance == 0) {
+        for (std::uint32_t index = 0; index < savedClients; ++index)
+            ClientRoot(index) = Read32(file);
+        for (auto index = savedClients; index < bindings.clientRoots; ++index)
+            ClientRoot(index) = 0;
+    }
     Global<std::uint32_t>(0x5124718 + instance * 0x78) = Read32(file);
 }
 void WriteTail(std::uint32_t instance, void* file, std::uint32_t clients) {
@@ -62,19 +67,28 @@ void WriteTail(std::uint32_t instance, void* file, std::uint32_t clients) {
         Write32(file, *reinterpret_cast<std::uint32_t*>(tables + index * 0x20 + 4));
     }
     Function<WholeFunction>(0x161310)(instance, file);
-    for (std::uint32_t index = 0; index < clients; ++index)
-        Write32(file, ClientRoot(index));
+    if (instance == 0)
+        for (std::uint32_t index = 0; index < clients; ++index)
+            Write32(file, ClientRoot(index));
     Write32(file, Global<std::uint32_t>(0x5124718 + instance * 0x78));
 }
-NativePool Pool() {
-    return {Global<Slot*>(0x5124580), Global<std::uint32_t*>(0x5124500), bindings.total,
+NativePool Pool(std::uint32_t instance) {
+    NativePool native{Global<Slot*>(0x5124580 + instance * 0x100),
+            Global<std::uint32_t*>(0x5124500 + instance * 0x100),
+            instance == 1 ? bindings.clientTotal : bindings.total,
             Function<ReadFunction>(0x22778b0), Function<WriteFunction>(0xd2870),
             ReadSlot, Function<SlotFunction>(0x12d64c0),
             ReadTail, WriteTail, bindings.originalClientReader, bindings.originalClientWriter,
             bindings.clientRoots, bindings.stockClientRoots};
+    if (instance == 1) {
+        native.stockTotal = StockClientTotal;
+        native.formatMagic = ClientFormatMagic;
+        native.clientRoots = native.stockClientRoots = 0;
+    }
+    return native;
 }
 bool ModeAllowed(std::uint32_t instance) {
-    return instance == 1 || bindings.modePolicy == NativeModePolicy::Any
+    return (instance == 1 && bindings.clientTotal == StockClientTotal) || bindings.modePolicy == NativeModePolicy::Any
         || Function<std::uint32_t (*)()>(0x20eac70)() == 0;
 }
 }
@@ -82,19 +96,20 @@ bool ModeAllowed(std::uint32_t instance) {
 void BindNativeState(const NativeStateBindings& verified) { bindings = verified; }
 StateError ReadNativeState(std::uint32_t instance, void* file) {
     if (!ModeAllowed(instance)) return StateError::UnsupportedMode;
-    return ReadState(Pool(), importing, instance, file);
+    return ReadState(Pool(instance), instance == 1 ? importingClient : importing, instance, file);
 }
 StateError WriteNativeState(std::uint32_t instance, void* file) {
     if (!ModeAllowed(instance)) return StateError::UnsupportedMode;
-    return WriteState(Pool(), instance, file);
+    return WriteState(Pool(instance), instance, file);
 }
 void InsertNativeStateKey(std::uint32_t instance, std::uint32_t id, std::uint64_t key, std::uint32_t parent) {
-    if (instance == 0 && importing.active) {
-        auto& slot = Global<Slot*>(0x5124580)[id];
-        key = TranslateImportedKey(importing, slot, key);
+    auto& context = instance == 1 ? importingClient : importing;
+    if (context.active) {
+        auto& slot = Global<Slot*>(0x5124580 + instance * 0x100)[id];
+        key = TranslateImportedKey(context, slot, key);
         slot.key = key;
     }
     bindings.originalInsert(instance, id, key, parent);
 }
-void ClearNativeImportContext() { importing = {}; }
+void ClearNativeImportContext() { importing = {}; importingClient = {}; actors::ClearCurrentLoadContext(); }
 }

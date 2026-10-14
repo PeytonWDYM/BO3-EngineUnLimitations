@@ -19,6 +19,7 @@ struct NativePlanInput {
     std::uint32_t total,clientRoots,stockClientRoots;
     bo3::vm::NativeModePolicy modePolicy;
     std::vector<Edit> counts; // Caller supplies the complete admitted count manifest.
+    std::uint32_t clientTotal = bo3::vm::StockClientTotal;
 };
 // Pure preparation: no allocation or process write. PausedPatch preflights the result.
 std::vector<AddressEdit> BuildNativePlan(const NativePlanInput&);

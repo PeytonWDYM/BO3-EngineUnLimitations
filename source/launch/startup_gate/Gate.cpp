@@ -7,7 +7,10 @@
 #include <intrin.h>
 
 namespace bo3::startup_gate {
-extern "C" { __declspec(dllexport) constinit State Bo3StartupGateState{}; }
+extern "C" {
+__declspec(dllexport) constinit State Bo3StartupGateState{};
+__declspec(dllexport) constinit StartupContinuation Bo3StartupGateContinuation{};
+}
 namespace {
 [[noreturn]] void Fail(DWORD reason,DWORD error) {
     auto& state=Bo3StartupGateState;
@@ -53,6 +56,7 @@ void Enter(std::uintptr_t returnSite,std::uintptr_t apiReturnSlot) {
     if(state.waitResult!=WAIT_OBJECT_0+1) Fail(4,state.waitResult==WAIT_FAILED ? GetLastError() : state.waitResult);
     if(WaitForSingleObject(parent,0)!=WAIT_TIMEOUT) Fail(5,GetLastError());
     InterlockedExchange(&state.phase,static_cast<LONG>(Phase::Released));
+    if(Bo3StartupGateContinuation && !Bo3StartupGateContinuation())Fail(6,0);
     InterlockedExchange(&state.phase,static_cast<LONG>(Phase::Returned));
 }
 }

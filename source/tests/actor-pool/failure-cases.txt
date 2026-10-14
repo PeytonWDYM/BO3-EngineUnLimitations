@@ -1,0 +1,313 @@
+ACTOR / SENTIENT PREPARATION FAILURE CASES
+
+Write these cases before implementation. Save replay results outside Git.
+
+Admission and storage
+1. Refuse an unknown executable hash, even when its PE timestamp matches.
+2. Refuse a changed captured range or a changed native instruction guard.
+3. Refuse overlapping, unaligned, wrapped, or unreachable storage addresses.
+4. Derive every actor count, sentient count, byte extent, and matrix stride from one shape.
+5. Preserve the native 0x2110 actor and 0x3088 sentient record strides.
+6. Include actors, secondary actors, sentients, both matrices, handle heads, and DObj pointers.
+7. Reject owner or target indices outside the matrix. Check 103, 104, 299, and 339.
+8. Do not truncate 300 or 340 into a signed imm8 comparison.
+9. Refuse activation while any native, save, unwind, startup, or peer gate remains open.
+
+Native instruction replay
+10. Keep unrelated registers, SIMD state, input flags, output flags, and the stack correct.
+11. Keep native sentient movement data unchanged when an external matrix member changes.
+12. Preserve each original memory operation, including folded producers and stolen instructions.
+13. Clear exactly one owner row at allocation and both matrices at map initialization.
+14. Preserve the native target-entry reset and the transient-table load reset.
+15. Reject actor allocation after 300 entries and sentient allocation after 340 entries.
+16. Construct and destroy exactly 300 actor records at their native stride.
+17. Redirect every proven DObj base and end reference. Include the cleanup count.
+18. Preserve iterator branch conditions when widening bounds to 300.
+19. Keep the actor-state stack arrays gated until their complete native frame is verified.
+20. Record the live admission scan and corpse-policy dependency separately.
+21. Preserve the sentinel64 instruction until the client and wire contract is verified.
+
+Activation gates
+22. Resolve all static, folded, returned-pointer, and cross-call table consumers.
+23. Keep legacy and VM-only saves at 64 actors, 104 sentients, and 64 secondary records.
+24. Admit a distinct combined save format before expanded native reads or writes.
+25. Preserve following save sections, attachments, import state, and migration framing.
+26. Register correct unwind metadata for each stub and preserve the complete native frame.
+27. Complete the startup storage transaction before native actor constructors run.
+28. Test actual Windows game, destruction, map reset, save, load, and matching peers.
+29. Do not describe Unicorn replay as Windows unwinding or game compatibility proof.
+30. Do not change FixedPlan, the installer, game files, or process memory in these tools.
+
+Owned Windows unwind
+31. Classify every original hook frame. A missing static pdata owner needs a verified leaf contract.
+32. Describe the stack before each stub instruction, including each temporary flag push and later restoration.
+33. Do not chain added PUSH or fixed stack allocations to a primary frame with a different allocation.
+34. Preserve caller nonvolatile registers and stack return addresses during RtlVirtualUnwind.
+35. Test prolog, body, restoration, return, and outgoing branch contexts in owned memory.
+36. Keep partial native prologs, native epilogs, dynamic frame tables, and unverified owners gated.
+37. Refuse frameless leaves that write any alias of a nonvolatile GPR, including BL, BH, and R12B.
+38. Refuse frameless leaves that write XMM6 through XMM15 or their wider register aliases.
+39. Refuse implicit vector clears and floating-point control changes with unclassified ABI effects.
+40. Refuse RET with a stack adjustment, far returns, privileged exits, and body fallthrough.
+
+Owned native continuation unwind
+41. Compare each stub boundary with Windows unwinding of the original captured native frame.
+42. Apply only native save operations completed at a hook inside a prolog. Cover all five known sites.
+43. Resolve every chained frame. Refuse cycles, unknown versions or operations, malformed slots, and frame-pointer layouts.
+44. Describe temporary nonvolatile saves before the temporary allocation. Preserve the original native save sequence.
+45. Reject dynamic, mismatched, or unbalanced stub stack transitions and calls without a call-frame contract.
+46. Detect metadata that omits temporary stack depth or the native allocation. Check a wrong native save offset.
+47. Exercise actual RtlAddFunctionTable, RtlLookupFunctionEntry, RtlVirtualUnwind, and table deletion in owned memory.
+48. Keep language handlers and game registration gated. Stripped handler flags are permitted only in the owned comparison fixture.
+49. Shift native SAVE offsets by the active temporary stack depth. Windows uses the fixed frame base for these offsets.
+50. Record XMM saves that require unscaled offsets at odd eight-byte phases. Keep their runtime ABI admission unresolved.
+51. Prevent Windows from treating the outgoing continuation jump as a completed native epilog in the owned phase comparison.
+52. Preserve the logical native procedure range when chaining a phase to its complete flattened frame. Rebase only branch addresses in the owned fixture.
+53. Verify original caller values for every native-saved GPR and XMM register. Do not accept matching reads of uninitialized stack data.
+54. Use captured native unwind bytes for the Windows oracle. Change only owned chain addresses and explicitly omitted handler flags.
+
+Temporal restore preparation
+55. Preserve the stock 64-actor restore in an owned replay. A count-only change must fail the 300-actor layout.
+56. Restore both vectors for actors 0, 63, 64, 199, and 299 at native record strides. Preserve invalid actors.
+57. Clear only consumed validity flags. Preserve state arrays, vector bits, following records, stack, and nonvolatile registers.
+58. Preserve the original loop-back target. Do not steal its compare instruction when widening the initial count.
+59. Guard the complete original restore function before preparing its four edits and one stub.
+60. Keep restore preparation separate until the producer, caller buffers, history, saves, and runtime admission are complete.
+61. A rewind frame larger than one page needs native stack probing before allocation. Count and displacement edits alone are insufficient.
+62. Compare every restore-stub boundary with the original native Windows frame before including it in the main actor plan.
+
+Temporal producer preparation
+63. Replay the complete captured stock producer before comparing its expanded form. A count-only candidate must fail.
+64. Keep both selector results, interpolation, one-row fallbacks, duplicate rows, and absent-history behavior unchanged.
+65. Apply the original active, history-valid, entity-state, and actor-predicate conditions to every index through 299.
+66. Allocate both 300-byte temporary flag arrays without touching the stack cookie or saved nonvolatile registers.
+67. Preserve output and history markers, invalid output vectors, validity bytes, stack, cookie, and nonvolatile return values.
+68. Relocate every internal branch and native RIP-relative operand at complete instruction boundaries. Refuse an internal target inside a replaced span.
+69. Widen signed byte displacements and loop bounds explicitly. Refuse unsupported relative control encodings or unreachable rel32 targets.
+70. Guard the complete producer function before preparation. Keep handler dispatch, native history selection/recording, saves, callers, and activation gated.
+
+Temporal history preparation
+71. Preserve the recorder's eight-actor groups. For 300 actors, stop the final group after four lanes; an unchecked group overwrites the row timestamp.
+72. Record six vector components, active flags, state bytes, and time at native strides. Preserve inactive vectors and state bytes.
+73. Keep twenty complete rows, neighboring memory, the counter, and modulo selection correct across ring wraps.
+74. Execute the captured selector for negative, zero, sub-frame, exact-frame, and clamped old requests. Preserve its updated time argument.
+75. Replay recorder, native selector, producer, and restore together through actor 299. Author only the predicate, cookie, and relink endpoints.
+76. Guard both complete history functions. Keep storage lifetime, reset, save translation, Windows handlers, caller buffers, and runtime activation gated.
+
+Temporal rewind preparation
+77. Expand the rewind's angle, position, validity, cookie, and saved-register offsets together. Preserve its 1,000ms time clamp and short-history exit.
+78. Probe each required lower stack page before the expanded allocation. Execute the complete captured probe helper with an owned thread-information block.
+79. Keep all probe input registers and the preallocation stack correct. A candidate that omits the probe must fail, even if committed emulator pages hide the error.
+80. Clear all 300 temporary flags without touching the cookie. Preserve the caller's existing home-space save.
+81. Replay recording, selection, rewind, and restoration together. Rewind must save current poses, apply historical poses, and restore current poses through actor 299.
+82. Keep real Windows guard-page faults, full relocated frame metadata, caller actor/corpse buffers, native helpers, save framing, and activation gated.
+
+Owned Windows stack probe
+83. Refuse a changed executable, capture, or complete probe helper before exporting fixture bytes.
+84. Execute the guarded probe on a new Windows thread with a small reserved stack. Verify actual committed stack growth before the wrapper touches its frame.
+85. Register both owned wrapper and probe frames before execution. Verify runtime lookup, complete deletion, and released code storage after the thread exits.
+86. Check the wrapper's entry and body stack difference, page commitment, and real thread-information stack limits for each allocation.
+87. Do not describe an owned probe-wrapper test as admission of the relocated game frame, its language handlers, or its owning caller.
+
+Native handler frame translation
+88. Guard the complete captured cookie handler and its common helper before direct replay.
+89. A temporary stack phase must use the original native frame address for both cookie lookup and cookie XOR decoding.
+90. Detect an untranslated frame and a shifted-cookie-offset-only candidate. Neither can preserve the cookie at nonzero temporary depth.
+91. Distinguish direct handler replay with an authored dispatcher from actual Windows exception dispatch and complete C++ cleanup behavior.
+
+Temporal caller preparation
+92. Guard the complete caller before expanding its frame. Keep the actor buffer start and move the adjacent corpse buffer without increasing corpse capacity.
+93. Preserve the absolute addresses of caller home-space arguments and saved registers while moving the cookie and high frame data.
+94. Execute the complete no-fire caller through native history, rewind, and both restores. Verify current actor poses, corpse markers, cookie, return stack, and all saved GPR/XMM registers.
+95. A candidate that retains the old corpse-buffer address must fail actor restoration while remaining confined to owned memory.
+96. Keep language function-info, cleanup funclets, native unwind data, firing paths, live behavior, and runtime activation gated.
+
+Caller frame metadata
+97. Guard the complete caller unwind record, C++ function-info, state map, cleanup map, and leaf cleanup before metadata edits.
+98. Preserve native prolog offsets, pushed-register operations, handler identity, C++ state boundaries, and the low-frame cleanup object.
+99. Move the allocation, all eleven explicit saved-register offsets, and the cookie offset together. Preserve cookie-handler flag bits.
+100. Compare every caller instruction boundary with actual Windows virtual unwinding in owned storage, including partial prologs and the complete epilog.
+101. Reject unchanged allocation and unchanged save-offset metadata against the expanded frame. Delete every owned function-table registration.
+102. Keep actual C++ handler dispatch, firing paths, temporary stub handlers, saves, peers, and activation gated after this comparison.
+
+Owned caller exception dispatch
+103. Guard the complete captured GS+C++ handler, common cookie helper, probe, cleanup leaf, and their native unwind records before export.
+104. Execute the captured caller prolog and epilog in owned Windows storage. Replace only the body with an authored throw endpoint.
+105. Preserve the original language state transitions and cleanup object offset. Rebase language RVAs only for the owned fixture image.
+106. A real C++ exception must traverse the captured cookie handler, reach the fixture CRT language handler, run cleanup once, and reach the outer catch.
+107. Test both stock and expanded frames. Verify cookie checks, the cleanup object address and marker, all function-table deletions, and owned allocation release.
+108. An expanded frame with the old cookie word must exit with the fixture's refusal code before cleanup or catch.
+109. Do not admit the game's CRT, real caller body, firing paths, handler bridges, saves, or peers from an owned fixture with authored external endpoints.
+
+Temporary handler bridge
+110. Supply the native fixed frame address, original code location, original function entry, image base, handler and language data together.
+111. Preserve the Windows context pointer and scope updates. Suppress native handlers when the original code location is in its incomplete prolog.
+112. Throw real C++ exceptions from a separate owned stub at temporary depths 8, 16, 24, 32, and 40. Preserve ABI alignment at the authored throw endpoint.
+113. Describe every stub stack phase, adapter, and handler thunk with Windows unwind metadata. Preserve all explicit native save offsets at the temporary depth.
+114. Reject a missing frame translation through the cookie refusal. Reject an unmodified stub code location through missing language cleanup.
+115. Verify normal returns, cleanup exactly once, the outer catch, and complete successful registration/allocation cleanup at each depth.
+116. Keep this prototype outside runtime registration. Matching game CRT behavior, collided unwind, native catch blocks, all native owners, partial game prologs and live behavior remain unverified.
+
+Native handler-owner admission
+117. Guard the full native handler, common helper, and complete root metadata including its cookie word before preparing a recipe.
+118. Admit only the twelve researched GS-only roots for the existing twenty continuation sites. Refuse an unknown owner or altered handler metadata.
+119. Preserve each original image base, root function, handler-data address, prolog extent, and cookie offset. Do not change the emitted actor-plan bytes.
+120. Distinguish the prepared owner recipe from verified live binding, complete owner-specific exception dispatch, and the separate C++ caller preparation.
+
+500-actor target cases, before shape expansion:
+
+121. Admit only the researched 300/340 and target 500/540 shapes. Retain forty reserved sentients.
+122. Refuse the old sixteen-MiB-spaced layout when the 540-by-540 knowledge matrix overlaps actor storage.
+123. Replay every guarded direct member operation at actor 499 and sentient 539. Preserve unrelated records and registers.
+124. Construct and destroy all 500 complete actor records. Preserve the following canary record and reverse cleanup order.
+125. Replay 500 DObj entries, signed iterator boundaries, admission scans, and the unchanged adjacent array and corpse capacity.
+126. Replay twenty-row history with actor 499, wraparound, filtering, interpolation, rewind, and the four-lane final group.
+127. Replay the full no-fire caller with 500 poses. Reject the old corpse-buffer address without hiding cookie or register failures.
+128. Derive producer, rewind, caller, and history extents from the selected shape. Never use a 300-sized temporary buffer for 500 actors.
+129. Keep activation refused until client codecs, complete frames, saves, startup ownership, and actual game tests pass.
+130. Guard all six producer/rewind runtime fragments, complete metadata, native calls, and the common cookie handler before relocation.
+131. Map every runtime boundary and unwind operation to the relocated instruction boundary. Reject missing or reversed boundaries.
+132. Move allocation, late register saves, and cookie offsets together for 300 and 500 actors. Preserve chained-parent semantics.
+133. Check stock and expanded prolog, body, late-save fragment, and epilog contexts through Windows RtlVirtualUnwind.
+134. Reject stale allocation and register-save metadata through the same Windows comparison. Retain native handler admission as a separate requirement.
+135. Run complete continuation and leaf frame comparisons for 500/540 using disjoint storage regions. Preserve all native register, stack, and metadata guards.
+136. Run the 500-actor caller through actual Windows C++ exceptions with the captured cookie-handler bridge at temporary depths 0, 8, 16, 24, 32, and 40.
+137. Verify the 26,736-byte caller frame, complete cookie translation, cleanup once, outer catch, and normal return for every selected temporary depth.
+138. Preserve all earlier stale-cookie, frame-translation, and code-location refusal cases. Keep actual game CRT and runtime registration checks separate.
+139. Write the complete selected temporal history through the guarded native section. Preserve the following counter and separate stock corpse-history section.
+140. Exercise native inline and general stream-write paths. Preserve register RBX for the following stock section, including large and near-full buffers.
+141. Import all twenty stock history rows into 300- and 500-actor layouts. Preserve vector bytes, state, validity, timestamp bits, and zero every unused actor.
+142. Consume the admitted input extent exactly. Legacy input uses 33,360 history bytes. Expanded input uses its selected shape extent. Preserve following section bytes.
+143. Refuse unknown formats, mismatched shapes, and truncated history before changing the destination. Keep the outer save-format gate separate and required.
+144. Refuse altered native writer guards and incomplete, unaligned, overlapping, or unreachable destination addresses before export.
+145. Compare stock native writer output with the prepared writer and reject a stale stock history extent at 500 actors.
+146. Keep the temporal save preparation outside activation until the root format, complete native actor attachments, and actual saves and migration pass.
+147. Keep the temporal stream call at its original native instruction address. Do not move a potentially throwing call across the native language-state map.
+148. Preserve the complete original 0x23A10-byte level clear at 0x19D161C. Clear the full external temporal history after that original operation.
+149. Reset both 300- and 500-actor histories on repeated map initialization. Preserve the counter reset, both allocation canaries, and native memset return value.
+150. Reject a stale 33,360-byte external reset at the 500-actor shape. A larger recorder must never reuse uncleared high-index rows.
+151. Refuse changed native reset guards, overlapping storage/stub intervals, invalid addresses, and unreachable calls before output.
+152. Emit the called reset stub with an independent 40-byte frame. Keep its function-table registration and actual Windows/game reset validation required.
+153. Embed the guarded called reset stub and its exact unwind metadata in an owned DLL's PE exception directory. Lookup must return that module's entry without RtlAddFunctionTable.
+154. Compare actual Windows unwinding at every reset instruction boundary, including the unallocated prolog and restored epilog. Preserve the return address, stack, and nonvolatile registers.
+155. Refuse a changed DLL template or missing binding before modifying its code. Keep exact native reset guards in the source export.
+156. Bind only the owned clear endpoint and owned level/history buffers in the DLL test. Execute two complete resets, checking call order, all bytes, both canaries, and the original return value.
+157. Verify module unload removes its function lookup. Do not call RtlAddFunctionTable or RtlDeleteFunctionTable for the static module template.
+158. This loader experiment does not bind actor continuations, game handlers, or live pools. Keep all existing actor activation gates until those paths pass.
+159. Refuse a reset body with the admitted size and outer stack instructions but altered middle instructions. Static unwind data must match the complete instruction shape.
+
+Actor wire preparation
+160. Guard the complete actor writer, actor reader, primitive codec span, class-three field table, and both named entity actor-index descriptors before preparing any width change.
+161. Move the actor writer's absolute removal width, live-record width, and client reader width from six to nine bits together. Preserve every owning function's instruction size and call location.
+162. Stock absolute actor ID 499 must decode incorrectly at six bits. Consecutive IDs alone must not establish an expanded codec.
+163. Round-trip all 500 actor records in reverse order through the captured complete actor writer and actor payload reader. Keep entity references and native record strides unchanged.
+164. Check additions, changes, removals, unchanged records, and mixed sparse IDs at 63/64, 127/128, 255/256, 299, and 499. Preserve record canaries and unregistered padding.
+165. Verify both named entity actor-index fields through the captured generic field writer and reader with nine-bit descriptors. Include the selected shape's clone sentinel.
+166. A stock reader paired with an expanded writer must fail the comparison. A mismatched peer needs separate admission before activation.
+167. Refuse altered owner code, changed operand instructions, changed descriptor names/layouts, and changed class-three table identity before export.
+168. Keep these wire rewrites outside activation until expanded client arrays, client caches, snapshot copies, demo/migration framing, sentinel consumers, and peer admission pass.
+
+Client snapshot storage
+169. Guard the complete native snapshot exporter, actor consumer, slot selection, and chained frame metadata before preparing client snapshot changes.
+170. Keep the original client object stride and member offsets. Give each of two local clients two complete external snapshots with separate appended actor arrays.
+171. Keep native snapshot metadata and its old actor storage intact. Move both actor array references to the appended array and increase the exporter clamp together.
+172. Copy all 500 native 80-byte actor records through the actual export loop, including a wrap across the connection actor ring. Compare every copied byte.
+173. Check counts zero, one, 63/64/65, 299/300, the selected capacity, and capacity plus one. Preserve the native negative-count behavior without a copy.
+174. Select both external snapshot slots for both local clients through the native caller. Keep the sequence increment, call arguments, and internal retry entry unchanged.
+175. Run the actual client actor address calculation for every exported record. It must read the appended array and preserve the native record stride.
+176. Compare complete snapshot and client-object canaries. Detect stock truncation and the metadata damage caused by increasing only the count.
+177. Refuse altered native code, altered slot instructions, altered frame metadata, image aliases, overlapping storage and stubs, invalid alignment, and unreachable rel32 stubs before export.
+178. Compare each slot-selection stub instruction boundary with its original native frame through Windows RtlVirtualUnwind. Reject missing native allocation or incorrect saved-register metadata.
+179. Keep these preparations outside activation until client actor storage, complete snapshot reset/copy paths, connection actor-ring ownership, saves, demos/migration, and peer admission pass.
+180. Admit a two-entry Windows comparison only for both exact client snapshot sites in their fixed order. Refuse a missing, reversed, or substituted site.
+
+Client snapshot reset ownership
+181. Guard both complete native client-clear owners and their full unwind records before replacing the original call or tail jump.
+182. Keep the native client clear size, pointer, call location, tail return, and original caller frames unchanged. Add a separate called frame for the external storage clear.
+183. The startup clear reads its local-client ID from native r14d. The shutdown tail helper reads the original argument from its entry stack home slot at +8, after native register restoration.
+184. Preserve the original native client-pointer return. Keep the local-client ID in owned frame storage across both native memset calls. Do not depend on volatile registers after either call.
+185. Clear both complete snapshots for only the selected local client. Preserve the other local client's snapshots and client object, all metadata, and allocation canaries.
+186. Repeat startup and shutdown clears for both clients and both admitted shapes. Replay the captured shutdown epilogue and its real stack home-slot layout.
+187. Refuse altered clear call/jump instructions, native argument stores, full owner code, unwind records, aliased buffers, overlapping helpers, invalid alignment, and unreachable code before export.
+188. Embed both independent helper frames in a real owned DLL's PE exception directory. Compare every instruction boundary and both complete resets through the Windows loader.
+189. The static template must reject altered middle instructions even when its outer allocation and return match. Bind only admitted complete templates before executable writes.
+190. Preserve all nonvolatile registers through actual owned calls. Remove both helper lookups after DLL unload without dynamic function-table registration.
+191. Keep reset preparation outside activation until complete client actor storage, every snapshot copy path, connection ownership, native game execution, and peer behavior pass.
+192. Export both reset bodies, guards, independent frame metadata, and their static assembly together. Prepare every guarded stage before creating output. Check all combined native edits and complete code/storage intervals for overlaps.
+
+Client actor records and resource lifetime
+193. Preserve the native client-object stride and every non-actor member. Keep a complete, separate actor bank for each local client, with matching bank stride.
+194. Guard all forty verified base and folded first-record operands, their complete native owners, and original unwind chains before preparation. Do not treat obfuscated jump tables or RIP-relative displacements as actor members.
+195. Bind a fixed actor-region displacement only to an admitted native client root and complete external allocation. Refuse unknown native roots at runtime. The owned preparation is not runtime admission.
+196. Refuse overlapping native/external banks, image aliases, incomplete intervals, unaligned roots, noncanonical ends, or signed displacement overflow before exporting edits.
+197. Keep every original instruction width, register operand, branch location, and stack effect unchanged. Replay all forty changed operands for both local clients and boundary actor IDs.
+198. Check native record reads, writes, compares, and address calculations. Preserve the complete native client banks and all external bank canaries.
+199. Increase both resource creation and release loops with the record storage. Run complete captured loops for all actors and both clients, including repeat cycles and volatile-register clobbering at owned allocation/release endpoints.
+200. Release each created resource exactly once and clear its record pointer. Check the other client's resources and adjacent fields throughout the cycle.
+201. Retain native root/allocation discovery, full bank resets, flag consumers, whole callers, every derived actor pointer, saves/demos/migration, and peer behavior as activation requirements.
+202. Export client actor operands as a separate disabled stage. Label its original client root as an authored replay binding. Check the complete banks against all other code/storage intervals and every combined native edit before claiming a valid export.
+
+Appended client actor banks
+203. Append banks inside the native client allocation instead of binding an unrelated runtime root. Keep each original client at its original spacing. Place actor bank zero at two native strides from the returned root.
+204. For one or two local clients, add two native strides to the original byte allocation. Preserve the native count in its original registers, alignment, allocation label, returned root, encoded pointer publication, and matching release path.
+205. Keep the original allocation product for zero, negative, or unsupported local-client counts in owned preparation. Prove actual local-client count admission before runtime actor activation.
+206. Guard the full allocator fragments, chained metadata, original multiplication, caller continuation, and pointer publication/release owners. Refuse altered versions or unreachable/aliased code before export.
+207. The allocation stub must preserve the native caller frame and stack. Compare every emitted instruction boundary with the original Windows frame and retain the native allocation CALL at its original address.
+208. Run the complete allocation/pointer encoding path and captured pointer decoder with matching owned TEB/PEB conditions. An arbitrary PEB branch applied to an existing captured ciphertext is not native root admission.
+209. Admit both one-client and two-client complete bank extents. Preserve sixteen-byte hunk alignment, untouched native client members, bank canaries, and exact native release of the original allocation root.
+210. The original complete client clear must also clear its entire appended actor bank. Coordinate this with the independent snapshot reset frame, including real static PE unwind, return pointers, volatile clobbering, both clients, and repeated reset cycles.
+211. Keep field relocation free of per-actor calls, stubs, or stack changes. Only allocation and reset paths may gain work. Do not make FPS claims without a game measurement.
+212. Keep the allocator/native hunk provider, complete roots/callers, configured local-client counts, resets, connection ring ownership, save/demo/migration and matching peers in runtime admission until verified.
+213. Admit a single-entry Windows comparison only for allocation site 0x840922. Reject a substituted site. Keep complete server and two-snapshot inventories unchanged.
+214. Export the appended allocation, its complete native frame, relocated fields, and full bank resets together. Keep native provider and game admission false. Check every combined edit and complete storage/code interval without overlaps.
+215. Guard the complete two-pass client caller, native measuring provider, fixed-backing provider, setup tail, dispatch instructions, and unwind chains before preparing the allocation edit. Normalize every hunk dispatch pointer against the captured module base.
+216. Execute the real measuring and fixed-backing providers for one and two clients across all sixteen PEB branches. The allocation request must increase the measured reserve by exactly two native client strides and fit every original allocation inside that reserve.
+217. Preserve the native reset, alignment, root publication, caller registers, and complete backing canaries. No extra reserve or commit may occur on the measured fixed-backing path.
+218. A stale measured reserve must reach the native exhaustion path in owned replay. Refuse altered caller/provider/dispatch bindings before preparation. Authored outer components, OS storage, saves, and game behavior remain separate requirements.
+219. Expand the actor connection ring allocation and its capacity together. Preserve sixteen complete snapshots for 300 or 500 actors. Do not change adjacent capacities without a verified consumer.
+220. Run the native connection/cache constructors through both native hunk passes. Verify complete allocations, published pointers, local-client spacing, selected capacity, reserve bounds, reset, and adjacent canaries.
+221. Round-trip changing actor packets through the complete native ring parser. Check every selected actor field, ring wraps, retained old snapshots, both local clients, and the other client's untouched ring.
+222. A stock ring must fail the same sixteen-snapshot history comparison. A count-only increase must fail backing-extent validation before parser writes.
+223. Guard complete connection constructor/parser owners and metadata before rewriting fixed-width operands. Keep saves, demo consumers, signed cursor overflow, full callers, and matching peers in runtime admission.
+224. Export both guarded ring rewrites with the other client actor stages. Bind its native hunk allocation extent and sixteen-snapshot capacity. Refuse constructor changes before output, and check every combined edit against storage, code, and checksum intervals.
+225. Move the native entity actorNum invalid value from 64 to the selected actor capacity. The old value must be detected as a valid actor collision in expanded preparation.
+226. Keep clonedFromActorNum zero as no-clone and encode every source as actor ID plus one. Round-trip zero, boundary, and final sources through native entity field codecs before using their captured clone consumer.
+227. Execute the native clone selection and field-copy blocks against complete appended banks for both local clients. Verify the source-minus-one calculation, selected fields, other client, and untouched padding/canaries.
+228. Execute the captured cleanup tail with the expanded invalid value and original epilogue. Preserve actor/entity data outside the native cleared members and every restored register. The full destructor and peer/save paths remain separate admission requirements.
+229. Guard complete cleanup and clone owners and their metadata before preparing the entity invalid-value rewrite. Keep its original instruction width and include it in the combined export/checksum audit.
+230. Expand the demo writer's 64-entry temporary actor-ID list with its complete native allocation, three saved-register offsets, cookie save/read/data, and epilogue. Keep the native prolog lengths and handler address.
+231. Coordinate the native actor scan bound with relocated complete prior-record storage. Preserve the original index units, record stride, server actor pointer, and following count field. Do not grow the old inline array into adjacent state.
+232. Run the complete captured demo writer with every selected actor active. Decode its actual native framing, count, actor packets, and termination. Check all copied record bytes, old inline storage, stack/cookies, backing canaries, and restored registers.
+233. A count-only writer must expose overwritten cookie/stack state in owned execution. Refuse changed writer code, native metadata, helper reach, aliases, partial backing, and incomplete supported shapes before preparation.
+234. Compare stock and expanded demo writer frames with real Windows virtual unwinding at every instruction boundary. Stale allocation or register-save metadata must fail. Treat helper registration, native handler dispatch, demo reader/reset, saves and game/peer behavior as separate admission requirements.
+235. A direct jump from the native demo count comparison must expose Windows epilogue misclassification in owned comparison. Use an ordinary call and conditional branch for this block. Keep the native count load on the completed-scan path and preserve its flags and index units.
+236. Compare every demo scan helper boundary through its own leaf frame and the expanded native caller. Restore the original return, stack, and nonvolatile registers. Refuse changed complete scan blocks and code/storage aliases before export.
+237. Relocate both demo reader record-copy blocks through their shared base instruction. Keep the native 80-byte stride and actor-ID indexing. Expand its six-bit actor read and coordinate the complete prior-record reset with the writer's storage.
+238. Execute the complete native demo reset. Check all four native clear requests, their full spans, following counts/cursors, both demo modes, registers, and backing canaries. The old inline actor array must retain the native first clear's result.
+239. Consume real writer packets through the complete native demo reader. Check additions, removals, unchanged records, sparse updates, empty lists, refill, ring state, indexed prior records, and the native rebroadcast path. Retained six-bit reads or old record storage must fail the same comparison.
+240. Guard complete demo reader/reset owners and exact metadata extents before any preparation output. Refuse native-image storage aliases and unreachable relocated bases. Keep native frames intact. Real game registration, full callers, save behavior, and matching peers remain runtime requirements.
+241. Bind demo writer and reader GS-only owners to their exact runtime records, metadata, native handler, common helper, and complete security-cookie leaf before preparation. Unknown owners or changed bodies must refuse.
+242. Execute real native writer/reader prologs, GS handler, common helper, and final cookie leaf against stock and expanded frame metadata. The native 48-bit cookie rule must pass without an authored success check. Preserve the handler return, stack, and nonvolatile registers.
+243. Stale expanded cookie offsets, untranslated frames, offset-only translations, and invalid high cookie bits must reach the native failure branch in owned replay. Stop at an authored failure endpoint before any system failure action.
+244. Keep owned dispatcher data and failure endpoints explicit in receipts. Native replay does not establish Windows exception dispatch or full game binding. Keep runtime activation disabled until those separate requirements pass.
+245. Execute guarded demo prolog/epilogue and complete native GS helpers under real Windows exception dispatch. Relocate only owned cookie/failure bindings and use an explicit authored body/exception endpoint. Stock, 300, and 500 frames must return and reach the outer catch.
+246. In isolated Windows fixture children, stale expanded handler cookie data and invalid high cookie bits must reach the actual native failure branch and its controlled exit. Never call the game's system failure routine.
+247. Bind exact helper metadata, runtime lookup, code protection, and full input framing. Delete all owned function records and release allocations on successful completion. Actual game registration and complete game callers remain separate admission requirements.
+248. Compare Windows unwinding at the actual replacement instruction in each native continuation owner, as well as every helper instruction. A plain external E9 can be classified as a completed epilogue and must fail the same caller/register comparison when its native frame remains active.
+249. Guard the complete original replacement extent. A neutral REX prefix must decode and execute as the same relative jump without changing flags, registers, destination, or stack. Preserve the five-byte terminal leaf contract separately; do not steal an extra byte or admit unknown short windows.
+250. Keep actor, sentient, and both secondary-reader counts in one admitted load shape. Legacy and VM-only input consumes 64/104/64 records; expanded input consumes 500/540/500. Preserve native strides, active prefixes, attachments and following sections.
+251. Prepare dynamic native count reads inside exact whole-instruction windows. Keep actor/sentient CMP widths and flags. Include each secondary MOV and its complete following NOP. No replacement may add calls, alter frames or admit changed native owners.
+252. Execute complete native actor and sentient save/read loops with inactive and active records. Compare real output bytes, full record extents, native input consumption, registers, backing canaries and following section markers. Do not infer complete root/attachment compatibility from authored stream or descriptor endpoints.
+253. A legacy input forced through expanded counts must fail before publication. Unknown shapes, native-image aliases, incomplete count storage, changed owner metadata and unreachable RIP bindings refuse preparation. Root format admission and immutable thread/file binding remain separate requirements before runtime activation.
+254. Admit a separate fixed 500-actor root identifier. Preserve the current 500K/18-root VM-only identifier and version3 as legacy actor input. Unknown identifiers, wrong budgets, invalid magic and empty data refuse before a native load callback.
+255. Publish all three native reader counts together only after an exclusive load owner acquires the state. Keep the admitted version, thread and file immutable. Refuse competing, reentrant, wrong-thread and wrong-file readers before native callbacks. Normal return and the existing game error prelude restore legacy counts and release ownership.
+256. Bind actor root admission to the real migration load wrapper and assembly version branch. The 500-actor policy accepts version3, the previous fixed VM-only format, and its own format. The VM-only policy must still refuse actor-expanded input. Missing actor count storage refuses before the original load. Restore counts on normal return and an owned native exception.
+257. Compose one fixed 500-actor runtime recipe. Replace its four static reader bounds with the coordinated load bindings. Include all server storage, client operands/snapshots/ring, demo, temporal functions, history save/reset, and native frame data without overlapping source or allocation intervals.
+258. Allocate one complete private arena within native relative reach. Admit every exact source owner, native metadata, constructor and helper binding before publication. Refuse occupied, partial, aliased or unreachable arena storage. Preserve rollback ownership until the complete checksum transaction commits.
+259. Keep code executable, metadata read-only, and record storage writable. Register the complete sorted native function table on the primary thread before the gate returns to the game. A missing or failed registration must end the owned child before a native actor consumer runs.
+260. Initialize all 500 records to the exact native constructor result. Preserve native actor/sentient strides and destructor order. Admit the zero native pool pointers before activation. Do not assume late CRT constructor edits initialize relocated records.
+261. Bind every continuation stack phase to its guarded native GS handler and data. Preserve the original native PC, frame and image during handler dispatch. Bind complete relocated temporal fragments and chained parents. Unknown language handlers or incomplete phase coverage refuse.
+262. Build relocated native functions from admitted game memory at runtime. Keep complete game bodies out of the package and Git. Check generated instruction spans and all relative/absolute operands against preparation at different game and arena bases.
+263. The released startup gate must call the published actor registration on its primary thread before it returns to native game code. Failed registration must end the owned child with the existing gate refusal path. A stock recipe keeps the callback empty. Publish its exact pointer through the same stopped transaction.
+264. The initial migration file/schema preparation returns before the actual actor load. Retain its admitted file/thread/count context until the captured later whole-load entry completes. Keep error cleanup active throughout both stages. Legacy tagged secondary input must clear its expanded unused tail through this shared whole-load path.
+265. Successful actor test scripts must return zero to their shell after they validate deliberate child refusals.

@@ -66,6 +66,12 @@ int main(int argc,char** argv) {
         std::size_t podBytes=0; for(std::size_t i=0;i<5;++i) podBytes+=migration[i].original.size(); Check(podBytes==168);
         Check(migration[5].original.size()==128 && migration[12].replacement[0]==0xe8 && migration[13].replacement[0]==0xe9);
         Check(migration[8].replacement.size()==8 && migration[8].replacement[5]==0x90 && migration[11].replacement.size()==6);
+        auto actorInput=input;actorInput.actorFormat=ActorFormat::Expanded500;
+        const auto actorMigration=BuildMigrationPlan(actorInput);Check(actorMigration.size()==migration.size());
+        std::uint32_t actorVersion{};std::memcpy(&actorVersion,actorMigration[0].replacement.data(),sizeof(actorVersion));
+        Check(actorVersion==0xC927A121);
+        std::memcpy(&actorVersion,actorMigration.back().replacement.data()+4,sizeof(actorVersion));Check(actorVersion==0xC927A121);
+        Refused([&]{auto bad=input;bad.actorFormat=static_cast<ActorFormat>(501);BuildMigrationPlan(bad);});
         Refused([&]{auto bad=input;bad.total=1000001;BuildMigrationPlan(bad);});
         Refused([&]{auto bad=input;bad.clientRoots=10;BuildMigrationPlan(bad);});
         Refused([&]{auto bad=input;bad.bufferBytes=39321600;BuildMigrationPlan(bad);});
@@ -76,7 +82,7 @@ int main(int argc,char** argv) {
         const vm_startup::NativePlanInput core{input.image,input.helper,
             {{{0x12d52f0,{0x48,0x89,0x5c,0x24,0x10}},{0x12d5f20,{0x48,0x89,0x5c,0x24,0x08}},
               {0x12d9420,{0x40,0x53,0x49,0x8b,0xd8}},{0x20ec0b0,{0x4c,0x89,0x4c,0x24,0x20}}}},
-            {0x3000,0x3030,0x700,0x720,0x740,0x760,0x780,0x7a0,0x7c0,0x7e0,0x800,0x820},
+            {0x3000,0x3040,0x700,0x720,0x740,0x760,0x780,0x7a0,0x7c0,0x7e0,0x800,0x820},
             relay,500001,18,8,bo3::vm::NativeModePolicy::ZombiesOnly,{}};
         auto composed=vm_startup::BuildNativePlan(core); composed.insert(composed.end(),migration.begin(),migration.end());
         const auto original=Snapshot(composed); Save(std::filesystem::path(argv[2])/"before.bin",original);

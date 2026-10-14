@@ -2,75 +2,186 @@
 
 # BO3 500K
 
-An optional 500,000-slot server script-variable pool for Steam Black Ops III Zombies.
-The launcher applies the patch in memory before the game allocates its script pool.
+An optional engine patch for Steam Black Ops III Zombies. The Windows launcher selects these capacities:
+
+| Pool | Capacity |
+| --- | ---: |
+| Server script variables | 500,000 usable slots |
+| Client script variables | 250,000 usable slots |
+| Actors | 500 |
+| Sentients | 540 |
+| Pending clientfield callbacks | 8,192 per local client |
+| Clientfield counters | 8,192 records |
+| Shared animation-info nodes | 65,535 usable nodes |
+
+Candidate **0.5.0-test.12** includes the actor patch in the main launcher and installer.
+It applies 774 native edits and 1,079 checksum edits before game allocation.
 The installer adds a reversible Steam launch option. Original game files stay unchanged.
+The actor capacity does not change a map's script spawn cap or spawn 500 zombies automatically.
 
 ## Install
 
-1. Download the Windows package from [Releases](https://github.com/PeytonWDYM/BO3-EngineUnLimitations/releases).
-2. Extract the ZIP.
-3. Close Steam and Black Ops III.
-4. Start `BO3-500K-Setup.exe`.
-5. Select the game folder and click **Install**.
-6. Open Steam and select **Play**, then select Zombies.
+1. Extract the Windows test package.
+2. Close Steam and Black Ops III.
+3. Start `BO3-500K-Setup.exe`.
+4. Confirm the discovered game folder, or select another folder with **Browse**, then click **Install**.
+5. Open Steam, select **Play**, and load Zombies.
 
 Keep the launcher window open while playing. Closing it ends its game process.
-To remove the patch, close Steam and the game, start the installer, and click **Remove**.
+To update an installed version, close Steam and BO3, select **Remove**, then **Install** in the new installer.
 Removal restores your previous Steam launch options.
 
-## Compatibility
+The installer reads Steam libraries and app manifests, including custom game folder names.
+It supports secondary libraries, spaces, Unicode, and game folder aliases.
+Command-line `install` and `status` select a game automatically when discovery finds exactly one installation.
+Use `--game <folder>` to select a folder explicitly. `--steam`, `--steam-user`, and `--state` are also configurable.
+No installer action starts the game.
 
-This is a test release. One manual Windows session reached Zombies and verified 500,000 usable server slots.
-The client pool and actor limit retain their stock capacities.
-Expanded host migration requires matching patched clients. Matching patches alone do not prove compatibility.
+## Compatibility and test status
+
+This is an experimental Windows candidate. The expanded script, callback, and counter profile passed a map load, match end, and exit.
+Those tests used the stock actor capacity. The separate AAE relay repair also passed a low-count Der Eisendrache session and exit.
+
+Earlier actor candidates exposed stale snapshot, sentient, and context references. The launcher now relocates those references with their storage.
+Test.6 fixed the viewmodel cache overlap at actor 64 but failed a 96-cap match at RVA `0x23F8515`.
+A separate physics pool still had 83 rows. Actor 77 selected row 95 outside that allocation.
+Test.7 expands the server and both client physics pools to 519 rows through their native sizing and allocation paths.
+Initialization, reset, time updates, and shutdown use the same expanded count. The special row moves from 82 to 518.
+
+Native replays cover the original fault, complete sizing constructors, actor boundaries through 499, and all revised row loops.
+Windows tests cover publication, rollback, ASLR, registration, and guard refusal. These checks support game testing.
+
+Test.7 passed a 13.5-minute Der Eisendrache control with a 96-zombie cap and advancing server frames and time.
+Telemetry reached 101 allocated actors. Match end, lobby return, and normal exit passed with no new dump.
+
+A separate 500-cap test reached 384 actors before `G_Spawn: no free entities` ended the match.
+The normal entity high-water value reached its stock limit of 1,022. All three expanded physics banks remained valid.
+
+A later Test.7 Der Eisendrache session failed a stack-cookie check.
+The actor pose backup helpers visit 500 actors, but some callers still allocate a 64-actor stack object.
+The saved crash frame contains position data where its stack cookie should be.
+Test.8 expands the complete pose object and all six native stack frames to 500 actors.
+It preserves each native exception handler, cleanup object, stack cookie, and register save.
+The shared temporal caller includes both buffer expansions. New stack probes have complete unwind records.
+Native replay passes with 100, 284, 300, and 500 active actors, including actor index 499.
+Windows fixtures cover stack growth, normal returns, exceptions, cleanup, and stale-cookie refusal in all six frames.
+
+The server snapshot producer also retained a separate 64-actor loop, which hid higher actors from clients.
+Test.8 expands that loop, both native snapshot allocations, the staging stride, and the internal worker actor decoder together.
+Native replay emits all 500 exact actor records and verifies history wrap, staging wrap, adjacent canaries, and teardown.
+These checks do not prove the reported tornado failure or visibility repair in a real match.
+Test.8 still needs a high-count game test, a clean exit, and a matching-peer test.
+
+Test.9 expands the paired native actor pointer, sentient pointer, and sentient-word save-handle bounds.
+Expanded reads accept 500 actor handles and 540 sentient handles. Legacy and VM-only reads retain their original 64 and 104 bounds.
+Nonnull pointer fields reject encoded zero and out-of-range handles before pointer publication.
+Native null fields and nullable sentient-word handles retain their original framing.
+The native descriptor replay covers all three paired families, exact four-byte writes, relocated destination pools, and native returns.
+Windows checks cover all six compare stubs and their complete native frames.
+Whole-game high-count saves and host migration still need game tests.
+Test.10 relocates the native client transform-cache heap from 96 KiB to a guarded 2 MiB bank.
+The stock native replay fails after 219 allocations at the same null 384-byte clear seen in the Test.9 crash.
+The new bank admits all 3,584 owners in the two centity banks. Native release, fragmentation, coalescing, reset, and reuse pass.
+Startup refuses an initialized cache root before it publishes the two constructor operands. Native frames and refusal paths stay unchanged.
+Test.10 also replaces awareness-table integer division with an exact reciprocal multiply and shift.
+An isolated Windows benchmark reduced row-address time by about 70%. Game FPS and complete map teardown remain unverified.
+
+Test.10 reached 300 allocated actors on Der Eisendrache. The owner reported distorted hands and missing weapon geometry near 250 actors.
+A separate reproduction recorded skeletal allocation refusal. The stock CPU skeletal buffer has about 1 MiB of usable storage.
+Test.11 gives each local client a separate 72 MiB skeletal bank in the same owned arena.
+This size follows the physical DObj pool, maximum bone count, and native double-copy mode.
+It retains the native context layout, atomic reservation, generation, reuse, and finite refusal.
+The native replay reproduces stock refusal after 246 requests of 133 bones.
+The new banks admit 3,071 maximum-size requests per local client. Replacement, generation wrap, null refusal, and reset recovery pass.
+Windows checks cover bank ownership, startup refusal, ABI, leaf unwind, publication, rollback, and three image bases.
+These checks support testing. The owner confirmed correct hands in the Test.11 follow-up near 280 zombies and 20 Panzers.
+
+That session ended with `exceeded maximum number of anim info`.
+The shared native animation pool retained only 5,999 usable nodes.
+Test.12 redirects the complete pool into a 5.5 MiB bank with 65,535 usable nodes.
+This uses the full existing 16-bit constructor-link domain and reserves node zero.
+All 72 native pool operands and the complete initializer use the same bank.
+The native allocator, locks, tree lifetimes, release paths, and finite error remain unchanged.
+Native save/load, clone, and compact snapshots rebuild physical node indexes from animation asset IDs.
+Their formats remain unchanged. High indexes through 65,535 pass the focused native replays.
+Windows fixtures execute the rendered initializer and verify all links, source bindings, ownership, cold refusal, and rollback.
+The larger pool is finite. It does not guarantee every map's worst-case animation demand.
+
+Test.12 also shares one exact address calculation across four adjacent native member groups.
+It removes 13 duplicate helpers and publications while preserving ordered memory and floating-point operations.
+The native replay and Windows unwind tests pass. Isolated group costs decrease by about 25–82%.
+This is not a measured game FPS gain. Scheduling and snapshot-copy experiments did not justify runtime changes.
+The reported moving, animated zombie pile remains unexplained and needs live movement and avoidance telemetry.
+Test.12 still needs high-count gameplay, normal exit, and matching-peer tests.
+
+The same 300-actor Storm Bow test ended with `G_Spawn: no free entities`.
+That error comes from the separate ordinary entity limit, which Test.12 does not expand.
+Normal entities still limit the population that each map can support.
+Measured 500 actors, save/load, migration, peers, and sustained performance remain required.
 
 [Spawn pacing and actor-capacity research](research/zombie-spawn-limits.txt) describes the work needed for faster spawn batches and more than 200 zombies.
 The findings include native instruction replays. Gameplay validation remains pending.
 
-The current profile accepts only the executable from Steam depot `311211`, manifest `7651791086710252932`.
-Its SHA-256 is `0b874dcc250848b7313ec13a0c76468dacc2009b5efa2bff4c587e169a9f77e0`.
+The profile accepts only Steam depot `311211`, manifest `7651791086710252932`.
+The executable SHA-256 is `0b874dcc250848b7313ec13a0c76468dacc2009b5efa2bff4c587e169a9f77e0`.
 The package includes no game executable or downgrade files.
-Other versions, including future updates, require separately verified native profiles.
-The installer and launcher refuse unknown versions before patch writes.
-They do not reuse offsets from another game build.
+Unknown executables and changed native code refuse before patch publication.
 
-**Linux / Proton:** unsupported in this release.
-The startup transaction requires job freezing that [Valve's Wine backend](https://github.com/ValveSoftware/wine/blob/bleeding-edge/dlls/ntdll/unix/sync.c) does not implement.
-A Proton release needs another verified startup backend and game tests.
+**Linux / Proton:** unsupported in this release. Windows is the current priority.
+The startup backend requires Windows job freezing. Proton needs a verified replacement backend and game tests.
+
+## Actor patch
+
+The actor patch expands the server pools, inline sentient awareness storage, DObj tables, and iterators together.
+It preserves native record strides. Its 197.5 MiB arena also holds animation, skeletal, snapshot, demo, history, and save/load storage.
+Client actor banks use an expanded native hunk allocation. The connection ring retains 8,192 actor records per local client.
+Packet, clone, entity actor-index, and demo paths use nine-bit actor IDs and matching invalid values.
+Native physics banks retain 18 player rows, add 500 actor rows, and reserve one special row.
+Each bank uses 5,621,808 bytes. Native hunk sizing includes the full allocation before its allocation pass.
+
+The save wrapper marks expanded actor storage with a distinct format identifier.
+The loader accepts guarded legacy formats, initializes unused records, and keeps selected read counts through the complete native load.
+This does not yet establish save/load compatibility at high actor counts.
+Expanded sessions require matching patched peers; matching patches alone do not prove compatibility.
+
+The launcher checks 1,821 exact actor source guards. Its 683 actor publication records share the frozen startup
+transaction with the VM, clientfield, gate, and checksum patches. Failed publication restores bytes and page protections.
+The primary thread registers 2,276 runtime function rows before game entry continues.
+Owned Windows tests cover native frame metadata, handler translation, complete load scope, publication,
+rollback, allocation ownership, and registration at three image bases. Their repeatable results stay outside Git.
+These tests support candidate testing; they do not establish game or peer compatibility.
+
+Normal entity capacity, reliable-command buffers, gamestate strings, packed clientfield budgets, round counters,
+and player count retain their current limits. The patch makes no measured frame-rate claim.
+A map must raise its own ordinary-zombie spawn cap to test 200–300 concurrent zombies.
+
+Private preparation evaluates a 2,048 ordinary-entity layout. It remains outside the published runtime.
+That layout retains the two ordinary sentinel holes and moves fake entities above the ordinary range.
+Its complete physical pool needs 3,072 records, with separate client-only storage and wider paired reference codecs.
+Native reference-head replays do not establish a complete entity-capacity patch or game compatibility.
 
 ## Build and contribute
 
-Use Python 3.12 or later, PowerShell 7, and Windows x64.
-Install Visual Studio C++ tools and the Windows SDK to rebuild the native launcher.
-
-```powershell
-python -B source/tests/Test-Installer.py --output C:/private/bo3-500k-tests
-pwsh -NoProfile -File scripts/release/Build-Patcher.ps1 -Output C:/private/bo3-500k-build -NativeBuild <verified-native-folder> -Python python
-```
-
-Use new output folders outside the repository.
-The setup executable contains the native launcher, both helpers, and their verified file hashes.
-Users do not need Python or C++ tools.
-Use `scripts/release/Build-Native.ps1` to rebuild the native files from source with official Detours v4.0.1.
-New native builds need admission, rollback, startup, and peer checks before release.
+Use Python 3.12 or later, PowerShell 7, Windows x64, Visual Studio C++ tools, and the Windows SDK.
+Use new output folders outside the repository. Keep game files, captures, and backups outside Git.
 
 ```powershell
 python -m pip install --require-hashes --only-binary=:all: -r scripts/release/requirements-native.txt
 pwsh -NoProfile -File scripts/release/Build-Native.ps1 -Output C:/private/bo3-native -DetoursRoot <Detours-v4.0.1-folder> -Python python
+python -B source/tests/Test-Installer.py --output C:/private/bo3-installer-tests --skip-gui-tests
+pwsh -NoProfile -File scripts/release/Build-Patcher.ps1 -Output C:/private/bo3-package -NativeBuild <verified-native-folder> -Python python -SkipGuiTests
 ```
 
-The native source build produces an unvalidated candidate. It does not update the release's approved file hashes.
-Download the native developer ZIP from the test release to rebuild the installer with the approved payload.
+The native builder uses official Detours v4.0.1 and generates the fixed actor profile from tracked source.
+It produces an unvalidated candidate and does not change approved payload hashes in `source/release.json`.
+The package builder requires those exact hashes and capacity receipts. Users do not need Python or C++ tools.
+`-SkipGuiTests` keeps command-line checks and records the omitted GUI checks.
+New profiles need identity, native guards, allocations, rollback, game, save, migration, and peer checks before release.
+Read `AGENTS.md` before contributing.
 
-## License
+## License and credits
 
-This project's source code uses the [MIT License](LICENSE).
-You can use, modify, distribute, and sell it. Keep the copyright and license notice with copies.
-Third-party components retain their own licenses.
-
-## Credits
-
+Source code uses the [MIT License](LICENSE). Third-party components retain their own licenses.
 Microsoft supplies [Detours](https://github.com/microsoft/Detours).
 [Maurice Heumann's integrity-check research](https://momo5502.com/posts/2022-11-17-reverse-engineering-integrity-checks-in-black-ops-3/) informed the checksum work.
 The release includes third-party license notices.

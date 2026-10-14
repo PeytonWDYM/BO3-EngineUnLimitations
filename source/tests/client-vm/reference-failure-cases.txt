@@ -1,0 +1,24 @@
+Client reference and lifetime audit cases, before new replay logic:
+
+Identity: Refuse any executable, manifest, range hash, or PE image identity outside the pinned capture.
+Inventory: Include every native slot value type dispatch, including strings, vectors, objects, functions, suspended stacks, and free records.
+Inventory: Distinguish VM slot IDs from string IDs, entity numbers, stack lengths, and hash bucket indexes. Width alone does not prove ownership.
+Inventory: Mark indirect calls, dynamic modules, pointer-retained consumers, and uncaptured code as unresolved instead of claiming completeness.
+Reference: IDs 65535, 65536, 129999, and 250000 must survive every proven VM ID store, read, save, and release path.
+Reference: A WORD entity association must retain its native entity-number contract. Do not widen it or treat it as a VM slot ID without an owner proof.
+Stack: Suspended stack serialization must retain high VM object IDs, full-width values, packed record lengths, and exact stream boundaries.
+Value: Vector and string ownership must preserve native allocation sizes and reference-release behavior across save and import.
+Lifetime: Allocation, initialization, shutdown, unload, and restart must select instance1 backing independently of instance0.
+Lifetime: Native shutdown must release all allocated instance1 slots before dropping or reusing backing. No stale client root, stack, or namespace may survive reset.
+Lifetime: Multiple initialize/shutdown cycles must not retain the prior pool, free-chain head, or error state.
+Budget: Measure client save bytes separately from server migration. Only include client bytes in migration after proving the outer call tree.
+Plan: An inactive count plan must guard every count instruction and reject a single mismatched byte before returning edits.
+Plan: An inactive count plan must not write process memory, admit another executable, or claim actual game activation.
+Arena: Reject a reused PID, wrong process start time, wrong private path, changed executable, or changed native allocator code before reading allocator metadata.
+Arena: Read the actual memory-type2/subpool0 descriptor. Do not infer ownership from readable pool bytes alone.
+Arena: Keep the allocator cursor stable across the observation. Report reserved bytes separately from committed bytes and peak map demand.
+Arena: Replay the native capacity branch at exact alignment boundaries. Overflow must reach the native refusal before publishing the cursor.
+Arena: Refuse a declared client capacity that differs from any of the nineteen complete native count instructions.
+Companion: Verify the full companion capture and its same-dump lineage before examining constants or scripts.
+Companion: Record every captured client script header and hash. Do not treat extracted scripts as the full loaded client set.
+Companion: A missing literal VM address or count does not close indirect or protected companion ownership.

@@ -53,7 +53,7 @@ void RelocateSection(HMODULE local, const IMAGE_NT_HEADERS64& nt, std::uintptr_t
 }
 }
 MappedHelper::MappedHelper(const std::filesystem::path& path)
-    : mapped_(LoadLibraryExW(path.c_str(), nullptr, DONT_RESOLVE_DLL_REFERENCES)), bootOffset_(0), image{}, state{}, migration{} {
+    : mapped_(LoadLibraryExW(path.c_str(), nullptr, DONT_RESOLVE_DLL_REFERENCES)), bootOffset_(0), image{}, state{}, migration{},actors{} {
     Require(mapped_ != nullptr, "Cannot inspect the fixed helper.");
     try {
         image.size = Header(mapped_).OptionalHeader.SizeOfImage;
@@ -69,6 +69,11 @@ MappedHelper::MappedHelper(const std::filesystem::path& path)
             {entry("MigrationHeaderReentry"),entry("MigrationDataReentry"),entry("MigrationHeaderAckReentry"),
              entry("MigrationSendHeaderReentry"),entry("MigrationLoadReentry"),entry("MigrationFlushReentry")},
             entry("SendHeaderAck"),entry("MigrationVersionGate")};
+        actors={entry("Bo3ActorLoadBindings"),entry("Bo3ActorNativeBindings"),entry("Bo3ActorReadBranches"),
+            entry("Bo3ActorRuntimeBindings"),entry("ActivateActorRuntime"),entry("ActorPhaseHandler"),
+            entry("ReadActorState"),entry("ReadSentientState"),entry("ReadSecondaryState"),entry("ReadActorHistory"),
+            entry("ActorReadReentry"),entry("SentientReadReentry"),entry("SecondaryReadReentry"),
+            entry("LoadActorState"),entry("ActorLoadReentry")};
     } catch (...) { FreeLibrary(mapped_); throw; }
 }
 MappedHelper::~MappedHelper() { FreeLibrary(mapped_); }

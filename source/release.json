@@ -1,9 +1,14 @@
 {
   "schemaVersion": 1,
-  "version": "0.2.0-test.1",
+  "version": "0.5.0-test.12",
   "status": "prerelease",
   "serverUsableSlots": 500000,
-  "gameAllocationObserved": true,
+  "clientUsableSlots": 250000,
+  "pendingCallbacksPerLocalClient": 8192,
+  "clientfieldCounters": 8192,
+  "gameAllocationObserved": false,
+  "callbackGameplayValidated": false,
+  "counterGameplayValidated": false,
   "multiplayerValidated": false,
   "protonSupported": false,
   "builds": [
@@ -12,11 +17,16 @@
       "gameSha256": "0b874dcc250848b7313ec13a0c76468dacc2009b5efa2bff4c587e169a9f77e0",
       "runtime": "windows",
       "files": {
-        "BO3-500K-Zombies.exe": "4b105f59e6837447f525604048fcee90f72f05d0444181996a5c8838c4b83395",
-        "Bo3EnhancedHelper.dll": "09b947ba384837853d5f4061a8fc3e2b61dee6b2663a751d6e7a2fb974c803c1",
-        "Bo3StartupGate.dll": "d24f274e847c63015b24a513a202815b4e0ef6bd1078a9b73ae6aec1c71bd8ca",
+        "BO3-500K-Zombies.exe": "ca78e46f827f48e6f51f23dbcdb66e9e1422a13f23b8b1252a6d7188fa87d057",
+        "Bo3EnhancedHelper.dll": "dc5b9fb4a5153986b0f64e2ad675bff83bf7a4364d86a96c4fe4f3abc652604e",
+        "Bo3StartupGate.dll": "f4efd8452f48bf9cb9495e5f9171fccf56981644e5a38cf807d2b192b77aec81",
         "Detours-LICENSE.md": "f854ae8aabc0404652b48a2b3bf7f21ec174c69d73f5596934c20884eb0639ef"
       }
     }
-  ]
+  ],
+  "actorCapacity": 500,
+  "sentientCapacity": 540,
+  "actorRuntimeFunctions": 2276,
+  "nativeEdits": 774,
+  "actorGameplayValidated": false
 }

@@ -44,7 +44,8 @@ def builds(resources: Path) -> list[Build]:
 
 
 def supported_build(resources: Path, game: Path) -> Build:
-    executable = game / 'BlackOps3.exe'
+    # Resolve read-only game folder aliases. Keep executable and private-file guards.
+    executable = game.resolve(strict=True) / 'BlackOps3.exe'
     reject_redirects(executable, private_files=True)
     digest = file_hash(executable)
     for build in builds(resources):
@@ -61,13 +62,18 @@ def verify(folder: Path, hashes: dict[str, str]) -> None:
             raise PatchError(f'The {name} release file changed. Install was refused.')
 
 
+def folder_name(build_id: str, hashes: dict[str, str]) -> str:
+    identity = hashlib.sha256(json.dumps(hashes, sort_keys=True).encode()).hexdigest()[:20]
+    return build_id + '-' + identity
+
+
 def prepare(resources: Path, game: Path, *, tools_root: Path | None = None) -> Path:
+    game = game.resolve(strict=True)
     build = supported_build(resources, game)
     source = resources / 'native' / build['id']
     verify(source, build['files'])
     root = private_path(tools_root or Path(os.environ['LOCALAPPDATA']) / 'BO3 Engine UnLimitations/500k', installations=(game,))
-    identity = hashlib.sha256(json.dumps(build['files'], sort_keys=True).encode()).hexdigest()[:20]
-    folder = private_path(root, build['id'] + '-' + identity, (game,))
+    folder = private_path(root, folder_name(build['id'], build['files']), (game,))
     with StateLock(root):
         if folder.exists():
             if {p.name for p in folder.iterdir()} != set(PAYLOAD_NAMES):

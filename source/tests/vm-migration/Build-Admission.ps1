@@ -16,7 +16,7 @@ try {
     New-Item -ItemType Directory -Path $output | Out-Null
     $env:INCLUDE = "$compilerRoot/include;$sdkRoot/Include/$sdk/um;$sdkRoot/Include/$sdk/shared;$sdkRoot/Include/$sdk/ucrt"
     $env:LIB = "$compilerRoot/lib/x64;$sdkRoot/Lib/$sdk/um/x64;$sdkRoot/Lib/$sdk/ucrt/x64"
-    $sources = @((Join-Path $PSScriptRoot 'AdmissionFixture.cpp'), (Join-Path $repo 'source/patches/vm_migration/Admission.cpp'))
+    $sources = @((Join-Path $PSScriptRoot 'AdmissionFixture.cpp'), (Join-Path $repo 'source/patches/vm_migration/Admission.cpp'), (Join-Path $repo 'source/patches/actor_pool/LoadContext.cpp'))
     $assemblySources = @((Join-Path $repo 'source/patches/vm_migration/VersionGate.asm'), (Join-Path $repo 'source/patches/vm_migration/Reentries.asm'), (Join-Path $PSScriptRoot 'VersionBranchFixture.asm'))
     foreach ($assembly in $assemblySources) {
         & (Join-Path $compilerRoot 'bin/Hostx64/x64/ml64.exe') /nologo /c "/Fo$output/$([IO.Path]::GetFileNameWithoutExtension($assembly)).obj" $assembly
@@ -48,6 +48,7 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'The composed migration plan fixture failed.' }
     if ((Get-FileHash (Join-Path $output 'before.bin')).Hash -ne (Get-FileHash (Join-Path $output 'restored.bin')).Hash) { throw 'The composed snapshot was not restored.' }
     $files = @($sources) + @($assemblySources) + @($planSources) + @($PSCommandPath, (Join-Path $PSScriptRoot 'failure-cases.txt'), (Join-Path $repo 'source/patches/vm_migration/exact_build_inventory.json'), (Join-Path $repo 'source/patches/vm_migration/Admission.h'), (Join-Path $repo 'source/patches/vm_migration/MigrationPlan.h'), $fixture, $planFixture, $seed, (Join-Path $output 'before.bin'), (Join-Path $output 'applied.bin'), (Join-Path $output 'restored.bin'), (Join-Path $output 'plan-addresses.txt'), (Join-Path $output 'plan-trace.txt'), (Join-Path $output 'trace.txt'), (Join-Path $output 'exports.txt'), (Join-Path $output 'object-symbols.txt'))
+    $files += (Join-Path $repo 'source/patches/actor_pool/LoadContext.h'), (Join-Path $repo 'source/tests/actor-pool/failure-cases.txt')
     $hashes = foreach ($file in $files) { Get-FileHash -LiteralPath $file -Algorithm SHA256 | Select-Object Path, Hash }
     @{passed = $true; files = @($hashes); scope = 'Owned callback admission, static Windows unwind, and composed core/migration real apply/rollback/removal E2E. No game, network, completed compressed whole-state load or deadline test.'} | ConvertTo-Json -Depth 5 | Set-Content (Join-Path $output 'result.json')
 } finally { $env:INCLUDE = $savedInclude; $env:LIB = $savedLib }

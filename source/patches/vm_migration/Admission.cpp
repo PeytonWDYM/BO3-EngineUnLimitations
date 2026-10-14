@@ -1,6 +1,10 @@
 #include "Admission.h"
+#include "../actor_pool/LoadContext.h"
 #include <algorithm>
 #include <cstring>
+#define WIN32_LEAN_AND_MEAN
+#define NOMINMAX
+#include <Windows.h>
 #pragma comment(linker, "/EXPORT:MigrationVersionGate")
 #pragma comment(linker, "/EXPORT:MigrationHeaderReentry")
 #pragma comment(linker, "/EXPORT:MigrationDataReentry")
@@ -21,12 +25,13 @@ namespace {
 bool FormatValid(std::uint32_t version) {
     const auto total = version & 0xfffff;
     const auto roots = (version >> 20) & 31;
-    return (version & 0xfe000000) == 0xc6000000 &&
-           (total == 500001 || total == 1000001) && roots > 0 && roots <= 18;
+    return version==actors::Actor500Version || ((version & 0xfe000000) == 0xc6000000 &&
+           (total == 500001 || total == 1000001) && roots > 0 && roots <= 18);
 }
 bool HeaderAllowed(const Header& header) {
     const auto& config = Bo3MigrationBindings;
-    return FormatValid(config.wireVersion) && (header.version == 3 || header.version == config.wireVersion) &&
+    const auto legacyVm=config.wireVersion==actors::Actor500Version && header.version==actors::VmOnlyVersion;
+    return FormatValid(config.wireVersion) && (header.version == 3 || header.version == config.wireVersion || legacyVm) &&
            header.magic == HeaderMagic && header.size > 0 && header.size <= config.bufferBytes &&
            config.bufferBytes <= MaxProtocolBytes;
 }
@@ -71,12 +76,22 @@ void SendMigrationHeader(std::int32_t peer) {
 bool CanLoadMigrationState() {
     return HeaderAllowed(*Bo3MigrationBindings.nativeHeader());
 }
-void LoadMigrationState(WrittenState** object, std::uint32_t* time) {
+void LoadMigrationState(WrittenState** object, std::uint32_t* time) noexcept(false) {
     if (!CanLoadMigrationState()) {
         Bo3MigrationLoadBindings.error("vm_migration", 0, 2, "Migration state has an incompatible format or size");
         return;
     }
-    Bo3MigrationLoadBindings.original(object, time);
+    if(Bo3MigrationBindings.wireVersion!=actors::Actor500Version) {
+        Bo3MigrationLoadBindings.original(object,time);return;
+    }
+    auto* file=const_cast<WrittenState*>(Bo3MigrationBindings.nativeWriteState());
+    const auto thread=GetCurrentThreadId();
+    if(!actors::BeginLoad(*Bo3MigrationBindings.nativeHeader(),file,thread,Bo3MigrationBindings.bufferBytes)) {
+        Bo3MigrationLoadBindings.error("vm_migration",0,2,"Migration state has an incompatible format or size");return;
+    }
+    try {Bo3MigrationLoadBindings.original(object,time);}
+    catch(...) {actors::ClearLoadContext(thread);throw;}
+    // The caller invokes the whole actor load later through 19C3270. Its wrapper releases this scope.
 }
 void SendHeaderAck(std::int32_t client, const char* command, const void* payload, std::uint32_t count) {
     if (Bo3MigrationBindings.nativeHeader()->version == 3) {

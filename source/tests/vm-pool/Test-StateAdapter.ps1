@@ -28,7 +28,7 @@ try {
     $env:INCLUDE = "$($compiler.FullName)\include;$sdkRoot\Include\$($sdk.Name)\um;$sdkRoot\Include\$($sdk.Name)\shared;$sdkRoot\Include\$($sdk.Name)\ucrt"
     $env:LIB = "$($compiler.FullName)\lib\x64;$sdkRoot\Lib\$($sdk.Name)\um\x64;$sdkRoot\Lib\$($sdk.Name)\ucrt\x64"
     $fixture = Join-Path $output 'bin\StateFixture.exe'
-    & (Join-Path $compiler.FullName 'bin\Hostx64\x64\cl.exe') /nologo /EHsc /W4 /WX /MD /std:c++20 /O2 (Join-Path $PSScriptRoot 'StateFixture.cpp') (Join-Path $PSScriptRoot 'StateNativeFixture.cpp') (Join-Path $repo 'source\patches\vm_pool\StateAdapter.cpp') (Join-Path $repo 'source\patches\vm_pool\NativeStateBridge.cpp') "/Fe:$fixture" "/Fo:$output\bin\\" /link /INCREMENTAL:NO
+    & (Join-Path $compiler.FullName 'bin\Hostx64\x64\cl.exe') /nologo /EHsc /W4 /WX /MD /std:c++20 /O2 (Join-Path $PSScriptRoot 'StateFixture.cpp') (Join-Path $PSScriptRoot 'StateNativeFixture.cpp') (Join-Path $repo 'source\patches\vm_pool\StateAdapter.cpp') (Join-Path $repo 'source\patches\vm_pool\NativeStateBridge.cpp') (Join-Path $repo 'source/patches/actor_pool/LoadContext.cpp') "/Fe:$fixture" "/Fo:$output\bin\\" /link /INCREMENTAL:NO
     if ($LASTEXITCODE -ne 0) { throw 'The native fixture build failed.' }
     & $fixture | Tee-Object -FilePath (Join-Path $output 'trace.txt')
     if ($LASTEXITCODE -ne 0) { throw 'The state adapter fixture failed. See trace.txt.' }
@@ -50,6 +50,9 @@ try {
         (Join-Path $repo 'source\patches\vm_pool\StateAdapter.cpp')
         (Join-Path $repo 'source\patches\vm_pool\NativeStateBridge.h')
         (Join-Path $repo 'source\patches\vm_pool\NativeStateBridge.cpp')
+        (Join-Path $repo 'source\patches\actor_pool\LoadContext.h')
+        (Join-Path $repo 'source\patches\actor_pool\LoadContext.cpp')
+        $PSCommandPath
         $fixture
         (Join-Path $output 'trace.txt')
         (Join-Path $output 'exports.txt')

@@ -2,6 +2,7 @@
 import argparse
 import hashlib
 import json
+import os
 from pathlib import Path
 import sys
 
@@ -16,7 +17,7 @@ def digest(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
-def run(output: Path) -> None:
+def run(output: Path, *, skip_gui_tests: bool = False) -> None:
     output.mkdir(parents=True, exist_ok=False)
     resources = output / 'bundle'
     resources.mkdir()
@@ -129,12 +130,86 @@ def run(output: Path) -> None:
     assert manager.config.read_bytes() == original
     record('updated-game-status', manager, original)
 
+    # Status checks the actual installed payload without changing any route, receipt, or payload bytes.
+    for name, mutation, expected in (
+        ('status-older-payload', 'older', 'update-required'),
+        ('status-current-payload', None, 'enabled'),
+        ('status-missing-launcher', 'missing-launcher', 'missing-or-corrupt'),
+        ('status-missing-helper', 'missing-helper', 'missing-or-corrupt'),
+        *((f'status-corrupt-{index}', payload, 'missing-or-corrupt') for index, payload in enumerate(PAYLOAD_NAMES)),
+    ):
+        manager, game, tools, original = fixture(name)
+        installed = manager.enable(resources, game, tools_root=tools)
+        folder = Path(installed['launcher']).parent
+        bundle = resources
+        if mutation == 'older':
+            import shutil
+            bundle = output / 'newer-status-bundle'
+            shutil.copytree(resources, bundle)
+            path = bundle / 'native/owned-1/BO3-500K-Zombies.exe'
+            path.write_bytes(b'Owned newer non-executable launcher')
+            manifest = json.loads((bundle / 'release.json').read_text())
+            manifest['version'] = 'owned-newer'
+            manifest['builds'][0]['files'][PAYLOAD_NAMES[0]] = digest(path.read_bytes())
+            (bundle / 'release.json').write_text(json.dumps(manifest))
+        elif mutation == 'missing-launcher':
+            (folder / PAYLOAD_NAMES[0]).unlink()
+        elif mutation == 'missing-helper':
+            (folder / PAYLOAD_NAMES[1]).unlink()
+        elif mutation:
+            (folder / mutation).write_bytes(b'Corrupt installed payload')
+        before = {str(path): path.read_bytes() for root in (manager.steam, manager.state, tools)
+                  for path in root.rglob('*') if path.is_file()}
+        result = manager.status(game, bundle)
+        assert result['status'] == expected, (name, result)
+        assert result['gameSupported'] is True and result['build'] == 'owned-1'
+        if expected == 'enabled':
+            assert result['installedVersion'] == 'owned'
+        else:
+            assert 'message' in result and 'Remove' in result['message'] and 'Install' in result['message']
+        if mutation == 'older':
+            assert result['expectedVersion'] == 'owned-newer' and 'installedVersion' not in result
+        if expected == 'missing-or-corrupt':
+            assert result['payloadFolder'] == str(folder) and 'move' in result['message']
+        after = {str(path): path.read_bytes() for root in (manager.steam, manager.state, tools)
+                 for path in root.rglob('*') if path.is_file()}
+        assert before == after
+        cases.append({'name': name, 'passed': True, 'result': result, 'statusReadOnly': True,
+                      'configSha256': digest(manager.config.read_bytes())})
+
+    for phase in ('externally-changed', 'pending'):
+        manager, game, tools, original = fixture('status-' + phase)
+        installed = manager.enable(resources, game, tools_root=tools)
+        Path(installed['launcher']).unlink()
+        if phase == 'externally-changed':
+            manager.config.write_bytes(manager.config.read_bytes().replace(b'%command%', b'%command% +external'))
+        else:
+            receipt = manager._receipt()
+            receipt['phase'] = 'pending'
+            receipt['pending'] = {'action': 'enable', 'previous': 'restored', 'before': receipt['original'],
+                                  'after': launch_field(manager.config.read_bytes()).snapshot()}
+            manager._save(receipt)
+        config_before = manager.config.read_bytes()
+        receipt_before = (manager.state / 'receipt.json').read_bytes()
+        assert manager.status(game, resources)['status'] == phase
+        assert manager.config.read_bytes() == config_before
+        assert (manager.state / 'receipt.json').read_bytes() == receipt_before
+        cases.append({'name': 'status-' + phase, 'passed': True, 'statusReadOnly': True})
+
+    if os.name == 'nt':
+        sys.path.insert(0, str(Path(__file__).resolve().parent / 'installer-paths'))
+        from PathCases import run_path_cases
+        cases.extend(run_path_cases(output, resources, skip_gui_tests=skip_gui_tests))
     (output / 'result.json').write_text(json.dumps({'passed': True, 'cases': cases,
-        'scope': 'Owned Steam configuration and payload files. No Steam or game launch.'}, indent=2) + '\n')
+        'scope': 'Owned Steam configuration and payload files. No Steam or game launch.',
+        'windowsPathCases': 'executed' if os.name == 'nt' else 'not run: Windows junction and GUI cases',
+        'guiCases': 'not run: explicitly skipped' if skip_gui_tests else 'executed' if os.name == 'nt' else 'not run: requires Windows'}, indent=2) + '\n')
     print(f'{len(cases)} installer E2E cases passed. Evidence: {output / "result.json"}')
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path, required=True)
-    run(parser.parse_args().output)
+    parser.add_argument('--skip-gui-tests', action='store_true', help='Keep Windows path checks but omit all Tk checks')
+    args = parser.parse_args()
+    run(args.output, skip_gui_tests=args.skip_gui_tests)

@@ -62,8 +62,3 @@ Desktop.ini
 /research/local/
 /tools/
 /lab/
-
-# Keep the two contributor entry points. Ignore other Markdown notes.
-*.md
-!/README.md
-!/AGENTS.md

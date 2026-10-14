@@ -34,4 +34,7 @@ static_assert(offsetof(Payload,readyEvent)==48 && offsetof(State,generation)==48
 static_assert(std::is_standard_layout_v<Payload> && std::is_trivially_copyable_v<Payload>);
 static_assert(std::is_standard_layout_v<State> && std::is_trivially_copyable_v<State>);
 extern "C" __declspec(dllexport) State Bo3StartupGateState;
+using StartupContinuation=bool (*)();
+// Optional for stock recipes. Publish before release when native runtime registration is required.
+extern "C" __declspec(dllexport) StartupContinuation Bo3StartupGateContinuation;
 }

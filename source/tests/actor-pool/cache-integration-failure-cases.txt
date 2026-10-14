@@ -1,0 +1,12 @@
+1. Refuse a nonzero native cache root at RVA 0x421F650 before any actor allocation or source publication.
+2. Refuse changed constructor, dispatch, allocation, release, reset, cache lookup, or unwind metadata.
+3. Declare the complete 2 MiB cache bank at arena+0x2D00000 through arena+0x2F00000.
+4. Refuse a bank outside the arena or overlapping another declared storage interval.
+5. Render the same constructor capacity and arena-relative backing at low, normal, and high game addresses.
+6. Preserve complete native cache lifecycle, finite refusal, all 3,584 owners, fragmentation, and payload canaries.
+7. Preserve register, flag, memory, and Windows unwind contracts after the exact constant-divisor rewrite.
+8. Regenerate all instruction-boundary metadata. Refuse wrong phase, allocation, depth, native save, and source guards.
+9. Preserve transaction rollback and owned allocation cleanup after partial preparation or publication failure.
+10. Package only exact Test10 native hashes. Refuse old, missing, or corrupt installed payloads without changing status inputs.
+11. Keep normal entity capacity unchanged. Do not activate unfinished entity or network preparation.
+12. Report code-cost measurements separately from unverified game FPS, map transitions, and matching-peer results.

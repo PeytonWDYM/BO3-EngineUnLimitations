@@ -1,0 +1,21 @@
+{
+  "source": "Peyton local AAE actor-storage prototype, reused within the authorized owner task.",
+  "licenseFile": "No license file present in the source project inventory.",
+  "scope": "Python source and address/hash contracts only. No game-extracted bodies or executable assets.",
+  "sourceFiles": {
+    "captured_code.py": "e4332184a46add8ea33dc7ec5b39b5fccb3c8bb59bd54b8b8b76edca985ffeaa",
+    "codec_contract.json": "406a4ea1dba2b92b31cfebd7411dedc09763e262ccd915e5563242379478dd6b",
+    "consumer_inventory.json": "d7e28e09bb3a85a6a797d8c4e76a70405bd15fb70196165e501b0355c48c0805",
+    "downstream_inventory.json": "11fefbb88ceaf3fa8148d67c30f36dac29fc8f234cf3415ffb290c2a1c03d385",
+    "implementation_plan.json": "ecd9dc727469444caa5af92a21b825bcbf4d40d5b726d5ca21c9e6add45aa771",
+    "indexed_words.json": "ea22065372dce4b99ba15297225e83df0372f8e671c4fb1d767372bd70a86b8b",
+    "omitted_consumers.json": "931cfb88078b7b7bd4269fc64a4955292463de9b27d029f8bbab4fc5a4d37bc7",
+    "Prepare-TablePlan.py": "f61a06967d6e3b2479051be2c81d7f38e83034cf481fdf0f2735b372a9199884",
+    "storage_inventory.json": "9ce27c15200ac8c7d277882a5dd148413a64e5952d177681efc0efeb18c0c05a",
+    "storage_plan.py": "4a50c1cac6c85e8b232e513cda7e5bfbbe9ba85cb76f6b78ce55e8c556984a9b",
+    "table_layout.py": "a9777a1469ff23163cbde32af4d2ecc73348798b36e2b58dc9c95b18ce5f8a0f",
+    "table_plan.py": "b12990bd14d7d968f5516b8f15a9275d9d7c927d401d13b7844e37d16de04f19",
+    "x64_table.py": "d4bd776c3b520b11cdb3f06eda0135944944615eb8801b1780c9f4aefb885895"
+  },
+  "sourceReplaySha256": "9af9e27ed0e160f3a1ac49093c75f82d7c9335dc86636d6730ddd228b3a2ae7c"
+}

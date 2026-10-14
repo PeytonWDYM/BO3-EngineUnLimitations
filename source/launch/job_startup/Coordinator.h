@@ -2,6 +2,7 @@
 #include "OwnedJob.h"
 #include "../late_startup/Coordinator.h"
 #include <string_view>
+#include "../enhanced/CapacityProfile.h"
 
 namespace bo3::job_startup {
 struct ThreadObservation {DWORD id;std::uintptr_t pc,start;};
@@ -22,7 +23,7 @@ struct Receipt {
     std::vector<std::uintptr_t> frames;
     std::vector<ThreadObservation> threads;
 };
-void Coordinate(late_startup::OwnedChild&,OwnedJob&,late_startup::MappedGate&,const late_startup::PreparePlan&,Receipt&,std::size_t expectedEdits=42);
+void Coordinate(late_startup::OwnedChild&,OwnedJob&,late_startup::MappedGate&,const late_startup::PreparePlan&,Receipt&,std::size_t expectedEdits=enhanced::kNativeEdits);
 void WriteReceipt(std::ostream&,const Receipt&,std::string_view method="late-crt-job-freeze");
 #ifdef BO3_JOB_OWNED_TEST
 enum class Failure {None,AfterApply,Thaw,Release};

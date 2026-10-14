@@ -11,8 +11,8 @@ void Coordinate(late_startup::OwnedChild& child,job_startup::OwnedJob& job,late_
     const late_startup::PreparePlan& prepare,const std::array<unsigned char,32>& digest,Receipt& receipt) {
     const auto combined=[&](HANDLE process,std::uintptr_t image,vm_startup::Receipt& patchReceipt) {
         auto plan=prepare(process,image,patchReceipt);
-        Require(plan.edits.size()==kNativeEdits && plan.relay && !plan.commitResources,
-            "The original complete 42-edit native recipe is required.");
+        Require(plan.edits.size()==kNativeEdits && plan.relay,
+            "The selected complete native recipe is required.");
         auto checksum=[&] {
             try {
 #ifdef BO3_EARLY_OWNED_TEST
@@ -30,7 +30,10 @@ void Coordinate(late_startup::OwnedChild& child,job_startup::OwnedJob& job,late_
         plan.edits.insert(plan.edits.end(),std::make_move_iterator(checksum.edits.begin()),
             std::make_move_iterator(checksum.edits.end()));
         // Keep the arena owned until rollback finishes or commit retains it before thaw.
-        plan.commitResources=[arena=std::move(checksum.arena)]() noexcept {arena->Commit();};
+        plan.commitResources=[native=std::move(plan.commitResources),arena=std::move(checksum.arena)]() noexcept {
+            if(native)native();
+            arena->Commit();
+        };
         receipt.checksumAdmitted=true;
         return plan;
     };
@@ -47,7 +50,14 @@ void WriteReceipt(std::ostream& out,const Receipt& receipt) {
        <<",\"checksumArena\":"<<receipt.checksumArena<<",\"checksumArenaBytes\":"<<receipt.checksumArenaBytes
        <<",\"checksumCaptureBytes\":"<<receipt.checksumCapture.size()
        <<",\"nativeEditsRequired\":"<<kNativeEdits
+       <<",\"pendingCallbackCapacityPerLocalClient\":"<<enhanced::kPendingCallbacksPerLocalClient
+       <<",\"pendingCallbackStorageBytes\":524296"
+       <<",\"clientfieldCounterCapacity\":"<<enhanced::kClientfieldCounters
+       <<",\"clientfieldCounterStorageBytes\":196608"
        <<",\"combinedEditsRequired\":"<<kNativeEdits+early_integrity::kPublicationCount
+       <<",\"actorCapacity\":"<<enhanced::kActors<<",\"sentientCapacity\":"<<enhanced::kSentients
+       <<",\"actorArenaBytes\":207093760,\"actorRuntimeFunctions\":"<<enhanced::kActorRuntimeFunctions
+       <<",\"actorWireVersion\":3374817569"
        <<",\"checksumReapplication\":false,\"aaeStoreSitesPreserved\":"<<(receipt.checksumAdmitted?"true":"false")<<'}';
     Require(out.good(),"Cannot write the early checksum receipt.");
 }

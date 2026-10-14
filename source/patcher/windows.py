@@ -4,9 +4,9 @@ from dataclasses import dataclass
 from ctypes import wintypes
 import os
 from pathlib import Path
-import re
 
 from patcher.errors import PatchError
+from patcher.steam_locations import installed_games
 
 
 @dataclass(frozen=True)
@@ -67,25 +67,12 @@ def game_running(executable_name: str = "BlackOps3.exe") -> bool:
         api.CloseHandle(handle)
 
 
-def steam_installs() -> list[Path]:
+def steam_installs(steam: Path | None = None) -> list[Path]:
     if os.name != "nt":
         return []
-    try:
-        steam = steam_context().directory
-    except FileNotFoundError:
-        return []
-    libraries = [steam]
-    vdf = steam / "steamapps" / "libraryfolders.vdf"
-    if vdf.exists():
-        libraries.extend(Path(value.replace("\\\\", "\\")) for value in re.findall(r'"path"\s+"([^"\r\n]+)"', vdf.read_text(encoding="utf-8")))
-    results = []
-    seen = set()
-    for library in libraries:
-        identity = str(library.resolve()).casefold()
-        if identity in seen:
-            continue
-        seen.add(identity)
-        game = library / "steamapps/common/Call of Duty Black Ops III"
-        if game.is_dir():
-            results.append(game)
-    return results
+    if steam is None:
+        try:
+            steam = steam_context().directory
+        except FileNotFoundError:
+            return []
+    return installed_games(steam)

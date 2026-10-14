@@ -1,0 +1,16 @@
+1. Reproduce native refusal beyond the stock 1,048,560-byte limit. Preserve the captured 1,745,760-byte attempted high-water as evidence.
+2. Run native bone-size and 0x400 double-copy paths. Derive capacity from the supported request domain.
+3. Cover 0, 1, 133, and 384 bones. Cover all 3,071 usable physical DObj slots.
+4. Verify current-generation reuse reserves no second block. Verify a new generation reserves a fresh block.
+5. Execute the constructor cache-clear prefix. Prove repeated replacement can consume storage again within one generation.
+6. Preserve native NULL refusal after the finite bank fills. Never publish a pointer for a refused request.
+7. Keep both banks disjoint from the native image, context metadata, code, and every declared storage bank.
+8. Verify first reset publication, frame reset, generation wrap, and reset after refusal. Keep process-lifetime ownership explicit.
+9. Preserve atomic reservation, attempted high-water accounting, and failed-generation reporting.
+10. Preserve registers and defined flags at the changed window. Verify leaf registration and Windows unwind at each instruction boundary.
+11. Refuse changed native owners, encoded-root providers, client selectors, caller bindings, capacity operands, and unwind metadata.
+12. Refuse a nonzero context root before cold publication. Refuse incomplete, overlapping, misaligned, or unreachable storage.
+13. Verify transaction rollback restores code before storage release. Never publish an unowned backing pointer.
+14. Exercise the complete native pose caller refusal path. Document the unchanged viewmodel and model-building caller graph.
+15. Keep native inputs and receipts private. State all substituted endpoints and replay limits.
+16. Do not claim FPS improvement or game compatibility from fixture results.

@@ -1,0 +1,96 @@
+"""Check the complete guarded export, including client resets and actor operands."""
+import argparse
+import hashlib
+import json
+from pathlib import Path
+import subprocess
+import sys
+
+PATCHES=Path(__file__).resolve().parents[2]/'patches/actor_pool'
+
+
+def run(module: Path,executable: Path,output: Path,actors: int) -> dict:
+    output=output.resolve()
+    if (Path.home()/'.codex/labs/bo3-engine').resolve() not in output.parents or output.exists():
+        raise ValueError('Use a new private BO3 lab output folder.')
+    process=subprocess.run([sys.executable,'-B',str(PATCHES/'Prepare-ActorPlan.py'),
+                            '--module',str(module),'--executable',str(executable),
+                            '--output',str(output),'--actors',str(actors)],capture_output=True,text=True)
+    assert process.returncode==0,process.stderr
+    plan=json.loads((output/'plan.json').read_text())
+    snapshots=plan['clientSnapshotPreparation']
+    assert len(plan['wirePreparation']['rewrites'])==6
+    assert plan['wirePreparation']['rewrites'][-1]['rva']=='0x24ae77f'
+    assert plan['wirePreparation']['rewrites'][-1]['size']==8
+    reset=snapshots['resetPreparation']
+    assert plan['deploymentAllowed'] is snapshots['deploymentAllowed'] is reset['deploymentAllowed'] is False
+    assert len(reset['rewrites'])==len(reset['staticPEFrames'])==2
+    assert [edit['rva'] for edit in reset['rewrites']]==['0x8f0ab4','0x92ec08']
+    assert [frame['codeBytes'] for frame in reset['staticPEFrames']]==[95,97]
+    assert [frame['unwindInfo'] for frame in reset['staticPEFrames']]==['0107010007620000','0109010009620000']
+    assembly=output/reset['staticTemplateFile']
+    assert hashlib.sha256(assembly.read_bytes()).hexdigest()==reset['staticTemplateSha256']
+    actor_banks=plan['clientActorPreparation']
+    assert actor_banks['deploymentAllowed'] is actor_banks['nativeRootVerified'] is False
+    assert actor_banks['nativeRootKind']=='preserved_native_allocation_return' and len(actor_banks['rewrites'])==42
+    assert actor_banks['clientStride']==0x342720 and actor_banks['storageBytes']==2*0x342720
+    assert actor_banks['actorsPerLocalClient']==actors and actor_banks['actorRecordBytes']==0xB00
+    assert actor_banks['nativeActorOffset']==2*actor_banks['clientStride']
+    assert int(actor_banks['storageAddress'],0)==int(actor_banks['nativeRootAddress'],0)+actor_banks['nativeActorOffset']
+    allocation=actor_banks['allocationPreparation']
+    assert allocation['deploymentAllowed'] is allocation['nativeProviderVerified'] is False
+    assert allocation['localClientCounts']==[1,2] and allocation['additionalBytes']==2*actor_banks['clientStride']
+    assert len(allocation['rewrites'])==len(allocation['unwindRequirements'])==1
+    assert allocation['rewrites'][0]['rva']=='0x840922' and allocation['rewrites'][0]['size']==7
+    continuation=allocation['unwindRequirements'][0]
+    assert continuation['kind']=='native_frame_continuation' and continuation['runtimeAbiAdmitted'] is False
+    assert len(continuation['ownedContinuationPhases'])==7
+    ring=plan['clientActorRingPreparation']
+    assert ring['deploymentAllowed'] is ring['gameBindingVerified'] is False
+    assert ring['records']==8192 and ring['actorRecordBytes']==80 and ring['retainedSnapshots']==16
+    assert ring['storageBytesPerLocalClient']==655360 and ring['additionalBytesPerLocalClient']==573440
+    assert ring['storageProvider']=='native_two_pass_hunk' and ring['adjacentCapacity']==1024
+    assert [edit['rva'] for edit in ring['rewrites']]==['0x1349eb6','0x134b7b8']
+    assert [edit['size'] for edit in ring['rewrites']]==[5,7]
+    assert all('stubFile' not in edit for edit in ring['rewrites'])
+    demo=plan['demoActorPreparation']
+    assert demo['deploymentAllowed'] is demo['gameBindingVerified'] is False
+    assert demo['actorRecordBytes']==80 and demo['storageBytes']==actors*80
+    assert demo['writerFrameBytes']==0x170+(actors-64)*4 and demo['writerCookieOffset']==0x160+(actors-64)*4
+    assert demo['readerActorBits']==9 and demo['nativeFollowingCountRva']=='0x196c89fc'
+    assert len(demo['rewrites'])==11 and [edit['size'] for edit in demo['rewrites']]==[7,8,8,8,12,7,40,5,7,7,6]
+    leaf=demo['calledLeafFrame']
+    assert leaf['codeBytes']==15 and leaf['unwindInfo']=='01000000' and leaf['nativeReturnRva']=='0x25cea3c'
+    assert leaf['gameBindingVerified'] is False and demo['nativeHandlerDispatchVerified'] is False
+    edits=plan['rewrites']+plan['wirePreparation']['rewrites']+snapshots['rewrites']+reset['rewrites']+actor_banks['rewrites']+allocation['rewrites']+ring['rewrites']+demo['rewrites']
+    native=sorted((int(edit['rva'],0),int(edit['rva'],0)+edit['size']) for edit in edits)
+    assert len(native)==221 and all(left[1]<=right[0] for left,right in zip(native,native[1:]))
+    storage=[(int(region['address'],0),int(region['address'],0)+region['bytes']) for region in plan['storageRegions']]
+    storage.append((int(snapshots['storageAddress'],0),int(snapshots['storageAddress'],0)+snapshots['storageBytes']))
+    storage.append((int(actor_banks['storageAddress'],0),int(actor_banks['storageAddress'],0)+actor_banks['storageBytes']))
+    storage.append((int(demo['storageAddress'],0),int(demo['storageAddress'],0)+demo['storageBytes']))
+    original_clients=(int(actor_banks['nativeRootAddress'],0),int(actor_banks['nativeRootAddress'],0)+2*actor_banks['clientStride'])
+    code=[]
+    for edit in edits:
+        if 'stubFile' not in edit:continue
+        body=(output/edit['stubFile']).read_bytes()
+        assert hashlib.sha256(body).hexdigest()==edit['stubSha256']
+        address=int(edit['stubAddress'],0);code.append((address,address+len(body)))
+    intervals=sorted(storage+code+[original_clients])
+    assert len(code)==101 and len(storage)==10
+    assert all(left[1]<=right[0] for left,right in zip(intervals,intervals[1:]))
+    assert all(frame['gameBindingVerified'] is False for frame in reset['staticPEFrames'])
+    result={'passed':True,'actors':actors,'nativeEdits':len(native),'storageRegions':len(storage),
+            'emittedBodies':len(code),'staticResetFrames':2,'deploymentAllowed':False,
+            'sourceSha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+            'planSha256':hashlib.sha256((output/'plan.json').read_bytes()).hexdigest(),
+            'staticTemplateSha256':reset['staticTemplateSha256'],'gameWrites':0}
+    (output/'export-receipt.json').write_text(json.dumps(result,indent=2)+'\n')
+    return result
+
+
+if __name__=='__main__':
+    parser=argparse.ArgumentParser(description=__doc__)
+    for name in ('module','executable','output'):parser.add_argument('--'+name,type=Path,required=True)
+    parser.add_argument('--actors',type=int,choices=(300,500),default=500)
+    args=parser.parse_args();print(json.dumps(run(args.module,args.executable,args.output,args.actors)))

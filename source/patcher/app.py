@@ -11,9 +11,11 @@ from patcher.errors import PatchError
 from patcher.steam_launch import SteamPlay
 from patcher.windows import steam_context, steam_installs
 
-VERSION = '0.2.0-test.1'
-NOTICE = ('500,000 server script slots for Zombies. This is a test release. '
-          'Multiplayer and host migration need validation. Proton is not supported yet.')
+VERSION = '0.5.0-test.12'
+NOTICE = ('500 actor records, 540 sentients, 500,000 server and 250,000 client script slots for Zombies. '
+          'Live actor counts also depend on free entities and map settings. '
+          'This is an unverified game candidate. Actor behavior, saves, both 8,192-entry clientfield pools, '
+          'multiplayer, and host migration need game tests. Proton is not supported.')
 
 
 def resources() -> Path:
@@ -30,13 +32,16 @@ def action(name: str, steam: SteamPlay, game: Path | None) -> dict:
     if name == 'remove':
         return steam.remove()
     if game is None:
-        raise PatchError('Select the Black Ops III game folder.')
+        installs = steam_installs(steam.steam)
+        if len(installs) != 1:
+            raise PatchError('Select the Black Ops III game folder with Browse or --game. Steam discovery must find exactly one installation.')
+        game = installs[0]
     if name == 'install':
         return steam.enable(resources(), game)
     return steam.status(game, resources())
 
 
-def gui() -> int:
+def gui(game: Path | None = None, steam: Path | None = None, account: int | None = None, state: Path | None = None) -> int:
     import tkinter as tk
     from tkinter import filedialog, messagebox, ttk
     root = tk.Tk()
@@ -47,20 +52,25 @@ def gui() -> int:
     frame.pack(fill='both', expand=True)
     ttk.Label(frame, text='BO3 500K Zombies', font=('Segoe UI', 18)).pack(anchor='w')
     ttk.Label(frame, text=NOTICE, wraplength=570).pack(anchor='w', pady=(8, 12))
-    installs = steam_installs()
-    folder = tk.StringVar(value=str(installs[0]) if installs else '')
+    status = tk.StringVar(value='Close Steam and the game before Install or Remove.')
+    if game is None:
+        try:
+            installs = steam_installs(steam)
+            game = installs[0] if len(installs) == 1 else None
+        except (PatchError, OSError, ValueError) as error:
+            status.set(str(error))
+    folder = tk.StringVar(value=str(game) if game is not None else '')
     row = ttk.Frame(frame)
     row.pack(fill='x')
     ttk.Entry(row, textvariable=folder, width=66).pack(side='left', fill='x', expand=True)
     ttk.Button(row, text='Browse', command=lambda: folder.set(filedialog.askdirectory() or folder.get())).pack(side='left', padx=(8, 0))
-    status = tk.StringVar(value='Close Steam and the game before Install or Remove.')
     ttk.Label(frame, textvariable=status, wraplength=570).pack(anchor='w', pady=12)
 
     def clicked(name: str) -> None:
         try:
             status.set('Checking files...')
             root.update_idletasks()
-            result = action(name, manager(None, None, None), Path(folder.get()) if folder.get() else None)
+            result = action(name, manager(steam, account, state), Path(folder.get()) if folder.get() else None)
             text = result.get('message') or {
                 'enabled': 'Installed. Open Steam and select Play. Keep the launcher window open.',
                 'already-enabled': 'Already installed. Open Steam and select Play.',
@@ -96,7 +106,7 @@ def main() -> int:
     if hasattr(ctypes.WinDLL('ntdll'), 'wine_get_version'):
         raise PatchError('This release does not support Proton or Wine. The required job-freeze backend is unavailable.')
     if args.action is None:
-        return gui()
+        return gui(args.game, args.steam, args.steam_user, args.state)
     print(json.dumps(action(args.action, manager(args.steam, args.steam_user, args.state), args.game), indent=2))
     return 0
 

@@ -1,0 +1,185 @@
+{
+  "executableSha256": "0b874dcc250848b7313ec13a0c76468dacc2009b5efa2bff4c587e169a9f77e0",
+  "captureSha256": "01d292edca086aeca406a9171feba2dac8aea80df2e867026ff78f441bab4511",
+  "imageSize": 494186496,
+  "poolRva": 77145504,
+  "pointerRva": 77145488,
+  "stockCapacity": 2048,
+  "recordBytes": 32,
+  "localClients": 2,
+  "instructions": [
+    {
+      "rva": 9381603,
+      "bytes": "488d05b6fe0904",
+      "operandOffset": 3,
+      "operandSize": 4,
+      "kind": "pool",
+      "instruction": "lea rax, [rip + 0x409feb6]"
+    },
+    {
+      "rva": 9383344,
+      "bytes": "488d0de9f70904",
+      "operandOffset": 3,
+      "operandSize": 4,
+      "kind": "pool",
+      "instruction": "lea rcx, [rip + 0x409f7e9]"
+    },
+    {
+      "rva": 9383353,
+      "bytes": "41b808000200",
+      "operandOffset": 2,
+      "operandSize": 4,
+      "kind": "bytes",
+      "instruction": "mov r8d, 0x20008"
+    },
+    {
+      "rva": 1262667,
+      "bytes": "41b808000200",
+      "operandOffset": 2,
+      "operandSize": 4,
+      "kind": "bytes",
+      "instruction": "mov r8d, 0x20008"
+    },
+    {
+      "rva": 1274208,
+      "bytes": "41b808000200",
+      "operandOffset": 2,
+      "operandSize": 4,
+      "kind": "bytes",
+      "instruction": "mov r8d, 0x20008"
+    },
+    {
+      "rva": 1257305,
+      "bytes": "458b8100000200",
+      "operandOffset": 3,
+      "operandSize": 4,
+      "kind": "counts",
+      "instruction": "mov r8d, dword ptr [r9 + 0x20000]"
+    },
+    {
+      "rva": 1257312,
+      "bytes": "4181f800080000",
+      "operandOffset": 3,
+      "operandSize": 4,
+      "kind": "capacity",
+      "instruction": "cmp r8d, 0x800"
+    },
+    {
+      "rva": 1257335,
+      "bytes": "48c1e20b",
+      "operandOffset": 3,
+      "operandSize": 1,
+      "kind": "shift",
+      "instruction": "shl rdx, 0xb"
+    },
+    {
+      "rva": 1257343,
+      "bytes": "41898100000200",
+      "operandOffset": 3,
+      "operandSize": 4,
+      "kind": "counts",
+      "instruction": "mov dword ptr [r9 + 0x20000], eax"
+    },
+    {
+      "rva": 1257549,
+      "bytes": "458b8200000200",
+      "operandOffset": 3,
+      "operandSize": 4,
+      "kind": "counts",
+      "instruction": "mov r8d, dword ptr [r10 + 0x20000]"
+    },
+    {
+      "rva": 1257556,
+      "bytes": "4181f800080000",
+      "operandOffset": 3,
+      "operandSize": 4,
+      "kind": "capacity",
+      "instruction": "cmp r8d, 0x800"
+    },
+    {
+      "rva": 1257585,
+      "bytes": "48c1e20b",
+      "operandOffset": 3,
+      "operandSize": 1,
+      "kind": "shift",
+      "instruction": "shl rdx, 0xb"
+    },
+    {
+      "rva": 1257593,
+      "bytes": "41898200000200",
+      "operandOffset": 3,
+      "operandSize": 4,
+      "kind": "counts",
+      "instruction": "mov dword ptr [r10 + 0x20000], eax"
+    },
+    {
+      "rva": 1259510,
+      "bytes": "4e8d3c8500000200",
+      "operandOffset": 4,
+      "operandSize": 4,
+      "kind": "counts",
+      "instruction": "lea r15, [r8*4 + 0x20000]"
+    },
+    {
+      "rva": 1259537,
+      "bytes": "49c1e60b",
+      "operandOffset": 3,
+      "operandSize": 1,
+      "kind": "shift",
+      "instruction": "shl r14, 0xb"
+    },
+    {
+      "rva": 1272788,
+      "bytes": "4c8d349d00000200",
+      "operandOffset": 4,
+      "operandSize": 4,
+      "kind": "counts",
+      "instruction": "lea r14, [rbx*4 + 0x20000]"
+    },
+    {
+      "rva": 1272834,
+      "bytes": "48c1e50b",
+      "operandOffset": 3,
+      "operandSize": 1,
+      "kind": "shift",
+      "instruction": "shl rbp, 0xb"
+    }
+  ],
+  "guards": [
+    {
+      "rva": 1257200,
+      "size": 242,
+      "sha256": "cb39f11659ea7d126527e8cc5fbf8f2a8e7c48b3dc233fbf0b0b8a8635012c8e"
+    },
+    {
+      "rva": 1257456,
+      "size": 230,
+      "sha256": "9a3faa1d56d0f89d209a657f4ee290e0babd6bc709012ff6de13a04db9416d16"
+    },
+    {
+      "rva": 1259408,
+      "size": 665,
+      "sha256": "e036122aa0315720f50f91adbf537b59d31d078016e641200aeda0ef85be171a"
+    },
+    {
+      "rva": 1262528,
+      "size": 4207,
+      "sha256": "e573dbea510d591b799d0d3d375fd9564f0ac3f7c460902f8cd5a04ec09617c5"
+    },
+    {
+      "rva": 1272688,
+      "size": 377,
+      "sha256": "c5dec3c491373344d15ffa995a7ef67fa415c4d17469b8b79a95e37864859686"
+    },
+    {
+      "rva": 1273568,
+      "size": 688,
+      "sha256": "10a8f34e4d839973a09ad3571a16659bf11c24599e1a9f76f9ed8c0e6d4d7d04"
+    },
+    {
+      "rva": 9360528,
+      "size": 24328,
+      "sha256": "6a067e7a03998c4108abe707c5b7e2d83b73681747d537c2f5d5f7c7081205d8"
+    }
+  ]
+}

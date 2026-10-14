@@ -9,6 +9,11 @@ MigrationVersionGate PROC
     je accepted
     cmp eax, DWORD PTR [Bo3MigrationBindings]
     je accepted
+    cmp DWORD PTR [Bo3MigrationBindings], 0c927a121h
+    jne rejected
+    cmp eax, 0c727a121h
+    je accepted
+rejected:
     jmp QWORD PTR [Bo3MigrationVersionBranches+8]
 accepted:
     jmp QWORD PTR [Bo3MigrationVersionBranches]

@@ -1,0 +1,59 @@
+Installer path failure cases, written before implementation:
+
+Payload status failure cases, written before status verification:
+- An enabled receipt and matching Steam field must not hide an older payload.
+- A missing launcher or helper must report missing-or-corrupt.
+- Changed launcher, helper, gate, or license bytes must report missing-or-corrupt.
+- A matching current payload must retain enabled and report the verified package version.
+- An intact older payload must report update-required without claiming an unverified installed version.
+- Status must not create files, repair pending receipts, replace payloads, or alter Steam configuration.
+- External Steam edits must retain externally-changed and must not inspect another launch route.
+- Payload links and hard links must not bypass the existing private-path checks.
+- Unsupported game versions must retain the existing gameSupported refusal result.
+- Removal retains payload folders. Corruption instructions must identify that folder and explain how to move it aside before Install.
+
+1. Steam puts BO3 in a secondary library with a custom installdir and Unicode.
+   Discovery must use appmanifest_311210.acf and retain the complete path.
+2. A legacy libraryfolders.vdf stores a numeric key with a quoted path.
+   Discovery must find the default game directory in that library.
+3. A commented library path or an empty game directory looks installed.
+   Discovery must ignore comments and require BlackOps3.exe.
+4. An appmanifest installdir leaves steamapps/common through '..'.
+   Discovery must refuse the manifest before any installer writes.
+5. Two library entries point to one library through a Windows junction.
+   Discovery must return one physical game directory.
+6. CLI install omits --game with exactly one discovered game.
+   Install must select that game and remove must restore the original config.
+7. CLI install omits --game with multiple discovered games.
+   Install must refuse before any receipt or payload writes.
+8. GUI launch includes --game, --steam, --steam-user, and --state.
+   GUI must use those options and restore the owned config after removal.
+9. Explicit game, state, and payload paths contain spaces and Unicode.
+   Install and removal must preserve the executable and original config bytes.
+10. A custom game folder is a Windows junction to a private game copy.
+    Install must admit the exact supported executable through the folder alias.
+    It must still refuse private payload paths inside the game or through links.
+    It must still refuse an unknown executable through the same folder alias.
+
+11. An appmanifest installdir is '/' or '\\'.
+    Discovery must refuse both rooted values before selecting a game path.
+
+12. A Linux CI host has no Tk or Windows junction support.
+    The shared transaction fixture must run without importing Windows GUI cases.
+    Its receipt must explicitly report that those path cases were not run.
+
+All fixture files and result.json stay outside Git. No Steam or game launches.
+
+Actor500 installer integration cases, written before changes:
+
+13. An explicit --skip-gui-tests option must omit all Tk imports and windows.
+    Keep every non-GUI Windows path case and report the skipped GUI case.
+14. Build-Patcher -SkipGuiTests must pass that option to the installer E2E.
+    The package receipt must report that GUI validation did not run.
+15. Refuse a stale native build receipt before package output.
+    Require 500 actors, 540 sentients, 2,464 runtime functions, and 355 native edits.
+    Retain 500,000 server slots, 250,000 client slots, and both 8,192-entry clientfield pools.
+16. The real-payload installer check must require matching release metadata and file hashes.
+    Install, repeat Install, and Remove must preserve the exact game and original configuration.
+17. The client admission fixture must accept the complete actor500 build identity.
+    Keep its separate 61-edit VM/migration check and do not claim actor admission coverage.

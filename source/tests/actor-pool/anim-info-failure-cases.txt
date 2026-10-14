@@ -1,0 +1,14 @@
+Write these failure cases before the source module.
+
+1. The executable identity or a native code or metadata guard differs. Refuse before patch preparation.
+2. A pool operand still refers to the old backing. Compare every emitted instruction with the proved native candidate.
+3. The replacement initializer writes outside the complete bank or uses nonvolatile registers. Verify native ABI and canaries.
+4. A high index truncates at 6,000, 32,768, or 65,535. Allocate the complete domain through native code.
+5. Allocation continues beyond 65,535 usable nodes. Preserve the exact native error at the finite ceiling.
+6. Release, reuse, or reset loses nodes. Verify complete native free-list membership.
+7. Server and local client trees select different backing. Exercise all three contexts in the shared pool.
+8. Save, clone, or compact snapshots persist physical indices. Replay native formats with different restored physical IDs.
+9. The bank overlaps the image, has incorrect alignment, or exceeds signed RIP reach. Refuse invalid storage.
+10. Cold publication accepts an initialized old pool. Export the complete 528,000-byte zero span for startup admission.
+11. An adjacent global moves with the pool. Keep the five neighboring globals unchanged.
+12. A fixture result implies whole-game compatibility. State limits for fanout, saves, migration, peers, and performance.

@@ -1,0 +1,65 @@
+{
+  "status": "Exact static leaf contracts. Dynamic Windows registration still requires runtime admission.",
+  "functions": [
+    {
+      "beginRva": "0x164d010",
+      "endRva": "0x164d052",
+      "sha256": "f65c4ddfb85d077cc0a36eece68b22148504f1cbf6bcc0a1a9adecf210fb2808"
+    },
+    {
+      "beginRva": "0x164d3f0",
+      "endRva": "0x164d458",
+      "sha256": "e45fdd36c8368063f6d63c7f15f1a788d7a884a631c80dfff5e761445d9a9bf7"
+    },
+    {
+      "beginRva": "0x164d5c0",
+      "endRva": "0x164d602",
+      "sha256": "85a599a2f73d289dcaf01393602d3b25561e7b25883cacbb1e8da5b291a65a8f"
+    },
+    {
+      "beginRva": "0x1c369c0",
+      "endRva": "0x1c36a20",
+      "sha256": "77f5a092d08f019809e71645bc745a672894801875c4cdfc2f9761d1a4d594f7"
+    },
+    {
+      "beginRva": "0x1c3de00",
+      "endRva": "0x1c3de78",
+      "sha256": "918a554211811b3b0df0ffe8026fe9213590eba982352fc82182f3a4697c84e2"
+    },
+    {
+      "beginRva": "0x2505b60",
+      "endRva": "0x2505ba3",
+      "sha256": "ea00354b44a135528550c3012809cb431b574a9c240c9b71e060b8e95b771d08"
+    },
+    {
+      "beginRva": "0x2506180",
+      "endRva": "0x25061e6",
+      "sha256": "fcb17ff8cf5478aebf79cd23c579774de4a73a845267699b374df0b722858373"
+    },
+    {
+      "beginRva": "0x25074a0",
+      "endRva": "0x25074f0",
+      "sha256": "5e9e023ccf39525a7b038cc7ee239d8b45e8965afd936cf7e05d8222e7187fa7"
+    },
+    {
+      "beginRva": "0x25077b0",
+      "endRva": "0x250782a",
+      "sha256": "9e0f847b4b933fb4cc3678b46cf3d629624de4b7bcc8cc4738df2356ba3b49a8"
+    },
+    {
+      "beginRva": "0x24b1580",
+      "endRva": "0x24b15d4",
+      "sha256": "446db92e31107b059bfb18eafa4207b8b526ed860a10c88e107c898044eb9f98"
+    },
+    {
+      "beginRva": "0x24ae590",
+      "endRva": "0x24ae5dc",
+      "sha256": "0c564d2d231241e37d1070e5c0568959c91ec19ce627b9e9fbb5d489fef81ca3"
+    },
+    {
+      "beginRva": "0x24b1500",
+      "endRva": "0x24b1580",
+      "sha256": "8fee89e49bb225700862d69325437e411975c1943d32931407f7a5bb10f054dc"
+    }
+  ]
+}

@@ -55,7 +55,7 @@ using ErrorEntry = void (*)(const char*, int, int, const char*, ...);
 struct LoadBindings { Loader original; ErrorEntry error; };
 static_assert(sizeof(LoadBindings) == 16 && std::is_trivially_copyable_v<LoadBindings>);
 extern "C" __declspec(dllexport) LoadBindings Bo3MigrationLoadBindings;
-extern "C" __declspec(dllexport) void LoadMigrationState(WrittenState**, std::uint32_t*);
+extern "C" __declspec(dllexport) void LoadMigrationState(WrittenState**, std::uint32_t*) noexcept(false);
 struct Reentries {
     std::uintptr_t header, data, headerAckAccepted, selectedPeer, sendHeader, load, headerAckRejected;
 };

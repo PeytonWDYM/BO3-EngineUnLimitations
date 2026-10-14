@@ -6,7 +6,7 @@ namespace bo3::late_startup {
 class MappedGate {
     std::filesystem::path file_;
     HMODULE local_{};
-    DWORD stateRva_{},bootRva_{};
+    DWORD stateRva_{},bootRva_{},continuationRva_{};
     DWORD size_{};
     std::uintptr_t remote_{};
 public:
@@ -15,6 +15,7 @@ public:
     void Admit(HANDLE process);
     startup_gate::State Read(HANDLE process) const;
     std::uintptr_t Base() const {return remote_;}
+    std::uintptr_t ContinuationAddress() const {return remote_+continuationRva_;}
     void VerifyWaiting(HANDLE process,const startup_gate::Payload&,std::uint64_t generation) const;
     MappedGate(const MappedGate&)=delete;
     MappedGate& operator=(const MappedGate&)=delete;

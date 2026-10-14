@@ -1,0 +1,21 @@
+Pose backup Windows frame failure cases. Written before fixture code.
+
+1. Reject an executable or module manifest that differs from the pinned identity.
+2. Reject changed source code, frame metadata, cookie metadata, and cleanup metadata.
+3. Detect a frame allocation that retains the original pose object extent.
+4. Detect a saved GPR or XMM offset that does not move with the enlarged frame.
+5. Detect a cookie offset that does not move with the enlarged frame.
+6. Detect a cleanup funclet offset that selects the wrong pose object.
+7. Register all owned frame records and check Windows lookup at each tested location.
+8. Use RtlVirtualUnwind to check RIP, RSP, nonvolatile GPRs, and XMM6-XMM15.
+9. Check each prolog instruction boundary and body location with the active stack contract.
+10. Check native epilog instruction boundaries with their remaining stack contract.
+11. Check probe stub instruction boundaries before and after its helper call.
+12. Execute the guarded native __chkstk helper on owned Windows threads.
+13. Check that the enlarged allocation commits every lower stack page before its first write.
+14. Forward captured GS handlers and C++ cleanup through the fixture CRT where supported.
+15. Refuse stale cookie metadata in a separate owned child process.
+16. Delete each owned function registration and release each owned allocation.
+
+Owned fixtures do not establish game CRT, game body, peer, save/load, migration,
+performance, or Proton compatibility. Do not launch or attach to the game.
