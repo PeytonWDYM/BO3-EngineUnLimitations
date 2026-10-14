@@ -54,7 +54,11 @@ The source receipt is `anim-info-investigation-20261014/source-e2e-01/result.jso
 The combined runtime passes publication, rollback, complete allocation ownership, and cold-state refusal at three Windows image bases.
 It executes the rendered initializer and verifies all 65,536 links and both reserved-node and adjacent canaries.
 The source inventory and generated header match the independently reviewed final profile.
-Installer upgrade and a new game test remain pending.
+Two actual packaged Test.11-to-Test.12 upgrades pass with both present and absent Steam launch settings.
+They preserve all protected files, unrelated account bytes, and all four native payload hashes.
+Removal restores the original Steam configuration exactly. Status remains read-only.
+Receipts are in `private-test11-to-test12-20261014/fixture-01` and `fixture-02` outside Git.
+A new high-count game test remains pending.
 The native 16-bit ceiling is finite. These proofs do not guarantee every map's worst-case animation-tree demand.
 
 ## Failure cases before patch logic
