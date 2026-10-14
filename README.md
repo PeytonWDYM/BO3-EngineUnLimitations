@@ -12,9 +12,10 @@ An optional engine patch for Steam Black Ops III Zombies. The Windows launcher s
 | Sentients | 540 |
 | Pending clientfield callbacks | 8,192 per local client |
 | Clientfield counters | 8,192 records |
+| Shared animation-info nodes | 65,535 usable nodes |
 
-Candidate **0.5.0-test.11** includes the actor patch in the main launcher and installer.
-It applies 714 native edits and 1,079 checksum edits before game allocation.
+Candidate **0.5.0-test.12** includes the actor patch in the main launcher and installer.
+It applies 774 native edits and 1,079 checksum edits before game allocation.
 The installer adds a reversible Steam launch option. Original game files stay unchanged.
 The actor capacity does not change a map's script spawn cap or spawn 500 zombies automatically.
 
@@ -93,10 +94,28 @@ It retains the native context layout, atomic reservation, generation, reuse, and
 The native replay reproduces stock refusal after 246 requests of 133 bones.
 The new banks admit 3,071 maximum-size requests per local client. Replacement, generation wrap, null refusal, and reset recovery pass.
 Windows checks cover bank ownership, startup refusal, ABI, leaf unwind, publication, rollback, and three image bases.
-These checks support testing. The hand repair still needs a new high-count game test.
+These checks support testing. The owner confirmed correct hands in the Test.11 follow-up near 280 zombies and 20 Panzers.
+
+That session ended with `exceeded maximum number of anim info`.
+The shared native animation pool retained only 5,999 usable nodes.
+Test.12 redirects the complete pool into a 5.5 MiB bank with 65,535 usable nodes.
+This uses the full existing 16-bit constructor-link domain and reserves node zero.
+All 72 native pool operands and the complete initializer use the same bank.
+The native allocator, locks, tree lifetimes, release paths, and finite error remain unchanged.
+Native save/load, clone, and compact snapshots rebuild physical node indexes from animation asset IDs.
+Their formats remain unchanged. High indexes through 65,535 pass the focused native replays.
+Windows fixtures execute the rendered initializer and verify all links, source bindings, ownership, cold refusal, and rollback.
+The larger pool is finite. It does not guarantee every map's worst-case animation demand.
+
+Test.12 also shares one exact address calculation across four adjacent native member groups.
+It removes 13 duplicate helpers and publications while preserving ordered memory and floating-point operations.
+The native replay and Windows unwind tests pass. Isolated group costs decrease by about 25–82%.
+This is not a measured game FPS gain. Scheduling and snapshot-copy experiments did not justify runtime changes.
+The reported moving, animated zombie pile remains unexplained and needs live movement and avoidance telemetry.
+Test.12 still needs high-count gameplay, normal exit, and matching-peer tests.
 
 The same 300-actor Storm Bow test ended with `G_Spawn: no free entities`.
-That error comes from the separate ordinary entity limit, which Test.11 does not expand.
+That error comes from the separate ordinary entity limit, which Test.12 does not expand.
 Normal entities still limit the population that each map can support.
 Measured 500 actors, save/load, migration, peers, and sustained performance remain required.
 
@@ -114,7 +133,7 @@ The startup backend requires Windows job freezing. Proton needs a verified repla
 ## Actor patch
 
 The actor patch expands the server pools, inline sentient awareness storage, DObj tables, and iterators together.
-It preserves native record strides. Its 192 MiB arena also holds skeletal, snapshot, demo, history, and save/load storage.
+It preserves native record strides. Its 197.5 MiB arena also holds animation, skeletal, snapshot, demo, history, and save/load storage.
 Client actor banks use an expanded native hunk allocation. The connection ring retains 8,192 actor records per local client.
 Packet, clone, entity actor-index, and demo paths use nine-bit actor IDs and matching invalid values.
 Native physics banks retain 18 player rows, add 500 actor rows, and reserve one special row.
@@ -125,9 +144,9 @@ The loader accepts guarded legacy formats, initializes unused records, and keeps
 This does not yet establish save/load compatibility at high actor counts.
 Expanded sessions require matching patched peers; matching patches alone do not prove compatibility.
 
-The launcher checks 1,553 exact actor source guards. Its 623 actor publication records share the frozen startup
+The launcher checks 1,821 exact actor source guards. Its 683 actor publication records share the frozen startup
 transaction with the VM, clientfield, gate, and checksum patches. Failed publication restores bytes and page protections.
-The primary thread registers 2,614 runtime function rows before game entry continues.
+The primary thread registers 2,276 runtime function rows before game entry continues.
 Owned Windows tests cover native frame metadata, handler translation, complete load scope, publication,
 rollback, allocation ownership, and registration at three image bases. Their repeatable results stay outside Git.
 These tests support candidate testing; they do not establish game or peer compatibility.
@@ -136,8 +155,7 @@ Normal entity capacity, reliable-command buffers, gamestate strings, packed clie
 and player count retain their current limits. The patch makes no measured frame-rate claim.
 A map must raise its own ordinary-zombie spawn cap to test 200–300 concurrent zombies.
 
-`source/patches/entity_pool` contains preparation code for a private 2,048 ordinary-entity layout.
-It does not change the installed or packaged runtime.
+Private preparation evaluates a 2,048 ordinary-entity layout. It remains outside the published runtime.
 That layout retains the two ordinary sentinel holes and moves fake entities above the ordinary range.
 Its complete physical pool needs 3,072 records, with separate client-only storage and wider paired reference codecs.
 Native reference-head replays do not establish a complete entity-capacity patch or game compatibility.

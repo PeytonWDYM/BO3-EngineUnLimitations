@@ -1,7 +1,15 @@
-500 ACTOR / 540 SENTIENT PREPARATION
+500 ACTOR / 540 SENTIENT NATIVE PROFILE
 
-This source prepares owned native replays. It cannot activate a game patch.
-FixedPlan and the installer do not use this plan.
+runtime_recipe.py composes the active Windows profile from these guarded components.
+The native launcher publishes the complete profile before game allocation.
+The installer selects that launcher through a reversible Steam launch option.
+Read the repository README for the current candidate and game-test status.
+
+PreparedTablePlan.require_activation() still refuses the incomplete standalone table export.
+That restriction does not describe the complete runtime recipe used by the launcher.
+The following notes preserve the earlier isolated preparation and its test boundaries.
+
+HISTORICAL PREPARATION NOTES
 
 shape.py supplies every emitted capacity and storage extent.
 The forty extra sentients preserve the stock count difference. Actual demand remains unmeasured.

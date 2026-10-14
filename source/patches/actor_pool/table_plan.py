@@ -10,6 +10,7 @@ from captured_code import CapturedCode, CodeGuard, Rewrite
 from storage_plan import StorageLayout, prepare_storage
 from omissions import prepare_omissions
 from x64_table import MemberInstruction, REGISTERS, accessor_stub, member_stub, clear_stub, load_entry_stub, count_stub, rel32, continuation_jump
+from grouped_member import group_at, group_stub, guard_group
 
 ACTIVATION_GATES = (
     'Complete static, folded, leaf, returned-pointer and cross-call consumer coverage.',
@@ -66,6 +67,7 @@ class PreparedTablePlan:
     actor_array: int
     storage: StorageLayout
     word_table: TableLayout
+    group_bindings: tuple[tuple[int,tuple[MemberInstruction,...]], ...] = ()
     coverage_complete: bool = False
 
     def require_activation(self) -> None:
@@ -83,6 +85,8 @@ def prepare(code: CapturedCode, layout: TableLayout, stub_base: int, storage: St
     word_table = TableLayout(layout.native_pool,ExternalTableAddress(storage.indexed_words),layout.shape,2,0x112C)
     rewrites: list[Rewrite] = []
     bindings: list[tuple[int,MemberInstruction]] = []
+    group_bindings: list[tuple[int,tuple[MemberInstruction,...]]] = []
+    direct_count = 0
     cursor = stub_base
     for rva,size,digest in [
         (0x2505B20,59,'0853f607f70957f4d03ea0987c2d0072a02bff3d68d66482944e1fa1555770df'),
@@ -113,6 +117,20 @@ def prepare(code: CapturedCode, layout: TableLayout, stub_base: int, storage: St
     hook('external_table_accessor',0x2505BB0,7,accessor_stub(original_accessor[:34],cursor,pool_pointer,layout),'rcx')
 
     overrides = {0x164B407:'r10',0x164B40F:'r10',0x24B0F9A:'rdx',0x24B1040:'rdx',0x24B1053:'rdx',0x24B105C:'rdx'}
+    def member_hook(rva: int, member: MemberInstruction, size: int) -> None:
+        group = group_at(rva)
+        if group is None:
+            hook('external_table_member',rva,size,
+                 member_stub(member,cursor,pool_pointer,layout,code.base+rva+size),member.owner_register)
+            bindings.append((rva,member))
+        elif rva == group.rva:
+            raw = guard_group(code,group)
+            members = tuple(decode_member(raw[index*group.instruction_bytes:(index+1)*group.instruction_bytes],
+                                          code.base+rva+index*group.instruction_bytes,member.owner_register)
+                            for index in range(group.count))
+            hook('external_table_group',rva,group.size,
+                 group_stub(group,members,cursor,pool_pointer,layout,code.base+rva+group.size),member.owner_register)
+            group_bindings.append((rva,members))
     for group in inventory['classifiedTableScan']['roots']:
         if group['classification'] != 'sentient_table':
             continue
@@ -120,10 +138,9 @@ def prepare(code: CapturedCode, layout: TableLayout, stub_base: int, storage: St
             guard = CodeGuard(int(site['rva'],0),site['size'],site['sha256'])
             raw = code.guarded(guard)
             member = decode_member(raw,code.base+guard.rva,overrides.get(guard.rva))
-            body = member_stub(member,cursor,pool_pointer,layout,code.base+guard.rva+guard.size)
-            hook('external_table_member',guard.rva,guard.size,body,member.owner_register)
-            bindings.append((guard.rva,member))
-    if len(bindings) != 55:
+            member_hook(guard.rva,member,guard.size)
+            direct_count += 1
+    if direct_count != 55:
         raise ValueError('The admitted direct-consumer inventory must contain exactly fifty-five sites.')
 
     # Redirect folded producers before native code overwrites their owner register.
@@ -134,9 +151,7 @@ def prepare(code: CapturedCode, layout: TableLayout, stub_base: int, storage: St
         extent = site['instructionSize']
         member = replace(decode_member(raw[:extent],code.base+guard.rva,site['ownerRegister']),
                          index_bias=site['indexBias'],trailing_original=raw[extent:])
-        body = member_stub(member,cursor,pool_pointer,layout,code.base+guard.rva+guard.size)
-        hook('external_table_member',guard.rva,guard.size,body,member.owner_register)
-        bindings.append((guard.rva,member))
+        member_hook(guard.rva,member,guard.size)
 
     words = json.loads((folder/'indexed_words.json').read_text())
     for site in words['sites']:
@@ -185,4 +200,6 @@ def prepare(code: CapturedCode, layout: TableLayout, stub_base: int, storage: St
     ordered = sorted(rewrites,key=lambda item:item.guard.rva)
     if any(a.guard.rva+a.guard.size > b.guard.rva for a,b in zip(ordered,ordered[1:])):
         raise ValueError('The prepared native rewrite intervals overlap.')
-    return PreparedTablePlan(layout,tuple(rewrites),tuple(bindings),actor_array,storage,word_table)
+    if len(group_bindings) != 4:
+        raise ValueError('The admitted native member inventory must contain all four complete groups.')
+    return PreparedTablePlan(layout,tuple(rewrites),tuple(bindings),actor_array,storage,word_table,tuple(group_bindings))

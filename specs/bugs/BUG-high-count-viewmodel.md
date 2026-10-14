@@ -44,7 +44,9 @@ Do not treat the approximate 250 threshold as proof of an eight-bit wrap.
 - Separate native replay results from the next high-count game test.
 
 The repair has passed focused native replay, runtime integration, and private installer upgrades.
-Gameplay confirmation remains pending.
+The owner later confirmed that hands rendered correctly in the Test.11 follow-up.
+That session reached about 280 zombies and 20 Panzers before the separate animation-info error ended the server.
+This confirms the visual repair in that reported session, without proving every map, peer, or model path.
 
 ## Reproduced session evidence
 

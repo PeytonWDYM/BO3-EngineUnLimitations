@@ -28,6 +28,12 @@ def run(module: Path, executable: Path, dependencies: Path, output: Path, actors
     source = CapturedCode(module,executable)
     layout = TableLayout(NativeSentientAddress(source.base+0x21000000),ExternalTableAddress(source.base+0x22000000),ActorShape(actors))
     plan = prepare(source,layout,source.base+0x20000000,StorageLayout(*(source.base+offset for offset in (0x24000000,0x26000000,0x28000000,0x2A000000,0x2C000000))))
+    grouped_edits = [edit for edit in plan.rewrites if edit.name == 'external_table_group']
+    assert sorted((edit.guard.rva,edit.guard.size) for edit in grouped_edits) == [
+        (0x1648F1A,24),(0x164D1BF,30),(0x24B1053,18),(0x2506437,72)]
+    assert len(plan.member_bindings) == 58 and len(plan.group_bindings) == 4
+    assert all(not edit.guard.rva < rva < edit.guard.rva+edit.guard.size
+               for edit in grouped_edits for rva,_ in plan.member_bindings)
     shape = layout.shape
     pointer = source.base+0xA1B0790
     gprs = {r:getattr(x86,'UC_X86_REG_'+r.upper()) for r in REGISTERS}
@@ -66,7 +72,8 @@ def run(module: Path, executable: Path, dependencies: Path, output: Path, actors
         return uc
 
     def snapshot(uc):
-        return {r:uc.reg_read(n) for r,n in gprs.items()} | {'flags':uc.reg_read(x86.UC_X86_REG_EFLAGS)} | {
+        return {r:uc.reg_read(n) for r,n in gprs.items()} | {'flags':uc.reg_read(x86.UC_X86_REG_EFLAGS),
+            'mxcsr':uc.reg_read(x86.UC_X86_REG_MXCSR)} | {
             'xmm'+str(i):uc.reg_read(n) for i,n in enumerate(xmms)}
 
     # Execute each original memory operation, then its emitted replacement, from identical state.
@@ -126,6 +133,48 @@ def run(module: Path, executable: Path, dependencies: Path, output: Path, actors
             assert bytes(changed.mem_read(layout.native_pool,len(native_bytes))) == native_bytes, hex(rva)
         results.append({'case':'direct_member_native_differential','rva':hex(rva),'states':6,
                         'registersFlagsAndXmmMatch':True,'nativeRecordsUnchanged':True})
+
+    # Compare each complete group with all captured operations, including the nine-store target reset.
+    group_edits = {edit.guard.rva:edit for edit in grouped_edits}
+    for rva,members in plan.group_bindings:
+        edit = group_edits[rva]
+        first = members[0]
+        original = b''.join(member.original for member in members)
+        assert len(original) == edit.guard.size
+        assert not any(rva < other.guard.rva < rva+edit.guard.size for other in plan.rewrites)
+        states = 0
+        for owner_index,target_index in ((0,0),(0,shape.sentients-1),(103,104),(104,103),
+                                         (shape.actors-1,shape.actors-1),(shape.sentients-1,shape.sentients-1)):
+            owner = NativeSentientAddress(layout.native_pool+owner_index*NATIVE_SENTIENT_BYTES)
+            values = {first.owner_register:int(owner)}
+            if first.base_register != first.owner_register:
+                values[first.base_register] = target_index*layout.entry_bytes
+            if first.index_register is not None and first.index_register != first.owner_register:
+                values[first.index_register] = target_index*layout.entry_bytes//first.scale
+            for flags in (0x202,0x293,0xAD7):
+                baseline = machine([(source.base+rva,original)])
+                changed = machine([(source.base+rva,edit.replacement),(edit.stub_address,edit.stub)])
+                for uc in (baseline,changed):
+                    for register,value in values.items():uc.reg_write(gprs[register],value)
+                    uc.reg_write(x86.UC_X86_REG_EFLAGS,flags)
+                stop = source.base+rva+edit.guard.size
+                baseline.emu_start(source.base+rva,stop,count=len(members))
+                changed.emu_start(source.base+rva,stop,count=100)
+                assert snapshot(changed) == snapshot(baseline),(hex(rva),owner_index,target_index,hex(flags))
+                expected = bytearray(table_bytes)
+                for member in members:
+                    instruction = next(decoder.disasm(member.original,source.base+rva))
+                    memory = next(op for op in instruction.operands if op.type == capstone.x86.X86_OP_MEM)
+                    old = values[member.base_register]+member.displacement
+                    if member.index_register:old += values[member.index_register]*member.scale
+                    external = layout.mapped_member(owner,old,memory.size)-layout.external_table
+                    expected[external:external+memory.size] = baseline.mem_read(old,memory.size)
+                assert bytes(changed.mem_read(layout.external_table,layout.table_bytes)) == bytes(expected),hex(rva)
+                assert bytes(changed.mem_read(plan.word_table.external_table,len(word_bytes))) == word_bytes
+                assert bytes(changed.mem_read(layout.native_pool,len(native_bytes))) == native_bytes
+                states += 1
+        results.append({'case':'grouped_member_native_differential','rva':hex(rva),'states':states,
+                        'memberCount':len(members),'registersFlagsXmmAndMxcsrMatch':True,'nativeRecordsUnchanged':True})
 
     accessor = next(e for e in plan.rewrites if e.name == 'external_table_accessor')
     uc = machine([(source.base+accessor.guard.rva,accessor.replacement),(accessor.stub_address,accessor.stub)])
@@ -216,7 +265,7 @@ def run(module: Path, executable: Path, dependencies: Path, output: Path, actors
     assert struct.unpack('<Q',uc.mem_read(source.base+0xA1B0798,8))[0] == plan.actor_array
     results.append({'case':'native_map_pool_rebinding','bothExpandedPoolsPublished':True})
 
-    edits = {e.name:e for e in plan.rewrites if e.name != 'external_table_member'}
+    edits = {e.name:e for e in plan.rewrites if e.name not in ('external_table_member','external_table_group')}
     init = edits['map_table_clear']
     init_count = edits['sentient_map_record_count']
     uc = machine([(source.base+0x2505B20,source.read(0x2505B20,0x3B)),
@@ -268,7 +317,8 @@ def run(module: Path, executable: Path, dependencies: Path, output: Path, actors
     results.append({'case':'native_indexed_word_load_and_initialization_reset','owner':(shape.sentients-1),'columns':shape.sentients,
                     'nativeEmbeddedResetAddressPreserved':True})
 
-    reset = [e for e in plan.rewrites if e.name == 'external_table_member' and 0x2506437 <= e.guard.rva < 0x250647F]
+    reset = [e for e in plan.rewrites if e.name == 'external_table_group' and e.guard.rva == 0x2506437]
+    assert len(reset) == 1 and reset[0].guard.size == 72
     for owner_index,target_index in [(0,104),(103,(shape.actors-1)),((shape.sentients-1),(shape.sentients-1))]:
         fragments = [(source.base+0x25063F0,source.guarded(CodeGuard(0x25063F0,0x8F,'d3bddaa583d531e12d75db2687c921bbf25313c969e543bb0e49c67f227c6743')))]
         for edit in reset:
@@ -415,6 +465,7 @@ def run(module: Path, executable: Path, dependencies: Path, output: Path, actors
         raise AssertionError('An incomplete table plan allowed activation.')
     report = {'status':'guarded_external_table_owned_native_replay_passed','cases':results,
               'directInstructionStates':len(plan.member_bindings)*6,'rewrites':len(plan.rewrites),'gameLaunched':False,
+              'groupedInstructionStates':sum(case['states'] for case in results if case['case'] == 'grouped_member_native_differential'),
               'actorCapacity':shape.actors,'sentientCapacity':shape.sentients,'activationAllowed':False,'coverageComplete':False,
               'supportedExecutableSha256':'0b874dcc250848b7313ec13a0c76468dacc2009b5efa2bff4c587e169a9f77e0',
               'moduleManifestSha256':hashlib.sha256(module.read_bytes()).hexdigest(),

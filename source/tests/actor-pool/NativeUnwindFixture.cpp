@@ -97,7 +97,7 @@ int wmain(int argc, wchar_t** argv) {
         const auto stubs = Read<std::uint32_t>(input);
         const bool clientSnapshots = stubs == 2;
         const bool clientAllocation = stubs == 1;
-        Require(clientSnapshots || clientAllocation || stubs == 6 || stubs == 78 || stubs == 79, "Supply a complete admitted client or server continuation plan.");
+        Require(clientSnapshots || clientAllocation || stubs == 6 || stubs == 65 || stubs == 66, "Supply a complete admitted client or server continuation plan.");
         std::uint32_t probes{}, depthMutations{}, allocationMutations{}, saveMutations{}, entryProbes{}, entryMutations{};
         for (std::uint32_t stub = 0; stub < stubs; ++stub) {
             const auto header = Read<Header>(input);

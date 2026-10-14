@@ -13,7 +13,8 @@ from context_aliases import prepare_context_aliases
 from physics_state import prepare_physics_state
 from client_allocator import prepare_client_allocation
 from client_cache_heap import prepare_client_cache_heap, HEAP_OFFSET, HEAP_BYTES
-from skeletal_storage import prepare_skeletal_storage, BANK_OFFSET, BANK_BYTES, ARENA_END, LEAF_UNWIND
+from skeletal_storage import prepare_skeletal_storage, BANK_OFFSET, BANK_BYTES, LEAF_UNWIND
+from anim_info_storage import prepare_anim_info_storage, BANK_OFFSET as ANIM_OFFSET, BANK_BYTES as ANIM_BYTES, ARENA_END
 from client_actor_ring import prepare_client_actor_ring
 from entity_allocator import prepare_entity_allocator,ENTITY_ALLOCATOR_UNWIND
 from demo_writer import DemoWriter,prepare_demo_writer
@@ -99,6 +100,7 @@ def prepare_recipe(source: CapturedCode,arena: int) -> RuntimeRecipe:
     edits.extend(prepare_client_cache_heap(code,arena))
     skeletal=prepare_skeletal_storage(code,arena+BANK_OFFSET,arena+0x1E1000)
     edits.extend(skeletal)
+    edits.extend(prepare_anim_info_storage(code,arena+ANIM_OFFSET))
     edits.append(prepare_client_allocation(code,arena+0x1E0000))
     edits.extend(prepare_client_actor_ring(code,shape))
     demo=DemoWriter(arena+0x2B00000,shape)
@@ -136,7 +138,7 @@ def prepare_recipe(source: CapturedCode,arena: int) -> RuntimeRecipe:
         raise ValueError('A combined actor body exceeds or overlaps the complete code arena.')
     regions=tuple(storage.regions(table))+((snapshots.base,snapshots.total_bytes),(demo.base,demo.bytes),
         (history,temporal.history_bytes),(counts.base,24),(arena+0x2C50000,temporal.history_bytes),
-        (arena+HEAP_OFFSET,HEAP_BYTES),(arena+BANK_OFFSET,BANK_BYTES),(arena+BANK_OFFSET+BANK_BYTES,BANK_BYTES))
+        (arena+HEAP_OFFSET,HEAP_BYTES),(arena+BANK_OFFSET,BANK_BYTES),(arena+BANK_OFFSET+BANK_BYTES,BANK_BYTES),(arena+ANIM_OFFSET,ANIM_BYTES))
     banks=sorted(regions)
     if any(a<arena+CODE_BYTES+METADATA_BYTES or a+n>arena+ARENA_BYTES for a,n in banks) or any(a+n>b for (a,n),(b,_) in zip(banks,banks[1:])):
         raise ValueError('A combined actor storage interval exceeds or overlaps the complete data arena.')

@@ -37,7 +37,8 @@ def run(module: Path,executable: Path,output: Path) -> dict:
     for shift,arena_delta in ((0,0x20000000),(0x100000000,0x24000000),(-0x100000000,0x28000000)):
         current=RebasedCode(code,shift)
         recipe=prepare_recipe(current,current.base+arena_delta)
-        assert recipe.arena_bytes==0xC000000
+        assert recipe.arena_bytes==0xC580000
+        assert (recipe.arena+0xC000000,65536*0x58) in recipe.storage
         assert (recipe.arena+0x3000000,0x4800000) in recipe.storage
         assert (recipe.arena+0x7800000,0x4800000) in recipe.storage
         assert recipe.actors==500 and recipe.sentients==540

@@ -81,13 +81,8 @@ class MemberInstruction:
     native_offset: int = NATIVE_TABLE_OFFSET
 
 
-def member_stub(instruction: MemberInstruction, address: int, pool_pointer: int,
-                layout: TableLayout, continuation: int) -> bytes:
-    # Use a register that the original operation does not read or write.
-    candidates = ('r11','r10','r9','r8','rbx','rsi','rdi')
-    scratch = next((r for r in candidates if r not in instruction.registers_used), None)
-    if scratch is None or instruction.base_register == 'rsp':
-        raise ValueError('The member instruction has no admitted scratch or owner binding.')
+def mapped_member_instruction(instruction: MemberInstruction, scratch: str, displacement: int = 0) -> bytes:
+    """Retain the native opcode and register operands at a mapped member address."""
     original = instruction.original
     modrm = original[instruction.modrm_offset]
     memory_end = (instruction.displacement_offset+instruction.displacement_size if instruction.displacement_size
@@ -103,7 +98,24 @@ def member_stub(instruction: MemberInstruction, address: int, pool_pointer: int,
         while prefixes[position] in (0x66,0x67,0xF2,0xF3):
             position += 1
         prefixes[position:position] = bytes([0x41])
-    rewritten = bytes(prefixes)+bytes([(modrm & 0x38) | (number & 7)])+original[memory_end:]
+    if not -128 <= displacement < 128:
+        raise ValueError('The mapped member displacement exceeds its admitted signed byte.')
+    return (bytes(prefixes)+bytes([(modrm & 0x38) | (number & 7) | (0x40 if displacement else 0)])
+            +(struct.pack('<b',displacement) if displacement else b'')+original[memory_end:])
+
+
+def member_stub(instruction: MemberInstruction, address: int, pool_pointer: int,
+                layout: TableLayout, continuation: int, following_operations: bytes = b'') -> bytes:
+    # Use a register that the original operation does not read or write.
+    candidates = ('r11','r10','r9','r8','rbx','rsi','rdi')
+    scratch = next((r for r in candidates if r not in instruction.registers_used), None)
+    if scratch is None or instruction.base_register == 'rsp':
+        raise ValueError('The member instruction has no admitted scratch or owner binding.')
+    original = instruction.original
+    modrm = original[instruction.modrm_offset]
+    memory_end = (instruction.displacement_offset+instruction.displacement_size if instruction.displacement_size
+                  else instruction.modrm_offset+1+int((modrm & 7) == 4))
+    number = REGISTERS.index(scratch)
 
     e = Emitter(address)
     e.put(b'\x9c')
@@ -121,7 +133,7 @@ def member_stub(instruction: MemberInstruction, address: int, pool_pointer: int,
         e.pop(reg)
     # Restore input flags before the original operation. Keep its output flags.
     e.put(b'\xff\x74\x24\x08\x9d')
-    e.put(rewritten)
+    e.put(mapped_member_instruction(instruction,scratch)+following_operations)
     e.pop(scratch)
     e.put(b'\x48\x8d\x64\x24\x08')
     e.put(instruction.trailing_original)

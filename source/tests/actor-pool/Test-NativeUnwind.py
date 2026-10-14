@@ -68,7 +68,7 @@ def run(module: Path, executable: Path, output: Path, include_temporal_restore: 
         changed.mutation = mutation
         refuse(changed, frame)
     assert refusals == 15
-    expected = 79 if include_temporal_restore else 78
+    expected = 66 if include_temporal_restore else 65
     data = bytearray(b'BO3NFUW2' + struct.pack('<I', expected))
     rows = []
     for edit in edits:

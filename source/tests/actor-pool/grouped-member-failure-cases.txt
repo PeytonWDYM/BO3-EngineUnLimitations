@@ -1,0 +1,16 @@
+Write these failure cases before changing the native member plan.
+
+A changed byte in any complete group span must refuse preparation.
+A group keyed by instruction bytes instead of its exact RVA must refuse.
+A group with another owner, base, index, scale, or native offset must refuse.
+A native member that writes a later address input must refuse.
+Every group must keep the original operation order, memory width, and displacement.
+The plan must emit one complete source rewrite and one helper per group.
+The plan must not retain a suffix helper or a dangling single-member binding.
+The full native mapped-table replay must compare every grouped operation.
+The native target reset must clear the complete 72-byte entry through one helper.
+GPRs, XMM registers, flags, MXCSR, native records, and neighboring cells must match.
+Owner 539 and target 539 must remain inside the complete external table.
+Complete source windows and helper intervals must not overlap other edits.
+Windows unwind phases must follow the emitted group instruction boundaries.
+No benchmark result establishes a game FPS gain.
