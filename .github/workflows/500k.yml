@@ -18,7 +18,9 @@ jobs:
     strategy:
       matrix:
         os: [windows-latest, ubuntu-latest]
-    runs-on: ${{ matrix.os }}
+    # Runs on the maintainer's LocalCI runner unless the repository variable
+    # CI_RUNNER is 'hosted'. Fork pull requests always stay GitHub-hosted.
+    runs-on: ${{ matrix.os == 'windows-latest' && vars.CI_RUNNER != 'hosted' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && fromJSON('["self-hosted","local-ci"]') || matrix.os }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
@@ -36,7 +38,9 @@ jobs:
           if-no-files-found: warn
 
   native:
-    runs-on: windows-latest
+    # Runs on the maintainer's LocalCI runner unless the repository variable
+    # CI_RUNNER is 'hosted'. Fork pull requests always stay GitHub-hosted.
+    runs-on: ${{ vars.CI_RUNNER != 'hosted' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && fromJSON('["self-hosted","local-ci"]') || 'windows-latest' }}
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
